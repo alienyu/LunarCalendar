@@ -1,0 +1,29 @@
+{
+  "name": "lunar",
+  "version": "1.0.0",
+  "description": "lunar demo",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "css-loader": "^0.23.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.8.5",
+    "html-loader": "^0.4.3",
+    "html-webpack-plugin": "^2.9.0",
+    "jquery": "^1.12.0",
+    "jquery-hammerjs": "2.0.x",
+    "jquery-mobile": "^1.4.1",
+    "less": "^2.6.0",
+    "less-loader": "^2.2.2",
+    "style-loader": "^0.13.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.13",
+    "webpack-dev-server": "^1.14.1",
+    "zepto": "1.1.7"
+  },
+  "author": "AlienYu",
+  "license": "MIT"
+}
