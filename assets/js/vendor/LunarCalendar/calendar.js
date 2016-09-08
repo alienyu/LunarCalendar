@@ -359,17 +359,15 @@ var Calendar = (function(){
 			return false;
 		});
 		
-		$('.slide_wrap').on('swipeleft',function(event){
+		$('.slide_wrap').on('swipeLeft',function(event){
 			pageDate(1);
 			event.preventDefault();
-			event.gesture.preventDefault();
 			return false;
 		});
 		
-		$('.slide_wrap').on('swiperight',function(event){
+		$('.slide_wrap').on('swipeRight',function(event){
 			pageDate(-1);
 			event.preventDefault();
-			event.gesture.preventDefault();
 			return false;
 		});
 	};
