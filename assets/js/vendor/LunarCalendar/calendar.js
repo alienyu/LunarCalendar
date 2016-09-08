@@ -359,13 +359,13 @@ var Calendar = (function(){
 			return false;
 		});
 		
-		$('.slide_wrap').on('swipeLeft',function(event){
+		$('.slide_wrap').on('swipeleft',function(event){
 			pageDate(1);
 			event.preventDefault();
 			return false;
 		});
 		
-		$('.slide_wrap').on('swipeRight',function(event){
+		$('.slide_wrap').on('swiperight',function(event){
 			pageDate(-1);
 			event.preventDefault();
 			return false;
