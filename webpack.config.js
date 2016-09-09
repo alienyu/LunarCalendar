@@ -104,6 +104,5 @@ function initConfig(pageList) {
 
 initConfig([
     //页面实际路径
-    "lunar",
     "calendar"
 ])

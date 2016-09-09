@@ -160,3 +160,5 @@ function tranCalendar() {
 		return t;
 	}
 }
+
+module.exports = tranCalendar;

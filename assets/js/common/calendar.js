@@ -1,125 +1,6 @@
 window.HuangLi = window.HuangLi || {};
 var LunarCalendar = require("./LunarCalendar.js");
-
-(function () {
-    var mobile = {
-        platform: '',
-        version: 0,
-        Android: function () {
-            return this.platform === 'Android';
-        },
-        iOS: function () {
-            return this.platform === 'iOS';
-        },
-        init: function () {
-            var ua = navigator.userAgent;
-            if (ua.match(/Android/i)) {
-                this.platform = 'Android';
-                this.version = parseFloat(ua.slice(ua.indexOf("Android") + 8));
-            }
-            else if (ua.match(/iPhone|iPad|iPod/i)) {
-                this.platform = 'iOS';
-                this.version = parseFloat(ua.slice(ua.indexOf("OS") + 3));
-            }
-        }
-    };
-    mobile.init();
-    this.mobile = mobile;
-}());
-
-(function () {
-    /**
-     * 动态加载js文件
-     * @param  {string}   url      js文件的url地址
-     * @param  {Function} callback 加载完成后的回调函数
-     */
-    var _getScript = function (url, callback) {
-        var head = document.getElementsByTagName('head')[0],
-            js = document.createElement('script');
-
-        js.setAttribute('type', 'text/javascript');
-        js.setAttribute('src', url);
-
-        head.appendChild(js);
-
-        //执行回调
-        var callbackFn = function () {
-            if (typeof callback === 'function') {
-                callback();
-            }
-        };
-
-        if (document.all) { //IE
-            js.onreadystatechange = function () {
-                if (js.readyState == 'loaded' || js.readyState == 'complete') {
-                    callbackFn();
-                }
-            }
-        } else {
-            js.onload = function () {
-                callbackFn();
-            }
-        }
-    }
-
-    //如果使用的是zepto，就添加扩展函数
-    if ($) {
-        $.getScript = _getScript;
-    }
-})();
-
-
-(function () {
-    var Footprint = function () {
-    };
-    // Default template settings, uses ASP/PHP/JSP delimiters, change the
-    // following template settings to use alternative delimiters.
-    var templateSettings = {
-        evaluate: /<%([\s\S]+?)%>/g,
-        interpolate: /<%=([\s\S]+?)%>/g
-    };
-
-    // JavaScript micro-templating, similar to John Resig's implementation.
-    // Underscore templating handles arbitrary delimiters, preserves whitespace,
-    // and correctly escapes quotes within interpolated code.
-    Footprint.compile = function (str, settings) {
-        var c = settings || templateSettings;
-        var tmpl = 'var __p=[],print=function(){__p.push.apply(__p,arguments);};' +
-            'with(obj||{}){__p.push(\'' +
-            str.replace(/\\/g, '\\\\')
-                .replace(/'/g, "\\'")
-                .replace(c.interpolate, function (match, code) {
-                    return "'," + code.replace(/\\'/g, "'") + ",'";
-                })
-                .replace(c.evaluate || null, function (match, code) {
-                    return "');" + code.replace(/\\'/g, "'")
-                            .replace(/[\r\n\t]/g, ' ') + "__p.push('";
-                })
-                .replace(/\r/g, '\\r')
-                .replace(/\n/g, '\\n')
-                .replace(/\t/g, '\\t')
-            + "');}return __p.join('');";
-        return new Function('obj', tmpl);
-    };
-
-    // Preserves template method for compatible with legacy call.
-    Footprint.template = function (str, data) {
-        var compilied = Footprint.compile(str);
-        return compilied(data);
-    };
-
-    if (typeof exports !== "undefined") {
-        exports.Footprint = Footprint;
-    } else {
-        window.Footprint = Footprint;
-    }
-
-    //如果使用的是zepto，就添加扩展函数
-    if ($) {
-        $.template = Footprint.template;
-    }
-}());
-
+var Ajax = require("./ajax.js");
 var Calendar = (function () {
     var hlurl = 'http://cdn.tuijs.com/js/';
     var hlMinYear = 2008;
@@ -331,10 +212,10 @@ var Calendar = (function () {
         setSlidePos({time: 0, pos: 0});
         $('#date_list_' + panel[0]).css({left: offset * pageWidth}).addClass("active"); //将要显示
         $('#date_list_' + panel[1]).css({left: 0}).removeClass("active"); //当前显示
-        getEventOfMonth();//判断当前页面时间范围内的事件，并在有时间的日期下方加点
+        Ajax.getEventOfMonth();//判断当前页面时间范围内的事件，并在有时间的日期下方加点
         var currentDay = $('#date_list_' + panel[0] + ' .date_current').attr("id");//获取滑动日历时默认选中的日期
-        getEventOfDay(currentDay);//获取选中日期当天的事件列表
-        getFortune(currentDay);//获取选中日期当天的运势
+        Ajax.getEventOfDay(currentDay);//获取选中日期当天的事件列表
+        Ajax.getFortune(currentDay);//获取选中日期当天的运势
         clickDate();//获取点击日期并显示当天的事件列表和运势
         /*--------------比较页面中选中那天与今天是否相等，若不相等，则显示今天按钮------------*/
         var today = new Date();

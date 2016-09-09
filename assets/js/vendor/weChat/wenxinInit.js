@@ -2,6 +2,7 @@
  * Created by admin on 2016/8/17.
  * 微信分享
  */
+require("./jweixin.js");
 var imageUrl = "http://www.li-li.cn/app/icon.png";
 function wxConfig(type) {
     wxConfig(type, "", "", "")
