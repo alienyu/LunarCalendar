@@ -355,11 +355,11 @@ var Lunar = {
             }
             if (offset > 0) {//左滑
                 that.timer = setTimeout(function () {
-                    that.setSlidePos({time: 100, pos: this.pageWidth * -1});
+                    that.setSlidePos({time: 100, pos: that.pageWidth * -1});
                 }, 50);
             } else { //右滑
                 that.timer = setTimeout(function () {
-                    that.setSlidePos({time: 100, pos: this.pageWidth});
+                    that.setSlidePos({time: 100, pos: that.pageWidth});
                 }, 50);
             }
         },
