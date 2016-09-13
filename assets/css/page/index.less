@@ -1,0 +1,176 @@
+@import "../common/common.less";
+
+html,body{
+    height:100%;
+    background-color: #000;
+}
+.conShadow{
+    width:100%;
+    height: 100%;
+    position: relative;
+    top:0px;
+    left:0px;
+}
+.con{
+    width: 100%;
+    height: 100%;
+    padding-left: 12px;
+    font-size: 16px;
+    box-sizing: border-box;
+    -webkit-box-sizing:border-box;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+.con .top{
+    position: absolute;
+    top: 0px;
+    left: 12px;
+    font-size: 14px;
+}
+.con .day{
+    height: 100px;
+    line-height: 100px;
+    font-size: 100px;
+    font-weight: 300;
+}
+.con .yearAndMonth,.con .week,.con .lunarCalendar{
+    height: 20px;
+    line-height: 20px;
+}
+.con .bottom{
+    width:100%;
+    height:auto;
+    position: absolute;
+    left:0px;
+    bottom:0px;
+    font-size: 14px;
+}
+.con .bottom .title{
+    height:36px;
+    line-height: 36px;
+    padding-left: 16%;
+    position: relative;
+}
+.con .bottom .title .addEvent{
+    position: absolute;
+    height:36px;
+    line-height: 36px;
+    right:2%;
+    top:0px;
+}
+.scheduleList p{/*日程内容*/
+    padding:8px 10px 8px 0px;
+    height: 20px;
+    line-height: 20px;
+}
+.scheduleList  .time,.suitable .time{
+    display: block;
+    width: 13%;
+    height: 100%;
+    float: left;
+    text-align: right;
+    margin-right: 3%;
+}
+.scheduleList p .matter{
+    display: block;
+    float: left;
+    width: 58%;
+}
+.scheduleList p .partner{
+    float: right;
+    width: 19%;
+    text-align: right;
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    margin-right: 2px;
+}
+.scheduleList p .num{
+    float: right;
+}
+.bottom .eventBg{
+    width:100%;
+    height:160px;
+}
+.bottom .eventBg .bg{
+    width: 100%;
+    height:68px;
+    background: url("../images/icon-NoContent.png") no-repeat center center;
+    background-size: contain;
+}
+.bottom .eventBg .text a{
+    display: block;
+    text-align: center;
+    height: 36px;
+    line-height: 36px;
+    font-size:16px;
+}
+.bottom .eventBg .text p{
+    text-align: center;
+}
+.suitable{
+    padding: 5px 10px 5px 0px;
+    height:auto;
+    line-height:26px;
+    overflow: hidden;
+}
+.suitable .suitMatter{
+    min-height:26px;
+    width:83%;
+    padding:0px;
+    line-height: 26px;
+    font-size: 14px;
+    float: left;
+}
+.suitable .suitMatter span{
+    padding:3px;
+    margin-right: 5px;
+}
+.bottom .down{
+    display: block;
+    width:100%;
+    height:30px;
+    margin-bottom: 5px;
+    position: relative;
+}
+.bottom .down .img{
+    display: block;
+    width:16px;
+    height:10px;
+    position: absolute;
+    bottom:0px;
+    left:50%;
+    margin-left: -8px;
+    animation: down 2s ease-in-out 0.5s infinite;
+    -webkit-animation:down 2s ease-in-out 0.5s infinite;
+}
+.bottom .down .img img{
+    float: left;
+    width:100%;
+    height:100%;
+}
+/*下方箭头动画效果*/
+@keyframes down {
+    0%{
+        bottom:0px;
+    }
+    20%{
+        bottom: 10px;
+    }
+    100%{
+        bottom:0px;
+    }
+}
+@-webkit-keyframes down {
+    0%{
+        bottom:0px;
+    }
+    20%{
+        bottom: 10px;
+    }
+    100%{
+        bottom:0px;
+    }
+}
+
