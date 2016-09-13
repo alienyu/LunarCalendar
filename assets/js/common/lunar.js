@@ -7,12 +7,41 @@
  * 设置生日获取私人黄历
  * 添加事件
  */
-var LunarCalendar = require("./LunarCalendar.js");
+var LunarCalendar = require("../vendor/LunarCalendar/LunarCalendar.js");
 
 var Lunar = {
     init: function() {
         this.checkUserAgent();
         this.Calendar.init();
+    },
+    FootPrint: {
+        templateSettings: {
+            evaluate : /<%([\s\S]+?)%>/g,
+            interpolate : /<%=([\s\S]+?)%>/g
+        },
+        compile: function(str, settings) {
+            var c = settings || this.templateSettings;
+            var tmpl = 'var __p=[],print=function(){__p.push.apply(__p,arguments);};' +
+                'with(obj||{}){__p.push(\'' +
+                str.replace(/\\/g, '\\\\')
+                    .replace(/'/g, "\\'")
+                    .replace(c.interpolate, function(match, code) {
+                        return "'," + code.replace(/\\'/g, "'") + ",'";
+                    })
+                    .replace(c.evaluate || null, function(match, code) {
+                        return "');" + code.replace(/\\'/g, "'")
+                                .replace(/[\r\n\t]/g, ' ') + "__p.push('";
+                    })
+                    .replace(/\r/g, '\\r')
+                    .replace(/\n/g, '\\n')
+                    .replace(/\t/g, '\\t')
+                + "');}return __p.join('');";
+            return new Function('obj', tmpl);
+        },
+        template: function(str, data) {
+            var compilied = this.compile(str);
+            return compilied(data);
+        }
     },
     Calendar: {
         hlurl: "http://cdn.tuijs.com/js/",
@@ -21,6 +50,8 @@ var Lunar = {
         minYear: 1891,
         maxYear: 2100,
         HuangLi: {},
+        btns: $('.lucky .word_item span'),
+        btnsB: $('.inFrame .word_item span'),
         itemTemp: [
             '<div class="date_item<%=itemCls%>" data-index="<%=index%>" id="<%=itemId%>">',
             '	<span class="date_icon<%=iconCls%>"><%=iconText%></span>',
@@ -34,16 +65,18 @@ var Lunar = {
         panel: [0,1],
         pageWidth: 0,
         timer: -1,
+        selectWord: "",
         init: function() {
             this.initPageElm();
             this.addEvent();
             this.setCurrentByNow();
             this.showDate();
+            this.clickDate();
         },
         initPageElm: function() {
             this.pageWidth = $(document).width();
             $('.date_list').eq(0).css('width', '100%');
-            $('.date_list').eq(1).css({'width': '100%', 'left': pageWidth});
+            $('.date_list').eq(1).css({'width': '100%', 'left': this.pageWidth});
             if (Lunar.mobile.platform == 'iOS') {//iOS启用3d，同时将子元素也设置一下，防止BUG
                 this.setTranslate(document.getElementById('date_list_0'), 0);
                 this.setTranslate(document.getElementById('date_list_1'), 0);
@@ -54,7 +87,7 @@ var Lunar = {
             $('.date_list').on('tap', '.date_item', function () {
                 var index = $(this).attr('data-index');
                 index = parseInt(index, 10);
-                var itemData = this.DATA.monthData[index];
+                var itemData = that.DATA.monthData[index];
 
                 if (index < that.DATA.firstDay) { //上一个月
                     that.pageDate(-1, itemData.year, itemData.month, itemData.day);
@@ -87,9 +120,8 @@ var Lunar = {
                 } else {//今天不在范围之内
                     that.pageDate(1, that.now.getFullYear(), that.now.getMonth() + 1, that.now.getDate());
                 }
-
-                that.getEventOfDay(today);
-                that.getFortune(today);
+                Lunar.getEventOfDay(today);
+                Lunar.getFortune(today);
                 return false;
             });
 
@@ -104,6 +136,41 @@ var Lunar = {
                 event.preventDefault();
                 return false;
             });
+
+            /*----------------------------------点击吉日列表中的选项---------------------------*/
+            this.btns.on('tap', function (event) {
+                $('#loadingToast').show();//显示loading效果
+                //var dateItem = getDateList();
+                that.btns.each(function () {
+                    $(this).removeClass("active");
+                });
+                $(this).addClass('active');//选中项添加样式
+                that.selectWord = $(this).html();//选中吉日类型
+                Lunar.Calendar.showLuckyDay(that.config.selectWord);//调用后台数据，显示合适的日期
+
+                var wordItem = $('.lucky02 .word_item span');
+//            console.log(wordItem.size());
+                for (var j = 0; j < wordItem.size(); j++) {
+                    wordItem.eq(j).removeClass("active");
+                }
+                var num1 = $(this).parent().index();
+                num02 = $(this).parent().parent().index();
+                var num = num1 + num02 * 6;
+                $('.inFrame').css('left', -num02 * screenWidth + 'px');
+                $('.inFrame .word_item span').eq(num).attr("class", "active");
+                Lunar.Calendar.luckyWordConDown();
+            });
+
+            /*--------------------点击一行吉日列表中的吉日选项，合适的日期-------------------------*/
+            this.btnsB.on("tap", function (event) {
+                $('#loadingToast').show();//显示loading效果
+                that.btnsB.each(function () {
+                    $(this).removeClass("active");
+                });
+                $(this).addClass("active");
+                that.selectWord = $(this).html();
+                Lunar.Calendar.showLuckyDay(that.config.selectWord);
+            });
         },
         formatDayD4: function(month, day) {
             month = month + 1;
@@ -112,7 +179,7 @@ var Lunar = {
             return 'd' + month + day;
         },
         formatDate: function() {
-            if (!current)return '';
+            if (!this.current)return '';
             var year = this.current.year;
             var month = this.current.month;
             return month + "月" + "·" + year + "年";
@@ -156,7 +223,7 @@ var Lunar = {
         //恢复指定日期的状态信息
         resetInfo: function() {
             //今天
-            var oldObj = $('#date_list_' + panel[0]).find('.date_item').eq(this.current.pos);
+            var oldObj = $('#date_list_' + this.panel[0]).find('.date_item').eq(this.current.pos);
             if (this.now.getFullYear() == this.current.year && this.now.getMonth() + 1 == this.current.month && this.now.getDate() == this.current.day) {
                 //oldObj.attr('class','date_item date_today');
                 oldObj.addClass('date_today');
@@ -166,14 +233,14 @@ var Lunar = {
             }
         },
         showDate: function() {
-            DATA = LunarCalendar.calendar(this.current.year, this.current.month, true);
+            this.DATA = LunarCalendar.calendar(this.current.year, this.current.month, true);
             var dateHtml = '';
-            var temp = itemTemp.join('');
-            for (var i = 0; i < DATA.monthData.length; i++) {
-                var itemData = DATA.monthData[i];
+            var temp = this.itemTemp.join('');
+            for (var i = 0; i < this.DATA.monthData.length; i++) {
+                var itemData = this.DATA.monthData[i];
                 if (i % 7 == 0) { //某行第一列
                     dateHtml += '<div class="date_row">';
-                    if (i > 7 && (i < DATA.firstDay || i >= DATA.firstDay + DATA.monthDays)) { //非本月日期
+                    if (i > 7 && (i < this.DATA.firstDay || i >= this.DATA.firstDay + this.DATA.monthDays)) { //非本月日期
                         break;
                     }
                 }
@@ -188,14 +255,14 @@ var Lunar = {
                     itemId: ''
                 };
                 var itemCls = '';
-                if (this.now.getFullYear() == itemData.year && this.now.getMonth() + 1 == itemData.month && now.getDate() == itemData.day) {
+                if (this.now.getFullYear() == itemData.year && this.now.getMonth() + 1 == itemData.month && this.now.getDate() == itemData.day) {
                     itemCls = ' date_today';
                 }
                 if (this.current.year == itemData.year && this.current.month == itemData.month && this.current.day == itemData.day) { //当前选中
                     itemCls = ' date_current';
                     this.current.pos = i;
                 }
-                if (i < DATA.firstDay || i >= DATA.firstDay + DATA.monthDays) { //非本月日期
+                if (i < this.DATA.firstDay || i >= this.DATA.firstDay + this.DATA.monthDays) { //非本月日期
                     itemCls = ' date_other';
                 }
                 extendObj.itemCls = itemCls;
@@ -211,11 +278,11 @@ var Lunar = {
 
                 $.extend(itemData, extendObj);
 
-                dateHtml += $.template(temp, itemData);
+                dateHtml += Lunar.FootPrint.template(temp, itemData);
 
                 if (i % 7 == 6) {//某行尾列
                     dateHtml += '</div>';
-                    if (i < DATA.firstDay || i >= DATA.firstDay + DATA.monthDays) { //非本月日期
+                    if (i < this.DATA.firstDay || i >= this.DATA.firstDay + this.DATA.monthDays) { //非本月日期
                         break;
                     }
                 }
@@ -223,8 +290,8 @@ var Lunar = {
             }
             ;
 
-            $('#date_list_' + panel[0]).html(dateHtml);
-            $('.slide_wrap').css('height', $('#date_list_' + panel[0]).css('height'));//高度随日历高度变化
+            $('#date_list_' + this.panel[0]).html(dateHtml);
+            $('.slide_wrap').css('height', $('#date_list_' + this.panel[0]).css('height'));//高度随日历高度变化
 
             this.showInfo();
         },
@@ -259,7 +326,8 @@ var Lunar = {
             this.panel.push(first);
         },
         slide: function(offset) {
-            this.timer && clearTimeout(timer);
+            var that = this;
+            this.timer && clearTimeout(this.timer);
             this.setSlidePos({time: 0, pos: 0});
             $('#date_list_' + this.panel[0]).css({left: offset * this.pageWidth}).addClass("active"); //将要显示
             $('#date_list_' + this.panel[1]).css({left: 0}).removeClass("active"); //当前显示
@@ -267,7 +335,7 @@ var Lunar = {
             var currentDay = $('#date_list_' + this.panel[0] + ' .date_current').attr("id");//获取滑动日历时默认选中的日期
             Lunar.getEventOfDay(currentDay);//获取选中日期当天的事件列表
             Lunar.getFortune(currentDay);//获取选中日期当天的运势
-            Lunar.clickDate();//获取点击日期并显示当天的事件列表和运势
+            this.clickDate();//获取点击日期并显示当天的事件列表和运势
             /*--------------比较页面中选中那天与今天是否相等，若不相等，则显示今天按钮------------*/
             var today = new Date();
             var dayT = today.getDate();
@@ -280,18 +348,18 @@ var Lunar = {
                 $('.today').css("display", "block");
             }
             /*------------若选择了吉日，则查找对应的日期。点击日期，吉日列表显示成一行---------------*/
-            if (selectWord != null && selectWord != "") {
+            if (this.selectWord != null && this.selectWord != "") {
                 $('#loadingToast').show();//隐藏loading
-                this.showLuckyDay(selectWord);
+                this.showLuckyDay(this.selectWord);
                 this.luckyWordConDown();
             }
             if (offset > 0) {//左滑
-                timer = setTimeout(function () {
-                    this.setSlidePos({time: 100, pos: this.pageWidth * -1});
+                that.timer = setTimeout(function () {
+                    that.setSlidePos({time: 100, pos: this.pageWidth * -1});
                 }, 50);
             } else { //右滑
-                timer = setTimeout(function () {
-                    this.setSlidePos({time: 100, pos: this.pageWidth});
+                that.timer = setTimeout(function () {
+                    that.setSlidePos({time: 100, pos: this.pageWidth});
                 }, 50);
             }
         },
@@ -311,7 +379,7 @@ var Lunar = {
         clickDate: function() {
             var dateItem = Lunar.getDateList();
             for (var i = 0; i < dateItem.size(); i++) {
-                dateItem.eq(i).hammer().on('tap', function (event) {
+                dateItem.eq(i).on('tap', function (event) {
                     var index = $(this).index();
                     var selectDate = $(this).parent().find('.date_item').eq(index).attr('id');
 //                    console.log(selectDate);
@@ -367,7 +435,7 @@ var Lunar = {
         luckyWordConDown: function() {
             var dateItem = Lunar.getDateList();
             dateItem.on("tap", function (event) {
-                if (selectWord != null && selectWord != "") {
+                if (this.selectWord != null && this.selectWord != "") {
                     $('.lucky').animate({'bottom': "-265px"}, 500, function () {
                         $('.lucky02').fadeIn("slow");
                     });

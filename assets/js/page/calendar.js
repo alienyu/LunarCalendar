@@ -1,13 +1,12 @@
 require("../../css/page/calendar.less");
 var transCalendar = require("../vendor/LunarCalendar/transCalendar.js");
-var mobiScroll = require("../../vendor/mobiScroll/mobiScroll.js");
+var mobiScroll = require("../vendor/mobiScroll/mobiScroll.js");
 var Lunar = require("../common/lunar.js");
-require("../common/wenxinInit.js");
+//require("../vendor/weChat/wxInit.js");
 
 var fuc = {
     config: {
         birthday: "",
-        selectWord: "",
         isGoodDay: false
     },
     init: function() {
@@ -38,7 +37,7 @@ var fuc = {
             toolbarHeight = $('#toolbar').height(),
             wrapperHeight = $('.wrapper').height(),
             titleHeight = $('.schedule h1').height();
-        var otherHeight = screenHeight-toolbarHeight-wrapperHeight-titleHeight;
+        this.otherHeight = screenHeight-toolbarHeight-wrapperHeight-titleHeight;
         //wxConfig(1);
         this.getUserInformation();//获取用户信息，若用户设置了生日，则可获取生日
         Lunar.getEventOfMonth();//判断当前页面的时间中有没有事件，有事件的在下方加点
@@ -48,7 +47,8 @@ var fuc = {
         Lunar.getFortune(theDay);//获取当天的黄历
         /*--------------------------获取点击日期，显示当天的日程列表和运势--------------------------*/
         Lunar.Calendar.clickDate();
-        this.selectBirthday = this.selectBirthdayDate('#birthday').setVal(new Date("1990/01/01"));//选择生日
+        this.selectBirthday = this.selectBirthdayDate('#birthday')
+        this.selectBirthday.setVal(new Date("1990/01/01"));//选择生日
         var wrapper = document.getElementById('wrapper');
         wrapper.addEventListener('touchmove', function (e) {
             e.preventDefault();
@@ -107,7 +107,7 @@ var fuc = {
     },
     selectBirthdayDate: function(obj) {
         var that = this;
-        var selb = mobiscroll.date(obj, {
+        var selb = mobiScroll.date(obj, {
             theme: 'android-holo-light',
             lang: 'zh',
             display: 'bottom',
@@ -150,7 +150,7 @@ var fuc = {
     bindEvent: function() {
         var that = this;
         /*------------------------------------点击添加事件按钮，跳转至添加事件页面------------------------------------*/
-        $('.addEvent').click(function (event) {
+        $('.addEvent').on('tap', function (event) {
             var dateCurrent = $('.date_current').attr('id');
             $('body').html("").css("background", "#66cccc");
             window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/addEvent.html?date=" + dateCurrent);
@@ -158,7 +158,7 @@ var fuc = {
         });
 
         /*--------------点击/滑动的tab切换效果，容器高度随显示内容变化--------------------------*/
-        $('.scheduleCon').css("min-height",otherHeight+"px");
+        $('.scheduleCon').css("min-height",this.otherHeight+"px");
         var scheHeight = parseInt($('.scheduleList').css('height'));
         $('.schedule').css("height", 40+scheHeight+"px");
         $('.scheBtn').on('tap', function (event) {
@@ -179,7 +179,7 @@ var fuc = {
         });
         /*--------------------------------吉日-------------------------------*/
         var _btns = $('.lucky .word_item span');
-        var _btnsB = $('.inFrame .word_item span');
+        //var _btnsB = $('.inFrame .word_item span');
         var num02 = 0;
         var screenWidth = $(document.body).width();//获取屏幕宽度
         $('.inFrame').css("width",3*screenWidth+"px");//底部一行吉日容器的宽度
@@ -199,40 +199,7 @@ var fuc = {
                 });
             }
         });
-        /*----------------------------------点击吉日列表中的选项---------------------------*/
-        _btns.on('tap', function (event) {
-            $('#loadingToast').show();//显示loading效果
-            //var dateItem = getDateList();
-            _btns.each(function () {
-                $(this).removeClass("active");
-            });
-            $(this).addClass('active');//选中项添加样式
-            selectWord = $(this).html();//选中吉日类型
-            Lunar.Calendar.showLuckyDay(that.config.selectWord);//调用后台数据，显示合适的日期
 
-            var wordItem = $('.lucky02 .word_item span');
-//            console.log(wordItem.size());
-            for (var j = 0; j < wordItem.size(); j++) {
-                wordItem.eq(j).removeClass("active");
-            }
-            var num1 = $(this).parent().index();
-            num02 = $(this).parent().parent().index();
-            var num = num1 + num02 * 6;
-            $('.inFrame').css('left', -num02 * screenWidth + 'px');
-            $('.inFrame .word_item span').eq(num).attr("class", "active");
-            Lunar.Calendar.luckyWordConDown();
-        });
-
-        /*--------------------点击一行吉日列表中的吉日选项，合适的日期-------------------------*/
-        _btnsB.on("tap", function (event) {
-            $('#loadingToast').show();//显示loading效果
-            _btnsB.each(function () {
-                $(this).removeClass("active");
-            });
-            $(this).addClass("active");
-            selectWord = $(this).html();
-            Lunar.Calendar.showLuckyDay(that.config.selectWord);
-        });
         /*------------------一行吉日列表的滑动查看效果-----------------------*/
         var lucky02 = document.getElementById('lucky02');
         lucky02.addEventListener("touchmove", function (e) {
