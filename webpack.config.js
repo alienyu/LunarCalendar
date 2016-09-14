@@ -105,5 +105,6 @@ function initConfig(pageList) {
 initConfig([
     //页面实际路径
     "index",
-    "calendar"
+    "calendar",
+    "addEvent"
 ])

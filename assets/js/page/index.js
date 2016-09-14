@@ -1,10 +1,11 @@
 require("../../css/page/index.less");
+var pageLoad = require("../common/pageLoad.js");
 var transCalendar = require("../vendor/LunarCalendar/transCalendar.js");
 var wx = require("../vendor/weChat/wxInit.js");
 var fuc = {
     config: {},
     init: function() {
-        this.pageLoad({backgroundColor: "#12101A"});
+        pageLoad({backgroundColor: "#12101A"});
         this.renderPage();
         this.changeBg();
         this.bindEvent();
