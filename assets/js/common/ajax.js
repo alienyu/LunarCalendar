@@ -167,6 +167,118 @@ var Ajax = {
                 }
             }
         })
+    },
+    //设置生日获取私人黄历
+    setBirthday: function(birthdayTime) {
+        var date = new Date();
+        var years = date.getFullYear(),
+            months = date.getMonth() + 1,
+            days = date.getDate();
+        var dateTime = years + "-" + months + "-" + days + " 08:00:00";
+        $.ajax({
+            type: "post",
+            url: "http://www.li-li.cn/llwx/user/setBirthday",
+            data: {
+                dateTime: dateTime,
+                birthday: birthdayTime
+            },
+            dataType: "json",
+            success: function (data) {
+                //console.log(data);
+                if (data.code == 0) {
+                    $('#loadingToast').fadeOut();//隐藏loading
+                    var data = data.data;
+                    $('.suitColor').html("");
+                    $('.suitMatter').html("");
+                    var suitColor = data.personal.type2.replace(/\,/g, "&nbsp;&nbsp;"),
+                        suitMatter = data.personal.type3.replace(/\,/g, "&nbsp;&nbsp;");
+                    if(!suitMatter){
+                        suitMatter = "诸事不宜";
+                    }
+                    var colorHtml = "<span>" + suitColor + "</span>",
+                        matterHtml = "<span>" + suitMatter + "</span>";
+                    $('.suitColor').append(colorHtml);
+                    $('.suitMatter').append(matterHtml);
+                    $('.alterBirthday').css("display","block");//修改生日显示
+                }else{
+                    $('#loadingToast').fadeOut();//隐藏loading
+                    var error = data.msg;
+                    $('.weui_dialog_bd').html(error);
+                    $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
+                        $('#dialog2').off('click').hide();
+                    });
+                }
+                if ($('.almanac').css("left") == "0px") {
+                    var almaHeight = parseInt($('.almanac').css('height'));
+                    $('.schedule').css('height', 40 + almaHeight + "px");
+                } else {
+                    var scheHeight = parseInt($('.scheduleList').css('height'));
+                    $('.schedule').css('height', 40 + scheHeight + "px");
+                }
+            }
+        })
+    },
+    //添加事件页面数据提交
+    eventAdd: function(name,tagName, startTime, endTime, tipType, tipTime, repeatType, location, remark) {
+        $.ajax({
+            type: "post",
+            url: "http://www.li-li.cn/llwx/event/add",
+            data: {
+                name: name,
+                tags:tagName,
+                startTime: startTime,
+                endTime: endTime,
+                tipType: tipType,
+                tipTime: tipTime,
+                repeatType: repeatType,
+                location: location,
+                remark: remark,
+            },
+            dataType: "json",
+            success: function (data) {
+                //console.log(data);
+                if (data.code == 0) {//提交成功
+                    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/calendar.html");
+                }else{//提交失败提醒错误信息
+                    var error = data.msg;
+                    $('#dialog2 .weui_dialog_bd').html(error);
+                    $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
+                        $('#dialog2').off('click').hide();
+                    });
+                }
+            }
+        })
+    },
+    //添加事件页面数据提交
+    eventAdd2: function(name,tagName,startTime, endTime, tipType, tipTime, repeatType, location, remark) {
+        $.ajax({
+            type: "post",
+            url: "http://www.li-li.cn/llwx/event/add",
+            data: {
+                name: name,
+                tags:tagName,
+                startTime: startTime,
+                endTime: endTime,
+                tipType: tipType,
+                tipTime: tipTime,
+                repeatType: repeatType,
+                location: location,
+                remark: remark,
+            },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.code == 0) {
+                    eventId = data.data;
+                }else{//提交失败提醒错误信息
+                    var error = data.msg;
+                    $('#dialog2 .weui_dialog_bd').html(error);
+                    $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
+                        $('#dialog2').off('click').hide();
+                    });
+                }
+            }
+        })
     }
 }
 

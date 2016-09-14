@@ -1,6 +1,8 @@
 require("../../css/page/calendar.less");
 var transCalendar = require("../vendor/LunarCalendar/transCalendar.js");
 var mobiScroll = require("../vendor/mobiScroll/mobiScroll.js");
+var Dom = require("../common/dom.js");
+var Ajax = require("../common/ajax.js");
 var Lunar = require("../common/lunar.js");
 //require("../vendor/weChat/wxInit.js");
 
@@ -40,13 +42,13 @@ var fuc = {
         this.otherHeight = screenHeight-toolbarHeight-wrapperHeight-titleHeight;
         //wxConfig(1);
         this.getUserInformation();//获取用户信息，若用户设置了生日，则可获取生日
-        Lunar.getEventOfMonth();//判断当前页面的时间中有没有事件，有事件的在下方加点
+        Ajax.getEventOfMonth();//判断当前页面的时间中有没有事件，有事件的在下方加点
         /*----------------------------------进入页面时，显示当天的事件列表和运势-------------------------------------------*/
         var theDay = $('.date_current').attr('id');
-        Lunar.getEventOfDay(theDay);//获取一天的事件
-        Lunar.getFortune(theDay);//获取当天的黄历
+        Ajax.getEventOfDay(theDay);//获取一天的事件
+        Ajax.getFortune(theDay);//获取当天的黄历
         /*--------------------------获取点击日期，显示当天的日程列表和运势--------------------------*/
-        Lunar.Calendar.clickDate();
+        Lunar.clickDate();
         this.selectBirthday = this.selectBirthdayDate('#birthday')
         this.selectBirthday.setVal(new Date("1990/01/01"));//选择生日
         var wrapper = document.getElementById('wrapper');
@@ -72,24 +74,6 @@ var fuc = {
                 }
             }
         });
-    },
-    /*-----------------------向左滑动时让schedule的高度等于黄历内容的高度------------------------*/
-    slideLeft: function() {
-        $('.scheBtn').removeClass('active');
-        $('.almaBtn').addClass('active');
-        $('.scheduleList').animate({"left": "-100%"}, 500);
-        $('.almanac').animate({"left": "0px"}, 500);
-        var almaHeight = parseInt($('.almanac').css('height'));
-        $('.schedule').css('height', 40 + almaHeight + "px");
-    },
-    /*--------------------向右滑动时让schedule的高度等于日程内容的高度-------------------------*/
-    slideRight: function() {
-        $('.scheBtn').addClass('active');
-        $('.almaBtn').removeClass('active');
-        $('.scheduleList').animate({left: "0px"}, 500);
-        $('.almanac').animate({left: "100%"}, 500);
-        var scheHeight = parseInt($('.scheduleList').css('height'));
-        $('.schedule').css('height', 40 + scheHeight + "px");
     },
     transDate: function(date) {
         var ca = new transCalendar();
@@ -129,7 +113,7 @@ var fuc = {
                 var selectedTime = inst._tempValue;//获取选择时间 yyyy-mm-dd
                 $('.alConBg').css("display", "none");
                 $('.content').css("display", "block");
-                Lunar.setBirthday(selectedTime);//将用户设置的生日传至后台
+                Ajax.setBirthday(selectedTime);//将用户设置的生日传至后台
                 that.config.birthday = selectedTime + "08:00:00";//保存用户设置的生日
                 var birthdayStr = selectedTime.replace(/\-/g,"-"),
                     birthdayArr = selectedTime.split("-");
@@ -141,7 +125,7 @@ var fuc = {
                 that.transDate(changeDate);
             },
             onCancel: function (event, inst) {
-                that.slideLeft();
+                Dom.slideLeft();
                 that.config.isGoodDay = false;
             }
         });
@@ -162,18 +146,18 @@ var fuc = {
         var scheHeight = parseInt($('.scheduleList').css('height'));
         $('.schedule').css("height", 40+scheHeight+"px");
         $('.scheBtn').on('tap', function (event) {
-            that.slideRight();
+            Dom.slideRight();
         });
         $('.almaBtn').on('tap', function (event) {
-            that.slideLeft();
+            Dom.slideLeft();
         });
         $('.scheduleList').on('swipeLeft', function (event) {
-            that.slideLeft();
+            Dom.slideLeft();
             event.preventDefault();
             return false;
         });
         $('.almanac').on('swipeRight', function (event) {
-            that.slideRight();
+            Dom.slideRight();
             event.preventDefault();
             return false;
         });
@@ -243,8 +227,8 @@ var fuc = {
 
         /*------------------点击吉日列表中的关闭按钮，列表隐藏，日历中所有日期恢复初始状态-----------------------*/
         $('.close').on('tap', function (event) {
-            selectWord = "";
-            var dateItem = Lunar.getDateList();
+            Lunar.selectWord = "";
+            var dateItem = Dom.getDateList();
             var wordItem = $('.luckyWord .word_item span');
             $('.lucky').animate({'bottom': "-265px"}, 500);
             for (var i = 0; i < dateItem.size(); i++) {
@@ -255,8 +239,8 @@ var fuc = {
             }
         });
         $('.close02').on('tap', function (event) {
-            that.config.selectWord = "";
-            var dateItem = Lunar.getDateList();
+            Lunar.selectWord = "";
+            var dateItem = Dom.getDateList();
             var wordItem = $('.lucky02 .word_item span');
             $('.lucky02').fadeOut("slow");
             for (var i = 0; i < dateItem.size(); i++) {
