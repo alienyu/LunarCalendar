@@ -4,7 +4,7 @@ var mobiScroll = require("../vendor/mobiScroll/mobiScroll.js");
 var Dom = require("../common/dom.js");
 var Ajax = require("../common/ajax.js");
 var Lunar = require("../common/lunar.js");
-//require("../vendor/weChat/wxInit.js");
+var wx = require("../vendor/weChat/wxInit.js");
 
 var fuc = {
     config: {
@@ -40,7 +40,7 @@ var fuc = {
             wrapperHeight = $('.wrapper').height(),
             titleHeight = $('.schedule h1').height();
         this.otherHeight = screenHeight-toolbarHeight-wrapperHeight-titleHeight;
-        //wxConfig(1);
+        wx.wxConfig(1);
         this.getUserInformation();//获取用户信息，若用户设置了生日，则可获取生日
         Ajax.getEventOfMonth();//判断当前页面的时间中有没有事件，有事件的在下方加点
         /*----------------------------------进入页面时，显示当天的事件列表和运势-------------------------------------------*/
