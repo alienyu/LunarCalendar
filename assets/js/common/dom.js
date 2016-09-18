@@ -1,4 +1,49 @@
+var transCalendar = require("../vendor/LunarCalendar/transCalendar.js");
 var Dom = {
+    transWeek: function(day) {
+        var week = day.getDay();
+        switch (week){
+            case 0:
+                week = "星期日";
+                break;
+            case 1:
+                week = "星期一";
+                break;
+            case 2:
+                week = "星期二";
+                break;
+            case 3:
+                week = "星期三";
+                break;
+            case 4:
+                week = "星期四";
+                break;
+            case 5:
+                week = "星期五";
+                break;
+            case 6:
+                week = "星期六";
+                break;
+        }
+        return week;
+    },
+    transDate: function(date, showWeek) {
+        var ca = new transCalendar();
+        var dateArr = date.split(" ");
+        var dateTimeArr = dateArr[0].split("-");
+        var theDate = new Date(dateArr[0]);
+        var theNl = ca.getls(theDate);
+        var theNlDate = '',week="";
+        if(showWeek){
+            week = this.transWeek(theDate);
+        }
+        if(dateArr[1]){//若时间格式为 yyyy-mm-dd hh:ii
+            theNlDate =dateTimeArr[0]+"年"+theNl[2]+"月"+theNl[3]+"&nbsp;&nbsp;"+week+"&nbsp;&nbsp;"+dateArr[1];
+        }else{//时间格式为 yyyy-mm-dd
+            theNlDate = dateTimeArr[0]+"年"+theNl[2]+"月"+theNl[3];
+        }
+        $('.mbsc-fr-hdr').html(theNlDate);
+    },
     getDateList: function() {
         var dateItem = "";
         var theDateList = $('.date_slide .date_list');

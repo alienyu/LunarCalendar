@@ -1,6 +1,5 @@
 require("../../css/page/calendar.less");
 var pageLoad = require("../common/pageLoad.js");
-var transCalendar = require("../vendor/LunarCalendar/transCalendar.js");
 var mobiScroll = require("../vendor/mobiScroll/mobiScroll.js");
 var Dom = require("../common/dom.js");
 var Ajax = require("../common/ajax.js");
@@ -58,20 +57,6 @@ var fuc = {
             }
         });
     },
-    transDate: function(date) {
-        var ca = new transCalendar();
-        var dateArr = date.split(" ");
-        var dateTimeArr = dateArr[0].split("-");
-        var theDate = new Date(dateArr[0]);
-        var theNl = ca.getls(theDate);
-        var theNlDate = '';
-        if (dateArr[1]) {
-            theNlDate = dateTimeArr[0] + "年" + theNl[2] + "月" + theNl[3] + " " + dateArr[1];
-        } else {
-            theNlDate = dateTimeArr[0] + "年" + theNl[2] + "月" + theNl[3];
-        }
-        $('.mbsc-fr-hdr').html(theNlDate);
-    },
     selectBirthdayDate: function(obj) {
         var that = this;
         var selb = mobiScroll.date(obj, {
@@ -84,7 +69,7 @@ var fuc = {
             readonly: false,
             onShow: function (event, inst) {
                 var theDate = inst._tempValue;
-                that.transDate(theDate);
+                Dom.transDate(theDate);
             },
             onSet: function (event, inst) {
                 if(that.config.isGoodDay){//跳转吉日
@@ -105,7 +90,7 @@ var fuc = {
             },
             onChange: function (event, inst) {
                 var changeDate = inst._tempValue;
-                that.transDate(changeDate);
+                Dom.transDate(changeDate);
             },
             onCancel: function (event, inst) {
                 Dom.slideLeft();
