@@ -1,0 +1,130 @@
+@import "../common/common.less";
+
+body{
+    background: #12101A;
+}
+html{font-size:60px;}
+@media only screen and (min-width:750px){html{font-size:70px !important;}}
+.monthStart{
+    margin-left: 80px;
+    /*height:30px;*/
+    line-height:30px;
+    background: transparent;
+}
+.singleCon{
+    width:100%;
+    min-height: 100px;
+    overflow: hidden;
+    position: relative;
+    display: table-row;
+}
+.singleCon .left{
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    height:100px;
+    width:10%;
+    background: #12101A;
+}
+.singleCon .leftCon{
+    width:80px;
+    height:72px;
+    text-align: center;
+    z-index: 999;
+    vertical-align: middle;
+}
+.singleCon .left .day{
+    height:36px;
+}
+.singleCon .left .week,.singleCon .left .nlDate{
+    height:18px;
+    line-height:18px;
+}
+.singleCon .right{
+    min-height: 100px;
+    width:100%;
+    background: #66CCCC;
+    display: table-cell;
+    vertical-align: middle;
+    padding: 4%;
+    border-bottom: 1px solid #12101A;
+    position: relative;
+}
+.singleCon .right .list{
+    padding-bottom: 5px;
+    height: 20px;
+    line-height: 20px;
+}
+.singleCon .right .list .time{
+    display: inline-block;
+    width: 25%;
+    height: 100%;
+    float: left;
+    text-align: right;
+    margin-right: 5%;
+}
+.singleCon .right .list .matter{
+    float: left;
+    width:70%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.singleCon .right .eventList{
+    width:80%;
+}
+.singleCon .right .countDown{
+    position: absolute;
+    top:0;
+    right:0;
+    width:100px;
+    height:100%;
+    text-align: center;
+}
+.singleCon .right .countDown .con{
+    position: absolute;
+    top:50%;
+    left:0;
+    width:100%;
+    height:60px;
+    margin-top: -30px;
+}
+.singleCon .right .countDown .countDownTime{
+    margin-top: 5px;
+    font-size: 24px;
+}
+.containerShadow{
+    position: absolute;
+    top:0px;
+    left:0px;
+    width:100%;
+    height:100%;
+    display: none;
+    z-index: 999;
+    background: #66cccc;
+}
+.containerShadow .imgCon{
+    width:auto;
+    height:80px;
+    margin: 0 auto;
+    margin-top: 20%;
+    background: url("../../imgs/page/schedule/icon-NoContent.png") no-repeat center center;
+    -webkit-background-size:contain;
+    background-size:contain;
+}
+.containerShadow a{
+    display: block;
+    width:50%;
+    margin: 0 auto;
+    height:0.46rem;
+    line-height:0.46rem;
+    text-align: center;;
+}
+.containerShadow p{
+    width:100%;
+    height:0.6rem;
+    line-height:0.6rem;
+    color: #fff;
+    text-align: center;
+    font-size: 0.24rem;
+}

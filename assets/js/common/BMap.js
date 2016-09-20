@@ -29,3 +29,5 @@ ac.addEventListener("onconfirm", function (e) {
     myValue = _value.province + _value.city + _value.district + _value.street + _value.business;
     G("searchResultPanel").innerHTML = "onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
 });
+
+module.exports = ac;

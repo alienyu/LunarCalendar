@@ -106,5 +106,7 @@ initConfig([
     //页面实际路径
     "index",
     "calendar",
-    "addEvent"
+    "addEvent",
+    "showEvent",
+    "schedule"
 ])

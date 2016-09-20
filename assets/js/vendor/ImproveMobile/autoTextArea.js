@@ -4,7 +4,7 @@
  * @param                {Number}                设置光标与输入框保持的距离(默认0)
  * @param                {Number}                设置最大高度(可选)
  */
-module.exports = function (elem, extra, maxHeight) {
+function autoTextarea(elem, extra, maxHeight) {
     extra = extra || 0;
     var isFirefox = !!document.getBoxObjectFor || 'mozInnerScreenX' in window,
         isOpera = !!window.opera && !!window.opera.toString().indexOf('Opera'),
@@ -58,3 +58,10 @@ module.exports = function (elem, extra, maxHeight) {
     addEvent('focus', change);
     change();
 };
+
+var site = document.getElementById("site"),
+    remark = document.getElementById("remarks"),
+    eventTitle = document.getElementById("eventTitle");
+autoTextarea(site);// 调用
+autoTextarea(remark);
+autoTextarea(eventTitle);

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>历历</title>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+</head>
+<body>
+<div class="eventCon">
+    <div class="eventTitle">
+        <textarea class="eventName cff textArea showEventName" rows="1" id="eventTitle"></textarea>
+    </div>
+    <div class="line"></div>
+    <div class="time">
+        <h1 class="title c00 opa2">时间</h1>
+        <div class="startTime cff fs26"></div>
+        <input type="text" id="startTime">
+        <div class="to c00 opa2">至</div>
+        <div class="endTime cff fs26"></div>
+        <input type="text" id="endTime">
+    </div>
+    <div class="line"></div>
+    <div class="remind">
+        <h1 class="title c00 opa2">提醒</h1>
+        <div class="remindConStart cff fs26">提醒类型</div>
+        <div class="remindCon fs26">
+            <div class="choice cff" id="remind">
+                <span class="active">不提醒</span>
+                <span>前一天</span>
+                <span>当天</span>
+                <span>指定时间</span>
+            </div>
+        </div>
+        <div class="remind_time cff fs26">
+            <span class="remindTime">2016年8月15日 星期一 16:00</span>
+            <input type="text" id='remindTime'>
+        </div>
+    </div>
+    <div class="line"></div>
+    <div class="others">
+        <div class="othersCon">
+            <div class="repetition">
+                <h1 class="title c00 opa2">重复</h1>
+                <div class="repetitionConStart cff fs26">提醒类型</div>
+                <div class="repetitionCon fs26">
+                    <div class="choice cff" id="repetition">
+                        <span class="active">不重复</span>
+                        <span>每天</span>
+                        <span>每周</span>
+                        <span>每工作日</span>
+                        <span>每月</span>
+                        <span>每年</span>
+                    </div>
+                </div>
+            </div>
+            <div class="line"></div>
+            <div class="site">
+                <h1 class="title c00 opa2">地点</h1>
+                <textarea name="site" id="site" class="textArea cff showSite fs26" placeholder="点击添加" rows="1"></textarea>
+                <div id="searchResultPanel"
+                     style="border:1px solid #c0c0c0;width: 300px;height: auto;display: none"></div>
+            </div>
+            <div class="line"></div>
+            <div class="remarks">
+                <h1 class="title c00 opa2">备注</h1>
+                <textarea name="remarks" id="remarks" class="textArea cff showRemarks fs26" placeholder="点击添加"
+                          rows="1"></textarea>
+            </div>
+            <div class="line"></div>
+            <div class="participant">
+                <h1 class="title c00 opa2">人数&nbsp;<span class="joinerCount"></span>&nbsp;人</h1>
+                <!--<p class="subtitle">接受邀请</p>-->
+                <div class="acceptPeople"></div>
+            </div>
+        </div>
+    </div>
+    <div class="line"></div>
+    <a class="share cff fs26" href="javascript:;">@ 微信好友共享事件</a>
+    <div class="blank"></div>
+</div>
+<div class="bottom fs26">
+    <a href="javascript:;" class="delete cff">删除</a>
+    <a href="javascript:;" class="redact cff">编辑</a>
+</div>
+<div class="bottom2 fs26">
+    <a href="javascript:;" class="cancel cff">取消</a>
+    <a href="javascript:;" class="finished cff">完成</a>
+</div>
+<div class="bottom3 fs26">
+    <a href="javascript:;" class="join cff">加入事件</a>
+</div>
+<div class="bottom4 fs26">
+    <a href="javascript:;" class="cff exit">退出事件</a>
+</div>
+<!--参与者列表模板-->
+<script type="text/x-event" id="joinerListTemplate">
+        <span class="list">
+                <div><img src="{{img}}" /></div>
+                <p>{{joinerName}}</p>
+        </span>
+</script>
+<!--编辑事件完成后保存成功弹框-->
+<div id="toast" style="display: none;">
+    <div class="weui_mask_transparent"></div>
+    <div class="weui_toast">
+        <i class="weui_icon_toast"></i>
+        <p class="weui_toast_content">已完成</p>
+    </div>
+</div>
+<!--编辑完成后保存失败弹框-->
+<div class="weui_dialog_confirm" id="dialog2" style="display: none;">
+    <div class="weui_mask"></div>
+    <div class="weui_dialog">
+        <div class="weui_dialog_hd">
+            <strong class="weui_dialog_title">温馨提示</strong>
+        </div>
+        <div class="weui_dialog_bd">修改失败，请稍后重试</div>
+        <div class="weui_dialog_ft">
+            <a href="javascript:;" class="weui_btn_dialog primary">确定</a>
+        </div>
+    </div>
+</div>
+<!--点击删除按钮弹出提示框-->
+<div class="weui_dialog_confirm" id="dialog1" style="display: none;">
+    <div class="weui_mask"></div>
+    <div class="weui_dialog">
+        <div class="weui_dialog_hd">
+            <strong class="weui_dialog_title">温馨提示</strong>
+        </div>
+        <div class="weui_dialog_bd">确认要删除该事件吗？</div>
+        <div class="weui_dialog_ft">
+            <a href="javascript:;" class="weui_btn_dialog default" id="cancel">取消</a>
+            <a href="javascript:;" class="weui_btn_dialog primary" id="confirm">确定</a>
+        </div>
+    </div>
+</div>
+<!--提示用户点击右上角实现分享功能-->
+<div class="shareShadow" id="shareShadow">
+    <div class="shadowImg">
+        <img src="../../assets/imgs/page/addEvent/share-tips.png" alt="">
+    </div>
+</div>
+<!--弹出二维码-->
+<div class="wxQrcode">
+    <span class="wxQrcodeClose"></span>
+    <div class="qrcodeImgCon">
+        <div class="qrcodeImg"></div>
+        <p>长按二维码关注历历<br/>即可加入日程</p>
+    </div>
+</div>
+<!--事件已不存在，则弹出提示-->
+<div class="eventNone" id="eventNone">
+    <div class="imgCon"></div>
+    <p>事件不存在或已被删除</p>
+</div>
+<!--数据加载时的loading-->
+<div id="loadingToast" class="weui_loading_toast" style="display:none;">
+    <div class="weui_mask_transparent"></div>
+    <div class="weui_toast">
+        <div class="ll-loading" style="top:40%;">
+            <div class="ll-load-inner">
+                <div class="ll-load-container">
+                    <div class="ll-load-scale-multiple la-2x">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div><!-- end la-2x -->
+                </div><!-- end ll-load-container -->
+            </div><!-- end ll-load-inner -->
+            <div class="ll-load-logo">
+                <span class="ll-logo-1"></span>
+                <span class="ll-logo-2"></span>
+                <span class="ll-logo-3"></span>
+            </div><!-- end ll-loading -->
+        </div><!-- end ll-loading -->
+        <p class="weui_toast_content">数据加载中</p>
+    </div>
+</div>
+<script src="http://api.map.baidu.com/api?v=2.0&ak=Nv4xifhhDjKpB1DP6uDwd3cNbHeH2PaV"></script>
+</body>
+</html>

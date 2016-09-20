@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>历历-日程</title>
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="full-screen" content="yes">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+</head>
+<body>
+<div class="container">
+    <div class="listCon"></div>
+</div>
+<div class="containerShadow" style="display: none;">
+    <div class="imgCon"></div>
+    <a href="javascript:;" class="addEvent">立即添加事件</a>
+    <p>做一个井井有条的人</p>
+</div>
+<!--模板-->
+<script type="text/x-list" id="eventListTemplate">
+        <p class="monthStart cff">{{month}}</p>
+         <div class="singleCon" data-date="{{date}}">
+            <div class="left cff08">
+                <div class="leftCon">
+                    <p class="day fs30">{{day}}</p>
+                    <p class="week fs18">{{week}}</p>
+                    <p class="nlDate fs18">{{nlDate}}</p>
+                </div>
+            </div>
+            <div class="right cff">
+                <div class="eventList"></div>
+            </div>
+        </div>
+    </script>
+<!--事件列表模板-->
+<script type="text/x-event" id="dayEventListTemplate">
+        <p class="list" id="{{eventId}}">
+            <span class="time">{{time}}</span>
+            <span class="matter">{{name}}</span>
+        </p>
+</script>
+</body>
+</html>

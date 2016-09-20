@@ -1,5 +1,59 @@
 var transCalendar = require("../vendor/LunarCalendar/transCalendar.js");
 var Dom = {
+    getRequest: function(name) {
+        var url = window.location.search; //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            strs = str.split("&");
+            for(var i = 0; i < strs.length; i ++) {
+                //就是这句的问题
+                theRequest[strs[i].split("=")[0]]=decodeURI(strs[i].split("=")[1]);
+                //之前用了unescape()
+                //才会出现乱码
+            }
+        }
+        return theRequest[name];
+    },
+    /*---------------获取时间中的年月日部分--------------------*/
+    getDate: function(date) {
+        var dateArr = date.split(" ");
+        return dateArr[0];
+    },
+    /*--------------------------得到事件时间中去掉年月日和秒的时间------------------------------*/
+    getHourMinute: function(date) {
+        var dateArr = date.split(" ");
+        var timeArr = dateArr[1].split(":");
+        var time = timeArr[0]+":"+timeArr[1];
+        return time;
+    },
+    /*------------------------比较时间是否相等-------------------------*/
+    compareDate: function(time) {
+        var today = new Date();
+        var theYear = today.getFullYear(),
+            theMonth = today.getMonth()+ 1,
+            theDay = today.getDate();
+        var timeArr = time.split("-");
+        if(theYear == timeArr[0] && theMonth == parseInt(timeArr[1]) && theDay == parseInt(timeArr[2])){
+            return true;
+        }else{
+            return false;
+        }
+    },
+    /*--------------------处理事件的日期----------------------*/
+    tranDayDate: function(date) {
+        var dateArr = date.split(" ");
+        var timeArr = dateArr[0].split("-"),
+            time = dateArr[0].replace(/\-/g,"/");
+        var theDate = new Date(time);
+        var ca = new transCalendar(),
+            theDay = timeArr[2];
+        var theNlArr = ca.getls(theDate);
+        var theWeek = transWeek(theDate);
+        var nlDate = theNlArr[2]+"月"+theNlArr[3],
+            month = timeArr[0]+"年"+timeArr[1]+"月";
+        return [theDay,theWeek,nlDate,month,dateArr[0]];//返回当天是几日、星期几、农历月日、年月、没有时分秒的日期
+    },
     transWeek: function(day) {
         var week = day.getDay();
         switch (week){

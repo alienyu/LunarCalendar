@@ -1,7 +1,6 @@
 require("../../css/page/addEvent.less");
 var pageLoad = require("../common/pageLoad.js");
 var touchSlider = require("../vendor/ImproveMobile/touchSlider.js");
-//require("http://api.map.baidu.com/api?v=2.0&ak=Nv4xifhhDjKpB1DP6uDwd3cNbHeH2PaV");
 require("../vendor/ImproveMobile/zeptoSlider.js");
 require("../common/BMap.js");
 var Dom = require("../common/dom.js");
@@ -13,9 +12,6 @@ var autoTextArea = require("../vendor/ImproveMobile/autoTextArea.js");
 
 var fuc = {
     config: {
-        site: document.getElementById("site"),
-        remark: document.getElementById("remarks"),
-        eventTitle: document.getElementById("eventTitle"),
         eventId: "",
         nickName: "",
         tagName: "",
@@ -24,10 +20,9 @@ var fuc = {
 },
     init: function() {
         pageLoad({backgroundColor: "#66cccc"});
-        this.config.time = this.getRequest("date");
+        this.config.time = Dom.getRequest("date");
         this.config.timeArr = this.transTime(this.config.time);
         this.rem();
-        this.hackTextArea();
         this.renderPage();
         this.addRemind();
         this.bindEvent();
@@ -90,11 +85,6 @@ var fuc = {
         });
         return selb;
     },
-    hackTextArea: function() {
-        autoTextArea(this.config.site);// 调用
-        autoTextArea(this.config.remark);
-        autoTextArea(this.config.eventTitle);
-    },
     shareShadow: function() {
         var shareShadow = $('.shareShadow');
         shareShadow.css("display","block");//显示分享提示层
@@ -105,22 +95,6 @@ var fuc = {
         share.addEventListener('touchmove', function (e) {
             e.preventDefault();
         });
-    },
-    //url处理
-    getRequest: function(name) {
-        var url = window.location.search; //获取url中"?"符后的字串
-        var theRequest = new Object();
-        if (url.indexOf("?") != -1) {
-            var str = url.substr(1);
-            strs = str.split("&");
-            for(var i = 0; i < strs.length; i ++) {
-                //就是这句的问题
-                theRequest[strs[i].split("=")[0]]=decodeURI(strs[i].split("=")[1]);
-                //之前用了unescape()
-                //才会出现乱码
-            }
-        }
-        return theRequest[name];
     },
     /*----------------------若日期中的数组小于10，则在前面加0-------------------*/
     tf: function(time) {
