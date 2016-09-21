@@ -95,9 +95,9 @@ var Ajax = {
 
                         }
                         $('.scheduleCon').append(html);
-                        $('.list').hammer().on('tap', function (event) {//点击日程跳转至详情页
+                        $('.list').on('tap', function () {//点击日程跳转至详情页
                             var eventId = $(this).attr('id');
-                            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + eventId);
+                            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/showEvent.html?eventId=" + eventId);
                         });
                     } else {
                         $('.scheduleBg').css("display", "block");
@@ -238,7 +238,7 @@ var Ajax = {
             success: function (data) {
                 //console.log(data);
                 if (data.code == 0) {//提交成功
-                    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/calendar.html");
+                    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/calendar.html");
                 }else{//提交失败提醒错误信息
                     var error = data.msg;
                     $('#dialog2 .weui_dialog_bd').html(error);

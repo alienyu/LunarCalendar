@@ -13,17 +13,20 @@
 <div class="eventCon">
     <div class="eventTitle">
         <textarea class="eventName cff textArea showEventName" rows="1" id="eventTitle"></textarea>
+        <div class="line"></div>
     </div>
-    <div class="line"></div>
     <div class="time">
         <h1 class="title c00 opa2">时间</h1>
         <div class="startTime cff fs26"></div>
         <input type="text" id="startTime">
-        <div class="to c00 opa2">至</div>
-        <div class="endTime cff fs26"></div>
-        <input type="text" id="endTime">
+        <p class="opa5 cff Addendtime">点击添加结束时间</p>
+        <div class="endTimeCon">
+            <div class="to c00 opa2">至</div>
+            <div class="endTime cff fs26"></div>
+            <input type="text" id="endTime">
+        </div>
+        <div class="line"></div>
     </div>
-    <div class="line"></div>
     <div class="remind">
         <h1 class="title c00 opa2">提醒</h1>
         <div class="remindConStart cff fs26">提醒类型</div>
@@ -39,8 +42,8 @@
             <span class="remindTime">2016年8月15日 星期一 16:00</span>
             <input type="text" id='remindTime'>
         </div>
+        <div class="line"></div>
     </div>
-    <div class="line"></div>
     <div class="others">
         <div class="othersCon">
             <div class="repetition">
@@ -56,29 +59,30 @@
                         <span>每年</span>
                     </div>
                 </div>
+                <div class="line"></div>
             </div>
-            <div class="line"></div>
             <div class="site">
                 <h1 class="title c00 opa2">地点</h1>
                 <textarea name="site" id="site" class="textArea cff showSite fs26" placeholder="点击添加" rows="1"></textarea>
                 <div id="searchResultPanel"
                      style="border:1px solid #c0c0c0;width: 300px;height: auto;display: none"></div>
+                <div class="line"></div>
             </div>
-            <div class="line"></div>
             <div class="remarks">
                 <h1 class="title c00 opa2">备注</h1>
                 <textarea name="remarks" id="remarks" class="textArea cff showRemarks fs26" placeholder="点击添加"
                           rows="1"></textarea>
+                <div class="line"></div>
             </div>
-            <div class="line"></div>
             <div class="participant">
                 <h1 class="title c00 opa2">人数&nbsp;<span class="joinerCount"></span>&nbsp;人</h1>
                 <!--<p class="subtitle">接受邀请</p>-->
                 <div class="acceptPeople"></div>
+                <p class="showAll cff">显示全部...</p>
+                <div class="line"></div>
             </div>
         </div>
     </div>
-    <div class="line"></div>
     <a class="share cff fs26" href="javascript:;">@ 微信好友共享事件</a>
     <div class="blank"></div>
 </div>
@@ -99,7 +103,7 @@
 <!--参与者列表模板-->
 <script type="text/x-event" id="joinerListTemplate">
         <span class="list">
-                <div><img src="{{img}}" /></div>
+                <div><img class="scrollLoading" data-url="{{dataImg}}" src="{{img}}" /></div>
                 <p>{{joinerName}}</p>
         </span>
 </script>
@@ -178,6 +182,12 @@
             </div><!-- end ll-loading -->
         </div><!-- end ll-loading -->
         <p class="weui_toast_content">数据加载中</p>
+    </div>
+</div>
+<!--横屏-->
+<div id="orientLayer" class="mod-orient-layer">
+    <div class="mod-orient-layer__content"> <i class="icon mod-orient-layer__icon-orient"></i>
+        <div class="mod-orient-layer__desc">为了更好的体验，请使用竖屏浏览</div>
     </div>
 </div>
 <script src="http://api.map.baidu.com/api?v=2.0&ak=Nv4xifhhDjKpB1DP6uDwd3cNbHeH2PaV"></script>

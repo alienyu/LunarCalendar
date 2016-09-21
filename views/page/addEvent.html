@@ -26,9 +26,12 @@
         <h1 class="title c00 opa2">时间</h1>
         <div class="startTime cff fs26">2016年8月15日 星期一 14:00</div>
         <input type="text" id="startTime">
-        <div class="to c00 opa2">至</div>
-        <div class="endTime cff fs26">2016年8月15日 星期一 14:00</div>
-        <input type="text" id="endTime">
+        <p class="opa5 cff Addendtime">点击添加结束时间</p>
+        <div class="endTimeCon">
+            <div class="to c00 opa2">至</div>
+            <div class="endTime cff fs26">2016年8月15日 星期一 14:00</div>
+            <input type="text" id="endTime">
+        </div>
     </div>
     <div class="line"></div>
     <div class="remind">
@@ -144,6 +147,18 @@
 <div class="shareShadow" id="shareShadow">
     <div class="shadowImg">
         <img src="../../assets/imgs/page/addEvent/share-tips.png" alt="">
+    </div>
+    <div class="qrcodeImgBox">
+        <div class="qrcodeImgCon">
+            <div class="qrcodeImg"></div>
+            <p>扫描二维码也可加入事件</p>
+        </div>
+    </div>
+</div>
+<!--横屏-->
+<div id="orientLayer" class="mod-orient-layer">
+    <div class="mod-orient-layer__content"><i class="icon mod-orient-layer__icon-orient"></i>
+        <div class="mod-orient-layer__desc">为了更好的体验，请使用竖屏浏览</div>
     </div>
 </div>
 <script src="http://api.map.baidu.com/api?v=2.0&ak=Nv4xifhhDjKpB1DP6uDwd3cNbHeH2PaV"></script>

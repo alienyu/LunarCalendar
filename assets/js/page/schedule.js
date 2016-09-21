@@ -146,11 +146,12 @@ var fuc = {
             var today = new Date();
             var dateCurrent = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate();
             $('body').html("").css("background", "#66cccc");
-            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/addEvent.html?date=" + dateCurrent);
+            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/addEvent.html?date=" + dateCurrent);
             e.preventDefault();
         });
     },
     setView: function(scheduleData,template,template2) {
+        var that = this;
         var curTime="";
         $('.listCon').html("");
         for(var i=0;i<scheduleData.length;i++){
@@ -163,18 +164,37 @@ var fuc = {
             }
             curTime=timeArr[3];
             $('.listCon').append(html);
+            var joinerNum,user;
             for(var j=0;j<scheduleData[i].events.length;j++){
-                eventList += template2.replace(/{{eventId}}/g,scheduleData[i].events[j].eventId).replace(/{{name}}/g,scheduleData[i].events[j].name).replace(/{{time}}/g,getHourMinute(scheduleData[i].events[j].startTime));
+                if(scheduleData[i].events[j].isOwner){
+                    if(scheduleData[i].events[j].joiners[0]){
+                        joinerNum = parseInt(scheduleData[i].events[j].joiner.length)+1;
+                        user = scheduleData[i].events[j].joiners[0].nickName;
+                        eventList += that.config.template2.replace(/{{eventId}}/g,scheduleData[i].events[j].event.eventId).replace(/{{name}}/g,scheduleData[i].events[j].event.name).replace(/{{time}}/g,getHourMinute(scheduleData[i].events[j].event.startTime)).replace(/{{count}}/g,"<span>"+joinerNum+"</span><span>人</span>").replace(/{{user}}/g,"@"+user);
+                    }else{
+                        eventList += that.config.template2.replace(/{{eventId}}/g,scheduleData[i].events[j].event.eventId).replace(/{{name}}/g,scheduleData[i].events[j].event.name).replace(/{{time}}/g,getHourMinute(scheduleData[i].events[j].event.startTime)).replace(/{{count}}/g,"").replace(/{{user}}/g,"");
+                    }
+                }else{
+                    joinerNum = parseInt(scheduleData[i].events[j].joiner.length)+1;
+                    user=scheduleData[i].events[j].owner.nickName;
+                    eventList += that.config.template2.replace(/{{eventId}}/g,scheduleData[i].events[j].event.eventId).replace(/{{name}}/g,scheduleData[i].events[j].event.name).replace(/{{time}}/g,getHourMinute(scheduleData[i].events[j].event.startTime)).replace(/{{count}}/g,"<span>"+joinerNum+"</span><span>人</span>").replace(/{{user}}/g,"#"+user);
+                }
             }
             $('.eventList').eq(i).append(eventList);
+            if($('.list .num').html()=="0"){
+                $(this).parent().css("display","none");
+            }
             var listDate = $('.singleCon').eq(i).attr("data-date");
             if(Dom.compareDate(listDate)){
                 $('.singleCon .left').eq(i).css("color","#66cccc");//改变列表中当天事件列表的时间颜色
             }
+            if(Dom.smallerDate(listDate)){//已过期事件添加透明度
+                $('.singleCon').eq(i).addClass("opa8");
+            }
         }
         $('.singleCon .right .eventList .list').on("tap", function(){//点击事件跳转至事件详情页
             var eventId = $(this).attr("id");
-            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + eventId);
+            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/showEvent.html?eventId=" + eventId);
         })
     }
 }

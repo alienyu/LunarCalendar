@@ -1,130 +1,33 @@
 @import "../common/common.less";
 
-body{
-    background: #12101A;
+html { font-size: 60px; }
+@media only screen and (min-width: 750px) {
+    html {
+        font-size: 70px !important;
+    }
 }
-html{font-size:60px;}
-@media only screen and (min-width:750px){html{font-size:70px !important;}}
-.monthStart{
-    margin-left: 80px;
-    /*height:30px;*/
-    line-height:30px;
-    background: transparent;
+body { background: #12101A; font-size: 0.22rem; }
+.container,.listCon{  min-height:100%;}
+.monthStart { margin-left: 60px; line-height: 30px; background: transparent; }
+.singleCon { width: 100%;  overflow: hidden; position: relative;/*display: table-row;*/
 }
-.singleCon{
-    width:100%;
-    min-height: 100px;
-    overflow: hidden;
-    position: relative;
-    display: table-row;
-}
-.singleCon .left{
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-    height:100px;
-    width:10%;
-    background: #12101A;
-}
-.singleCon .leftCon{
-    width:80px;
-    height:72px;
-    text-align: center;
-    z-index: 999;
-    vertical-align: middle;
-}
-.singleCon .left .day{
-    height:36px;
-}
-.singleCon .left .week,.singleCon .left .nlDate{
-    height:18px;
-    line-height:18px;
-}
-.singleCon .right{
-    min-height: 100px;
-    width:100%;
-    background: #66CCCC;
-    display: table-cell;
-    vertical-align: middle;
-    padding: 4%;
-    border-bottom: 1px solid #12101A;
-    position: relative;
-}
-.singleCon .right .list{
-    padding-bottom: 5px;
-    height: 20px;
-    line-height: 20px;
-}
-.singleCon .right .list .time{
-    display: inline-block;
-    width: 25%;
-    height: 100%;
-    float: left;
-    text-align: right;
-    margin-right: 5%;
-}
-.singleCon .right .list .matter{
-    float: left;
-    width:70%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-.singleCon .right .eventList{
-    width:80%;
-}
-.singleCon .right .countDown{
-    position: absolute;
-    top:0;
-    right:0;
-    width:100px;
-    height:100%;
-    text-align: center;
-}
-.singleCon .right .countDown .con{
-    position: absolute;
-    top:50%;
-    left:0;
-    width:100%;
-    height:60px;
-    margin-top: -30px;
-}
-.singleCon .right .countDown .countDownTime{
-    margin-top: 5px;
-    font-size: 24px;
-}
-.containerShadow{
-    position: absolute;
-    top:0px;
-    left:0px;
-    width:100%;
-    height:100%;
-    display: none;
-    z-index: 999;
-    background: #66cccc;
-}
-.containerShadow .imgCon{
-    width:auto;
-    height:80px;
-    margin: 0 auto;
-    margin-top: 20%;
-    background: url("../../imgs/page/schedule/icon-NoContent.png") no-repeat center center;
-    -webkit-background-size:contain;
-    background-size:contain;
-}
-.containerShadow a{
-    display: block;
-    width:50%;
-    margin: 0 auto;
-    height:0.46rem;
-    line-height:0.46rem;
-    text-align: center;;
-}
-.containerShadow p{
-    width:100%;
-    height:0.6rem;
-    line-height:0.6rem;
-    color: #fff;
-    text-align: center;
-    font-size: 0.24rem;
-}
+.singleCon .left { display: table-cell; text-align: center; vertical-align: middle;  background: #12101A; }
+.singleCon .leftCon { width: 50px; height: 64px; text-align: center; z-index: 999; vertical-align: middle; }
+.singleCon .left .day { }
+.singleCon .left .week, .singleCon .left .nlDate { height: 12px; font-size: 8px; overflow: hidden}
+.singleCon .right { min-height: 90px; background: #66CCCC; display: table-cell; vertical-align: middle; width: 100%; border-bottom: 1px solid #12101A; position: relative; }
+.eventList{width:100%; overflow:hidden; position:relative}
+.singleCon .right .list { height:35px; line-height:35px;  border-top: 1px solid #5cb7b7; border-bottom:1px solid #5cb7b7; margin-top:-1px; position:relative;}
+.right .list:first-child,.right .list:last-child { border: none; }
+
+.singleCon .right .list .time {display: inline-block; position:absolute; left:10px;}
+.singleCon .right .list .matter {height:35px; overflow: hidden; display:block; margin:0 80px 0 50px}
+.singleCon .right .list .num {display: inline-block; height:35px; overflow: hidden;padding-right:5px; float:right; }
+.singleCon .right .list .partner { max-width:40px; height:35px; overflow: hidden; display:inline-block; float:right;  position:relative; margin-right:5px}
+.list-right .num span{ position:relative; display:inline-block;  max-width: 26px; text-align: right; overflow: hidden;  white-space:nowrap;  text-overflow: ellipsis;}
+.list-right{position:absolute; right:0; top:0; display:block; width:100px; height:30px; overflow:hidden}
+
+.singleCon .right .list:active{background: rgba(0,0,0,0.1);}
+.singleCon .right .list:active *:after{display: none}
+.singleCon .right .list .partner:after{width: 30px;content:""; position:absolute; top:1px; right:80px; height: 33px; background-image: linear-gradient(left, rgba(102, 204, 204, 0) 0%, #66cccc 70%, #66cccc 100%);  background-image: -webkit-linear-gradient(left, rgba(102, 204, 204, 0) 0%, #66cccc 70%, #66cccc 100%)}
+.singleCon .right .list .partner:after{right:0; width: 15px;}

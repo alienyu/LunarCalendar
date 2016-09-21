@@ -9,7 +9,8 @@ var wx = require("../vendor/weChat/wxInit.js");
 var fuc = {
     config: {
         birthday: "",
-        isGoodDay: false
+        isGoodDay: false,
+        screenWidth :$(document.body).width()//获取屏幕宽度
     },
     init: function() {
         pageLoad({backgroundColor: "#12101A"});
@@ -39,18 +40,19 @@ var fuc = {
         });
     },
     getUserInformation: function() {
+        var that=this;
         $.ajax({
             type: "get",
             url: "http://www.li-li.cn/llwx/user/detail",
             dataType: "json",
             success: function (data) {
                 if (data.code == 0) {
-                    birthday = data.data.birthday;
-                    if (birthday != null && birthday != "") {
-                        var birthdayArr = birthday.split(" ");
+                    that.config.birthday = data.data.birthday;
+                    if (that.config.birthday != null && that.config.birthday != "") {
+                        var birthdayArr = that.config.birthday.split(" ");
                         var birthdayStr = birthdayArr[0].replace(/\-/g, "/"),
                             birthdayDateArr = birthdayArr[0].split("-");
-                        selectBirthdayDate('#alterBirthday').setVal(new Date(birthdayStr));
+                        that.selectBirthdayDate('#alterBirthday').setVal(new Date(birthdayStr));
                         $('.birthday').html("（"+birthdayDateArr[1]+"-"+birthdayDateArr[2]+"）");
                     }
                 }
@@ -105,7 +107,7 @@ var fuc = {
         $('.addEvent').on('tap', function (event) {
             var dateCurrent = $('.date_current').attr('id');
             $('body').html("").css("background", "#66cccc");
-            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/addEvent.html?date=" + dateCurrent);
+            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/addEvent.html?date=" + dateCurrent);
             event.preventDefault();
         });
 
@@ -133,8 +135,7 @@ var fuc = {
         var _btns = $('.lucky .word_item span');
         //var _btnsB = $('.inFrame .word_item span');
         var num02 = 0;
-        var screenWidth = $(document.body).width();//获取屏幕宽度
-        $('.inFrame').css("width",3*screenWidth+"px");//底部一行吉日容器的宽度
+        $('.inFrame').css("width",3*that.config.screenWidth+"px");//底部一行吉日容器的宽度
         /*---------------------------点击上方吉日按钮，若用户设置了生日则显示吉日列表，没有设置则提示用户设置生日-------------*/
         $('.luckyDay').on('tap', function (event) {
             if (that.config.birthday) {
@@ -142,7 +143,6 @@ var fuc = {
                     $(this).removeClass("active");
                 });
                 $('.lucky').animate({'bottom': '0px'}, 500);
-                $('.lucky02').fadeOut("slow");
             } else {
                 $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
                     $('#dialog2').hide();
@@ -170,7 +170,7 @@ var fuc = {
                     clearInterval(timer1);
                     num02 = 2;
                 }
-                $('.inFrame').css('left', -num02 * screenWidth + 'px');
+                $('.inFrame').css('left', -num02 * that.config.screenWidth + 'px');
             }, 15);
             event.preventDefault();
             return false;
@@ -187,7 +187,7 @@ var fuc = {
                     num02 = 0;
                     clearInterval(timer2);
                 }
-                $('.inFrame').css('left', -num02 * screenWidth + 'px');
+                $('.inFrame').css('left', -num02 * that.config.screenWidth + 'px');
             }, 15);
             event.preventDefault();
             return false;
@@ -210,7 +210,8 @@ var fuc = {
             Lunar.selectWord = "";
             var dateItem = Dom.getDateList();
             var wordItem = $('.lucky02 .word_item span');
-            $('.lucky02').fadeOut("slow");
+            $('.lucky02').animate({'bottom': "-64px"}, 500);
+            $('.close02').animate({'bottom':'-30px'},500);
             for (var i = 0; i < dateItem.size(); i++) {
                 dateItem.eq(i).removeClass("Not-lucky");
             }
