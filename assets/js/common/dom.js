@@ -73,25 +73,25 @@ var Dom = {
         var week = day.getDay();
         switch (week){
             case 0:
-                week = "星期日";
+                week = "周日";
                 break;
             case 1:
-                week = "星期一";
+                week = "周一";
                 break;
             case 2:
-                week = "星期二";
+                week = "周二";
                 break;
             case 3:
-                week = "星期三";
+                week = "周三";
                 break;
             case 4:
-                week = "星期四";
+                week = "周四";
                 break;
             case 5:
-                week = "星期五";
+                week = "周五";
                 break;
             case 6:
-                week = "星期六";
+                week = "周六";
                 break;
         }
         return week;
@@ -229,6 +229,25 @@ var Dom = {
                     }
                 }
             }
+        }
+    },
+    getToday: function(date) {
+        var today = new Date();
+        var year = today.getFullYear(),
+            month = today.getMonth() + 1,
+            day = today.getDate();
+        var isToday = false;
+        if(date) {
+            if(year == date.split("-")[0] && month == date.split("-")[1] && day == date.split("-")[2]) {
+                isToday = true;
+            }
+        }
+        return {
+            year: year,
+            month: month,
+            day: day,
+            weekDay: this.transWeek(today.getDay()),
+            isToday: isToday
         }
     }
 }

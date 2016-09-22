@@ -2,7 +2,9 @@ require("../../css/page/newSchedule.less");
 var pageLoad = require("../common/pageLoad.js");
 require("../vendor/dropLoad/dropLoad.js");
 var wx = require("../vendor/weChat/wxInit.js");
+var Dom = require("../common/dom.js");
 var mask = require("../plugins/mask/mask.js");
+var _ = require("../vendor/underscore.js");
 var fuc = {
     config: {
         pageIndex: 0,
@@ -14,13 +16,13 @@ var fuc = {
     },
     init: function() {
         pageLoad({backgroundColor: "#66cccc"});
-        //this.getData();
+        this.getData();
         this.renderBMP();
         this.initDropLoad();
     },
     getData: function(type) {
         var that = this;
-        //mask.open();
+        mask.open();
         var param = {
             pageNo: that.config.pageIndex, //必填，页码，进入页面时传0，上拉+1，下拉-1
             pageSize:that.config.pageSize, //选填，每页数量，默认10
@@ -38,7 +40,10 @@ var fuc = {
             success: function(data) {
                 mask.close();
                 if(data.code == 0) {
-                    that.renderPage(data);
+                    var newData = {},
+                    today = Dom.getToday(data.length > 0 ? data[0].date : "");
+                    $.extend(newData, {arr: data.data, type: type, today: today});
+                    that.renderPage(newData);
                 } else {
                     alert(data.msg);
                 }

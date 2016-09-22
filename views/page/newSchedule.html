@@ -119,7 +119,32 @@
     </section>
 
     <script type="text/template" id="dateListTpl">
+        <% var eventArr = data.arr; %>
+        <% var type = data.type; %>
+        <% var today = data.today %>
+        <% if(type == "init") { %>
+            <% if(eventArr.length < 1 &&  || today.isToday == false) { %>
+                <div class="record no_record">
+                    <div class="date">
+                        <div class="day">20</div>
+                        <div class="weekday">周三</div>
+                    </div>
+                    <div class="content">
+                        <a href="javascript:;">没有安排活动,点击可添加活动</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="current_time_line"></div>
+            <% } %>
+        <% } else { %>
+            <% for(var i=0;i<eventArr.length;i++) { %>
+                <% var dayData = eventArr[i]; %>
+                <% var timeData = dayData.events; %>
+                <% for(var j=0;j<timeData.length;j++) { %>
 
+                <% } %>
+            <% } %>
+        <% } %>
     </script>
 
     <script src="http://api.map.baidu.com/api?v=2.0&ak=Nv4xifhhDjKpB1DP6uDwd3cNbHeH2PaV"></script>
