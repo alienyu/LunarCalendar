@@ -40,6 +40,21 @@ var Dom = {
             return false;
         }
     },
+    /*----------------比较时间大小----------------*/
+    smallerDate:function(time){
+        var today = new Date();
+        var theYear = today.getFullYear(),
+            theMonth = today.getMonth()+ 1,
+            theDay = today.getDate();
+        var timeStr = time.replace(/\-/g,"/");
+        var theDate = new Date(timeStr),
+            todayDate = new Date(theYear+"/"+theMonth+"/"+theDay);
+        if(todayDate.getTime()-theDate.getTime()>0){
+            return true;
+        }else{
+            return false;
+        }
+    },
     /*--------------------处理事件的日期----------------------*/
     tranDayDate: function(date) {
         var dateArr = date.split(" ");
@@ -97,6 +112,16 @@ var Dom = {
             theNlDate = dateTimeArr[0]+"年"+theNl[2]+"月"+theNl[3];
         }
         $('.mbsc-fr-hdr').html(theNlDate);
+    },
+    /*-------------------------转换获取的开始时间、结束时间、提醒时间格式---------------*/
+    tranDate:function(date){
+        var time = date.split(" ");
+        var dateArr = time[0].split("-");
+        var timeStr = time[0].replace(/\-/g, "/");
+        var hourArr = time[1].split(":");//将时分秒分割为数组
+        var theDate = new Date(timeStr);//将日期转换成标准格式
+        var theWeek = Dom.transWeek(theDate);//获取当前时间对应的星期
+        return dateArr[0] + "年" + dateArr[1] + "月" + dateArr[2] + "日" + " " + theWeek + " " + hourArr[0] + ":" + hourArr[1];
     },
     getDateList: function() {
         var dateItem = "";

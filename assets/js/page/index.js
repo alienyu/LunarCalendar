@@ -47,7 +47,7 @@ var fuc = {
         var days = tf(d.getDate());
         var weeks = d.getDay();
         $('.day').html(days);
-        $('.yearAndMonth').html(years + "年" + months + "月");
+        $('.month').html(months + "月");
         $('.lunarCalendar').html(nl);
         var dateTime = years + "-" + months + "-" + days;
 //        console.log(dateTime);
@@ -90,29 +90,31 @@ var fuc = {
                     if (eventList.length > 0) {
                         $('.event').css('display', 'block');
                         $('.eventBg').css('display', 'none');
+                        eventList = filterEvent(eventList);
                         for (var i = 0; i < eventList.length; i++) {
                             if (i < 5) {
                                 if (eventList[i].isOwner) {
                                     mark = "@";
                                     if (eventList[i].joiners != null && eventList[i].joiners[0]) {
-                                        joinerNum = parseInt(eventList[i].joiners.length)+1;
+                                        joinerNum = parseInt(eventList[i].joiners.length) + 1;
                                         html += template.replace(/{{eventId}}/g, eventList[i].event.eventId).replace(/{{name}}/g, eventList[i].event.name).replace(/{{time}}/g, transHour(eventList[i].event.startTime)).replace(/{{count}}/g, joinerNum + "人").replace(/{{user}}/g, mark + eventList[i].joiners[0].nickName);
-                                    }else{
+                                    } else {
                                         html += template.replace(/{{eventId}}/g, eventList[i].event.eventId).replace(/{{name}}/g, eventList[i].event.name).replace(/{{time}}/g, transHour(eventList[i].event.startTime)).replace(/{{count}}/g, "").replace(/{{user}}/g, "");
                                     }
                                 } else {
                                     mark = "#";
-                                    html += template.replace(/{{eventId}}/g, eventList[i].event.eventId).replace(/{{name}}/g, eventList[i].event.name).replace(/{{time}}/g, transHour(eventList[i].event.startTime)).replace(/{{count}}/g, "").replace(/{{user}}/g, mark+eventList[i].owner.nickName);
+                                    joinerNum = parseInt(eventList[i].joiners.length) + 1;
+                                    html += template.replace(/{{eventId}}/g, eventList[i].event.eventId).replace(/{{name}}/g, eventList[i].event.name).replace(/{{time}}/g, transHour(eventList[i].event.startTime)).replace(/{{count}}/g, joinerNum + "人").replace(/{{user}}/g, mark + eventList[i].owner.nickName);
                                 }
                             } else {
                                 break;
                             }
                         }
                         $('.scheduleList').append(html);
-                        $('.list').hammer().on('tap', function (event) {
+                        $('.list').on('tap', function () {
                             var eventId = $(this).attr('id');
                             $('body').html("").css("background", "#66cccc");
-                            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + eventId);
+                            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/showEvent.html?eventId=" + eventId);
                         });
                     } else {
                         $('.event').css('display', 'none');
@@ -123,6 +125,25 @@ var fuc = {
                     var timeArr = time.split(" ");
                     var hourArr = timeArr[1].split(":");
                     return hourArr[0] + ":" + hourArr[1];
+                }
+                //过滤事件
+                function filterEvent(eventList) {
+                    if (eventList.length >= 6) {
+                        for (var i = 0; i < eventList.length && eventList.length > 5; i++) {
+                            if (compareDate(eventList[0].event.startTime)) {
+                                eventList.splice(0, 1);
+                            }
+                        }
+                    }
+                    return eventList;
+                }
+                //比较startTime与当前时间比较,如果小于当前时间返回1(比较时分)
+                function compareDate(startTime) {
+                    var hour = d.getHours();
+                    var mintue = d.getMinutes();
+                    var timeArr = startTime.split(" ");
+                    var hourArr = timeArr[1].split(":");
+                    return hourArr[0] < hour ? 1 : (hourArr[0] == hour && hourArr[1] < mintue ? 1 : 0);
                 }
             }
         });
@@ -354,15 +375,15 @@ var fuc = {
         //点击、滑动事件
         $('.con').on('swipeUp', function (event) {
             $('body').html("").css("background", "#12101A");
-            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/calendar.html");
+            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/calendar.html");
         });
         $('.down').on('tap', function (event) {
             $('body').html("").css("background", "#12101A");
-            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/calendar.html");
+            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/calendar.html");
         });
         $('.addEvent').on('tap', function () {
             $('body').html("").css("background", "#66cccc");
-            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/addEvent.html?date=" + dateTime);
+            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/addEvent.html?date=" + dateTime);
         });
     }
 }

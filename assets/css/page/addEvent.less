@@ -1,17 +1,8 @@
 @import "../common/common.less";
 @import "../common/weui.less";
+@import "../common/event.less";
 
-body{
-    background: #66cccc;
-}
-html{font-size:60px;}
-@media only screen and (min-width:750px){html{font-size:70px !important;}}
-input::-webkit-input-placeholder{
-    color: rgba(255,255,255,0.5);
-}
-textarea::-webkit-input-placeholder{
-    color: rgba(255,255,255,0.7);
-}
+
 .tips{
     width:100%;
     height:2rem;
@@ -62,67 +53,11 @@ textarea::-webkit-input-placeholder{
     -webkit-border-radius: 0.3rem;
     word-break: keep-all;
 }
-.eventCon{
-    width:100%;
-    padding-top: 0.4rem;
-    overflow:hidden;
-    text-align: center;
-}
-.eventCon .eventTitle{
-    width:100%;
-    text-align: center;
-    min-height:30px;
-    position: relative;
-}
-.eventCon .eventTitle .eventName{
-    font-size: 24px;
-}
-.line{
-    height:1px;
-    width:12%;
-    margin: 0 auto;
-    background: rgba(0,0,0,0.1);
-    margin-top: 0.3rem;
-    margin-bottom: 0.3rem;
-}
-.time{
-    width:100%;
-    height:1.9rem;
-    position: relative;
-}
-.eventCon .title{
-    width:100%;
-    height:0.4rem;
-    line-height:0.4rem;
-    text-align: center;
-    font-size: 0.32rem;
-}
-.time .startTime,.time .endTime,.time .to{
-    width:100%;
-    text-align: center;;
-    height:0.5rem;
-    line-height:0.5rem;
-}
-.time input{
-    position: absolute;
-    width:100%;
-    height:0.5rem;
-    border: none;
-    outline: none;
-    opacity:0;
-}
-.time #startTime{
-    top:0.4rem;
-    left:0rem;
+.time .endTimeCon{
+  height:0rem;
 }
 .time #endTime{
-    bottom:0rem;
-    left:0rem;
-}
-.remind,.repetition {
-    width:100%;
-    height:auto;
-    position: relative;
+  display: none;
 }
 .remind .remindCon,.repetition .repetitionCon{
     position: relative;
@@ -130,49 +65,10 @@ textarea::-webkit-input-placeholder{
     height:40px;
     padding-top: 0.1rem;
 }
-.remind .remind_time{
-    width:60%;
-    height:0.5rem;
-    line-height: 0.5rem;
-    text-align: center;
-    margin: 0 auto;
-    display: none;
-    position: relative;
-}
 .remind .remindTime{
-    width:100%;
-    height:100%;
-    font-size: 0.26rem;
-}
-.remind .remind_time #remindTime{
-    position: absolute;
-    top:0px;
-    left: 0px;
-    width: 100%;
-    height:100%;
-    border: none;
-    outline:none;
-    opacity:0;
-}
-.eventCon .choice{
-    width:320px;
-    height:40px;
-}
-.eventCon .choice span{
-    width:80px;
-    height:40px;
-    line-height:40px;
-    text-align: center;
-    opacity:0.5;
-}
-.eventCon .choice span.active{
-    opacity:1;
+  font-size: 0.26rem;
 }
 /*其他内容*/
-.others{
-    width:100%;
-    height:auto;
-}
 .others .othersShadow{
     width:100%;
     height:auto;
@@ -184,41 +80,6 @@ textarea::-webkit-input-placeholder{
     -webkit-border-radius: 100%;
     background: rgba(0,0,0,0.5);
     margin:0.2rem auto;
-}
-.others .choice{
-    width:480px;
-}
-.others .site,.others .remarks{
-    text-align: center;
-}
-.others .text{
-    width: 60%;
-    height:auto;
-    margin: 0 auto;
-    overflow: visible;
-}
-textarea{
-    width: 80%;
-    border: none;
-    outline: none;
-    line-height: 30px;
-    text-align: center;
-    background: transparent;
-    resize: none;
-}
-#remarks{
-    width:90%;
-}
-/*分享*/
-.share{
-    height:0.6rem;
-    background: rgba(0,0,0,0.5);
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    margin: 0 auto;
-    line-height:0.6rem;
-    text-align: center;
-    padding: 5px 20px;
 }
 /*底部*/
 .bottom{
@@ -243,7 +104,34 @@ textarea{
 .bottom a.finished{
     background: rgba(0,0,0,0.5);
 }
-.blank{
-    width: 100%;
-    height:1.6rem;
+/*-----二维码样式----*/
+.qrcodeImgBox{ width: 70px; height: 70px;}
+.qrcodeImgBox .qrcodeImgCon{width:70px; height:70px; position:absolute; left:10px; top:10px}
+.qrcodeImgBox .qrcodeImgCon img{width:100%; height:100%}
+.qrcodeImgBox .qrcodeImgCon p{display:none}
+
+.q-big{width: auto; height: auto}
+.q-big .qrcodeImgCon{
+  height:auto;
+  width:50%;
+  left:50%;
+  top:50%;
+  margin:-25% 0 0 -25%;
+  background: #fff;
+  position:absolute;
+}
+.q-big .qrcodeImg{
+  width:100%;
+  text-align: center;
+}
+.q-big .qrcodeImg img{
+  width:100%;
+}
+.q-big .qrcodeImgCon p{
+  display:block;
+  width:100%;
+  color: #000;
+  font-size: 12px;
+  text-align: center;
+  padding-bottom: 10px;
 }

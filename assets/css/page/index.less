@@ -25,25 +25,39 @@ html, body {
     left: 0px;
 }
 
-.con .top {
+.con .top{
     position: absolute;
     top: 0px;
     left: 12px;
     font-size: 14px;
+    font-family: "HanHei SC", 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'STHeitiSC-Light', 'Arial', sans-serif;
 }
 
-.con .day {
+.con .day{
     height: 100px;
     line-height: 100px;
     font-size: 100px;
-    font-weight: 300;
+    font-weight: 100;
+    float: left;
 }
-
-.con .yearAndMonth, .con .week, .con .lunarCalendar {
+.con .monthAndWeek{
+    height:100px;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding-top: 40px;
+    padding-left: 10px;
+}
+.con .week,.con .lunarCalendar{
     height: 20px;
     line-height: 20px;
 }
-
+.con .month{
+    height:30px;
+    line-height:30px;
+    font-size: 26px;
+}
 .con .bottom {
     width: 100%;
     height: auto;
@@ -83,26 +97,32 @@ html, body {
     margin-right: 3%;
 }
 
-.scheduleList p .matter {
+.scheduleList p .matter{
     display: block;
     float: left;
     width: 58%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
-
 .scheduleList p .partner {
     float: right;
-    width: 19%;
+    width: 15%;
     text-align: right;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-right: 2px;
+    margin-right: 1%;
 }
 
-.scheduleList p .num {
+.scheduleList p .num{
     float: right;
+    max-width: 10%;
+    text-align: right;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
-
 .bottom .eventBg {
     width: 100%;
     height: 160px;

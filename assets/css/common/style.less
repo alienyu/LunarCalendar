@@ -9,11 +9,6 @@ body{
     top:0px;
     z-index:999;
     height: 46px;
-    /*background-image: -webkit-gradient(linear,center top,center bottom,from(#df481a), to(#c82713));*/
-    /*background-color:#d33716;*/
-    /*border-bottom:1px solid #ec6624;*/
-    /*display: -webkit-box; */
-    /*display: box;*/
 }
 .toolbar h1{
     float: left;
@@ -22,18 +17,15 @@ body{
     line-height:36px;
     font-size:16px;
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
-    /*font-weight:bold;*/
-    /*-webkit-box-flex: 2; */
-    /*box-flex: 2;*/
 }
 .toolbar .icon_calendar{
     margin:5px 0 0 10px;
 }
 .toolbar .luckyDay,.toolbar .today{
-    display: block;
+    display:inline-block;
+    padding:0 5px;
     float: left;
     height: 24px;
-    width: 24px;
     line-height: 24px;
     text-align: center;
     margin: 10px 5px 0px 10px;
@@ -42,23 +34,30 @@ body{
 }
 .toolbar .luckyDay{
     margin-left: 20px;
+    -webkit-animation-name: bluePulse;
+    -webkit-animation-duration: 4s;
+    -webkit-animation-iteration-count: infinite;
+}
+@-webkit-keyframes bluePulse {
+    from { -webkit-box-shadow: 0 0 0 #12101A; }
+    50% { -webkit-box-shadow: 0 0 6px #66cccc; }
+    to {  -webkit-box-shadow: 0 0 0 #12101A; }
 }
 .toolbar .action{
-    float: right;
-    margin:5px 10px;
     display:block;
+    position: absolute;
+    top:5px;
+    right:10px;
     height:36px;
     line-height:36px;
     font-size:16px;
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
-    /*font-weight:bold;*/
     color:#f00;
     text-align:right;
-    /*-webkit-box-flex: 1; */
-    /*box-flex: 1;*/
 }
 .wrapper{
     width:100%;
+    padding-bottom: 10px;
 }
 .slide_wrap{
     width:100%;
@@ -252,17 +251,24 @@ body{
     overflow: hidden;
 }
 .schedule h1{
-    height: 40px;
-    line-height: 40px;
-    margin-left: 12px;
-    font-size: 16px;
+  height: 41px;
+  line-height: 41px;
+  font-size: 16px;
+  display: -webkit-box;
+  display: box;
 }
 .schedule h1 span{
     opacity: 0.5;
+    display: block;
+    border-top: 1px solid rgba(255,255,255,0.5);
+    -webkit-box-flex: 1;
+    box-flex: 1;
+    text-align: center;
 }
 .schedule h1 span.active{
     opacity: 1;
-    border-bottom: 1px solid #fff;
+    border-top: 1px solid #66cccc;
+    color: #66cccc;
 }
 .schedule .scheduleContainer{
     width: 100%;
@@ -278,6 +284,8 @@ body{
 .schedule .scheduleContainer .scheduleBg{/*没有设置日程背景*/
     width: 100%;
     height: 200px;
+    box-sizing: border-box;
+    padding-top: 5%;
 }
 .schedule .scheduleContainer .scheduleBg .bg{
     width:100%;
@@ -346,7 +354,7 @@ body{
 }
 .schedule .scheduleContainer .almanac .title{
     height: 26px;
-    padding-left: 12px;
+    padding-left: 2%;
     line-height: 26px;
     color: #ccc;
     margin-bottom: 4px;
@@ -449,7 +457,7 @@ body{
     bottom: -265px;
     width:100%;
     background:rgba(18,16,26,0.95);
-    z-index: 999;
+    //z-index: 999;
 }
 .lucky .title{
     height:30px;
@@ -497,10 +505,10 @@ body{
     overflow: hidden;
 }
 .lucky02{
-    display: none;
     width: 100%;
-    position: absolute;
-    bottom: 0;
+    position: fixed;
+    left:0px;
+    bottom: -64px;
 }
 .lucky02 .frame{
     width: 100%;
@@ -529,7 +537,7 @@ body{
     background-size: cover;
     position: fixed;
     right: 5px;
-    bottom:66px;
+    bottom:-30px;
     overflow: hidden;
 }
 .date_row .date_current, .date_row .date_today {

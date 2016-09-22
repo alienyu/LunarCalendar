@@ -144,6 +144,7 @@ var Lunar = {
             var num1 = $(this).parent().index();
             num02 = $(this).parent().parent().index();
             var num = num1 + num02 * 6;
+            var screenWidth=$(document.body).width()//获取屏幕宽度
             $('.inFrame').css('left', -num02 * screenWidth + 'px');
             $('.inFrame .word_item span').eq(num).attr("class", "active");
             that.luckyWordConDown();
@@ -336,9 +337,9 @@ var Lunar = {
             $('.today').css("display", "block");
         }
         /*------------若选择了吉日，则查找对应的日期。点击日期，吉日列表显示成一行---------------*/
-        if (this.selectWord != null && this.selectWord != "") {
+        if (that.selectWord != null && that.selectWord != "") {
             $('#loadingToast').show();//隐藏loading
-            this.showLuckyDay(this.selectWord);
+            this.showLuckyDay(that.selectWord);
             this.luckyWordConDown();
         }
         if (offset > 0) {//左滑
@@ -421,11 +422,17 @@ var Lunar = {
     },
     /*--------------------点击日历上方日期，则吉日列表变为一行-------------------------*/
     luckyWordConDown: function() {
+        var that = this;
         var dateItem = Dom.getDateList();
-        dateItem.on("tap", function (event) {
-            if (this.selectWord != null && this.selectWord != "") {
+        dateItem.on("tap", function () {
+            if (that.selectWord != null && that.selectWord != "") {
                 $('.lucky').animate({'bottom': "-265px"}, 500, function () {
-                    $('.lucky02').fadeIn("slow");
+                    //if(!$('.lucky02').is(':animated')){
+                        $('.lucky02').animate({'bottom': "0px"}, 500);
+                    //}
+                    //if(!$('.close02').is(':animated')){
+                        $('.close02').animate({'bottom':'66px'},500);
+                    //}
                 });
             }
         });

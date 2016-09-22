@@ -88,8 +88,14 @@ var fuc = {
     shareShadow: function() {
         var shareShadow = $('.shareShadow');
         shareShadow.css("display","block");//显示分享提示层
+        var qrcodeImg = $('.qrcodeImgBox');
+        qrcodeImg.click(function () {
+            $(this).addClass("q-big");
+            event.stopPropagation();
+        });//放大二维码
         shareShadow.click(function(){
             $(this).fadeOut();
+            event.stopPropagation();
         });
         var share = document.getElementById('shareShadow');
         share.addEventListener('touchmove', function (e) {
@@ -110,41 +116,27 @@ var fuc = {
         var theTime = time.replace(/\-/g, "/");
         var theDate = new Date(theTime);
         var theWeek = Dom.transWeek(theDate);
-        var startHour = date.getHours(),startMinute = date.getMinutes()+10;
-        var endHour = date.getHours(),endMinute = date.getMinutes()+20;
-        if(startMinute>=60){
-            startHour = startHour+1;
-            if(startMinute-60>=10){
-                startMinute = startMinute-60;
-            }else{
-                startMinute = "0"+(startMinute-60);
+        var startHour = date.getHours(), startMinute = date.getMinutes() + 10;
+        if (startMinute >= 60) {
+            startHour = startHour + 1;
+            if (startMinute - 60 >= 10) {
+                startMinute = startMinute - 60;
+            } else {
+                startMinute = "0" + (startMinute - 60);
             }
-            if(startHour==24){
+            if (startHour == 24) {
                 startHour = 23;
                 startMinute = date.getMinutes();
             }
         }
-        if(endMinute>=60){
-            endHour = endHour+1;
-            if(endMinute-60>=10){
-                endMinute = endMinute-60;
-            }else{
-                endMinute = "0"+(endMinute-60);
-            }
-            if(endHour==24){
-                endHour = 23;
-                endMinute = date.getMinutes();
-            }
-        }
         var startId = time + " " + startHour + ":" + startMinute + ":00";
-        var endId = time + " " + endHour + ":" + endMinute + ":00";
         //给开始时间，结束时间，提醒时间设置ID，提交数据时只需要提交id内容即可
         $('.startTime').attr("id", startId);
-        $('.endTime').attr("id", endId);
+        $('.endTime').attr("id", startId);
         $('.remindTime').attr("id", startId);
         var startTime = timeArr[0] + "年" + timeArr[1] + "月" + timeArr[2] + "日" + " " + theWeek + " " + startHour + ":" + startMinute,
-            endTime = timeArr[0] + "年" + timeArr[1] + "月" + timeArr[2] + "日" + " " + theWeek + " " + endHour + ":" + endMinute;
-        return [startTime,endTime];
+            endTime = timeArr[0] + "年" + timeArr[1] + "月" + timeArr[2] + "日" + " " + theWeek + " " + startHour + ":" + startMinute;
+        return [startTime, endTime];
     },
     /*---------------------修改开始时间、结束时间、指定提醒时间样式，为其设置时间选择器的初始值---------------------*/
     setInitTime: function(obj) {
@@ -184,6 +176,18 @@ var fuc = {
                 $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
                     $('#dialog2').off('click').hide();
                 });
+            }
+        })
+    },
+    /*-------------生成事件二维码--------------*/
+    createQrcode:function(eventId){
+        $('.qrcodeImg').html("");
+        $.get("http://www.li-li.cn/llwx/wx/qrcode/ticket",{"sceneId":eventId},function(data){
+            if(data.code == 0){
+                $('#loadingToast').fadeOut();
+                var html = "<img src='https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + ticket + "' />";
+                $('.qrcodeImg').append(html);
+                $('.wxQrcode').css("display", "block");
             }
         })
     },
@@ -232,7 +236,9 @@ var fuc = {
             re[m].className = '';
             re[n].className = 'active';
             if (n == 3) {
-                $('.remind_time').slideDown();
+                if($(".remind_time").css("display") == "none") {
+                    $('.remind_time').slideDown();
+                }
             } else {
                 $('.remind_time').css({'display': 'none'});
             }
@@ -282,7 +288,11 @@ var fuc = {
             $('.othersShadow').css({'display': 'none'});
             $('.othersCon').css({'height': 'auto'});
         });
-
+        $('.Addendtime').click(function () {
+            $(this).hide();
+            $('.endTimeCon').animate({'height':'1rem'},300);
+            $('#endTime').css("display","block");
+        });
         /*--------------------------------------------点击完成按钮，提交数据，提交成功后跳转至月历页面-----------------------------------------*/
         $('.finished').on("tap", function () {
             $('#loadingToast').show();//显示loading
@@ -308,9 +318,9 @@ var fuc = {
                         window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/calendar.html");
                     } else {
                         $.post('http://www.li-li.cn/llwx/event/modify', {
-                                "eventId": eventId,
+                                "eventId": that.config.eventId,
                                 "name": name,
-                                "tags":tagName,
+                                "tags":that.config.tagName,
                                 "startTime": startTime,
                                 "endTime": endTime,
                                 "tipType": tipType,
@@ -339,14 +349,20 @@ var fuc = {
         });
         /*-----------------------------------------------点击取消按钮，跳转至月历页面/上一页------------------------------------------*/
         $('.cancel').on("tap", function () {
-//            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/calendar.html");
-            window.location.href = document.referrer;//返回上一个页面并刷新
+            if(document.referrer==""){
+                WeixinJSBridge.call("closeWindow");
+            }else{
+                window.location.href = document.referrer;//返回上一个页面并刷新
+            }
         });
 
         /*------------------------点击分享------------------------*/
         $(".share").on("tap", function () {
             if (that.config.eventId) {
                 //todo 弹出蒙层
+                if(!$('.qrcodeImg').html()){
+                    that.createQrcode(that.config.eventId);
+                }
                 that.shareShadow(); //显示分享提示弹出层，点击后隐藏
             } else {
                 var name = $('.eventName').val().replace(/\s+/, ""),
@@ -370,6 +386,9 @@ var fuc = {
                         sessionStorage.setItem(that.config.eventId, [name, that.config.tagName,startTime, endTime, tipType, repeatType, remark, location, tipTime]);
                         $('#dialog1').hide();
                         //todo 弹出蒙层
+                        if(!$('.qrcodeImg').html()){
+                            that.createQrcode(that.config.eventId);
+                        }
                         that.shareShadow(); //显示分享提示弹出层，点击后隐藏
                     });
                     $('.default').on("tap", function () {

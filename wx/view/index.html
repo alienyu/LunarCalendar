@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>历历</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="x5-orientation" content="portrait">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link href="/wx/css/index.css?f5d4e9d219854a0374a0" rel="stylesheet"></head>
+<body>
+<div class="conShadow opa5"></div>
+<div class="con cff08">
+    <div class="top">
+        <p class="day"></p>
+        <div class="monthAndWeek">
+            <p class="month"></p>
+            <p class="week"></p>
+        </div>
+        <p class="lunarCalendar"></p>
+    </div>
+    <div class="bottom">
+        <div class="bottom-event">
+            <div class="event" style="display: none">
+                <h1 class="title">
+                    <a href="javascript:;" class="addEvent c6c">+添加事件</a>
+                </h1>
+                <div class="scheduleList"></div>
+            </div>
+            <div class="eventBg" style="display: block">
+                <div class="bg opa5"></div>
+                <div class="text">
+                    <a href="javascript:;" class="addEvent c6c">立即添加事件</a>
+                    <p>做一个井井有条的人</p>
+                </div>
+            </div>
+        </div>
+        <div class="opa7 suitable" style="display: none">
+            <span class="time cgreen">宜</span>
+            <p class="suitMatter fl"></p>
+        </div>
+        <div class="down">
+                <span class="img">
+                    <img src="/wx/./img/26e2fcefdfd69e32bad5231b6ff6f0fc.png" alt="">
+                </span>
+        </div>
+    </div>
+</div>
+
+<div id="orientLayer" class="mod-orient-layer">
+    <div class="mod-orient-layer__content"><i class="icon mod-orient-layer__icon-orient"></i>
+        <div class="mod-orient-layer__desc">为了更好的体验，请使用竖屏浏览</div>
+    </div>
+</div>
+
+<script type="text/x-event" id="eventListTemplate">
+    <p class="list" id="{{eventId}}">
+        <span class="time">{{time}}</span>
+        <span class="matter">{{name}}</span>
+        <span class="num opa5">{{count}}</span>
+        <span class="partner opa5">{{user}}</span>
+    </p>
+</script>
+<script type="text/javascript" src="/wx/js/index.js?f5d4e9d219854a0374a0"></script></body>
+</html>

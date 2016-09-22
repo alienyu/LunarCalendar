@@ -1,51 +1,8 @@
 @import "../common/common.less";
 @import "../common/weui.less";
+@import "../common/event.less";
 
-body{
-    background: #66cccc;
-}
-html{font-size:60px;}
-@media only screen and (min-width:750px){html{font-size:70px !important;}}
-input::-webkit-input-placeholder{
-    color: rgba(255,255,255,0.5);
-}
-textarea::-webkit-input-placeholder{
-    color: rgba(255,255,255,0.7);
-}
-.eventCon{
-    width:100%;
-    padding-top: 0.4rem;
-    overflow:hidden;
-    text-align: center;
-}
-.eventCon .eventTitle{
-    width:100%;
-    text-align: center;
-    height:auto;
-}
-.eventCon .eventTitle .eventName{
-    font-size: 24px;
-}
-.line{
-    height:1px;
-    width:12%;
-    margin: 0 auto;
-    background: rgba(0,0,0,0.1);
-    margin-top: 0.3rem;
-    margin-bottom: 0.3rem;
-}
-.time{
-    width:100%;
-    height:auto;
-    position: relative;
-}
-.eventCon .title{
-    width:100%;
-    height:0.4rem;
-    line-height:0.4rem;
-    text-align: center;
-    font-size: 0.32rem;
-}
+
 .eventCon .subtitle{
     width:100%;
     height:0.4rem;
@@ -59,10 +16,11 @@ textarea::-webkit-input-placeholder{
     line-height: 0;
     margin: 0.1rem auto;
     text-align: center;
+    overflow: hidden;
 }
 .eventCon .participant .list{
     width:50px;
-    margin:auto 1px;
+    //margin:auto 1px;
     display: inline-block;
     line-height: 1.4;
     padding-bottom: 10px;
@@ -75,8 +33,6 @@ textarea::-webkit-input-placeholder{
     margin: 0 auto;
     border-radius: 100%;
     -webkit-border-radius: 100%;
-    background: url("../../imgs/page/showEvent/default_photo.png") no-repeat center center;
-    background-size: cover;
 }
 .eventCon .participant .list img{
     width:42px;
@@ -93,32 +49,9 @@ textarea::-webkit-input-placeholder{
     font-size: 0.16rem;
     color: #fff;
 }
-.time .startTime,.time .endTime,.time .to{
-    width:100%;
-    text-align: center;;
-    height:0.5rem;
-    line-height:0.5rem;
-}
-.time input{
-    position: absolute;
-    width:100%;
-    height:0.5rem;
-    border: none;
-    outline: none;
-    opacity:0;
-}
-.time #startTime{
-    top:0.4rem;
-    left:0rem;
-}
-.time #endTime{
-    bottom:0rem;
-    left:0rem;
-}
-.remind,.repetition {
-    width:100%;
-    height:auto;
-    position: relative;
+.showAll{
+  padding:5px 0px;
+  display: none;
 }
 .repetition .repetitionCon{
     position: relative;
@@ -141,83 +74,6 @@ textarea::-webkit-input-placeholder{
     line-height:0.5rem;
     text-align: center;
 }
-.remind .remind_time{
-    width:60%;
-    height:0.5rem;
-    line-height: 0.5rem;
-    text-align: center;
-    margin: 0 auto;
-    display: none;
-    position: relative;
-}
-.remind .remindTime{
-    width:100%;
-    height:100%;
-}
-.remind .remind_time #remindTime {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    border: none;
-    outline: none;
-    opacity: 0;
-}
-.eventCon .choice{
-    width:320px;
-    height:40px;
-}
-.eventCon .choice span{
-    width:80px;
-    height:40px;
-    line-height:40px;
-    text-align: center;
-    opacity:0.5;
-}
-.eventCon .choice span.active{
-    opacity:1;
-}
-/*其他内容*/
-.others{
-    width:100%;
-    height:auto;
-}
-.others .choice{
-    width:480px;
-}
-.others .site,.others .remarks{
-    text-align: center;
-}
-.others .text{
-    width: 60%;
-    height:auto;
-    margin: 0 auto;
-    overflow: visible;
-}
-textarea{
-    width: 80%;
-    border: none;
-    outline: none;
-    line-height: 30px;
-    text-align: center;
-    background: transparent;
-    resize: none;
-}
-#remarks{
-    width:90%;
-}
-/*分享*/
-.share{
-    height:0.6rem;
-    background: rgba(0,0,0,0.5);
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    margin: 0 auto;
-    line-height:0.6rem;
-    text-align: center;
-    padding: 5px 20px;
-}
 /*底部*/
 .bottom,.bottom2,.bottom3,.bottom4{
     position: fixed;
@@ -226,6 +82,7 @@ textarea{
     width:100%;
     height: 0.72rem;
     background: rgba(102,204,204,0.95);
+    display: none;
 }
 .bottom a,.bottom2 a,.bottom3 a,.bottom4 a{
     display: block;
@@ -241,13 +98,23 @@ textarea{
 .bottom a.redact,.bottom2 a.finished{
     background: rgba(0,0,0,0.5);
 }
-.blank{
-    width: 100%;
-    height:1.6rem;
-}
 .bottom3 a,.bottom4 a{
     width:100%;
     background: rgba(0,0,0,0.5);
+}
+.bottom4 a.joinerExit{
+  position: absolute;
+  top:0px;
+  right:0px;
+  width:10%;
+}
+.bottom4 a.joinerExit .exitImg{
+  width:auto;
+  height:60%;
+  margin: 20% auto;
+}
+.bottom4 a.joinerExit .exitImg img{
+  height:100%;
 }
 .shareShadow,.wxQrcode{
     position: fixed;
@@ -268,21 +135,21 @@ textarea{
     background: url("../../imgs/page/showEvent/close.png") no-repeat center center;
     background-size: contain;
 }
-.wxQrcode .qrcodeImgCon{
+.qrcodeImgCon{
     height:auto;
     width:80%;
     margin: 0 auto;
     background: #fff;
     margin-top: 20%;
 }
-.wxQrcode .qrcodeImg{
+.qrcodeImg{
     width:100%;
     text-align: center;
 }
-.wxQrcode .qrcodeImg img{
+ .qrcodeImg img{
     width:100%;
 }
-.wxQrcode .qrcodeImgCon p{
+.qrcodeImgCon p{
     width:100%;
     color: #000;
     font-size: 0.3rem;

@@ -8,15 +8,18 @@ var mobiScroll = require("../vendor/mobiScroll/mobiScroll.js");
 var wx = require("../vendor/weChat/wxInit.js");
 var fastClick = require("../vendor/ImproveMobile/fastClick.js");
 var autoTextArea = require("../vendor/ImproveMobile/autoTextArea.js");
-
+require("../common/scrollLoading.js");
 var fuc = {
     config: {
         eventId: Dom.getRequest("eventId"),
         template: $('#joinerListTemplate').html(),
         remindArr:  ["不提醒", "前一天", "当天", "指定时间"],
-        repeatArr: ["不重复", "每天", "每周", "每工作日", "每月", "每年"]
+        repeatArr: ["不重复", "每天", "每周", "每工作日", "每月", "每年"],
+        imgConWidth:$('.acceptPeople').width(),
+        rowsCount:""
     },
     init: function() {
+        this.config.rowsCount=parseInt(this.config.imgConWidth/50);
         pageLoad({backgroundColor: "#66cccc"});
         this.rem();
         this.renderPage();
@@ -44,6 +47,7 @@ var fuc = {
     getData: function() {
         //进入页面时的数据加载
         var that = this;
+        //console.log(that.config.eventId);
         $.get(
             "http://www.li-li.cn/llwx/event/detail", {"eventId": that.config.eventId}, function (data) {
                 if (data.code == 0) {
@@ -60,36 +64,49 @@ var fuc = {
                         repeatItem = $('#repetition span');
                     $('.startTime').html(theStartTime).attr("id", dataList.event.startTime);
                     $('.endTime').html(theEndTime).attr("id", dataList.event.endTime);
-                    $('.remindConStart').html(remindArr[remindNum]);
-                    $('.repetitionConStart').html(repeatArr[repeatNum]);
+                    $('.remindConStart').html(that.config.remindArr[remindNum]);
+                    $('.repetitionConStart').html(that.config.repeatArr[repeatNum]);
+                    //若开始时间和结束时间相同，则隐藏结束时间
+                    $('.Addendtime').css("display","none");
+                    if(theStartTime == theEndTime){
+                        $('.endTimeCon').css("height","0px");
+                    }
                     if (dataList.event.location) {//如果事件地点存在
                         ac.setInputValue(dataList.event.location);
+                        autoTextArea(document.getElementById("site"));
                     } else {
-                        $('.othersCon .line').eq(0).css("display", "none");
                         $('.site').css("display", "none");
                     }
                     if (dataList.event.remark) {//如果有备注
                         $('.showRemarks').val(dataList.event.remark);
+                        autoTextArea(document.getElementById("remarks"));
                     } else {
-                        $('.othersCon .line').eq(1).css("display", "none");
                         $('.remarks').css("display", "none");
                     }
                     if (!dataList.joiner[0]) {//如果不存在参与者
-                        $('.others .othersCon .line').eq(2).css("display", "none");
                         $('.participant').css("display", "none");
                     } else {//存在参与者，则显示参与者头像和昵称
-                        var html = template.replace(/{{img}}/g, dataList.owner.headImgUrl).replace(/{{joinerName}}/g, dataList.owner.nickName);
+                        if(dataList.owner.headImgUrl){
+                            var html = that.config.template.replace(/{{dataImg}}/g,dataList.owner.headImgUrl).replace(/{{img}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{joinerName}}/g, dataList.owner.nickName);
+                        }else{
+                            var html = that.config.template.replace(/{{dataImg}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{img}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{joinerName}}/g, dataList.owner.nickName);
+                        }
                         var joinerCount = dataList.joiner.length + 1;//获得参与者数组长度即参与人数
                         $('.joinerCount').html(joinerCount);
+                        if(dataList.joiner.length> that.config.rowsCount*2){
+                            $('.acceptPeople').css("height","130px");
+                            $('.showAll').css("display","block");
+                        }
                         for (var m = 0; m < dataList.joiner.length; m++) {
                             if (dataList.joiner[m].headImgUrl) {
-                                html += that.config.template.replace(/{{img}}/g, dataList.joiner[m].headImgUrl).replace(/{{joinerName}}/g, dataList.joiner[m].nickName);
+                                html += that.config.template.replace(/{{dataImg}}/g,dataList.joiner[m].headImgUrl).replace(/{{img}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{joinerName}}/g, dataList.joiner[m].nickName);
                             } else {
-                                html += that.config.template.replace(/{{img}}/g, "images/default_photo.png").replace(/{{joinerName}}/g, dataList.joiner[m].nickName);
+                                html += that.config.template.replace(/{{dataImg}}/g,"../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{img}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{joinerName}}/g, dataList.joiner[m].nickName);
                             }
                         }
                         $('.acceptPeople').append(html);
                     }
+                    $('.scrollLoading').scrollLoading();
                     for (var k = 0; k < remindItem.size(); k++) {
                         remindItem.eq(k).removeClass("active");
                         remindItem.eq(remindNum).addClass("active");
@@ -98,19 +115,24 @@ var fuc = {
                         repeatItem.eq(j).removeClass("active");
                         repeatItem.eq(repeatNum).addClass("active");
                     }
-                    if (dataList.event.tipType == 3) {//若用户设置了指定的提醒时间
+                    if (dataList.event.tipType == 3&&dataList.event.tipTime) {//若用户设置了指定的提醒时间
                         $('.remindTime').html(Dom.tranDate(dataList.event.tipTime)).attr("id", dataList.event.tipTime);
                         $('.remind_time').css('display', 'block');
                     }else{
                         $('.remindTime').html(theStartTime).attr("id",dataList.event.startTime);
                     }
                     if (dataList.user == null) {//参与人不存在,没关注过历历
-                        $('.bottom').animate({'bottom': '-0.72rem'}, 500, function () {
-                            $('.bottom3').animate({'bottom': '0rem'}, 500);
+                        $('.bottom').css('display','none').animate({'bottom': '-0.72rem'}, 500, function () {
+                            $('.bottom3').css('display','block').animate({'bottom': '0rem'}, 500);
                         });
                     } else {//参与人存在
                         var isJoiner = false;
                         if (dataList.event.openId != dataList.user.openId) { //用户不是发起者
+                            $('.share').css("display","none");//隐藏分享按钮
+                            $('.participant .line').css("display","none");
+                            //隐藏提醒类型和重复类型
+                            $('.remind').css("display","none");
+                            $('.othersCon .repetition').css("display","none");
                             //用户为参与者
                             for (var i = 0; i < dataList.joiner.length; i++) {
                                 if (dataList.user.openId == dataList.joiner[i].openId) {
@@ -118,16 +140,16 @@ var fuc = {
                                 }
                             }
                             if (isJoiner) {
-                                $('.bottom').animate({'bottom': '-0.72rem'}, 500, function () {
-                                    $('.bottom4').animate({'bottom': '0rem'}, 500);
+                                $('.bottom').css('display','none').animate({'bottom': '-0.72rem'}, 500, function () {
+                                    $('.bottom4').css('display','block').animate({'bottom': '0rem'}, 500);
                                 });
                             } else {
-                                $('.bottom').animate({'bottom': '-0.72rem'}, 500, function () {
-                                    $('.bottom3').animate({'bottom': '0rem'}, 500);
+                                $('.bottom').css('display','none').animate({'bottom': '-0.72rem'}, 500, function () {
+                                    $('.bottom3').css('display','block').animate({'bottom': '0rem'}, 500);
                                 });
                             }
                         } else {//用户是发起者
-                            $('.bottom').animate({'bottom': '0rem'}, 500);
+                            $('.bottom').css('display','block').animate({'bottom': '0rem'}, 500);
                         }
                     }
                     //提醒、重复选择标签的滑动效果
@@ -188,7 +210,7 @@ var fuc = {
                         repe[n].className = 'active';
                     });
                     wx.wxConfig(2, dataList.owner.nickName + " 邀请您参加 「" + dataList.event.name + "」", Dom.tranDate(dataList.event.startTime),
-                        "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + dataList.event.eventId));
+                        "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/showEvent.html?eventId=" + dataList.event.eventId));
                     $('.eventNone').css("display", "none");
                 } else if (data.code == 112) {
                     //若参加者参加的事件不存在
@@ -203,13 +225,18 @@ var fuc = {
             e.preventDefault();
             that.showBottom2();
             that.remindSliderShow();//显示提醒、重复的滑动选择功能
-            $('.othersCon .line').eq(0).css("display", "block");
+            if($('.endTimeCon').height()==0){
+                $('.Addendtime').css("display","block");
+            }
             $('.site').css("display", "block");
-            $('.othersCon .line').eq(1).css("display", "block");
             $('.remarks').css("display", "block");
-            that.dateAndMap();//可编辑时间
+            that.dateAndMap(false);//可编辑时间
         });
-
+        /*------点击设置结束时间，显示结束时间--------*/
+        $('.Addendtime').on("tap",function () {
+            $(this).hide();
+            $('.endTimeCon').animate({'height':'1rem'},300);
+        });
         /*-----------------------------点击完成---------------------------------*/
         $('.finished').on("tap", function () {
             $('#loadingToast').show();//显示loading
@@ -227,44 +254,87 @@ var fuc = {
             if (tipType == 3) {//若用户选择了自定义提醒时间，则通过id获取用户设定的时间
                 tipTime = $('.remindTime').attr("id");
             }
-            //数据提交
-            $.post('http://www.li-li.cn/llwx/event/modify', {
-                    "eventId": eventId,
-                    "name": name,
-                    "startTime": startTime,
-                    "endTime": endTime,
-                    "tipType": tipType,
-                    "tipTime": tipTime,
-                    "repeatType": repeatType,
-                    "location": location,
-                    "remark": remark,
-                }, function (data) {
-                    if (data.code == 0) {//修改成功弹出提示框
-                        $('#loadingToast').fadeOut();//隐藏loading
-                        that.showBottom();//事件信息提交成功，底部按钮替换为编辑和删除
-                        //显示编辑后的数据
-                        that.resetEvent(name, startTime, endTime, tipType, tipTime, repeatType, location, remark);
-                        $('#toast').show();
-                        setTimeout(function () {
-                            $('#toast').hide();
-                        }, 1500);
-                    } else {//修改失败弹出提示框
-                        $('#loadingToast').fadeOut();//隐藏loading
-                        var error = data.msg;
-                        $('#dialog2 .weui_dialog_bd').html(error);
-                        $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
-                            $('#dialog2').off('click').hide();
-                        });
-                    }
+            var eventData = JSON.parse(sessionStorage.getItem(that.config.eventId));//获取存储的事件信息
+            if(name==eventData.event.name&&startTime == eventData.event.startTime&&endTime == eventData.event.endTime&&tipType==eventData.event.tipType&&repeatType==eventData.event.repeatType&&location==eventData.event.location&&remark ==eventData.event.remark){
+                if(tipType==3&&tipTime!=eventData.event.tipTime){
+                    //数据提交
+                    $.post('http://www.li-li.cn/llwx/event/modify', {
+                            "eventId": that.config.eventId,
+                            "name": name,
+                            "startTime": startTime,
+                            "endTime": endTime,
+                            "tipType": tipType,
+                            "tipTime": tipTime,
+                            "repeatType": repeatType,
+                            "location": location,
+                            "remark": remark,
+                        }, function (data) {
+                            if (data.code == 0) {//修改成功弹出提示框
+                                $('#loadingToast').fadeOut();//隐藏loading
+                                that.showBottom();//事件信息提交成功，底部按钮替换为编辑和删除
+                                //显示编辑后的数据
+                                that.resetEvent(name, startTime, endTime, tipType, tipTime, repeatType, location, remark);
+                                $('#toast').show();
+                                setTimeout(function () {
+                                    $('#toast').hide();
+                                }, 1500);
+                            } else {//修改失败弹出提示框
+                                $('#loadingToast').fadeOut();//隐藏loading
+                                var error = data.msg;
+                                $('#dialog2 .weui_dialog_bd').html(error);
+                                $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
+                                    $('#dialog2').off('click').hide();
+                                });
+                            }
+                        }
+                    )
+                }else{
+                    that.resetEvent(name, startTime, endTime, tipType, tipTime, repeatType, location, remark);
+                    $('#loadingToast').fadeOut();
+                    that.showBottom();
+                    that.dateAndMap(true);//不可编辑时间
                 }
-            )
+            }else{
+                //数据提交
+                $.post('http://www.li-li.cn/llwx/event/modify', {
+                        "eventId": that.config.eventId,
+                        "name": name,
+                        "startTime": startTime,
+                        "endTime": endTime,
+                        "tipType": tipType,
+                        "tipTime": tipTime,
+                        "repeatType": repeatType,
+                        "location": location,
+                        "remark": remark,
+                    }, function (data) {
+                        if (data.code == 0) {//修改成功弹出提示框
+                            $('#loadingToast').fadeOut();//隐藏loading
+                            that.showBottom();//事件信息提交成功，底部按钮替换为编辑和删除
+                            //显示编辑后的数据
+                            that.resetEvent(name, startTime, endTime, tipType, tipTime, repeatType, location, remark);
+                            $('#toast').show();
+                            setTimeout(function () {
+                                $('#toast').hide();
+                            }, 1500);
+                        } else {//修改失败弹出提示框
+                            $('#loadingToast').fadeOut();//隐藏loading
+                            var error = data.msg;
+                            $('#dialog2 .weui_dialog_bd').html(error);
+                            $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
+                                $('#dialog2').off('click').hide();
+                            });
+                        }
+                    }
+                )
+            }
         });
 
         //点击取消,从sessionStorage中拉去数据并显示
         $('.cancel').on("tap", function () {
+            that.dateAndMap(true);//不可编辑时间
             that.showBottom();
             that.remindSliderHide();
-            var data = JSON.parse(sessionStorage.getItem(eventId));//获得存储的事件信息
+            var data = JSON.parse(sessionStorage.getItem(that.config.eventId));//获得存储的事件信息
             //重新显示事件信息
             that.resetEvent(data.event.name, data.event.startTime, data.event.endTime, data.event.tipType, data.event.tipTime, data.event.repeatType, data.event.location, data.event.remark);
         });
@@ -281,7 +351,11 @@ var fuc = {
                         $('#toast').show();
                         setTimeout(function () {
                             $('#toast').hide();
-                            window.location.href = document.referrer;//返回上一个页面并刷新
+                            if(document.referrer==""){
+                                WeixinJSBridge.call("closeWindow");
+                            }else{
+                                window.location.href = document.referrer;//返回上一个页面
+                            }
                         }, 1500);
                     } else {//删除失败弹出提示框
                         $('#loadingToast').fadeOut();//隐藏loading
@@ -314,8 +388,8 @@ var fuc = {
                                     setTimeout(function () {
                                         $('#toast').hide();
                                     }, 1500);
-                                    $('.bottom3').animate({'bottom': '-0.72rem'}, 500, function () {
-                                        $('.bottom4').animate({'bottom': '0rem'}, 500);
+                                    $('.bottom3').css('display','none').animate({'bottom': '-0.72rem'}, 500, function () {
+                                        $('.bottom4').css('display','block').animate({'bottom': '0rem'}, 500);
                                     });
                                     that.refreshJoiner();//刷新参与人数量
                                 } else {//加入失败收弹出
@@ -329,7 +403,7 @@ var fuc = {
                             }
                         )
                     } else {//没有关注我们，弹出二维码
-                        $.get("http://www.li-li.cn/llwx/wx/qrcode/ticket", {"sceneId": eventId}, function (data) {//获取带参数的二维码
+                        $.get("http://www.li-li.cn/llwx/wx/qrcode/ticket", {"sceneId": that.config.eventId}, function (data) {//获取带参数的二维码
                             if (data.code == 0) {
                                 $('#loadingToast').fadeOut();//隐藏loading
                                 var ticket = data.data.ticket;
@@ -351,49 +425,60 @@ var fuc = {
 
         /*-------------------点击退出------------------------*/
         $(".exit").on("tap",function () {
-            $('#loadingToast').show();//显示loading
-            //数据提交
-            $.post('http://www.li-li.cn/llwx/event/exit', {
-                    "eventId": that.config.eventId,
-                }, function (data) {
-                    if (data.code == 0) {//退出成功后弹出
-                        $('#loadingToast').fadeOut();//隐藏loading
-                        $('#toast').show();
-                        setTimeout(function () {
-                            $('#toast').hide();
-                        }, 1500);
-                        $('.bottom4').animate({'bottom': '-0.72rem'}, 500, function () {
-                            $('.bottom3').animate({'bottom': '0rem'}, 500);
-                        });
-                        that.refreshJoiner();
-                    } else {//退出失败收弹出
-                        $('#loadingToast').fadeOut();//隐藏loading
-                        var error = data.msg;
-                        $('#dialog2 .weui_dialog_bd').html(error);
-                        $('#dialog2').show().on('tap', '.weui_btn_dialog', function () {
-                            $('#dialog2').off('tap').hide();
-                        });
+            $('#dialog1 .weui_dialog_bd').html("确认要退出该事件吗？");
+            $('#dialog1').show();
+            $('#cancel').on('click',function(){
+                $('#dialog1').hide();
+            })
+            $('#confirm').on('click',function(){
+                $('#dialog1').hide();
+                $('#loadingToast').show();//显示loading
+                //数据提交
+                $.post('http://www.li-li.cn/llwx/event/exit', {
+                        "eventId": that.config.eventId,
+                    }, function (data) {
+                        if (data.code == 0) {//退出成功后弹出
+                            $('#loadingToast').fadeOut();//隐藏loading
+                            $('#toast').show();
+                            setTimeout(function () {
+                                $('#toast').hide();
+                            }, 1500);
+                            $('.bottom4').css('display','none').animate({'bottom': '-0.72rem'}, 500, function () {
+                                $('.bottom3').css('display','block').animate({'bottom': '0rem'}, 500);
+                            });
+                            that.refreshJoiner();
+                        } else {//退出失败收弹出
+                            $('#loadingToast').fadeOut();//隐藏loading
+                            var error = data.msg;
+                            $('#dialog2 .weui_dialog_bd').html(error);
+                            $('#dialog2').show().on('tap', '.weui_btn_dialog', function () {
+                                $('#dialog2').off('tap').hide();
+                            });
+                        }
                     }
-                }
-            )
+                )
+            })
         });
 
         /*--------------------------------点击分享--------------------------------*/
         $(".share").on("tap", function () {
             that.shareShadow();
         });
+        $(".joinerShare").on("tap",function(){
+            that.shareShadow();
+        })
     },
     showBottom: function() {
         $('textarea').attr('readonly', true);
-        $('.bottom2').animate({'bottom': '-0.72rem'}, 500, function () {
-            $('.bottom').animate({'bottom': '0rem'}, 500);
+        $('.bottom2').css('display','none').animate({'bottom': '-0.72rem'}, 500, function () {
+            $('.bottom').css('display','block').animate({'bottom': '0rem'}, 500);
         });
     },
     /*-------------------点击编辑，底部显示取消和完成选项---------------------*/
     showBottom2: function() {
         $('textarea').attr('readonly', false);
-        $('.bottom').animate({'bottom': '-0.72rem'}, 500, function () {
-            $('.bottom2').animate({'bottom': '0rem'}, 500);
+        $('.bottom').css('display','none').animate({'bottom': '-0.72rem'}, 500, function () {
+            $('.bottom2').css('display','block').animate({'bottom': '0rem'}, 500);
         })
     },
     /*-----------------------显示可选择的提醒、重复类型，此状态下信息可编辑------------------------*/
@@ -412,7 +497,7 @@ var fuc = {
     },
     /*-----------------------------选择开始时间、结束时间、提醒时间---------------------------*/
 
-    dateAndMap: function() {
+    dateAndMap: function(bool) {
         //日期选择
         selectTimes('#startTime', '.startTime');
         selectTimes('#endTime', '.endTime');
@@ -422,6 +507,7 @@ var fuc = {
                 theme: 'android-holo-light',
                 lang: 'zh',
                 display: 'bottom',
+                disabled:bool,
                 timeWheels: 'yy-mm-dd HHii',
                 dateFormat: 'yy-mm-dd HH:ii',
                 min: new Date(1921, 1, 1),
@@ -437,6 +523,9 @@ var fuc = {
                     var selectedDateArr = inst._wheelArray;//获取选择时间的数组 [yy,mm,dd,hh,ii]
                     var selectedTimeArr = selectedTime.split(" ");
                     var theWeek = Dom.transWeek(selectedDate);
+                    var tf = function (i) {
+                        return (i < 10 ? '0' : '') + i
+                    };
                     $(obj2).html(selectedDateArr[0] + "年" + tf(parseInt(selectedDateArr[1]) + 1) + "月" + tf(selectedDateArr[2]) + "日" + " " + theWeek + " " + selectedTimeArr[1]);
                     var theId = selectedDateArr[0] + "-" + tf(parseInt(selectedDateArr[1]) + 1) + "-" + tf(selectedDateArr[2]) + " " + selectedTimeArr[1] + ":00";
                     $(obj2).attr("id", theId);
@@ -450,50 +539,64 @@ var fuc = {
     },
     /*-------------------------点击取消按钮，事件内容恢复至初始状态----------------------------*/
     resetEvent: function(name, startTime, endTime, tipType, tipTime, repeatType, location, remark) {
+        var that = this;
         $('.eventName').val(name);
         var theStartTime = Dom.tranDate(startTime), theEndTime = Dom.tranDate(endTime);
         $('.startTime').html(theStartTime).attr("id", startTime);
         $('.endTime').html(theEndTime).attr("id", endTime);
-        $('.remindConStart').html(remindArr[tipType]);
-        $('.repetitionConStart').html(repeatArr[repeatType]);
-        if (tipTime) {
+        $('.remindConStart').html(that.config.remindArr[tipType]);
+        $('.repetitionConStart').html(that.config.repeatArr[repeatType]);
+        $('.Addendtime').css("display","none");//隐藏添加结束时间按钮
+        if(theStartTime == theEndTime){//若开始时间等于结束时间，隐藏结束时间
+            $('.endTimeCon').css("height","0px");
+        }
+        if(tipType==3){
+            $('.remind_time').css('display','block');
             $('.remindTime').css("display", "block").val(Dom.tranDate(tipTime)).attr("id", tipTime);
+        }else{
+            $('.remind_time').css('display','none');
         }
         if (location) {//如果事件地点存在
             ac.setInputValue(location);
         } else {
-            $('.othersCon .line').eq(0).css("display", "none");
             $('.site').css("display", "none");
         }
         if (remark) {//如果有备注
             $('.showRemarks').val(remark);
         } else {
-            $('.othersCon .line').eq(1).css("display", "none");
             $('.remarks').css("display", "none");
         }
     },
     /*------------------------------局部刷新参与人-------------------------------------*/
 
     refreshJoiner: function() {
-        $.get("http://www.li-li.cn/llwx/event/detail", {"eventId": eventId}, function (data) {
+        var that = this;
+        $.get("http://www.li-li.cn/llwx/event/detail", {"eventId": that.config.eventId}, function (data) {
             if (data.code == 0) {
                 var list = data.data;
                 if (list.joiner[0]) {//如果存在参与者
-                    $('.others .othersCon .line').eq(2).css("display", "block");
                     $('.participant').css("display", "block");
-                    var html = that.config.template.replace(/{{img}}/g, list.owner.headImgUrl).replace(/{{joinerName}}/g, list.owner.nickName);
+                    if(list.owner.headImgUrl){
+                        var html = that.config.template.replace(/{{dataImg}}/g,list.owner.headImgUrl).replace(/{{img}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{joinerName}}/g, list.owner.nickName);
+                    }else{
+                        var html = that.config.template.replace(/{{dataImg}}/g,"../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{img}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{joinerName}}/g, list.owner.nickName);
+                    }
                     var joinerCount = list.joiner.length + 1;//获得参与者数组长度即参与人数
                     $('.joinerCount').html(joinerCount);
+                    if(list.joiner.length> this.config.rowsCount*2){
+                        $('.acceptPeople').css("height","130px");
+                        $('.showAll').css("display","block");
+                    }
                     for (var m = 0; m < list.joiner.length; m++) {
                         if (list.joiner[m].headImgUrl) {
-                            html += that.config.template.replace(/{{img}}/g, list.joiner[m].headImgUrl).replace(/{{joinerName}}/g, list.joiner[m].nickName);
+                            html += that.config.template.replace(/{{dataImg}}/g,list.joiner[m].headImgUrl).replace(/{{img}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{joinerName}}/g, list.joiner[m].nickName);
                         } else {
-                            html += that.config.template.replace(/{{img}}/g, "images/default_photo.png").replace(/{{joinerName}}/g, list.joiner[m].nickName);
+                            html += that.config.template.replace(/{{dataImg}}/g,"../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{img}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{joinerName}}/g, list.joiner[m].nickName);
                         }
                     }
                     $('.acceptPeople').html("").append(html);
+                    $('.scrollLoading').scrollLoading();
                 } else {
-                    $('.others .othersCon .line').eq(2).css("display", "none");
                     $('.participant').css("display", "none");
                 }
             } else {//数据获取失败
@@ -510,5 +613,4 @@ var fuc = {
         })
     }
 }
-
 fuc.init();

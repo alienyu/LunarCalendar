@@ -34,7 +34,8 @@ var wxConfig = {
         });
         wx.config({
             debug: false,
-            appId: "wx82c10b61c95e9f30",
+            //appId: "wx82c10b61c95e9f30",//正式
+            appId:"wxd8c1d6ab5eb3c981",//测试
             timestamp: timestamp,//时间戳
             nonceStr: noncestr,//随机串
             signature: signature,//签名
