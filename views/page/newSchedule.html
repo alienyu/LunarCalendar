@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>历历-日程</title>
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="full-screen" content="yes">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+</head>
+<body>
+    <header>
+        <div class="current_month">2016年9月</div>
+        <div class="back_today">今日</div>
+    </header>
+    <section id="container">
+        <div class="record">
+            <div class="date out_of_date">
+                <div class="day">20</div>
+                <div class="weekday">周三</div>
+            </div>
+            <div class="content" style="background-color: #c13e3e">
+                <div class="text">
+                    <div class="title">送电影票</div>
+                    <div class="time">07:00-08:00</div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="current_time_line"></div>
+        <div class="record day_end">
+            <div class="date">
+                <div class="day">&nbsp;</div>
+                <div class="weekday">&nbsp;</div>
+            </div>
+            <div class="content" style="background-color: #c13e3e">
+                <div class="text">
+                    <div class="title">送电影票</div>
+                    <div class="time">07:00-08:00</div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="record">
+            <div class="date">
+                <div class="day">20</div>
+                <div class="weekday">周三</div>
+            </div>
+            <div class="content" style="background-color: #c13e3e">
+                <div class="text">
+                    <div class="title">送电影票</div>
+                    <div class="time">07:00-08:00</div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="record">
+            <div class="date">
+                <div class="day">20</div>
+                <div class="weekday">周三</div>
+            </div>
+            <div class="content" style="background: url(../../assets/imgs/page/newSchedule/monthBG/01.jpg) fixed center center no-repeat;background-size: cover;">
+                <div class="text contain_img">
+                    <div class="title">送电影票</div>
+                    <div class="time">07:00-08:00</div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="record">
+            <div class="date">
+                <div class="day">&nbsp;</div>
+                <div class="weekday">&nbsp;</div>
+            </div>
+            <div class="content">
+                <div id="bmap_1" class="bmap"></div>
+                <div class="text contain_map">
+                    <div class="title">送电影票</div>
+                    <div class="time">07:00-08:00</div>
+                    <div class="address">国定东路200号</div>
+                </div>
+                <div class="map_mask"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/05.jpg) fixed center center;">
+            <div class="text">10月</div>
+        </div>
+        <div class="record no_record">
+            <div class="date">
+                <div class="day">20</div>
+                <div class="weekday">周三</div>
+            </div>
+            <div class="content">
+                <a href="javascript:;">没有安排活动,点击可添加活动</a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="current_time_line"></div>
+        <div class="record">
+            <div class="date">
+                <div class="day">20</div>
+                <div class="weekday">周三</div>
+            </div>
+            <div class="content" style="background: url(../../assets/imgs/page/newSchedule/monthBG/01.jpg) center center no-repeat;background-size: cover;">
+                <div class="text contain_img">
+                    <div class="title">送电影票</div>
+                    <div class="time">07:00-08:00</div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="record">
+            <div class="date">
+                <div class="day">&nbsp;</div>
+                <div class="weekday">&nbsp;</div>
+            </div>
+            <div class="content">
+                <div id="bmap_2" class="bmap"></div>
+                <div class="text contain_map">
+                    <div class="title">送电影票</div>
+                    <div class="time">07:00-08:00</div>
+                    <div class="address">国定东路200号</div>
+                </div>
+                <div class="map_mask"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </section>
+
+    <script type="text/template" id="dateListTpl">
+
+    </script>
+
+    <script src="http://api.map.baidu.com/api?v=2.0&ak=Nv4xifhhDjKpB1DP6uDwd3cNbHeH2PaV"></script>
+</body>

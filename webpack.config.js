@@ -108,5 +108,6 @@ initConfig([
     "calendar",
     "addEvent",
     "showEvent",
-    "schedule"
+    "schedule",
+    "newSchedule"
 ])

@@ -1,0 +1,179 @@
+body {
+    box-sizing: border-box;
+    margin: 0px;
+    header {
+        position: fixed;
+        top: 0px;
+        height: 30px;
+        width: 100%;
+        padding: 3px 0px;
+        background-color: #fff;
+        box-shadow: 0px 5px 10px #888888;
+        color: #70CFCE;
+        box-sizing: inherit;
+        z-index: 1001;
+        .current_month {
+            float: left;
+            margin-left: 20%;
+        }
+        .back_today {
+            margin-right: 5%;
+            float: right;
+        }
+    }
+    section {
+        margin-top: 30px;
+        padding-top: 10px;
+        .month_01 {
+            background: url(../../imgs/page/newSchedule/monthBG/01.jpg);
+        }
+        .month_02 {
+            background: url(../../imgs/page/newSchedule/monthBG/02.jpg);
+        }
+        .month_03 {
+            background: url(../../imgs/page/newSchedule/monthBG/03.jpg);
+        }
+        .month_04 {
+            background: url(../../imgs/page/newSchedule/monthBG/04.jpg);
+        }
+        .month_05 {
+            background: url(../../imgs/page/newSchedule/monthBG/05.jpg);
+        }
+        .month_06 {
+            background: url(../../imgs/page/newSchedule/monthBG/06.jpg);
+        }
+        .month_07 {
+            background: url(../../imgs/page/newSchedule/monthBG/07.jpg);
+        }
+        .month_08 {
+            background: url(../../imgs/page/newSchedule/monthBG/08.jpg);
+        }
+        .month_09 {
+            background: url(../../imgs/page/newSchedule/monthBG/09.jpg);
+        }
+        .month_10 {
+            background: url(../../imgs/page/newSchedule/monthBG/10.jpg);
+        }
+        .month_11 {
+            background: url(../../imgs/page/newSchedule/monthBG/11.jpg);
+        }
+        .month_12 {
+            background: url(../../imgs/page/newSchedule/monthBG/12.jpg);
+        }
+        .record {
+            width: 100%;
+            margin-bottom: 10px;
+            &.day_end {
+                margin-bottom: 30px;
+            }
+            .date {
+                float: left;
+                width: 20%;
+                text-align: center;
+                color: #70CFCE;
+                margin-right: -3px;
+                &.out_of_date {
+                    color: #999;
+                }
+                .day {
+                    font-size: 30px;
+                }
+                .weekday {
+                    font-size: 18px;
+                }
+            }
+            .content {
+                //padding: 5px 0px;
+                float: left;
+                position: relative;
+                width: 75%;
+                border-radius: 5px;
+                .text {
+                    &.contain_img {
+                        margin-top: 50px;
+                    }
+                    &.contain_map {
+                        height: 75px;
+                        margin-top: 25px;
+                        position: absolute;
+                        bottom: 15px;
+                        z-index: 102;
+                    }
+                    font-size: 14px;
+                    text-indent: 10px;
+                    color: #fff;
+                    div {
+                        height: 30px;
+                        line-height: 30px;
+                    }
+                }
+                img {
+                    width: 100%;
+                    height: 70px;
+                }
+                .bmap {
+                    border-radius: 5px;
+                    height: 110px;
+                    z-index: 100;
+                }
+                .map_mask {
+                    position: absolute;
+                    left: 0px;
+                    top: 0px;
+                    width: 100%;
+                    height: 100%;
+                    background-color: #000;
+                    opacity: 0.4;
+                    z-index: 101;
+                    border-radius: 5px;
+                }
+                a {
+                    text-decoration: none;
+                    color: #70CFCE;
+                    font-size: 14px;
+                    height: 50px;
+                    line-height: 50px;
+                    text-indent: 20px;
+                }
+            }
+            .clearfix {
+                clear:both;
+                height: 0;
+                line-height: 0;
+                font-size: 0
+            }
+        }
+        .current_time_line {
+            position: relative;
+            width: 75%;
+            margin-left: 18%;
+            border: 1px solid #70CFCE;
+            margin-top: -5px;
+            margin-bottom: 5px;
+            &:before {
+                position: absolute;
+                left: -11px;
+                top: -5px;
+                width: 10px;
+                height: 10px;
+                background-color: #70CFCE;
+                border-radius: 50%;
+                content: "";
+            }
+        }
+        .month_divide {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            margin: 50px 0px;
+            .text {
+                position: absolute;
+                left: 20%;
+                top: 20px;
+                color: #000;
+                font-weight: bold;
+                font-size: 20px;
+            }
+        }
+    }
+}
