@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "f5d4e9d219854a0374a0"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "d69caea66c915ac33abb"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -260,7 +260,7 @@
 /******/ 			hotSetStatus("prepare");
 /******/ 			hotCallback = callback;
 /******/ 			hotUpdate = {};
-/******/ 			var chunkId = 4;
+/******/ 			var chunkId = 5;
 /******/ 			{ // eslint-disable-line no-lone-blocks
 /******/ 				/*globals chunkId */
 /******/ 				hotEnsureUpdateChunk(chunkId);
@@ -583,7 +583,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(35);
+	/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(51);
 	var pageLoad = __webpack_require__(9);
 	var touchSlider = __webpack_require__(10);
 	__webpack_require__(11);
@@ -593,7 +593,7 @@
 	var wx = __webpack_require__(17);
 	var fastClick = __webpack_require__(20);
 	var autoTextArea = __webpack_require__(21);
-	__webpack_require__(38);
+	__webpack_require__(54);
 	var fuc = {
 	    config: {
 	        eventId: Dom.getRequest("eventId"),
@@ -4265,6 +4265,60 @@
 	        var scheHeight = parseInt($('.scheduleList').css('height'));
 	        $('.schedule').css('height', 40 + scheHeight + "px");
 	    },
+	    //比较两个时间
+	    compareTimeDate: function(time, current) {
+	        if(current) {
+	            var curYear = parseInt(current.split(" ")[0].split("-")[0], 10),
+	                curMonth = parseInt(current.split(" ")[0].split("-")[1], 10),
+	                curDay = parseInt(current.split(" ")[0].split("-")[2], 10),
+	                curHour = current.split(" ")[1] ? parseInt(current.split(" ")[1].split(":")[0], 10) : 0,
+	                curMin = current.split(" ")[1] ? parseIntc(current.split(" ")[1].split(":")[1], 10) : 0;
+	        } else {
+	            var today = new Date();
+	            var curYear = today.getFullYear(),
+	                curMonth = today.getMonth() + 1,
+	                curDay = today.getDate(),
+	                curHour = today.getHours(),
+	                curMin = today.getMinutes();
+	        }
+	        var toYear = parseInt(time.split(" ")[0].split("-")[0], 10),
+	            toMonth = parseInt(time.split(" ")[0].split("-")[1], 10),
+	            toDay = parseInt(time.split(" ")[0].split("-")[2], 10),
+	            toHour = time.split(" ")[1] ? parseInt(time.split(" ")[1].split(":")[0], 10) : 0,
+	            toMin = time.split(" ")[1] ? parseIntc(time.split(" ")[1].split(":")[1], 10) : 0;
+	        //比较
+	        if(toYear > curYear) {
+	            return "over";
+	        } else if(toYear < curYear) {
+	            return "below";
+	        } else {
+	            if(toMonth > curMonth) {
+	                return "over";
+	            } else if(toMonth < curMonth) {
+	                return "below";
+	            } else {
+	                if(toDay > curDay) {
+	                    return "over";
+	                } else if(toDay < curDay) {
+	                    return "below";
+	                } else {
+	                    if(toHour > curHour) {
+	                        return "over";
+	                    } else if(toHour < curHour) {
+	                        return "below";
+	                    } else {
+	                        if(toMin > curMin) {
+	                            return "over";
+	                        } else if(toMin < curMin) {
+	                            return "below";
+	                        } else {
+	                            return "equal";
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	    }
 	}
 	
 	Dom.checkUserAgent();
@@ -6337,15 +6391,31 @@
 /* 32 */,
 /* 33 */,
 /* 34 */,
-/* 35 */
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */,
+/* 48 */,
+/* 49 */,
+/* 50 */,
+/* 51 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 36 */,
-/* 37 */,
-/* 38 */
+/* 52 */,
+/* 53 */,
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {/*!
