@@ -77,6 +77,12 @@ var fuc = {
             $(data).each(function(i, e) {
                 var date = e.date;
                 e.isOutOfDate = Dom.compareTimeDate(date) == 'below' ? true : false;
+                e.detailDate = {
+                    year: e.date.split("-")[0],
+                    month: e.date.split('-')[1],
+                    day: e.date.split('-')[2],
+                    weekDay: Dom.transWeek(new Date(e.date))
+                }
             });
         }
         return data;
