@@ -1,6 +1,5 @@
 require("../../css/page/newSchedule.less");
 var pageLoad = require("../common/pageLoad.js");
-require("../vendor/dropLoad/dropLoad.js");
 var wx = require("../vendor/weChat/wxInit.js");
 var Dom = require("../common/dom.js");
 var mask = require("../plugins/mask/mask.js");
@@ -10,17 +9,19 @@ var fuc = {
         pageIndex: 0,
         pageSize: 10,
         scheduleData: [],
-        topDate: "",
-        bottomDate: "",
         direction: "",
+        lastDate: "",
         stopSliderUp: false, //阻止上滑,即不加载后面数据
         stopSliderDown: false //阻止下滑,即不加载前面数据
     },
     init: function() {
         pageLoad({backgroundColor: "#66cccc"});
+        this.initHeadDate();
         this.getData("init");
-        this.renderBMP();
-        this.initDropLoad();
+        this.bindEvent();
+    },
+    initHeadDate: function() {
+        $(".current_month").text(new Date().getFullYear() + "年" + (new Date().getMonth()+1) + "月");
     },
     getData: function(type) {
         var that = this;
@@ -69,6 +70,15 @@ var fuc = {
                 } else {
                     alert(data.msg);
                 }
+            },
+            error: function() {
+                if(type != "init") {
+                    if(that.config.direction == "up") {
+                        that.config.pageIndex --;
+                    } else {
+                        that.config.pageIndex ++;
+                    }
+                }
             }
         })
     },
@@ -88,60 +98,65 @@ var fuc = {
         return data;
     },
     renderBMP: function() {
-        $(".bmap").each(function(i, e) {
+        $(".bmap:not(.has_render)").each(function(i, e) {
             var map = new BMap.Map(e.id);
-            var point = new BMap.Point(116.331398,39.897445);
-            map.centerAndZoom(point,12);
-            // 创建地址解析器实例
-            var myGeo = new BMap.Geocoder();
-            // 将地址解析结果显示在地图上,并调整地图视野
-            myGeo.getPoint("国顺东路200号", function(point){
-                if (point) {
-                    map.centerAndZoom(point, 16);
-                    map.addOverlay(new BMap.Marker(point));
-                }else{
-                    alert("您选择地址没有解析到结果!");
-                }
-            }, "上海市");
-        });
+            var point = new BMap.Point($(e).data('longitude'), $(e).data('latitude'));
+            map.centerAndZoom(point, 15);
+            map.addEventListener("tilesloaded", function () {
+                $(e).find(".anchorBL").remove();
+                $(e).find(".BMap_cpyCtrl").remove();
+                $(e).addClass("has_render");
+            });
+        })
     },
     renderPage: function(data) {
         var tmp = $("#dateListTpl").html();
         var html = _.template(tmp);
-        if(data.type == "init") {
-            $("#container").append(html({data: data}));
-        } else {
+        $("#container").append(html({data: data}));
+        if(data.type != "init") {
 
         }
+        this.renderBMP();
     },
-    initDropLoad: function() {
+    bindEvent: function() {
         var that = this;
-        /*--------------------------上拉刷新、下拉刷新------------------------*/
-        $('#container').dropload({
-            scrollArea:window,
-            domUp:{
-                domClass   : 'dropload-up',
-                domRefresh : '<div class="dropload-refresh">↓下拉加载更多</div>',
-                domUpdate  : '<div class="dropload-update">↑释放加载更多</div>',
-                domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
-            },
-            domDown : {
-                domClass   : 'dropload-down',
-                domRefresh : '<div class="dropload-refresh">↑上拉加载更多</div>',
-                domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
-                domNoData  : '<div class="dropload-noData">暂无数据</div>'
-            },
-            autoLoad:false,//关闭自动加载
-            loadUpFn:function(me){
-                that.config.pageIndex--;
-                console.log(that.config.pageIndex)
-            },
-            loadDownFn:function(me){
-                that.config.pageIndex++;
-                console.log(that.config.pageIndex)
-            },
-            threshold : 50//提前加载距离
+        $("#container").on("swipeUp", function(e) {
+            //上滑==拉取后续数据,判断是否滚动到底部
+            if($(document.body).scrollTop() + $(window).height() == $(document).height()) {
+                //判断是否还有后续数据
+                if(!that.config.stopSliderUp) {
+                    that.config.direction = "up";
+                    that.config.pageIndex ++;
+                    that.config.lastDate = that.getSideDomDate().bottomDate;
+                    that.getData();
+                }
+            }
+            //渲染吸顶日期
+            that.checkHeadDate("up");
         });
+
+        $("#container").on("swipeDown", function(e) {
+            //下拉==拉取先前数据,判断是否滚动到顶部
+            if($(document.body).scrollTop() == 0) {
+                //判断是否还有前面数据
+                if(!that.config.stopSliderDown) {
+                    that.config.direction = "down";
+                    that.config.pageIndex --;
+                    that.config.lastDate = that.getSideDomDate().topDate;
+                    that.getData();
+                }
+            }
+            //渲染吸顶日期
+            that.checkHeadDate("up");
+        });
+    },
+    getSideDomDate: function() {
+        return {
+            topDate: $(".record").first().data("date"),
+            bottomDate: $(".record").last().data("date")
+        }
+    },
+    checkHeadDate: function(direction) {
 
     }
 }
