@@ -100,7 +100,7 @@ var fuc = {
                         for (var i=data.data.length-1;i>=0;i--){
                             scd.push(data.data[i]);
                         }
-                        that.config.scheduleData=scd.that.config.concat(scheduleData);
+                        that.config.scheduleData=scd.concat(that.config.scheduleData);
                         //console.log(scheduleData);
                         that.setView(that.config.scheduleData,that.config.template,that.config.template2);
                         me.resetload();
@@ -170,14 +170,14 @@ var fuc = {
                     if(scheduleData[i].events[j].joiners[0]){
                         joinerNum = parseInt(scheduleData[i].events[j].joiner.length)+1;
                         user = scheduleData[i].events[j].joiners[0].nickName;
-                        eventList += that.config.template2.replace(/{{eventId}}/g,scheduleData[i].events[j].event.eventId).replace(/{{name}}/g,scheduleData[i].events[j].event.name).replace(/{{time}}/g,getHourMinute(scheduleData[i].events[j].event.startTime)).replace(/{{count}}/g,"<span>"+joinerNum+"</span><span>人</span>").replace(/{{user}}/g,"@"+user);
+                        eventList += that.config.template2.replace(/{{eventId}}/g,scheduleData[i].events[j].event.eventId).replace(/{{name}}/g,scheduleData[i].events[j].event.name).replace(/{{time}}/g,Dom.getHourMinute(scheduleData[i].events[j].event.startTime)).replace(/{{count}}/g,"<span>"+joinerNum+"</span><span>人</span>").replace(/{{user}}/g,"@"+user);
                     }else{
-                        eventList += that.config.template2.replace(/{{eventId}}/g,scheduleData[i].events[j].event.eventId).replace(/{{name}}/g,scheduleData[i].events[j].event.name).replace(/{{time}}/g,getHourMinute(scheduleData[i].events[j].event.startTime)).replace(/{{count}}/g,"").replace(/{{user}}/g,"");
+                        eventList += that.config.template2.replace(/{{eventId}}/g,scheduleData[i].events[j].event.eventId).replace(/{{name}}/g,scheduleData[i].events[j].event.name).replace(/{{time}}/g,Dom.getHourMinute(scheduleData[i].events[j].event.startTime)).replace(/{{count}}/g,"").replace(/{{user}}/g,"");
                     }
                 }else{
                     joinerNum = parseInt(scheduleData[i].events[j].joiner.length)+1;
                     user=scheduleData[i].events[j].owner.nickName;
-                    eventList += that.config.template2.replace(/{{eventId}}/g,scheduleData[i].events[j].event.eventId).replace(/{{name}}/g,scheduleData[i].events[j].event.name).replace(/{{time}}/g,getHourMinute(scheduleData[i].events[j].event.startTime)).replace(/{{count}}/g,"<span>"+joinerNum+"</span><span>人</span>").replace(/{{user}}/g,"#"+user);
+                    eventList += that.config.template2.replace(/{{eventId}}/g,scheduleData[i].events[j].event.eventId).replace(/{{name}}/g,scheduleData[i].events[j].event.name).replace(/{{time}}/g,Dom.getHourMinute(scheduleData[i].events[j].event.startTime)).replace(/{{count}}/g,"<span>"+joinerNum+"</span><span>人</span>").replace(/{{user}}/g,"#"+user);
                 }
             }
             $('.eventList').eq(i).append(eventList);

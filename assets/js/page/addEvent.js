@@ -20,11 +20,11 @@ var fuc = {
 },
     init: function() {
         pageLoad({backgroundColor: "#66cccc"});
-        this.config.time = Dom.getRequest("date");
+        this.config.time = this.ifTimeExist(Dom.getRequest("date"));
         this.config.timeArr = this.transTime(this.config.time);
         this.rem();
-        this.renderPage();
         this.addRemind();
+        this.renderPage();
         this.bindEvent();
     },
     rem: function() {
@@ -110,6 +110,18 @@ var fuc = {
         return time;
     },
     /*-------------------------------转换日期格式，开始时间加10分钟，结束时间加20分钟-------------------------------------*/
+    ifTimeExist:function(time){
+        var that = this;
+        if(!time){
+            var d = new Date();//获得当天日期
+            var years = d.getFullYear();
+            var months = d.getMonth() + 1;
+            var days = that.tf(d.getDate());
+            return years + "-" + months + "-" + days;
+        }else{
+            return time;
+        }
+    },
     transTime: function(time) {
         var date = new Date();
         var timeArr = time.split('-');

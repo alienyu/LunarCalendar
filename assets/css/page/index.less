@@ -12,7 +12,43 @@ html, body {
     top: 0px;
     left: 0px;
 }
-
+/*-------随天气变化的背景图片--------*/
+.cloudsDay{
+  background: url("../../imgs/page/index/clouds_bg.jpg") no-repeat center center;
+}
+.cloudsNight{
+  background: url("../../imgs/page/index/clouds_night_bg.jpg") no-repeat center center;
+}
+.fairDay{
+  background: url("../../imgs/page/index/fair_bg.jpg") no-repeat center center;
+}
+.fairNight{
+  background: url("../../imgs/page/index/fair_night_bg.jpg") no-repeat center center;
+}
+.fogDay{
+  background: url("../../imgs/page/index/fog_bg.jpg") no-repeat center center;
+}
+.fogNight{
+  background: url("../../imgs/page/index/fog_night_bg.jpg") no-repeat center center;
+}
+.hazeDay{
+  background: url("../../imgs/page/index/haze_bg.jpg") no-repeat center center;
+}
+.hazeNight{
+  background: url("../../imgs/page/index/haze_night_bg.jpg") no-repeat center center;
+}
+.rainDay{
+  background: url("../../imgs/page/index/rain_bg.jpg") no-repeat center center;
+}
+.rainNight{
+  background: url("../../imgs/page/index/rain_night_bg.jpg") no-repeat center center;
+}
+.snowDay{
+  background: url("../../imgs/page/index/snow_bg.jpg") no-repeat center center;
+}
+.snowNight{
+  background: url("../../imgs/page/index/snow_night_bg.jpg") no-repeat center center;
+}
 .con {
     width: 100%;
     height: 100%;
@@ -31,6 +67,7 @@ html, body {
     left: 12px;
     font-size: 14px;
     font-family: "HanHei SC", 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'STHeitiSC-Light', 'Arial', sans-serif;
+    overflow:hidden;
 }
 
 .con .day{
@@ -49,9 +86,10 @@ html, body {
     padding-top: 40px;
     padding-left: 10px;
 }
-.con .week,.con .lunarCalendar{
+.con .week,.con .lunarCalendar,.con .weather{
     height: 20px;
     line-height: 20px;
+    clear: both;
 }
 .con .month{
     height:30px;

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加活动</title>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="x5-orientation" content="portrait">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+</head>
+<body>
+<div class="eventCon fs14">
+    <div class="topTips">
+        <div class="tipsCon"></div>
+        <div class="showAll">
+            <span></span>
+        </div>
+    </div>
+    <div class="item eventTitle">
+        <textarea class="eventName" id="eventTitle" placeholder="输入标题" rows="1"></textarea>
+    </div>
+    <div class="item time">
+        <div class="icon">
+            <img src="../../assets/imgs/page/activity/ic_schedule.png" alt="">
+        </div>
+        <div class="itemCon">
+            <div class="startTime">
+                <span class="timeText">开始</span>
+                <span class="startCon timeCon">2016年9月20日 星期二 13:00</span>
+                <div class="timeIconCon">
+                    <span class="timeIcon"></span>
+                </div>
+            </div>
+            <input type="text" id="startTime">
+            <div class="endTime">
+                <span class="timeText">结束</span>
+                <span class="endCon timeCon">2016年9月20日 星期二 13:00</span>
+            </div>
+            <input type="text" id="endTime">
+        </div>
+    </div>
+    <div class="item repetition">
+        <div class="icon">
+            <img src="../../assets/imgs/page/activity/ic_refresh@2x.png" alt="">
+        </div>
+        <div class="itemCon">
+            <select name="select" class="select fs14" id="select">
+                <option value="0">不重复</option>
+                <option value="1">每天</option>
+                <option value="2">每周</option>
+                <option value="3">每工作日</option>
+                <option value="4">每月</option>
+                <option value="5">每年</option>
+            </select>
+        </div>
+    </div>
+    <div class="activityCon">
+        <div class="item site">
+            <div class="icon">
+                <img src="../../assets/imgs/page/activity/ic_place.png" alt="">
+            </div>
+            <div class="itemCon">
+                <div class="site ccc">添加地点</div>
+                <!--<textarea name="site" id="site" class="fs26" rows="1" placeholder="添加地点"></textarea>-->
+            </div>
+        </div>
+        <div class="item remind">
+            <div class="icon">
+                <img src="../../assets/imgs/page/activity/ic_remind@2x.png" alt="">
+            </div>
+            <div class="itemCon">
+                <div class="remindCon">
+                    <select name="select" class="select fs14" id="select1">
+                        <option value="0">不提醒</option>
+                        <option value="1" selected>当天通知</option>
+                        <option value="2">前一天</option>
+                        <option value="3">指定时间</option>
+                    </select>
+                </div>
+                <div class="remindTime"></div>
+                <input type="text" id="remindTime">
+            </div>
+        </div>
+        <div class="item color">
+            <div class="icon">
+                <span class="colorShow"></span>
+            </div>
+            <div class="itemCon">
+                <div class="colorText">默认颜色</div>
+            </div>
+        </div>
+        <div class="item remark">
+            <div class="icon">
+                <img src="../../assets/imgs/page/activity/ic_sort.png" alt="">
+            </div>
+            <div class="itemCon">
+                <div class="remark ccc">添加备注</div>
+                <!--<textarea name="remarks" id="remarks" class="fs26" rows="1" placeholder="添加备注"></textarea>-->
+            </div>
+        </div>
+        <div class="item share">
+            <div class="icon">
+                <img src="../../assets/imgs/page/activity/ic_social.png" alt="">
+            </div>
+            <div class="itemCon">
+                <span>邀请微信好友</span>
+            </div>
+        </div>
+    </div>
+    <a href="javascript:;" class="saveBtn cff">保存活动</a>
+    <div class="delete fs12">删除此活动</div>
+</div>
+<!--标题标签模板-->
+<script type="text/x-list" id="tagListTemplate">
+    <a href="javascript:;" class="c00" data-template="{{templateId}}" data-tag="{{tagId}}">{{tagName}}</a>
+</script>
+<!--点击完成，若开始时间在结束时间之后，则弹出提示框-->
+<div class="weui_dialog_alert" id="dialog2" style="display: none;">
+    <div class="weui_mask"></div>
+    <div class="weui_dialog">
+        <div class="weui_dialog_hd"><strong class="weui_dialog_title">温馨提示</strong></div>
+        <div class="weui_dialog_bd">结束时间不能在开始时间之前</div>
+        <div class="weui_dialog_ft">
+            <a href="javascript:;" class="weui_btn_dialog primary">确定</a>
+        </div>
+    </div>
+</div>
+<div class="weui_dialog_confirm" id="dialog1" style="display: none;">
+    <div class="weui_mask"></div>
+    <div class="weui_dialog">
+        <div class="weui_dialog_hd">
+            <strong class="weui_dialog_title">温馨提示</strong>
+        </div>
+        <div class="weui_dialog_bd">确认保存事件并分享给好友吗？</div>
+        <div class="weui_dialog_ft">
+            <a href="javascript:;" class="weui_btn_dialog default">取消</a>
+            <a href="javascript:;" class="weui_btn_dialog primary confirm">确定</a>
+        </div>
+    </div>
+</div>
+<!--提示用户点击右上角实现分享功能-->
+<div class="shareShadow" id="shareShadow">
+    <div class="shadowImg">
+        <img src="../../assets/imgs/page/addEvent/share-tips.png" alt="">
+    </div>
+    <div class="qrcodeImgBox">
+        <div class="qrcodeImgCon">
+
+        </div>
+    </div>
+</div>
+<!----------------选择颜色------------------>
+<div class="colorShadow shadow" id="selectColor" style="display: none;">
+
+</div>
+<!----------地图弹层----------------->
+<div class="mapShadow shadow" id="mapShadow">
+    <div class="container">
+        <div class="mapCon" id="mapCon">
+
+        </div>
+        <div class="imgCon" id="imgCon"></div>
+        <div class="addressCon">
+            <div class="item">
+                <div class="icon">
+                    <img src="../../assets/imgs/page/activity/ic_place.png" alt="">
+                </div>
+                <div class="itemCon">
+                    <span class="name">上海</span>
+                    <span class="address fs12 c33">邀请微信好友</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--横屏-->
+<div id="orientLayer" class="mod-orient-layer">
+    <div class="mod-orient-layer__content"><i class="icon mod-orient-layer__icon-orient"></i>
+        <div class="mod-orient-layer__desc">为了更好的体验，请使用竖屏浏览</div>
+    </div>
+</div>
+<script  type="text/x-address" id="addressListTemplate">
+    <div class="item">
+                <div class="icon">
+                    <img src="../../assets/imgs/page/activity/ic_place.png" alt="">
+                </div>
+                <div class="itemCon">
+                    <span class="name">{{name}}</span>
+                    <span class="address fs12 c33">{{address}}</span>
+                </div>
+            </div>
+</script>
+</body>
+</html>

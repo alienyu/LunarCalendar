@@ -6,6 +6,7 @@ body {
   scrollbar-base-color: #ffffff;
   scrollbar-darkshadow-color: #fff;
   scrollbar-highlight-color: #fff;
+  color: #000;
 }
 body,
 div,
@@ -89,7 +90,6 @@ nav {
   display: block;
 }
 a {
-  color: #246183;
   text-decoration: none;
 }
 html {
@@ -138,12 +138,6 @@ select:focus {
 .show {
   display: block;
 }
-.icon {
-  background: url(/wx/./img/9b4c2109a9bc463d76cbb303b94f4238.png) no-repeat;
-  width: 36px;
-  height: 36px;
-  display: block;
-}
 .icon_set {
   background-position: 0 -64px;
 }
@@ -167,6 +161,9 @@ select:focus {
 }
 .c00 {
   color: #000;
+}
+.ccc {
+  color: #ccc;
 }
 .cgreen {
   color: #00cc00;
@@ -213,6 +210,9 @@ select:focus {
 }
 .fs12 {
   font-size: 12px;
+}
+.fs14 {
+  font-size: 14px;
 }
 .fs18 {
   font-size: 0.18rem;

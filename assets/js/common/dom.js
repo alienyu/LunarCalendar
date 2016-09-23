@@ -57,6 +57,7 @@ var Dom = {
     },
     /*--------------------处理事件的日期----------------------*/
     tranDayDate: function(date) {
+        var that = this;
         var dateArr = date.split(" ");
         var timeArr = dateArr[0].split("-"),
             time = dateArr[0].replace(/\-/g,"/");
@@ -64,7 +65,7 @@ var Dom = {
         var ca = new transCalendar(),
             theDay = timeArr[2];
         var theNlArr = ca.getls(theDate);
-        var theWeek = transWeek(theDate);
+        var theWeek = that.transWeek(theDate);
         var nlDate = theNlArr[2]+"月"+theNlArr[3],
             month = timeArr[0]+"年"+timeArr[1]+"月";
         return [theDay,theWeek,nlDate,month,dateArr[0]];//返回当天是几日、星期几、农历月日、年月、没有时分秒的日期
@@ -97,6 +98,7 @@ var Dom = {
         return week;
     },
     transDate: function(date, showWeek) {
+        var that = this;
         var ca = new transCalendar();
         var dateArr = date.split(" ");
         var dateTimeArr = dateArr[0].split("-");
@@ -104,7 +106,7 @@ var Dom = {
         var theNl = ca.getls(theDate);
         var theNlDate = '',week="";
         if(showWeek){
-            week = this.transWeek(theDate);
+            week = that.transWeek(theDate);
         }
         if(dateArr[1]){//若时间格式为 yyyy-mm-dd hh:ii
             theNlDate =dateTimeArr[0]+"年"+theNl[2]+"月"+theNl[3]+"&nbsp;&nbsp;"+week+"&nbsp;&nbsp;"+dateArr[1];
@@ -115,12 +117,13 @@ var Dom = {
     },
     /*-------------------------转换获取的开始时间、结束时间、提醒时间格式---------------*/
     tranDate:function(date){
+        var that = this;
         var time = date.split(" ");
         var dateArr = time[0].split("-");
         var timeStr = time[0].replace(/\-/g, "/");
         var hourArr = time[1].split(":");//将时分秒分割为数组
         var theDate = new Date(timeStr);//将日期转换成标准格式
-        var theWeek = Dom.transWeek(theDate);//获取当前时间对应的星期
+        var theWeek = that.transWeek(theDate);//获取当前时间对应的星期
         return dateArr[0] + "年" + dateArr[1] + "月" + dateArr[2] + "日" + " " + theWeek + " " + hourArr[0] + ":" + hourArr[1];
     },
     getDateList: function() {

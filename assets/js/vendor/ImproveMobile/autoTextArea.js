@@ -59,9 +59,9 @@ function autoTextarea(elem, extra, maxHeight) {
     change();
 };
 
-var site = document.getElementById("site"),
-    remark = document.getElementById("remarks"),
-    eventTitle = document.getElementById("eventTitle");
-autoTextarea(site);// 调用
-autoTextarea(remark);
+//var site = document.getElementById("site"),
+    //remark = document.getElementById("remarks"),
+  var  eventTitle = document.getElementById("eventTitle");
+//autoTextarea(site);// 调用
+//autoTextarea(remark);
 autoTextarea(eventTitle);
