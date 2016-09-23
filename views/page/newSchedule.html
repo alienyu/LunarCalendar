@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>历历-日程</title>
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="full-screen" content="yes">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+</head>
+<body>
+    <header>
+        <div class="current_month">2016年9月</div>
+        <div class="back_today">今日</div>
+    </header>
+    <section id="container"></section>
+
+    <script type="text/template" id="dateListTpl">
+        <% var eventArr = data.dataArr; %>
+        <!--渲染类型,init表示首次进入页面-->
+        <% var type = data.type; %>
+        <!--今天的数据(year, month ,day, weekDay, isToday)-->
+        <% var today = data.today %>
+        <% if(type == "init") { %>
+            <!--初始化并且今天之后无数据-->
+            <% if(eventArr.length < 1) { %>
+                <!--是否是月首-->
+                <% if(today.day == 1) { %>
+                    <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= today.month %>.jpg) fixed center center;">
+                        <div class="text"><%= today.month %>月</div>
+                    </div>
+                <% } %>
+                <div class="record no_record first_day" data-date="<%= today.year + '-' + today.month + '-' + today.day %>">
+                    <div class="date">
+                        <div class="day"><%= today.day %></div>
+                        <div class="weekday"><%= today.weekDay %></div>
+                    </div>
+                    <div class="content">
+                        <a href="javascript:;">没有安排活动,点击可添加活动</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div id="today" class="current_time_line"></div>
+            <% } else { %>
+            <!--初始化今天之后有数据-->
+                <!--今天无数据-->
+                <% if(today.isToday == false) { %>
+                    <!--是否是月首-->
+                    <% if(today.day == 1) { %>
+                        <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= today.month %>.jpg) fixed center center;">
+                            <div class="text"><%= today.month %>月</div>
+                        </div>
+                    <% } %>
+                    <div class="record no_record first_day" data-date="<%= today.year + '-' + today.month + '-' + today.day %>">
+                        <div class="date">
+                            <div class="day"><%= today.day %></div>
+                            <div class="weekday"><%= today.weekDay %></div>
+                        </div>
+                        <div class="content">
+                            <a href="javascript:;">没有安排活动,点击可添加活动</a>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="current_time_line"></div>
+                    <!--开始渲染今天之后的数据-->
+                    <% for(var i=0;i<eventArr.length;i++) { %>
+                        <!--某一天的数据集合-->
+                        <% var dayData = eventArr[i]; %>
+                        <!--某一天的具体信息-->
+                        <% var timeData = dayData.events; %>
+                        <% for(var j=0;j<timeData.length;j++) { %>
+                            <!--某一天中得某一条-->
+                            <% var timeDetail = timeData[j]; %>
+                            <!--是否是月首-->
+                            <% if(j == 0 && dayData.firstEventDayOfMonth) { %>
+                                <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= today.month %>.jpg) fixed center center;">
+                                    <div class="text"><%= parseInt(dayData.date.split("-")[1], 10) %>月</div>
+                                </div>
+                            <% } %>
+                            <!--渲染具体记录-->
+                            <div class="record first_day <%= (j== timeData.length -1) ? 'day_end' : '' %>" data-date="<%= dayData.date %>">
+                                <div class="date <%= j != 0 ? 'invisibile' : '' %>">
+                                    <div class="day"><%= dayData.detailDate.day %></div>
+                                    <div class="weekday"><%= dayData.detailDate.weekDay %></div>
+                                </div>
+                                <!--定义背景元素-->
+                                <% if(timeDetail.longitude == '') { %>
+                                    <% if(timeDetail.material.url != '') { %>
+                                        <div class="content" style="background: url(<%= timeDetail.material.url %>) center center no-repeat;background-size: cover;">
+                                    <% } else { %>
+                                        <div class="content" style="background-color: <%= timeDetail.bgColor %>">
+                                    <% } %>
+                                <% } else { %>
+                                    <div class="content">
+                                <% } %>
+                                    <% if(timeDetail.longitude != "") { %>
+                                        <div id="bmap_<%= timeDetail.eventId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
+                                        <div class="map_mask"></div>
+                                     <% } %>
+                                    <div class="text <%= timeDetail.longitude ? 'contain_map' : timeDetail.material.url ? 'contain_img' : '' %>">
+                                        <div class="title"><%= timeDetail.name %></div>
+                                        <div class="time"><%= timeDetail.startTime.split(' ')[1] %>-<%= timeDetail.endTime.split(' ')[1] %></div>
+                                        <div class="address"><%= timeDetail.location %></div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        <% } %>
+                    <% } %>
+                <% } %>
+            <% } %>
+        <% } else { %>
+            <!--上拉下滑的数据-->
+            <% for(var i=0;i<eventArr.length;i++) { %>
+            <!--某一天的数据集合-->
+                <% var dayData = eventArr[i]; %>
+                <!--某一天的具体信息-->
+                <% var timeData = dayData.events; %>
+                <% for(var j=0;j<timeData.length;j++) { %>
+                    <!--某一天中得某一条-->
+                    <% var timeDetail = timeData[j]; %>
+                    <!--是否是月首-->
+                    <% if(j == 0 && dayData.firstEventDayOfMonth) { %>
+                        <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= today.month %>.jpg) fixed center center;">
+                            <div class="text"><%= parseInt(dayData.date.split("-")[1], 10) %>月</div>
+                        </div>
+                    <% } %>
+                    <!--渲染具体记录-->
+                    <div class="record first_day <%= (j== timeData.length -1) ? 'day_end' : '' %>" data-date="<%= dayData.date %>">
+                        <div class="date <%= j != 0 ? 'invisibile' : '' %> <%= dayData.detailDate.isOutOfDate ? 'out_of_date' : '' %>">
+                            <div class="day"><%= dayData.detailDate.day %></div>
+                            <div class="weekday"><%= dayData.detailDate.weekDay %></div>
+                        </div>
+                        <!--定义背景元素-->
+                        <% if(timeDetail.longitude == '') { %>
+                            <% if(timeDetail.material.url != '') { %>
+                                <div class="content" style="background: url(<%= timeDetail.material.url %>) center center no-repeat;background-size: cover;">
+                            <% } else { %>
+                                <div class="content" style="background-color: <%= timeDetail.bgColor %>">
+                             <% } %>
+                        <% } else { %>
+                            <div class="content">
+                        <% } %>
+                            <% if(timeDetail.longitude != "") { %>
+                                <div id="bmap_<%= timeDetail.eventId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
+                                <div class="map_mask"></div>
+                            <% } %>
+                            <div class="text <%= timeDetail.longitude ? 'contain_map' : timeDetail.material.url ? 'contain_img' : '' %>">
+                                <div class="title"><%= timeDetail.name %></div>
+                                <div class="time"><%= timeDetail.startTime.split(' ')[1] %>-<%= timeDetail.endTime.split(' ')[1] %></div>
+                                <div class="address"><%= timeDetail.location %></div>
+                            </div>
+                        </div>
+                         <div class="clearfix"></div>
+                    </div>
+                <% } %>
+            <% } %>
+        <% } %>
+    </script>
+    <script src="http://api.map.baidu.com/api?v=2.0&ak=Nv4xifhhDjKpB1DP6uDwd3cNbHeH2PaV"></script>
+</body>

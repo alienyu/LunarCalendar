@@ -109,5 +109,6 @@ initConfig([
     "addEvent",
     "showEvent",
     "schedule",
-    "activity"
+    "activity",
+    "newSchedule"
 ])
