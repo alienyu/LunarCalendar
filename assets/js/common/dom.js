@@ -246,7 +246,7 @@ var Dom = {
             year: year,
             month: month,
             day: day,
-            weekDay: this.transWeek(today.getDay()),
+            weekDay: this.transWeek(today),
             isToday: isToday
         }
     }

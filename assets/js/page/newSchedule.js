@@ -12,11 +12,13 @@ var fuc = {
         scheduleData: [],
         topDate: "",
         bottomDate: "",
-        direction: ""
+        direction: "",
+        stopSliderUp: false, //阻止上滑,即不加载后面数据
+        stopSliderDown: false //阻止下滑,即不加载前面数据
     },
     init: function() {
         pageLoad({backgroundColor: "#66cccc"});
-        this.getData();
+        this.getData("init");
         this.renderBMP();
         this.initDropLoad();
     },
@@ -41,14 +43,43 @@ var fuc = {
                 mask.close();
                 if(data.code == 0) {
                     var newData = {},
-                    today = Dom.getToday(data.length > 0 ? data[0].date : "");
-                    $.extend(newData, {arr: data.data, type: type, today: today});
-                    that.renderPage(newData);
+                    today = Dom.getToday(data.data.length > 0 ? data.data[0].date : "");
+                    //初始化
+                    newData.dataArr = that.dealData(data.data);
+                    if(type == "init") {
+                        //没有数据说明今天以后一条数据都没有了
+                        if(data.data.length < 1) {
+                            that.config.stopSliderUp = true;
+                        }
+                        $.extend(newData, {type: type, today: today});
+                        that.renderPage(newData);
+                    } else {
+                        //滑动判断
+                        if(data.data.length < 1) {
+                            if(that.config.direction == "up") {
+                                that.config.stopSliderUp = true;
+                            } else if(that.config.direction == "down") {
+                                that.config.stopSliderDown = true;
+                            }
+                        } else {
+                            $.extend(newData, {type: type, today: today});
+                            that.renderPage(newData);
+                        }
+                    }
                 } else {
                     alert(data.msg);
                 }
             }
         })
+    },
+    dealData: function(data) {
+        if(data.length > 0) {
+            $(data).each(function(i, e) {
+                var date = e.date;
+                e.isOutOfDate = Dom.compareTimeDate(date) == 'below' ? true : false;
+            });
+        }
+        return data;
     },
     renderBMP: function() {
         $(".bmap").each(function(i, e) {
@@ -69,7 +100,13 @@ var fuc = {
         });
     },
     renderPage: function(data) {
+        var tmp = $("#dateListTpl").html();
+        var html = _.template(tmp);
+        if(data.type == "init") {
+            $("#container").append(html({data: data}));
+        } else {
 
+        }
     },
     initDropLoad: function() {
         var that = this;
