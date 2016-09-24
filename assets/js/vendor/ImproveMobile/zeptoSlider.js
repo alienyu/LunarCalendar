@@ -60,4 +60,32 @@
             }, duration);
         };
     })(Zepto);
+
+    (function($) {
+        $.fn.scrollTo = function(ops) {
+            this.options = $.extend({
+                toTo: 0,
+                duration: 500
+            }, ops);
+            var curPos = $(document.body).scrollTop();
+            var distance = this.options.toTo - curPos;
+            var times = parseInt((this.options.duration / 20), 10);
+            var step = distance / times;
+            window.fuc = setInterval(function() {
+                if(distance > 0) {
+                    if($(document.body).scrollTop() >= that.options.toTo) {
+                        clearInterval(window.fuc);
+                    } else {
+                        $(document.body).scrollTop($(document.body).scrollTop() + step);
+                    }
+                } else {
+                    if($(document.body).scrollTop() <= that.options.toTo) {
+                    clearInterval(window.fuc);
+                    } else {
+                        $(document.body).scrollTop($(document.body).scrollTop() + step);
+                    }
+                }
+            }, 20);
+        }
+    })(Zepto);
 })(Zepto);
