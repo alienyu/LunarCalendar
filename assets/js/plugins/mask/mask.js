@@ -5,7 +5,7 @@ var mask = {
         $("body").append(html);
     },
     open: function() {
-        $(".mask").css({"display": "block", "height":$(document).height()});
+        $(".mask").css({"display": "block", "height":($(document).height() < $(window).height()) ? $(window).height() : $(document).height()});
         $('.loading').css("display", "block");
     },
     close: function() {

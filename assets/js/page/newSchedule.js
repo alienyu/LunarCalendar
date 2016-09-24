@@ -3,19 +3,24 @@ var pageLoad = require("../common/pageLoad.js");
 var wx = require("../vendor/weChat/wxInit.js");
 var Dom = require("../common/dom.js");
 var mask = require("../plugins/mask/mask.js");
+require("../vendor/ImproveMobile/zeptoSlider.js")
 var _ = require("../vendor/underscore.js");
 var fuc = {
     config: {
         pageIndex: 0,
+        pageUp: 0, //下滑页码
+        pageDown: 0, //上滑页码
         pageSize: 10,
         scheduleData: [],
         direction: "",
         lastDate: "",
+        bottomDate: "", //拉取以前的数据中最后一条的日期
+        monthPos: {},
         stopSliderUp: false, //阻止上滑,即不加载后面数据
         stopSliderDown: false //阻止下滑,即不加载前面数据
     },
     init: function() {
-        pageLoad({backgroundColor: "#66cccc"});
+        //pageLoad({backgroundColor: "#66cccc"});
         this.initHeadDate();
         this.getData("init");
         this.bindEvent();
@@ -33,15 +38,15 @@ var fuc = {
         if(type != "init") {
             $.extend(param, {
                 direction: that.config.direction, //选填，方向，上拉传up，下拉传down，进入页面时不传
-                lastDate: that.config.direction == "up" ? that.config.bottomDate : that.config.topDate //选填，进入页面时不传，上拉传最下面一天，下拉传最上面一天
+                lastDate: that.config.lastDate //选填，进入页面时不传，上拉传最下面一天，下拉传最上面一天
             });
         }
         $.ajax({
             type: "get",
             url: "/event/getSchedule",
             data: param,
+            async: false,
             success: function(data) {
-                mask.close();
                 if(data.code == 0) {
                     var newData = {},
                     today = Dom.getToday(data.data.length > 0 ? data.data[0].date : "");
@@ -64,19 +69,24 @@ var fuc = {
                             }
                         } else {
                             $.extend(newData, {type: type, today: today});
+                            if(that.config.direction == "down") {
+                                that.config.bottomDate = data.data[0].date;
+                            }
                             that.renderPage(newData);
                         }
                     }
                 } else {
+                    mask.close();
                     alert(data.msg);
                 }
             },
             error: function() {
+                mask.close();
                 if(type != "init") {
                     if(that.config.direction == "up") {
-                        that.config.pageIndex --;
+                        that.config.pageIndex = --that.config.pageUp;
                     } else {
-                        that.config.pageIndex ++;
+                        that.config.pageIndex = ++that.config.pageDown;
                     }
                 }
             }
@@ -112,42 +122,75 @@ var fuc = {
     renderPage: function(data) {
         var tmp = $("#dateListTpl").html();
         var html = _.template(tmp);
-        $("#container").append(html({data: data}));
-        if(data.type != "init") {
-
+        if(data.type == "init") {
+            $("#container").append(html({data: data}));
+            $(document.body).scrollTop(0);
+        } else {
+            if(this.config.direction == "up") {
+                $("#container").append(html({data: data}));
+            } else {
+                //如果新数据中最后一条与原数据第一条不是同年同月的就给原数据补充头部月份图
+                var dom = $("#container .record").first();
+                var firstDate = dom.data("date");
+                if((this.config.bottomDate.split("-")[0] != firstDate.split("-")[0]) || (this.config.bottomDate.split("-")[1] != firstDate.split("-")[1])) {
+                    var month = firstDate.split('-')[1];
+                    var monthDom = '<div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/' + month + '.jpg) fixed center center;"><div class="text">' + month + '月</div></div>';
+                    $("#container").find("div").first().before(monthDom);
+                    dom.addClass("first_day");
+                }
+                $("#container").find("div").first().before(html({data: data}));
+            }
         }
         this.renderBMP();
+        mask.close();
+        this.calculateMonthPos();
+    },
+    calculateMonthPos: function() {
+        var that = this;
+        this.config.monthPos = {};
+        this.config.monthPos.min = "";
+        this.config.monthPos.list = {};
+        $(".first_day").each(function(i ,e){
+            var key = $(e).attr("class").split(" ")[2];
+            var position = $(e).position().top - 30;
+            that.config.monthPos.list[key] = position;
+            if(i == 0) {
+                that.config.monthPos.min = position;
+            }
+        });
+        console.log(this.config.monthPos);
     },
     bindEvent: function() {
         var that = this;
         $("#container").on("swipeUp", function(e) {
-            //上滑==拉取后续数据,判断是否滚动到底部
-            if($(document.body).scrollTop() + $(window).height() == $(document).height()) {
-                //判断是否还有后续数据
-                if(!that.config.stopSliderUp) {
-                    that.config.direction = "up";
-                    that.config.pageIndex ++;
-                    that.config.lastDate = that.getSideDomDate().bottomDate;
-                    that.getData();
-                }
+            //判断是否还有后续数据
+            if(!that.config.stopSliderUp) {
+                that.config.direction = "up";
+                that.config.pageIndex = ++that.config.pageUp;
+                that.config.lastDate = that.getSideDomDate().bottomDate;
+                that.getData();
             }
-            //渲染吸顶日期
-            that.checkHeadDate("up");
         });
 
         $("#container").on("swipeDown", function(e) {
-            //下拉==拉取先前数据,判断是否滚动到顶部
-            if($(document.body).scrollTop() == 0) {
-                //判断是否还有前面数据
-                if(!that.config.stopSliderDown) {
-                    that.config.direction = "down";
-                    that.config.pageIndex --;
-                    that.config.lastDate = that.getSideDomDate().topDate;
-                    that.getData();
-                }
+            //判断是否还有前面数据
+            if(!that.config.stopSliderDown) {
+                that.config.direction = "down";
+                that.config.pageIndex = --that.config.pageDown;
+                that.config.lastDate = that.getSideDomDate().topDate;
+                that.getData();
             }
+        });
+
+        $(window).on("scroll", function() {
             //渲染吸顶日期
-            that.checkHeadDate("up");
+            that.checkHeadDate($(document.body).scrollTop() + parseInt($(window).height()/2), 10);
+        });
+
+        //go today
+        $(".back_today").on("tap", function(e) {
+            var todayPos = $("#today").position().top;
+
         });
     },
     getSideDomDate: function() {
@@ -156,8 +199,28 @@ var fuc = {
             bottomDate: $(".record").last().data("date")
         }
     },
-    checkHeadDate: function(direction) {
-
+    checkHeadDate: function(pos) {
+        //如果有跨月的情况
+        if(this.config.monthPos.min) {
+            if(pos < this.config.monthPos.min) {
+                var date = $(".record").first().data("date");
+                var text = date.split("-")[0] + "年" + date.split("-")[1] + "月";
+                $(".current_month").text(text);
+                return false;
+            } else {
+                var resultKey = "";
+                for(var i in this.config.monthPos.list) {
+                    if(pos > this.config.monthPos.list[i]) {
+                        resultKey = i;
+                    } else {
+                        break;
+                    }
+                }
+                var date = $("." + resultKey).data("date");
+                var text = date.split("-")[0] + "年" + date.split("-")[1] + "月";
+                $(".current_month").text(text);
+            }
+        }
     }
 }
 

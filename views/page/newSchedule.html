@@ -33,7 +33,7 @@
                         <div class="text"><%= today.month %>月</div>
                     </div>
                 <% } %>
-                <div class="record no_record first_day" data-date="<%= today.year + '-' + today.month + '-' + today.day %>">
+                <div class="record no_record <%= today.day == 1 ? 'first_day' + ' headDate_' + today.year + '_' + today.month : '' %>" data-date="<%= today.year + '-' + today.month + '-' + today.day %>">
                     <div class="date">
                         <div class="day"><%= today.day %></div>
                         <div class="weekday"><%= today.weekDay %></div>
@@ -54,7 +54,7 @@
                             <div class="text"><%= today.month %>月</div>
                         </div>
                     <% } %>
-                    <div class="record no_record first_day" data-date="<%= today.year + '-' + today.month + '-' + today.day %>">
+                    <div class="record no_record <%= today.day == 1 ? 'first_day' + ' headDate_' + today.year + '_' + today.month : '' %>" data-date="<%= today.year + '-' + today.month + '-' + today.day %>">
                         <div class="date">
                             <div class="day"><%= today.day %></div>
                             <div class="weekday"><%= today.weekDay %></div>
@@ -64,7 +64,7 @@
                         </div>
                         <div class="clearfix"></div>
                     </div>
-                    <div class="current_time_line"></div>
+                    <div id="today" class="current_time_line"></div>
                     <!--开始渲染今天之后的数据-->
                     <% for(var i=0;i<eventArr.length;i++) { %>
                         <!--某一天的数据集合-->
@@ -75,13 +75,13 @@
                             <!--某一天中得某一条-->
                             <% var timeDetail = timeData[j]; %>
                             <!--是否是月首-->
-                            <% if(j == 0 && dayData.firstEventDayOfMonth) { %>
+                            <% if(j == 0 && dayData.firstEventDayOfMonth && dayData.date.split('-')[1] != today.month) { %>
                                 <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= today.month %>.jpg) fixed center center;">
                                     <div class="text"><%= parseInt(dayData.date.split("-")[1], 10) %>月</div>
                                 </div>
                             <% } %>
                             <!--渲染具体记录-->
-                            <div class="record first_day <%= (j== timeData.length -1) ? 'day_end' : '' %>" data-date="<%= dayData.date %>">
+                            <div class="record <%= (j == 0 && dayData.firstEventDayOfMonth) ? 'first_day' + ' headDate_' + parseInt(dayData.date.split('-')[0], 10) + '_' + parseInt(dayData.date.split('-')[1], 10) : '' %> <%= (j== timeData.length -1) ? 'day_end' : '' %>" data-date="<%= dayData.date %>">
                                 <div class="date <%= j != 0 ? 'invisibile' : '' %>">
                                     <div class="day"><%= dayData.detailDate.day %></div>
                                     <div class="weekday"><%= dayData.detailDate.weekDay %></div>
@@ -129,7 +129,7 @@
                         </div>
                     <% } %>
                     <!--渲染具体记录-->
-                    <div class="record first_day <%= (j== timeData.length -1) ? 'day_end' : '' %>" data-date="<%= dayData.date %>">
+                    <div class="record <%= (j == 0 && dayData.firstEventDayOfMonth) ? 'first_day' + ' headDate_' + parseInt(dayData.date.split('-')[0], 10) + '_' + parseInt(dayData.date.split('-')[1], 10) : '' %> <%= (j== timeData.length -1) ? 'day_end' : '' %>" data-date="<%= dayData.date %>">
                         <div class="date <%= j != 0 ? 'invisibile' : '' %> <%= dayData.detailDate.isOutOfDate ? 'out_of_date' : '' %>">
                             <div class="day"><%= dayData.detailDate.day %></div>
                             <div class="weekday"><%= dayData.detailDate.weekDay %></div>
