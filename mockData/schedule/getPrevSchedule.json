@@ -1,0 +1,213 @@
+{
+  "data": [
+    {
+      "date": "2016-08-01",
+      "firstEventDayOfMonth": true,
+      "events": [
+        {
+          "eventId": "1123",
+          "name": "11-1",
+          "eventType": 0,
+          "openId": "liangliang",
+          "startTime": "2016-08-12 14:08:58",
+          "endTime": "2016-09-12 14:08:58",
+          "tipType": 2,
+          "tipTime": "2016-08-21 14:08:58",
+          "repeatType": 2,
+          "location": "",
+          "longitude": "",
+          "latitude": "",
+          "bgColor": "#cc00ff",
+          "material": {
+            "materialId": "",
+            "url": ""
+          },
+          "remark": "23",
+          "remarkImgs": ""
+        },
+        {
+          "eventId": "1124",
+          "name": "11-2",
+          "eventType": 0,
+          "openId": "liangliang",
+          "startTime": "2016-08-12 14:08:58",
+          "endTime": "2016-09-12 14:08:58",
+          "tipType": 2,
+          "tipTime": "2016-08-21 14:08:58",
+          "repeatType": 2,
+          "location": "国家科技软件园",
+          "longitude": "",
+          "latitude": "",
+          "bgColor": "#0000ff",
+          "material": {
+            "materialId": "",
+            "url": "http://pic85.huitu.com/res/20160830/523_20160830222318301500_1.jpg"
+          },
+          "remark": "23",
+          "remarkImgs": ""
+        },
+        {
+          "eventId": "1125",
+          "name": "11-3",
+          "eventType": 0,
+          "openId": "liangliang",
+          "startTime": "2016-08-12 14:08:58",
+          "endTime": "2016-09-12 14:08:58",
+          "tipType": 2,
+          "tipTime": "2016-08-21 14:08:58",
+          "repeatType": 2,
+          "location": "国家科技软件园",
+          "longitude": "116.331398",
+          "latitude": "39.897445",
+          "bgColor": "#cc00ff",
+          "material": {
+            "materialId": "",
+            "url": ""
+          },
+          "remark": "23",
+          "remarkImgs": ""
+        }
+      ]
+    },
+    {
+      "date": "2016-08-21",
+      "firstEventDayOfMonth": false,
+      "events": [
+        {
+          "eventId": "11123",
+          "name": "12-1",
+          "eventType": 0,
+          "openId": "liangliang",
+          "startTime": "2016-08-12 14:08:58",
+          "endTime": "2016-09-12 14:08:58",
+          "tipType": 2,
+          "tipTime": "2016-08-21 14:08:58",
+          "repeatType": 2,
+          "location": "",
+          "longitude": "",
+          "latitude": "",
+          "bgColor": "#cc00ff",
+          "material": {
+            "materialId": "",
+            "url": ""
+          },
+          "remark": "23",
+          "remarkImgs": ""
+        },
+        {
+          "eventId": "11124",
+          "name": "12-2",
+          "eventType": 0,
+          "openId": "liangliang",
+          "startTime": "2016-08-12 14:08:58",
+          "endTime": "2016-09-12 14:08:58",
+          "tipType": 2,
+          "tipTime": "2016-08-21 14:08:58",
+          "repeatType": 2,
+          "location": "国家科技软件园",
+          "longitude": "",
+          "latitude": "",
+          "bgColor": "#0000ff",
+          "material": {
+            "materialId": "",
+            "url": "http://pic85.huitu.com/res/20160830/523_20160830222318301500_1.jpg"
+          },
+          "remark": "23",
+          "remarkImgs": ""
+        },
+        {
+          "eventId": "11223",
+          "name": "12-3",
+          "eventType": 0,
+          "openId": "liangliang",
+          "startTime": "2016-08-12 14:08:58",
+          "endTime": "2016-09-12 14:08:58",
+          "tipType": 2,
+          "tipTime": "2016-08-21 14:08:58",
+          "repeatType": 2,
+          "location": "国家科技软件园",
+          "longitude": "116.431398",
+          "latitude": "39.32543",
+          "bgColor": "#cc00ff",
+          "material": {
+            "materialId": "",
+            "url": ""
+          },
+          "remark": "23",
+          "remarkImgs": ""
+        }
+      ]
+    },
+    {
+      "date": "2016-08-27",
+      "firstEventDayOfMonth": false,
+      "events": [
+        {
+          "eventId": "11323",
+          "name": "13-1",
+          "eventType": 0,
+          "openId": "liangliang",
+          "startTime": "2016-08-12 14:08:58",
+          "endTime": "2016-09-12 14:08:58",
+          "tipType": 2,
+          "tipTime": "2016-08-21 14:08:58",
+          "repeatType": 2,
+          "location": "",
+          "longitude": "",
+          "latitude": "",
+          "bgColor": "#cc00ff",
+          "material": {
+            "materialId": "",
+            "url": ""
+          },
+          "remark": "23",
+          "remarkImgs": ""
+        },
+        {
+          "eventId": "11324",
+          "name": "13-2",
+          "eventType": 0,
+          "openId": "liangliang",
+          "startTime": "2016-08-12 14:08:58",
+          "endTime": "2016-09-12 14:08:58",
+          "tipType": 2,
+          "tipTime": "2016-08-21 14:08:58",
+          "repeatType": 2,
+          "location": "国家科技软件园",
+          "longitude": "",
+          "latitude": "",
+          "bgColor": "#0000ff",
+          "material": {
+            "materialId": "",
+            "url": "http://pic85.huitu.com/res/20160830/523_20160830222318301500_1.jpg"
+          },
+          "remark": "23",
+          "remarkImgs": ""
+        },
+        {
+          "eventId": "4123",
+          "name": "13-3",
+          "eventType": 0,
+          "openId": "liangliang",
+          "startTime": "2016-08-12 14:08:58",
+          "endTime": "2016-09-12 14:08:58",
+          "tipType": 2,
+          "tipTime": "2016-08-21 14:08:58",
+          "repeatType": 2,
+          "location": "国家科技软件园",
+          "longitude": "116.431398",
+          "latitude": "39.35324",
+          "bgColor": "#cc00ff",
+          "material": {
+            "materialId": "",
+            "url": ""
+          },
+          "remark": "23",
+          "remarkImgs": ""
+        }
+      ]
+    }
+  ],
+  "code": 0,
+  "msg": "success"
+}

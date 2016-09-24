@@ -83,7 +83,7 @@
                 <input type="text" id="remindTime">
             </div>
         </div>
-        <div class="item color">
+        <div class="item colors">
             <div class="icon">
                 <span class="colorShow"></span>
             </div>
@@ -181,14 +181,56 @@
 <!-----------------选择颜色弹层----------------->
 <div class="colorShadow shadow" id="colorShadow">
     <div class="shadowClose"></div>
-    <div class="container"></div>
+    <div class="container">
+        <!--颜色主题-->
+        <div class="colorCon"></div>
+        <!--图片主题-->
+        <div class="imageCon">
+            <div class="colorItem items">
+                <div class="colorCircle"></div>
+                <div class="colorName ccc">图片主题</div>
+            </div>
+        </div>
+    </div>
 </div>
+<script type="text/x-colors" id="colorsListTemplate">
+    <div class="colorItem items" data-colors = "{{color}}">
+           <div class="colorCircle" data-colors = "{{color}}">
+                   <span class="bigger">
+                        <span class="smaller"></span></span>
+                   </span>
+           </div>
+           <div class="colorName fs12">{{colorName}}</div>
+           <div class="selectImg"></div>
+    </div>
+</script>
+<script type="text/x-imgItem" id="imgListTemplate">
+    <div class="imgItem items" data-materialId="{{materialId}}">
+        <div class="imgName c00">百度</div>
+        <div class="selectImg"></div>
+    </div>
+</script>
 <!------------备注弹层--------------->
 <div class="remarkShadow shadow" id="remarkShadow">
     <div class="container">
         <div class="title fs12">
             <a href="javascript:;" class="cancel ccc fl">取消</a>
             <a href="javascript:;" class="finished c6c fr">完成</a>
+        </div>
+        <div class="textCon">
+            <textarea name="" id="remarkText" rows="6"></textarea>
+        </div>
+        <div class="remarkImg">
+            <div class="weui_cell">
+                <div class="weui_cell_bd weui_cell_primary">
+                    <div class="weui_uploader">
+                        <ul class="weui_uploader_files"></ul>
+                        <div class="weui_uploader_input_wrp">
+                            <input type="file" class="weui_uploader_input" accept="image/*" multiple>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
