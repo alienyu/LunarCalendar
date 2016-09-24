@@ -224,7 +224,7 @@ textarea{
   top:20px;
   left:50%;
   margin-left: -10px;
-  background: #00a0df;
+  background: #66cccc;
   border-radius: 100%;
   -webkit-border-radius: 100%;
 }
@@ -281,6 +281,7 @@ textarea{
   position: absolute;
   top:100%;
   left: 0px;
+  overflow: auto;
 }
 /*-------------地图，颜色，备注样式-------------*/
 .mapShadow,.colorShadow,.remarkShadow{
@@ -289,7 +290,6 @@ textarea{
 .container .mapCon{
   width:100%;
   height:300px;
-  background: #00a0df;
 }
 .container .imgCon{
   width:40px;
@@ -343,6 +343,84 @@ textarea{
   font-weight: 900;
 }
 /*------------颜色弹层-----------*/
+.items{
+  width:100%;
+  height:40px;
+  line-height: 40px;
+  overflow: hidden;
+  display: -webkit-box;
+  display: box;
+  position: relative;
+}
+.items:active{
+  background: rgba(0,0,0,0.1);
+}
+.items .colorCircle{
+  height:100%;
+  width:50px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  padding-top: 10px;
+}
+.items .colorCircle .bigger{
+  display: block;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  width:20px;
+  height:20px;
+  padding-top: 2px;
+  background: #00a0df;
+  border-radius: 100%;
+  -webkit-border-radius: 100%;
+  margin: 0 auto;
+}
+.bigger .smaller{
+  display: block;
+  width:16px;
+  height:16px;
+  background: #fff;
+  border-radius: 100%;
+  -webkit-border-radius: 100%;
+  margin: 0 auto;
+}
+.items .colorName{
+  -webkit-box-flex: 1;
+  box-flex:1;
+  text-indent: 1em;
+}
+.selectImg{
+  width:26px;
+  height:26px;
+  background: url("../../imgs/page/activity/ic_hook.png") no-repeat center center;
+  background-size: contain;
+  -webkit-background-size:  contain;
+  position: absolute;
+  top:7px;
+  right:12px;
+  display: none;
+}
+.imgName{
+  width:80%;
+  height:100%;
+}
+.active .selectImg{
+  display: block;
+}
+//图片样式
+.imgItem{
+  height:50px;
+  line-height:50px;
+  margin-bottom: 5px;
+}
+.imgItem .imgName{
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  -webkit-background-size: contain;
+}
+.imgItem .selectImg{
+  top:12px;
+}
 /*------------备注弹层---------------*/
 .remarkShadow .title{
   width:100%;
@@ -356,3 +434,21 @@ textarea{
   height:100%;
   text-align: center;
 }
+.remarkShadow .textCon{
+  width:100%;
+  height:auto;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  padding:10px;
+}
+.remarkShadow .remarkText{
+  width:100%;
+  height:auto;
+  resize: none;
+  outline: 0;
+  -webkit-user-select: text;
+  line-height:1.5;
+}
+.listCon{ min-height: 100%}
+
+.addressCon{position: relative; height: 300px; overflow: auto}

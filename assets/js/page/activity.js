@@ -11,6 +11,7 @@ var wx = require("../vendor/weChat/wxInit.js");
 var Ajax = require("../common/ajax.js");
 var fastClick = require("../vendor/ImproveMobile/fastClick.js");
 var autoTextArea = require("../vendor/ImproveMobile/autoTextArea.js");
+require("../vendor/dropLoad/dropLoad.js")
 
 var fuc = {
     config: {
@@ -21,7 +22,16 @@ var fuc = {
         timeArr: "",
         remindSelect:"",
         repeatSelect:"",
-        map:""
+        map:"",
+        bgColor:"",
+        bgImg:""
+    },
+    mapConfig: {
+        map: "",
+        moveendPoint: "",
+        page: "",
+        template: $('#addressListTemplate').html(),
+        pois: []
     },
 
     init:function(){
@@ -44,10 +54,14 @@ var fuc = {
             '#795548':'可可棕',
             '#616161':'石墨黑'
         };
+        this.config.bgColor = '#66cccc';
         this.rem();
         this.renderPage();
         this.getTags();
         this.bindEvent();
+        this.initMap();
+        this.searchNearByResult();
+        this.initDropLoad();
     },
 
     rem: function() {
@@ -233,9 +247,14 @@ var fuc = {
     renderPage:function(){
         var that = this;
         //wx.wxConfig(1);
+        that.colorInit();
+        that.selectColor();
         if(that.config.eventId){
             that.getData();
         }else{
+            /*--------------设置颜色初始值------------------*/
+            $('.colorShow').css("background",that.config.bgColor);
+            $('.colorText').html(that.config.map[that.config.bgColor]);
             /*---------------------开始时间、结束时间、指定提醒时间的时间显示---------------------*/
             $('.startCon').html(that.config.timeArr[0]);
             $('.endCon').html(that.config.timeArr[1]);
@@ -333,18 +352,104 @@ var fuc = {
         });
     },
 
+    /*---------------地图弹层效果------------------*/
+    mapShadow: function (obj, shadow, container) {
+        var that = this;
+        obj.click(function () {
+            $('.shadowBg').fadeIn();
+            shadow.show();
+            container.animate({"top": "10%"}, 200);
+        });
+        $('.shadowClose').click(function () {
+            container.animate({"top": "100%"}, 200, function () {
+                $(this).parent().hide();
+            });
+            $('.shadowBg').fadeOut();
+        });
+    },
+
+    bindEvent: function () {
+    /*--------------颜色弹层中的颜色初始化--------------*/
+    colorInit:function(){
+        var that = this,
+            colorTemplate = $('#colorsListTemplate').html(),
+            imgTemplate = $('#imgListTemplate').html(),
+            colorHtml="",
+            colorArr = [];
+        //颜色列表初始化
+        for(var i in that.config.map){
+            colorHtml += colorTemplate.replace(/{{color}}/g,i).replace(/{{colorName}}/g,that.config.map[i]);
+            colorArr.push(i);
+        }
+        $('.colorCon').append(colorHtml);
+        var theBigger = $('.bigger');
+        for(var k= 0;k<theBigger.size();k++){
+            theBigger.eq(k).css("background",colorArr[k]);
+        }
+        //设置选中的颜色
+        var colorItem = $('.colorCon .colorItem');
+        for(var m=0;m<colorItem.size();m++){
+            if(colorItem.eq(m).attr("data-colors") ==that.config.bgColor){
+                colorItem.eq(m).addClass("active");
+                colorItem.eq(m).find(".smaller").css("background",that.config.bgColor);
+            }
+        }
+        //图片列表初始化
+        $.get(
+            "http://www.li-li.cn/llwx/material/list",
+            {
+                "all":true
+            },
+            function(data){
+                if(data.code == 0){
+                    var imgList = data.data.list,imgHtml="";
+                    console.log(imgList);
+                    for(var n=0;n<imgList.length;n++){
+                        console.log(n);
+                        imgHtml+=imgTemplate.replace(/{{materialId}}/g,imgList[n].materialId);
+                    }
+                    $('.imageCon').append(imgHtml);
+                    var imgName = $('.imgItem .imgName');
+                    for(var p=0;p<imgName.size();p++){
+                        console.log(imgList[p].url);
+                        imgName.eq(p).css({"background-image":"url("+imgList[p].url+")"});
+                    }
+                }
+            }
+        )
+    },
+
+    /*-----------------选择颜色--------------------*/
+    selectColor:function(){
+        var that = this;
+        var items = $('.colorShadow .items'),
+            smaller = $('.bigger .smaller');
+        items.click(function(){
+            for(var i=0;i<items.size();i++){
+                items.eq(i).removeClass("active");
+            }
+            for(var j=0;j<smaller.size();j++){
+                smaller.eq(j).css("background","#fff");
+            }
+            $(this).addClass("active");
+            if($(this).find(".smaller")){//若点击的是颜色
+                that.config.bgColor = $(this).attr("data-colors");
+                $(this).find(".smaller").css("background",that.config.bgColor);
+                //设置显示页面的颜色显示
+                $('.colorShow').css("background",that.config.bgColor);
+                $('.colorText').html(that.config.map[that.config.bgColor]);
+            }else{
+                that.config.bgImg = $(this).attr("data-img");
+            }
+        })
+    },
+
     bindEvent:function(){
         var that = this;
         $('.eventName').focus(function () {
             $('.topTips').slideUp(800);
         });
-        /*------------点击地图，图标跳动------------*/
-        $('.mapCon').click(function(){
-            $('.imgCon').addClass('active');
-            setTimeout(function(){
-                $('.imgCon').removeClass('active');
-            },600);
-        })
+
         /*-------------点击开始时间后面的展开按钮---------*/
         $('.timeIconCon').click(function(){
             if($(".timeIcon").attr("class")=="timeIcon active"){
@@ -368,9 +473,9 @@ var fuc = {
             }
         })
         /*----------弹层----------*/
-        that.shadow($('.site'),$('.mapShadow'),$('.mapShadow .container'));
-        that.shadow($('.color'),$('.colorShadow'),$('.colorShadow .container'));
-        that.shadow($('.remark'),$('.remarkShadow'),$('.remarkShadow .container'));
+        that.mapShadow($('.site'), $('.mapShadow'), $('.mapShadow .container'));
+        that.shadow($('.color'), $('.colorShadow'), $('.colorShadow .container'));
+        that.shadow($('.remark'), $('.remarkShadow'), $('.remarkShadow .container'));
         /*----------备注弹层中的点击事件-------------*/
         $('.remarkShadow .cancel').click(function(){
             $('.remarkShadow .container').animate({"top":"100%"},200,function(){
@@ -425,7 +530,106 @@ var fuc = {
                 }
             })
         })
+    },
+
+    /*----------初始化地图----------------------*/
+    initMap: function () {
+        var that = this;
+        that.mapConfig.page = 1;
+        that.mapConfig.map = new AMap.Map("mapCon", {
+            resizeEnable: true,
+            dragEnable: true,
+            keyboardEnable: false,
+            doubleClickZoom: true,
+            zoom: 16
+        });
+        that.mapConfig.moveendPoint = that.mapConfig.map.getCenter();
+
+        that.mapConfig.map.on("moveend", function (e) {//地图平移结束后触发。如地图有拖拽缓动效果，则在缓动结束后触发
+            that.mapMarkerJump();
+            that.mapConfig.moveendPoint = that.mapConfig.map.getCenter();
+            that.searchNearByResult();
+        });
+    },
+
+    initDropLoad: function () {
+        var that = this;
+        /*--------------------------上拉刷新、下拉刷新------------------------*/
+        $('.addressCon').dropload({
+            scrollArea: window,
+            domUp: {
+                domClass: 'dropload-up',
+                domRefresh: '<div class="dropload-refresh">↓下拉加载更多</div>',
+                domUpdate: '<div class="dropload-update">↑释放加载更多</div>',
+                domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+            },
+            domDown: {
+                domClass: 'dropload-down',
+                domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+                domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+                domNoData: '<div class="dropload-noData">暂无数据</div>'
+            },
+            autoLoad: false,//关闭自动加载
+            loadUpFn: function (me) {
+                that.mapConfig.page = 1;
+                that.searchNearByResult(me);
+            },
+            loadDownFn: function (me) {
+                that.mapConfig.page++;
+                that.searchNearByResult(me);
+            },
+            threshold: 50//提前加载距离
+        });
+    },
+
+    searchNearByResult: function (me) {
+        var that = this;
+        $.ajax({
+            type: "get",
+            url: "http://restapi.amap.com/v3/place/around",
+            data: {
+                key: "731b7210e04aaa581c04576a4fc3ae5a",
+                location: that.mapConfig.moveendPoint.getLng() + "," + that.mapConfig.moveendPoint.getLat(),
+                page: that.mapConfig.page
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data.pois.length == 0 && me) {
+                    me.lock();
+                    me.noData();
+                }
+                if (that.mapConfig.page == 1) {
+                    that.mapConfig.pois.length = 0;
+                }
+                that.mapConfig.pois = that.mapConfig.pois.concat(data.pois);
+                $('.listCon').html("");
+                var html = "", addressList = "";
+                for (var i = 0; i < that.mapConfig.pois.length; i++) {
+                    html += that.mapConfig.template.replace(/{{name}}/g, that.mapConfig.pois[i].name).replace(/{{address}}/g, that.mapConfig.pois[i].address);
+                }
+                $('.listCon').append(html);
+                if (me) {
+                    console.log("me");
+                    me.resetload();
+                }
+            },
+            error: function (xhr, type) {
+                if (me) {
+                    me.resetload();
+                }
+            }
+        });
+    },
+
+    /*滑动地图后图标跳动*/
+    mapMarkerJump: function () {
+        $('.imgCon').addClass('active');
+        setTimeout(function () {
+            $('.imgCon').removeClass('active');
+        }, 600);
     }
+
+
 }
 
 fuc.init();
