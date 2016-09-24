@@ -23,6 +23,7 @@ var fuc = {
         repeatSelect:"",
         map:""
     },
+
     init:function(){
         pageLoad({backgroundColor: "#66cccc"});
         this.config.time = this.ifTimeExist(Dom.getRequest("date"));
@@ -48,10 +49,12 @@ var fuc = {
         this.getTags();
         this.bindEvent();
     },
+
     rem: function() {
         fastClick.attach(document.body);
         (function($,undefined){"use strict";var pluginName='scojs_message';$[pluginName]=function(message,type){clearTimeout($[pluginName].timeout);var $selector=$('#'+$[pluginName].options.id);if(!$selector.length){$selector=$('<div/>',{id:$[pluginName].options.id}).appendTo($[pluginName].options.appendTo)}$selector.html(message);if(type===undefined||type==$[pluginName].TYPE_ERROR){$selector.removeClass($[pluginName].options.okClass).addClass($[pluginName].options.errClass)}else if(type==$[pluginName].TYPE_OK){$selector.removeClass($[pluginName].options.errClass).addClass($[pluginName].options.okClass)}$selector.slideDown('fast',function(){$[pluginName].timeout=setTimeout(function(){$selector.slideUp('fast')},$[pluginName].options.delay)})};$.extend($[pluginName],{options:{id:'page_message',okClass:'page_mess_ok',errClass:'page_mess_error',delay:500,appendTo:'body'},TYPE_ERROR:1,TYPE_OK:2})})($);
     },
+
     selectTimes: function(obj1, obj2) {
         var that = this;
         var selb = mobiScroll.datetime(obj1, {
@@ -92,6 +95,7 @@ var fuc = {
         });
         return selb;
     },
+
     shareShadow: function() {
         var shareShadow = $('.shareShadow');
         shareShadow.fadeIn();//显示分享提示层
@@ -109,6 +113,7 @@ var fuc = {
             e.preventDefault();
         });
     },
+
     /*----------------------若日期中的数组小于10，则在前面加0-------------------*/
     tf: function(time) {
         if(time<10){
@@ -116,6 +121,7 @@ var fuc = {
         }
         return time;
     },
+
     /*-------------------------------转换日期格式，开始时间加10分钟-------------------------------------*/
     ifTimeExist:function(time){
         var that = this;
@@ -129,6 +135,7 @@ var fuc = {
             return time;
         }
     },
+
     transTime: function(time) {
         var that = this;
         var date = new Date();
@@ -158,6 +165,7 @@ var fuc = {
             endTime = timeArr[0] + "年" + timeArr[1] + "月" + timeArr[2] + "日" + " " + theWeek + " " + startHour + ":" + startMinute;
         return [startTime, endTime];
     },
+
     /*---------------------修改开始时间、结束时间、指定提醒时间样式，为其设置时间选择器的初始值---------------------*/
     setInitTime: function(obj) {
         var time = obj.attr("id");
@@ -166,6 +174,7 @@ var fuc = {
             theTime = date[1].split(":");
         return theDate+" "+theTime[0]+":"+theTime[1];
     },
+
     /*----------------获取用户选择快捷标签对应的主题-------------------*/
     getTemplate:function(templateId){
         if(tamplateId){
@@ -186,6 +195,7 @@ var fuc = {
             )
         }
     },
+
     hideTags: function() {
         var that = this;
         $('.tipsCon a').click(function (event) {
@@ -196,6 +206,7 @@ var fuc = {
             event.preventDefault();
         });
     },
+
     getTags: function() {
         var that = this;
         var template = $('#tagListTemplate').html();
@@ -218,9 +229,10 @@ var fuc = {
             }
         })
     },
+
     renderPage:function(){
         var that = this;
-        wx.wxConfig(1);
+        //wx.wxConfig(1);
         if(that.config.eventId){
             that.getData();
         }else{
@@ -245,23 +257,23 @@ var fuc = {
         this.selectTimes('#endTime', '.endCon').setVal(new Date(that.setInitTime($('.endCon'))));
         this.selectTimes('#remindTime', '.remindTime').setVal(new Date(that.setInitTime($('.remindTime'))));
     },
-    /*--------------页面内容初始化------------------*/
+
+    /*--------------通过eventID拉去页面数据------------------*/
     getData:function(){
         var that = this;
-        if(that.config.eventId){//若用户点击事件详情页的编辑按钮进入此页面
-            $('.delete').css("display","block");//用户可删除事件
-            $(".topTips").css("display","none");//隐藏头部的快捷标签
-            $.get(
-                "http://www.li-li.cn/llwx/event/detail",
-                {
-                    "eventId":that.config.eventId
-                },
-                function(data){
-                    if(data.code == 0){
-                        var eventList = data.data;
-                        $('.eventName').val(eventList.name);//标题内容
-                        autoTextArea(document.getElementById("eventTitle"));
-                        var theStartTime = Dom.tranDate(eventList.startTime),
+        $('.delete').css("display","block");//用户可删除事件
+        $(".topTips").css("display","none");//隐藏头部的快捷标签
+        $.get(
+            "http://www.li-li.cn/llwx/event/detail",
+            {
+                "eventId":that.config.eventId
+            },
+            function(data){
+                if(data.code == 0){
+                    var eventList = data.data;
+                    $('.eventName').val(eventList.name);//标题内容
+                    autoTextArea(document.getElementById("eventTitle"));
+                    var theStartTime = Dom.tranDate(eventList.startTime),
                             theEndTime = Dom.tranDate(eventList.endTime),
                             tipType = eventList.tipType,
                             repeatType = eventList.repeatType,
@@ -269,43 +281,58 @@ var fuc = {
                             bgColor = eventList.bgColor,
                             materialId = eventList.material.materialId,
                             remark = eventList.remark;
-                            that.config.nickName = eventList.user;
-                        $('.startCon').html(theStartTime).attr("id",eventList.startTime);
-                        $('.endCon').html(theEndTime).attr("id",eventList.endTime);
+                    that.config.nickName = eventList.user;
+                    $('.startCon').html(theStartTime).attr("id",eventList.startTime);
+                    $('.endCon').html(theEndTime).attr("id",eventList.endTime);
                         /*------------设置重复类型----------------*/
-                        var remindOption = that.config.remindSelect.getElementsByTagName('option');
-                        for(var i=0;i<remindOption.length;i++){
-                            remindOption[i].setAttribute("selected",false);
-                        }
-                        remindOption[tipType].setAttribute("selected",true);//设置默认选中值
-                        /*-------------设置提醒类型------------------*/
-                        var repeatOptions = that.config.repeatSelect.getElementByTagName("option");
-                        for(var j=0;j<repeatOptions.length;j++){
-                            repeatOptions[j].setAttribute("selected",false);
-                        }
-                        repeatOptions[repeatType].setAttribute("selected",true);
-                        if(repeatType==3){
-                            $('.remindTime').animate({"height":"30px"},200);
-                            $('#remindTime').css("display","block");
-                        }
-                        if(location){
-                            $('.site').removeClass('ccc');
-                            $('.site').html(location);
-                        }
-                        if(remark){
-                            $('.remark').removeClass('ccc').html(remark);
-                        }
-                        if(bgColor){
-                            $('.colorShow').css("background",bgColor);
-                        }
-                        //console.log(repeatSelect.value);
-                    }else{
-
+                    var remindOption = that.config.remindSelect.getElementsByTagName('option');
+                    for(var i=0;i<remindOption.length;i++){
+                        remindOption[i].setAttribute("selected",false);
                     }
+                    remindOption[tipType].setAttribute("selected",true);//设置默认选中值
+                        /*-------------设置提醒类型------------------*/
+                    var repeatOptions = that.config.repeatSelect.getElementByTagName("option");
+                    for(var j=0;j<repeatOptions.length;j++){
+                        repeatOptions[j].setAttribute("selected",false);
+                    }
+                    repeatOptions[repeatType].setAttribute("selected",true);
+                    if(repeatType==3){
+                        $('.remindTime').animate({"height":"30px"},200);
+                        $('#remindTime').css("display","block");
+                    }
+                    if(location){
+                        $('.site').removeClass('ccc');
+                        $('.site').html(location);
+                    }
+                    if(remark){
+                        $('.remark').removeClass('ccc').html(remark);
+                    }
+                    if(bgColor){
+                        $('.colorShow').css("background",bgColor);
+                    }
+                        //console.log(repeatSelect.value);
+                }else{
+
                 }
-            )
-        }
+            }
+        )
     },
+
+    /*---------------弹层效果------------------*/
+    shadow:function(obj,shadow,container){
+        obj.click(function(){
+            $('.shadowBg').fadeIn();
+            shadow.show();
+            container.animate({"top":"10%"},200);
+        });
+        $('.shadowClose').click(function(){
+            container.animate({"top":"100%"},200,function(){
+                $(this).parent().hide();
+            });
+            $('.shadowBg').fadeOut();
+        });
+    },
+
     bindEvent:function(){
         var that = this;
         $('.eventName').focus(function () {
@@ -340,10 +367,23 @@ var fuc = {
                 $('.tipsCon').animate({"height":"auto"},300);
             }
         })
-        /*----------点击地图，地图弹层从右侧进入----------*/
-        $('.site').click(function(){
-            $('.mapShadow').animate({"top":"0px"},300);
-        })
+        /*----------弹层----------*/
+        that.shadow($('.site'),$('.mapShadow'),$('.mapShadow .container'));
+        that.shadow($('.color'),$('.colorShadow'),$('.colorShadow .container'));
+        that.shadow($('.remark'),$('.remarkShadow'),$('.remarkShadow .container'));
+        /*----------备注弹层中的点击事件-------------*/
+        $('.remarkShadow .cancel').click(function(){
+            $('.remarkShadow .container').animate({"top":"100%"},200,function(){
+                $('.remarkShadow').hide();
+            });
+            $('.shadowBg').fadeOut();
+        });
+        $('.remarkShadow .finished').click(function(){
+            $('.remarkShadow .container').animate({"top":"100%"},200,function(){
+                $('.remarkShadow').hide();
+            });
+            $('.shadowBg').fadeOut();
+        });
         /*------------点击分享--------------*/
         $('.share').click(function(){
             that.shareShadow(); //显示分享提示弹出层，点击后隐藏
