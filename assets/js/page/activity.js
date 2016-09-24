@@ -21,7 +21,9 @@ var fuc = {
         timeArr: "",
         remindSelect:"",
         repeatSelect:"",
-        map:""
+        map:"",
+        bgColor:"",
+        bgImg:""
     },
 
     init:function(){
@@ -44,6 +46,7 @@ var fuc = {
             '#795548':'可可棕',
             '#616161':'石墨黑'
         };
+        this.config.bgColor = '#66cccc';
         this.rem();
         this.renderPage();
         this.getTags();
@@ -233,9 +236,14 @@ var fuc = {
     renderPage:function(){
         var that = this;
         //wx.wxConfig(1);
+        that.colorInit();
+        that.selectColor();
         if(that.config.eventId){
             that.getData();
         }else{
+            /*--------------设置颜色初始值------------------*/
+            $('.colorShow').css("background",that.config.bgColor);
+            $('.colorText').html(that.config.map[that.config.bgColor]);
             /*---------------------开始时间、结束时间、指定提醒时间的时间显示---------------------*/
             $('.startCon').html(that.config.timeArr[0]);
             $('.endCon').html(that.config.timeArr[1]);
@@ -333,6 +341,81 @@ var fuc = {
         });
     },
 
+    /*--------------颜色弹层中的颜色初始化--------------*/
+    colorInit:function(){
+        var that = this,
+            colorTemplate = $('#colorsListTemplate').html(),
+            imgTemplate = $('#imgListTemplate').html(),
+            colorHtml="",
+            colorArr = [];
+        //颜色列表初始化
+        for(var i in that.config.map){
+            colorHtml += colorTemplate.replace(/{{color}}/g,i).replace(/{{colorName}}/g,that.config.map[i]);
+            colorArr.push(i);
+        }
+        $('.colorCon').append(colorHtml);
+        var theBigger = $('.bigger');
+        for(var k= 0;k<theBigger.size();k++){
+            theBigger.eq(k).css("background",colorArr[k]);
+        }
+        //设置选中的颜色
+        var colorItem = $('.colorCon .colorItem');
+        for(var m=0;m<colorItem.size();m++){
+            if(colorItem.eq(m).attr("data-colors") ==that.config.bgColor){
+                colorItem.eq(m).addClass("active");
+                colorItem.eq(m).find(".smaller").css("background",that.config.bgColor);
+            }
+        }
+        //图片列表初始化
+        $.get(
+            "http://www.li-li.cn/llwx/material/list",
+            {
+                "all":true
+            },
+            function(data){
+                if(data.code == 0){
+                    var imgList = data.data.list,imgHtml="";
+                    console.log(imgList);
+                    for(var n=0;n<imgList.length;n++){
+                        console.log(n);
+                        imgHtml+=imgTemplate.replace(/{{materialId}}/g,imgList[n].materialId);
+                    }
+                    $('.imageCon').append(imgHtml);
+                    var imgName = $('.imgItem .imgName');
+                    for(var p=0;p<imgName.size();p++){
+                        console.log(imgList[p].url);
+                        imgName.eq(p).css({"background-image":"url("+imgList[p].url+")"});
+                    }
+                }
+            }
+        )
+    },
+
+    /*-----------------选择颜色--------------------*/
+    selectColor:function(){
+        var that = this;
+        var items = $('.colorShadow .items'),
+            smaller = $('.bigger .smaller');
+        items.click(function(){
+            for(var i=0;i<items.size();i++){
+                items.eq(i).removeClass("active");
+            }
+            for(var j=0;j<smaller.size();j++){
+                smaller.eq(j).css("background","#fff");
+            }
+            $(this).addClass("active");
+            if($(this).find(".smaller")){//若点击的是颜色
+                that.config.bgColor = $(this).attr("data-colors");
+                $(this).find(".smaller").css("background",that.config.bgColor);
+                //设置显示页面的颜色显示
+                $('.colorShow').css("background",that.config.bgColor);
+                $('.colorText').html(that.config.map[that.config.bgColor]);
+            }else{
+                that.config.bgImg = $(this).attr("data-img");
+            }
+        })
+    },
+
     bindEvent:function(){
         var that = this;
         $('.eventName').focus(function () {
@@ -369,7 +452,7 @@ var fuc = {
         })
         /*----------弹层----------*/
         that.shadow($('.site'),$('.mapShadow'),$('.mapShadow .container'));
-        that.shadow($('.color'),$('.colorShadow'),$('.colorShadow .container'));
+        that.shadow($('.colors'),$('.colorShadow'),$('.colorShadow .container'));
         that.shadow($('.remark'),$('.remarkShadow'),$('.remarkShadow .container'));
         /*----------备注弹层中的点击事件-------------*/
         $('.remarkShadow .cancel').click(function(){
@@ -391,10 +474,6 @@ var fuc = {
                 //todo 弹出蒙层
                 that.shareShadow(); //显示分享提示弹出层，点击后隐藏
             }
-        })
-        /*-------点击颜色，显示颜色选择弹层-------*/
-        $('.color').click(function(){
-
         })
         /*------------点击保存--------------*/
         $('.saveBtn').click(function(){
