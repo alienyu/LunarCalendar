@@ -17,6 +17,18 @@
         <div class="back_today">今日</div>
     </header>
     <section id="container"></section>
+    <div id="addActivity" class="add_btn">+</div>
+    <div id="btnDetail" class="btn_detail">
+        <div>
+            <span>活动</span>
+            <a href="javascript:;" class="activity"></a>
+        </div>
+        <div>
+            <span>提醒</span>
+            <a href="javascript:;" class="remind"></a>
+        </div>
+    </div>
+    <div class="select_mask"></div>
 
     <script type="text/template" id="dateListTpl">
         <% var eventArr = data.dataArr; %>
@@ -29,7 +41,7 @@
             <% if(eventArr.length < 1) { %>
                 <!--是否是月首-->
                 <% if(today.day == 1) { %>
-                    <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= today.month %>.jpg) fixed center center;">
+                    <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= parseInt(today.month, 10) %>.jpg) fixed center center;">
                         <div class="text"><%= today.month %>月</div>
                     </div>
                 <% } %>
@@ -50,7 +62,7 @@
                 <% if(today.isToday == false) { %>
                     <!--是否是月首-->
                     <% if(today.day == 1) { %>
-                        <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= today.month %>.jpg) fixed center center;">
+                        <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= parseInt(today.month, 10) %>.jpg) fixed center center;">
                             <div class="text"><%= today.month %>月</div>
                         </div>
                     <% } %>
@@ -76,7 +88,7 @@
                             <% var timeDetail = timeData[j]; %>
                             <!--是否是月首(今天与第一条数据不再同一月份)-->
                             <% if(j == 0 && dayData.firstEventDayOfMonth && dayData.date.split('-')[1] != today.month) { %>
-                                <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= today.month %>.jpg) fixed center center;">
+                                <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= parseInt(dayData.date.split('-')[1], 10) %>.jpg) fixed center center;">
                                     <div class="text"><%= parseInt(dayData.date.split("-")[1], 10) %>月</div>
                                 </div>
                             <% } %>
@@ -111,7 +123,7 @@
                         <% } %>
                     <% } %>
                 <% } else { %>
-                    <!--开始渲染今天之后的数据-->
+                    <!--今天有数据-->
                     <% for(var i=0;i<eventArr.length;i++) { %>
                         <!--某一天的数据集合-->
                         <% var dayData = eventArr[i]; %>
@@ -122,7 +134,7 @@
                             <% var timeDetail = timeData[j]; %>
                             <!--是否是月首-->
                             <% if(j == 0 && dayData.firstEventDayOfMonth) { %>
-                                <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= today.month %>.jpg) fixed center center;">
+                                <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= parseInt(dayData.date.split('-')[1], 10) %>.jpg) fixed center center;">
                                     <div class="text"><%= parseInt(dayData.date.split("-")[1], 10) %>月</div>
                                 </div>
                             <% } %>
@@ -173,13 +185,13 @@
                     <% var timeDetail = timeData[j]; %>
                     <!--是否是月首-->
                     <% if(j == 0 && dayData.firstEventDayOfMonth) { %>
-                        <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= today.month %>.jpg) fixed center center;">
+                        <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= parseInt(dayData.date.split('-')[1], 10) %>.jpg) fixed center center;">
                             <div class="text"><%= parseInt(dayData.date.split("-")[1], 10) %>月</div>
                         </div>
                     <% } %>
                     <!--渲染具体记录-->
                     <div class="record<%= (j == 0 && dayData.firstEventDayOfMonth) ? ' first_day' + ' headDate_' + parseInt(dayData.date.split('-')[0], 10) + '_' + parseInt(dayData.date.split('-')[1], 10) : '' %><%= (j== timeData.length -1) ? ' day_end' : '' %>" data-date="<%= dayData.date %>">
-                        <div class="date<%= j != 0 ? ' invisibile' : '' %><%= dayData.detailDate.isOutOfDate ? ' out_of_date' : '' %>">
+                        <div class="date<%= j != 0 ? ' invisibile' : '' %><%= dayData.isOutOfDate ? ' out_of_date' : '' %>">
                             <div class="day"><%= dayData.detailDate.day %></div>
                             <div class="weekday"><%= dayData.detailDate.weekDay %></div>
                         </div>

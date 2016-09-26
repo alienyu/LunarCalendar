@@ -196,10 +196,23 @@ var fuc = {
             var todayPos = $("#today").position().top - 30;
             $(document.body).scrollTo({toTo: todayPos});
         });
+
+        //添加活动按钮
+        $("#addActivity").on('tap', function(e) {
+            if($(e.target).hasClass("open")) {
+                $(e.target).removeClass("open");
+                $(".select_mask").css("display", "none");
+                $("#btnDetail").removeClass("move_up").addClass("move_down");
+            } else {
+                $(e.target).addClass("open");
+                $(".select_mask").css("display", "block");
+                $("#btnDetail").removeClass("move_down").addClass("move_up");
+            }
+        })
     },
     getSideDomDate: function() {
         return {
-            topDate: $(".record").first().data("date"),
+            topDate: $(".record:not(.no_record)").first().data("date"),
             bottomDate: $(".record").last().data("date")
         }
     },
