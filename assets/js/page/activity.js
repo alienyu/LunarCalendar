@@ -24,8 +24,9 @@ var fuc = {
         repeatSelect:"",
         map:"",
         bgColor:"",//背景颜色
-        bgImg:"",//背景图片
-        materialId:"",//背景图id
+        themeId:"",//背景图id
+        themeName:"",
+        themeColor:"",
         remarkText:"",
         remarkImgs:""
     },
@@ -60,7 +61,6 @@ var fuc = {
         this.config.bgColor = '#66cccc';
         this.rem();
         this.renderPage();
-        this.getTags();
         this.uploaderImg();
         this.bindEvent();
         this.initMap();
@@ -207,9 +207,12 @@ var fuc = {
                         if(list.color){//若对应的是背景颜色
                             $('.colorShow').css("background",list.color);
                             $('.colorText').html(that.config.map.list.color);
-                        }else if(list.material){//若对应的是背景图片
-                            //未完成
-
+                        }else if(list.theme.themeId){//若对应的是背景图片
+                            that.config.themeId = list.theme.themeId;
+                            that.config.themeName = list.theme.themeName;
+                            that.config.themeColor = list.theme.themeColor;
+                            $('.colorShow').css("background",that.config.themeColor);
+                            $('.colorText').html(that.config.themeName);
                         }
                     }
                 }
@@ -222,7 +225,7 @@ var fuc = {
         $('.tipsCon a').click(function (event) {
             $('.eventName').val($(this).html());
             that.config.tagId  = $(this).attr("data-tag");//保存用户选择的标签id
-            that.getTemplate();
+            that.getTemplate($(this).attr("data-template"));
             $('.tips').slideUp();
             event.preventDefault();
         });
@@ -253,6 +256,7 @@ var fuc = {
 
     renderPage:function(){
         var that = this;
+        this.getTags();
         //wx.wxConfig(1);
         if(that.config.eventId){//若用户是通过编辑按钮进入 页面，则拉取事件ID对应的信息
             that.getData();
@@ -267,7 +271,6 @@ var fuc = {
             $('.endCon').html(that.config.timeArr[1]);
             $('.remindTime').html(that.config.timeArr[0]);
         }
-        that.selectColor();
         /*---------提醒类型选择的监听事件---------*/
         var select = document.getElementById('select1');
         select.onchange = function(){
@@ -306,7 +309,7 @@ var fuc = {
                             repeatType = eventList.repeatType,
                             location = eventList.location;
                     that.config.bgColor = eventList.bgColor;
-                    that.config.materialId = eventList.material.materialId;//获取用户设置的背景图id
+                    that.config.themeId = eventList.theme.themeId;//获取用户设置的背景图id
                     that.config.remarkText = eventList.remark;
                     that.config.remarkImgs = eventList.remarkImgs;
                     that.config.nickName = eventList.user;//当前用户昵称
@@ -378,7 +381,6 @@ var fuc = {
         });
     },
 
-    bindEvent: function () {
     /*--------------颜色弹层中的颜色初始化--------------*/
     colorInit:function(){
         var that = this,
@@ -406,7 +408,7 @@ var fuc = {
         }
         //图片列表初始化
         $.get(
-            "http://www.li-li.cn/llwx/material/list",
+            "http://www.li-li.cn/llwx/theme/list",
             {
                 "all":true
             },
@@ -415,15 +417,24 @@ var fuc = {
                     var imgList = data.data.list,imgHtml="";
                     console.log(imgList);
                     for(var n=0;n<imgList.length;n++){
-                        console.log(n);
-                        imgHtml+=imgTemplate.replace(/{{materialId}}/g,imgList[n].materialId);
+                        //console.log(n);
+                        imgHtml+=imgTemplate.replace(/{{themeId}}/g,imgList[n].themeId).replace(/{{themeName}}/g,imgList[n].themeName).replace(/{{themeColor}}/g,imgList[n].themeColor);
                     }
                     $('.imageCon').append(imgHtml);
                     var imgName = $('.imgItem .imgName');
                     for(var p=0;p<imgName.size();p++){
-                        console.log(imgList[p].url);
-                        imgName.eq(p).css({"background-image":"url("+imgList[p].url+")"});
+                        //console.log(imgList[p].themeUrl);
+                        imgName.eq(p).css({"background-image":"url("+imgList[p].themeUrl+")","background-color":imgList[p].themeColor});
                     }
+                    var imgItem = $('.imgItem');
+                    for(var j=0;j<imgItem.size();j++){
+                        if(imgItem.eq(j).attr("data-themeId")==that.config.themeId){
+                            $('.items').removeClass("active");
+                            imgItem.eq(j).addClass("active");
+                            $('.colorCon .colorItem').find("smaller").css("background","#fff");
+                        }
+                    }
+                    that.selectColor();
                 }
             }
         )
@@ -442,15 +453,24 @@ var fuc = {
                 smaller.eq(j).css("background","#fff");
             }
             $(this).addClass("active");
-            if($(this).find(".smaller")){//若点击的是颜色
+            if($(this).attr("class")=="colorItem items active"){//若点击的是颜色
                 that.config.bgColor = $(this).attr("data-colors");
                 $(this).find(".smaller").css("background",that.config.bgColor);
                 //设置显示页面的颜色显示
                 $('.colorShow').css("background",that.config.bgColor);
                 $('.colorText').html(that.config.map[that.config.bgColor]);
             }else{
-                that.config.bgImg = $(this).attr("data-img");
+                that.config.themeId = $(this).attr("data-id");
+                that.config.themeColor = $(this).attr("data-color");
+                that.config.themeName = $(this).attr("data-name");
+                //设置显示页面的颜色显示
+                $('.colorShow').css("background",that.config.themeColor);
+                $('.colorText').html(that.config.themeName);
             }
+            $(".colorShadow .container").animate({"top":"100%"},200,function(){
+                $(this).parent().hide();
+            });
+            $('.shadowBg').fadeOut();
         })
     },
 
@@ -527,7 +547,7 @@ var fuc = {
         })
         /*----------弹层----------*/
         that.mapShadow($('.site'), $('.mapShadow'), $('.mapShadow .container'));
-        that.shadow($('.color'), $('.colorShadow'), $('.colorShadow .container'));
+        that.shadow($('.colors'), $('.colorShadow'), $('.colorShadow .container'));
         that.shadow($('.remark'), $('.remarkShadow'), $('.remarkShadow .container'));
         /*----------备注弹层中的点击事件-------------*/
         $('.remarkShadow .cancel').click(function(){
@@ -561,7 +581,7 @@ var fuc = {
                 if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
                     $.scojs_message('缺少事件名称', $.scojs_message.TYPE_ERROR);
                 }else{
-                    Ajax.eventModify(that.config.eventId,name,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,'longitude','latitude', that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.materialId);
+                    Ajax.eventModify(that.config.eventId,name,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,'longitude','latitude', that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.themeId);
                     //todo 弹出蒙层
                     that.shareShadow(); //显示分享提示弹出层，点击后隐藏
                 }
@@ -571,7 +591,7 @@ var fuc = {
                 }else{
                     $('#dialog1').show();
                     $('#dialog1 .confirm').on("tap", function () {//点击确定
-                        Ajax.eventAdd2(name,1,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,'longitude','latitude', that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.materialId);
+                        Ajax.eventAdd2(name,1,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,'longitude','latitude', that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.themeId);
                         Ajax.getUserInformation2();
                         wx.wxConfig(2, that.config.nickName + " 邀请您参加 「" + name+"」", $('.startTime').html(),
                             "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + that.config.eventId));
@@ -588,11 +608,8 @@ var fuc = {
                     });
                 }
             }
-        })
-        /*-------点击颜色，显示颜色选择弹层-------*/
-        $('.color').click(function(){
+        });
 
-        })
         /*------------点击保存--------------*/
         $('.saveBtn').click(function(){
 
@@ -612,13 +629,13 @@ var fuc = {
                 $('#loadingToast').fadeOut();
             }else{
                 if(that.config.eventId){//若事件已保存，则调用修改事件
-                    Ajax.eventModify(that.config.eventId,name,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,'longitude','latitude', that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.materialId);
+                    Ajax.eventModify(that.config.eventId,name,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,121.25,23,that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.themeId);
                 }else{
-                    Ajax.eventAdd(name,1,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,'longitude','latitude', that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.materialId);
+                    Ajax.eventAdd(name,1,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,121.25,23,that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.themeId);
                 }
             }
 
-        })
+        });
         /*---------------点击删除---------------*/
         $('.delete').click(function(){
             $('#dialog1').show();
@@ -654,7 +671,7 @@ var fuc = {
     },
 
     /*----------初始化地图----------------------*/
-    initMap: function () {
+    initMap: function() {
         var that = this;
         that.mapConfig.page = 1;
         that.mapConfig.map = new AMap.Map("mapCon", {

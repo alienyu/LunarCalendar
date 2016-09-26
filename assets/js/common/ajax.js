@@ -264,27 +264,35 @@ var Ajax = {
         });
     },
     //添加事件页面数据提交
-    eventAdd: function(name,tagName, startTime, endTime, tipType, tipTime, repeatType, location, remark) {
+    eventAdd: function(name,eventType,tagId, startTime, endTime, tipType, tipTime, repeatType, location,longitude,latitude, remark,remarkImgs,bgColor,themeId) {
         $.ajax({
             type: "post",
             url: "http://www.li-li.cn/llwx/event/add",
             data: {
-                name: name,
-                tags:tagName,
-                startTime: startTime,
-                endTime: endTime,
-                tipType: tipType,
-                tipTime: tipTime,
-                repeatType: repeatType,
-                location: location,
-                remark: remark,
+                "name":name,
+                "eventType":eventType,
+                "tagId":tagId,
+                "startTime":startTime,
+                "endTime":endTime,
+                "tipType":tipType,
+                "tipTime":tipTime,
+                "repeatType":repeatType,
+                "location":location,
+                "longitude":longitude,
+                "latitude":latitude,
+                "remark":remark,
+                "remarkImgs":remarkImgs,
+                "bgColor":bgColor,
+                "theme.themeId":themeId
             },
             dataType: "json",
             success: function (data) {
                 //console.log(data);
                 if (data.code == 0) {//提交成功
+                    $('#loadingToast').fadeOut();
                     window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/calendar.html");
                 }else{//提交失败提醒错误信息
+                    $('#loadingToast').fadeOut();
                     var error = data.msg;
                     $('#dialog2 .weui_dialog_bd').html(error);
                     $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
@@ -295,27 +303,71 @@ var Ajax = {
         })
     },
     //添加事件页面数据提交
-    eventAdd2: function(name,tagName,startTime, endTime, tipType, tipTime, repeatType, location, remark) {
+    eventAdd2: function(name,eventType,tagId, startTime, endTime, tipType, tipTime, repeatType, location,longitude,latitude, remark,remarkImgs,bgColor,themeId) {
         $.ajax({
             type: "post",
             url: "http://www.li-li.cn/llwx/event/add",
             data: {
-                name: name,
-                tags:tagName,
-                startTime: startTime,
-                endTime: endTime,
-                tipType: tipType,
-                tipTime: tipTime,
-                repeatType: repeatType,
-                location: location,
-                remark: remark,
+                "name":name,
+                "eventType":eventType,
+                "tagId":tagId,
+                "startTime":startTime,
+                "endTime":endTime,
+                "tipType":tipType,
+                "tipTime":tipTime,
+                "repeatType":repeatType,
+                "location":location,
+                "longitude":longitude,
+                "latitude":latitude,
+                "remark":remark,
+                "remarkImgs":remarkImgs,
+                "bgColor":bgColor,
+                "theme.themeId":themeId
             },
             dataType: "json",
             async: false,
             success: function (data) {
                 if (data.code == 0) {
-                    eventId = data.data;
+                    that.config.eventId = data.data;
                 }else{//提交失败提醒错误信息
+                    var error = data.msg;
+                    $('#dialog2 .weui_dialog_bd').html(error);
+                    $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
+                        $('#dialog2').off('click').hide();
+                    });
+                }
+            }
+        })
+    },
+    //修改事件页面数据提交
+    eventModify: function(eventId,name,tagId, startTime, endTime, tipType, tipTime, repeatType, location,longitude,latitude, remark,remarkImgs,bgColor,themeId) {
+        $.ajax({
+            type: "post",
+            url: "http://www.li-li.cn/llwx/event/add",
+            data: {
+                "eventId":eventId,
+                "name":name,
+                "tagId":tagId,
+                "startTime":startTime,
+                "endTime":endTime,
+                "tipType":tipType,
+                "tipTime":tipTime,
+                "repeatType":repeatType,
+                "location":location,
+                "longitude":longitude,
+                "latitude":latitude,
+                "remark":remark,
+                "remarkImgs":remarkImgs,
+                "bgColor":bgColor,
+                "theme.themeId":themeId
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 0) {
+                    $('#loadingToast').fadeOut();
+                    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/calendar.html");
+                } else {//修改失败弹出提示框
+                    $('#loadingToast').fadeOut();
                     var error = data.msg;
                     $('#dialog2 .weui_dialog_bd').html(error);
                     $('#dialog2').show().on('click', '.weui_btn_dialog', function () {

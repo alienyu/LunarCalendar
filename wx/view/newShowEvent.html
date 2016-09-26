@@ -9,26 +9,33 @@
     <meta name="x5-orientation" content="portrait">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link href="/wx/css/newShowEvent.css?8112bae4e8e312f4a635" rel="stylesheet"></head>
+<link href="/wx/css/newShowEvent.css?6755a5bfeb9f0f7a3559" rel="stylesheet"></head>
 <body>
 
+<div class="eventContainer fs14">
     <div class="topCon">
-        <div class="eventName"></div>
-        <div class="compile"></div>
+        <div class="eventName fs24 cff">跑步</div>
+        <div class="compile">
+            <div>
+                <img src="/wx/./img/fb1134f6fac6be829322ebde706f74fe.png" alt="">
+            </div>
+        </div>
     </div>
     <div class="time item">
         <div class="icon">
             <img src="/wx/./img/b7b405cb4c40040418f5e4a295d8c5c5.png" alt="">
         </div>
-        <div class="itemCon"></div>
+        <div class="itemCon">
+
+        </div>
     </div>
-    <div class="suitable item">
+    <div class="suitable item fs12">
         <div class="icon">
             <img src="/wx/./img/39a65d2d9ab3b8c8c558a1f4ba593421.png" alt="">
         </div>
         <div class="itemCon"></div>
     </div>
-    <div class="weather item">
+    <div class="weather item fs12">
         <div class="icon">
             <img src="/wx/./img/17a62dae29476dde35c0fa0124712bc0.png" alt="">
         </div>
@@ -60,6 +67,97 @@
             </div>
         </div>
     </div>
-<div class="bottom"></div>
-<script type="text/javascript" src="/wx/js/newShowEvent.js?8112bae4e8e312f4a635"></script></body>
+    
+    <div class="bottom bottom1">
+        <div class="bottomText ccc fl">是否需要邀请好友？</div>
+        <div class="share c6c fr">邀请微信好友</div>
+    </div>
+    
+    <div class="bottom bottom2">
+        <div class="bottomText ccc fl">来自#<span></span>的邀请</div>
+        <div class="join c6c fr">接受邀请</div>
+    </div>
+    
+    <div class="bottom bottom3">
+        <div class="exit fl">已接受</div>
+        <div class="share c6c fr">邀请微信好友</div>
+    </div>
+</div>
+
+
+<div id="orientLayer" class="mod-orient-layer">
+    <div class="mod-orient-layer__content"><i class="icon mod-orient-layer__icon-orient"></i>
+        <div class="mod-orient-layer__desc">为了更好的体验，请使用竖屏浏览</div>
+    </div>
+</div>
+
+<div class="shareShadow" id="shareShadow">
+    <div class="shadowImg">
+        <img src="/wx/./img/af9427dd0c8029e00018178528146f71.png" alt="">
+    </div>
+</div>
+
+<div class="wxQrcode">
+    <span class="wxQrcodeClose"></span>
+    <div class="qrcodeImgCon">
+        <div class="qrcodeImg"></div>
+        <p>长按二维码关注历历<br>即可加入日程</p>
+    </div>
+</div>
+
+<div id="dialog1" style="opacity: 0;display: none">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__hd">
+            <strong class="weui-dialog__title">温馨提示</strong>
+        </div>
+        <div class="weui-dialog_bd">您确定要退出该事件吗？</div>
+        <div class="weui-dialog__ft">
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" id="cancel">取消</a>
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" id="confirm">确定</a>
+        </div>
+    </div>
+</div>
+
+<div id="toast" style="opacity: 0;display: none">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+        <p class="weui-toast__content">已完成</p>
+    </div>
+</div>
+
+<div id="dialog2" style="opacity: 0;display: none">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__bd"></div>
+        <div class="weui-dialog__ft">
+            <a href="javascript:;" class="weui-dialog__bgn weui-dialog__btn_primary">知道了</a>
+        </div>
+    </div>
+</div>
+
+<div id="loadingToast" class="weui_loading_toast" style="display:none">
+    <div class="weui_mask_transparent"></div>
+    <div class="weui_toast">
+        <div class="ll-loading" style="top:40%">
+            <div class="ll-load-inner">
+                <div class="ll-load-container">
+                    <div class="ll-load-scale-multiple la-2x">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="ll-load-logo">
+                <span class="ll-logo-1"></span>
+                <span class="ll-logo-2"></span>
+                <span class="ll-logo-3"></span>
+            </div>
+        </div>
+        <p class="weui_toast_content">数据加载中</p>
+    </div>
+</div>
+<script type="text/javascript" src="/wx/js/newShowEvent.js?6755a5bfeb9f0f7a3559"></script></body>
 </html>

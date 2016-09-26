@@ -116,15 +116,28 @@ var Dom = {
         $('.mbsc-fr-hdr').html(theNlDate);
     },
     /*--------------------比较开始时间和结束时间，并输出显示格式------------------*/
-    compareTime:function(startTime,endTime){
+    compareTimes:function(startTime,endTime){
         var that = this,
-            startArr = startTime.split(" "),
             endArr = endTime.split(" ");
-
+        var startYear = parseInt(startTime.split(" ")[0].split("-")[0], 10),
+            startMonth = parseInt(startTime.split(" ")[0].split("-")[1], 10),
+            startDay = parseInt(startTime.split(" ")[0].split("-")[2], 10),
+            endYear = parseInt(endTime.split(" ")[0].split("-")[0], 10),
+            endMonth = parseInt(endTime.split(" ")[0].split("-")[1], 10),
+            endDay = parseInt(endTime.split(" ")[0].split("-")[2], 10),
+            endTimeStr = endArr[1].split(':');
         if(startTime == endTime){
             return that.transStartTime(startTime);
         }else{
-
+            if(startYear==endYear&&startMonth == endMonth&&startDay == endDay){
+                return that.transStartTime(startTime)+"-"+endTimeStr[0]+":"+endTimeStr[1];
+            }else if(startYear==endYear&&startMonth == endMonth&&startDay != endDay){
+                return that.transStartTime(startTime)+"&nbsp;<span class='f12 ccc'>至</span><br>"+that.transStartTime(endTime);
+            }else if(startYear==endYear&&startMonth != endMonth){
+                return that.transStartTime(startTime)+"&nbsp;<span class='f12 ccc'>至</span><br>"+that.transStartTime(endTime);
+            }else if(startYear!=endYear){
+                return that.tranDate(startTime)+"&nbsp;<span class='f12 ccc'>至</span><br>"+that.tranDate(endTime);
+            }
         }
     },
 
@@ -212,7 +225,7 @@ var Dom = {
                 curMonth = parseInt(current.split(" ")[0].split("-")[1], 10),
                 curDay = parseInt(current.split(" ")[0].split("-")[2], 10),
                 curHour = current.split(" ")[1] ? parseInt(current.split(" ")[1].split(":")[0], 10) : 0,
-                curMin = current.split(" ")[1] ? parseIntc(current.split(" ")[1].split(":")[1], 10) : 0;
+                curMin = current.split(" ")[1] ? parseInt(current.split(" ")[1].split(":")[1], 10) : 0;
         } else {
             var today = new Date();
             var curYear = today.getFullYear(),
@@ -225,7 +238,7 @@ var Dom = {
             toMonth = parseInt(time.split(" ")[0].split("-")[1], 10),
             toDay = parseInt(time.split(" ")[0].split("-")[2], 10),
             toHour = time.split(" ")[1] ? parseInt(time.split(" ")[1].split(":")[0], 10) : 0,
-            toMin = time.split(" ")[1] ? parseIntc(time.split(" ")[1].split(":")[1], 10) : 0;
+            toMin = time.split(" ")[1] ? parseInt(time.split(" ")[1].split(":")[1], 10) : 0;
         //比较
         if(toYear > curYear) {
             return "over";

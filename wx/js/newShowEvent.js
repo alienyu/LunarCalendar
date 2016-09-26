@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "8112bae4e8e312f4a635"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "6755a5bfeb9f0f7a3559"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -584,21 +584,218 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	/**
+	/* WEBPACK VAR INJECTION */(function($) {/**
 	 * Created by admin on 2016/9/26.
 	 */
-	__webpack_require__(55);
-	var pageLoad = __webpack_require__(13);
-	__webpack_require__(14);
+	__webpack_require__(60);
+	var pageLoad = __webpack_require__(14);
+	__webpack_require__(15);
 	//require("../common/BMap.js");
-	var Dom = __webpack_require__(15);
-	var wx = __webpack_require__(19);
-	var Ajax = __webpack_require__(21);
-	var fastClick = __webpack_require__(22);
+	var Dom = __webpack_require__(16);
+	var wx = __webpack_require__(20);
+	var Ajax = __webpack_require__(22);
+	var fastClick = __webpack_require__(23);
+	
+	var fuc = {
+	    config:{
+	        eventId: "",
+	        nickName: "",
+	        eventType:""
+	    },
+	
+	    init:function(){
+	        pageLoad({backgroundColor: "#66cccc"});
+	        this.config.eventId = Dom.getRequest("eventId");
+	        this.rem();
+	        this.renderPage();
+	        this.bindEvent();
+	    },
+	
+	    rem:function(){
+	        fastClick.attach(document.body);
+	    },
+	
+	    shareShadow: function() {
+	        var shareShadow = $('.shareShadow');
+	        shareShadow.fadeIn();//显示分享提示层
+	        shareShadow.click(function(){
+	            $(this).fadeOut();
+	            event.stopPropagation();
+	        });
+	        var share = document.getElementById('shareShadow');
+	        share.addEventListener('touchmove', function (e) {
+	            e.preventDefault();
+	        });
+	    },
+	
+	    renderPage:function(){
+	        var that = this;
+	        //wx.wxConfig(1);
+	        that.getData();
+	    },
+	
+	    /*-------------处理时间格式，获取年月日-----------------*/
+	    transDate:function(time){
+	        var timeArr = time.split(" ");
+	        return timeArr[0];
+	    },
+	
+	    getData: function() {
+	        //进入页面时的数据加载
+	        var that = this;
+	        //console.log(that.config.eventId);
+	        $.get(
+	            "http://www.li-li.cn/llwx/event/detail", {"eventId": that.config.eventId}, function (data) {
+	                if(data.code == 0) {
+	//                        console.log(data);
+	                    var dataList = data.data;
+	                    that.config.eventType = dataList.eventType;
+	                    $('.eventName').html(dataList.event.name);
+	                    if (dataList.eventType == 0) {//提醒事件
+	                        $('.time .itemCon').html(Dom.transStartTime());
+	                        $('.avtivityCon').css("display", "none");
+	                        $('.bottom').css("display", "none");
+	                        Ajax.getWeather(Dom.getDate(dataList.startTime));
+	                        Ajax.getPersonalFortune(Dom.getDate(dataList.startTime));
+	                    } else if (dataList.eventType == 1) {//活动事件
+	                        $('.suitable').css("display", "none");
+	                        $('.weather').css("display", "none");
+	                        var times = Dom.compareTimes(dataList.startTime, dataList.endTime);
+	                        $('.time .itemCon').html(times);
+	                        if (dataList.event.location) {//如果有地点
+	                            $('.site .itemCon').html(dataList.event.location);
+	                        } else {
+	                            $('.site').css("display", "none");
+	                        }
+	                        if (dataList.event.remarkImgs) {//如果有备注
+	                            var imgArr = dataList.event.remarkImgs.split(",");//图片数组
+	                            //todo 填充备注中的图片样式
+	                            if (dataList.event.remark) {
+	                                $('.remarkText').html(dataList.event.remark);
+	                            }
+	                        } else if (!dataList.event.remarkImgs) {
+	                            if (dataList.event.remark) {
+	                                $('.remarkText').html(dataList.event.remark);
+	                            }
+	                        } else {
+	                            $('.remarks').css("display", "none");
+	                        }
+	                    }
+	                    if (!dataList.joiner[0]) {//如果不存在参与者
+	                        $('.participant').css("display", "none");
+	                    } else {//存在参与者，则显示参与者头像和昵称
+	                        if (dataList.owner.headImgUrl) {
+	                            var html = that.config.template.replace(/{{dataImg}}/g, dataList.owner.headImgUrl).replace(/{{img}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{joinerName}}/g, dataList.owner.nickName);
+	                        } else {
+	                            var html = that.config.template.replace(/{{dataImg}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{img}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{joinerName}}/g, dataList.owner.nickName);
+	                        }
+	                        var joinerCount = dataList.joiner.length + 1;//获得参与者数组长度即参与人数
+	                        $('.joinerCount').html(joinerCount);
+	                        if (dataList.joiner.length > that.config.rowsCount * 2) {
+	                            $('.acceptPeople').css("height", "130px");
+	                            $('.showAll').css("display", "block");
+	                        }
+	                        for (var m = 0; m < dataList.joiner.length; m++) {
+	                            if (dataList.joiner[m].headImgUrl) {
+	                                html += that.config.template.replace(/{{dataImg}}/g, dataList.joiner[m].headImgUrl).replace(/{{img}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{joinerName}}/g, dataList.joiner[m].nickName);
+	                            } else {
+	                                html += that.config.template.replace(/{{dataImg}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{img}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{joinerName}}/g, dataList.joiner[m].nickName);
+	                            }
+	                        }
+	                        $('.acceptPeople').append(html);
+	                    }
+	                    if (dataList.user == null) {//参与人不存在,没关注过历历
+	                        $('.bottom').css('display', 'none').animate({'bottom': '-0.72rem'}, 500, function () {
+	                            $('.bottom3').css('display', 'block').animate({'bottom': '0rem'}, 500);
+	                        });
+	                    } else {//参与人存在
+	                        var isJoiner = false;
+	                        if (dataList.event.openId != dataList.user.openId) { //用户不是发起者
+	                            $('.share').css("display", "none");//隐藏分享按钮
+	                            $('.participant .line').css("display", "none");
+	                            //隐藏提醒类型和重复类型
+	                            $('.remind').css("display", "none");
+	                            $('.othersCon .repetition').css("display", "none");
+	                            //用户为参与者
+	                            for (var i = 0; i < dataList.joiner.length; i++) {
+	                                if (dataList.user.openId == dataList.joiner[i].openId) {
+	                                    isJoiner = true;
+	                                }
+	                            }
+	                            if (isJoiner) {
+	                                $('.bottom').css('display', 'none').animate({'bottom': '-0.72rem'}, 500, function () {
+	                                    $('.bottom4').css('display', 'block').animate({'bottom': '0rem'}, 500);
+	                                });
+	                            } else {
+	                                $('.bottom').css('display', 'none').animate({'bottom': '-0.72rem'}, 500, function () {
+	                                    $('.bottom3').css('display', 'block').animate({'bottom': '0rem'}, 500);
+	                                });
+	                            }
+	                        } else {//用户是发起者
+	                            $('.bottom').css('display', 'block').animate({'bottom': '0rem'}, 500);
+	                        }
+	                   }
+	             }
+	        })
+	    },
+	
+	    bindEvent:function(){
+	        var that = this;
+	        /*------------点击编辑按钮，跳转至事件添加页--------------*/
+	        $('.compile').click(function(){
+	            if(that.config.eventType == 0){//提醒事件
+	
+	            }else if(that.config.eventType == 1){//活动事件
+	                window.location.href = "http://www.li-li.cn/wx/activity.html?evnetId"+that.config.eventId;
+	            }
+	        });
+	        /*---------------点击邀请好友-----------------*/
+	        $('.share').click(function(){
+	
+	        });
+	        /*-----------------点击接受邀请----------------*/
+	        $('.join').click(function(){
+	
+	        });
+	        /*------------------点击退出（已加入）-----------------*/
+	        $('.exit').click(function(){
+	            $('#dialog1').show();
+	            $('#cancel').click(function(){
+	                $('#dialog1').hide();
+	            });
+	            $('#confirm').click(function(){
+	                $('#dialog1').hide();
+	                $('#loadingToast').show();//显示loading
+	            });
+	            $.post(
+	                "http://www.li-li.cn/llwx/event/exit",
+	                {
+	                    "eventId":that.config.eventId
+	                },
+	                function(data){
+	                    if(data.code==0){
+	                        $('#loadingToast').fadeOut();//隐藏loading
+	                        $('#toast').show();
+	                        setTimeout(function () {
+	                            $('#toast').hide();
+	                        }, 1500);
+	                        $('.bottom3').css('display','none').animate({'bottom': '-50px'}, 500, function () {
+	                            $('.bottom2').css('display','block').animate({'bottom': '0'}, 500);
+	                        });
+	                    }
+	                }
+	            )
+	        })
+	    }
+	
+	}
+	
+	fuc.init();
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ },
 
-/***/ 5:
+/***/ 6:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* Zepto v1.1.7 - zepto event ajax form ie - zeptojs.com/license */
@@ -2602,7 +2799,7 @@
 
 /***/ },
 
-/***/ 13:
+/***/ 14:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {module.exports = function(options) {
@@ -2623,11 +2820,11 @@
 	        }
 	    };
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ },
 
-/***/ 14:
+/***/ 15:
 /***/ function(module, exports) {
 
 	(function ($) {
@@ -2702,17 +2899,20 @@
 	            var curPos = $(document.body).scrollTop();
 	            var distance = this.options.toTo - curPos;
 	            var times = parseInt((this.options.duration / 20), 10);
-	            var step = distance / times;
-	            window.fuc = setInterval(function() {
+	            var step = parseInt(distance / times ,10);
+	            var that = this;
+	            var fuc = setInterval(function() {
 	                if(distance > 0) {
 	                    if($(document.body).scrollTop() >= that.options.toTo) {
-	                        clearInterval(window.fuc);
+	                        $(document.body).scrollTop(that.options.toTo);
+	                        clearInterval(fuc);
 	                    } else {
 	                        $(document.body).scrollTop($(document.body).scrollTop() + step);
 	                    }
 	                } else {
 	                    if($(document.body).scrollTop() <= that.options.toTo) {
-	                    clearInterval(window.fuc);
+	                        $(document.body).scrollTop(that.options.toTo)
+	                        clearInterval(fuc);
 	                    } else {
 	                        $(document.body).scrollTop($(document.body).scrollTop() + step);
 	                    }
@@ -2724,10 +2924,10 @@
 
 /***/ },
 
-/***/ 15:
+/***/ 16:
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {var transCalendar = __webpack_require__(16);
+	/* WEBPACK VAR INJECTION */(function($) {var transCalendar = __webpack_require__(17);
 	var Dom = {
 	    getRequest: function(name) {
 	        var url = window.location.search; //获取url中"?"符后的字串
@@ -2844,6 +3044,44 @@
 	        }
 	        $('.mbsc-fr-hdr').html(theNlDate);
 	    },
+	    /*--------------------比较开始时间和结束时间，并输出显示格式------------------*/
+	    compareTimes:function(startTime,endTime){
+	        var that = this,
+	            endArr = endTime.split(" ");
+	        var startYear = parseInt(startTime.split(" ")[0].split("-")[0], 10),
+	            startMonth = parseInt(startTime.split(" ")[0].split("-")[1], 10),
+	            startDay = parseInt(startTime.split(" ")[0].split("-")[2], 10),
+	            endYear = parseInt(endTime.split(" ")[0].split("-")[0], 10),
+	            endMonth = parseInt(endTime.split(" ")[0].split("-")[1], 10),
+	            endDay = parseInt(endTime.split(" ")[0].split("-")[2], 10),
+	            endTimeStr = endArr[1].split(':');
+	        if(startTime == endTime){
+	            return that.transStartTime(startTime);
+	        }else{
+	            if(startYear==endYear&&startMonth == endMonth&&startDay == endDay){
+	                return that.transStartTime(startTime)+"-"+endTimeStr[0]+":"+endTimeStr[1];
+	            }else if(startYear==endYear&&startMonth == endMonth&&startDay != endDay){
+	                return that.transStartTime(startTime)+"&nbsp;<span class='f12 ccc'>至</span><br>"+that.transStartTime(endTime);
+	            }else if(startYear==endYear&&startMonth != endMonth){
+	                return that.transStartTime(startTime)+"&nbsp;<span class='f12 ccc'>至</span><br>"+that.transStartTime(endTime);
+	            }else if(startYear!=endYear){
+	                return that.tranDate(startTime)+"&nbsp;<span class='f12 ccc'>至</span><br>"+that.tranDate(endTime);
+	            }
+	        }
+	    },
+	
+	    /*-------------------转换时间格式，只获取月日，星期和时分-----------------------*/
+	    transStartTime:function(date){
+	        var that = this;
+	        var time = date.split(" ");
+	        var dateArr = time[0].split("-");
+	        var timeStr = time[0].replace(/\-/g, "/");
+	        var hourArr = time[1].split(":");//将时分秒分割为数组
+	        var theDate = new Date(timeStr);//将日期转换成标准格式
+	        var theWeek = that.transWeek(theDate);//获取当前时间对应的星期
+	        return  dateArr[1] + "月" + dateArr[2] + "日" + " " + theWeek + " " + hourArr[0] + ":" + hourArr[1];
+	    },
+	
 	    /*-------------------------转换获取的开始时间、结束时间、提醒时间格式---------------*/
 	    tranDate:function(date){
 	        var that = this;
@@ -2916,7 +3154,7 @@
 	                curMonth = parseInt(current.split(" ")[0].split("-")[1], 10),
 	                curDay = parseInt(current.split(" ")[0].split("-")[2], 10),
 	                curHour = current.split(" ")[1] ? parseInt(current.split(" ")[1].split(":")[0], 10) : 0,
-	                curMin = current.split(" ")[1] ? parseIntc(current.split(" ")[1].split(":")[1], 10) : 0;
+	                curMin = current.split(" ")[1] ? parseInt(current.split(" ")[1].split(":")[1], 10) : 0;
 	        } else {
 	            var today = new Date();
 	            var curYear = today.getFullYear(),
@@ -2929,7 +3167,7 @@
 	            toMonth = parseInt(time.split(" ")[0].split("-")[1], 10),
 	            toDay = parseInt(time.split(" ")[0].split("-")[2], 10),
 	            toHour = time.split(" ")[1] ? parseInt(time.split(" ")[1].split(":")[0], 10) : 0,
-	            toMin = time.split(" ")[1] ? parseIntc(time.split(" ")[1].split(":")[1], 10) : 0;
+	            toMin = time.split(" ")[1] ? parseInt(time.split(" ")[1].split(":")[1], 10) : 0;
 	        //比较
 	        if(toYear > curYear) {
 	            return "over";
@@ -2986,11 +3224,11 @@
 	
 	Dom.checkUserAgent();
 	module.exports = Dom;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ },
 
-/***/ 16:
+/***/ 17:
 /***/ function(module, exports) {
 
 	function tranCalendar() {
@@ -3160,14 +3398,14 @@
 
 /***/ },
 
-/***/ 19:
+/***/ 20:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {/**
 	 * Created by admin on 2016/8/17.
 	 * 微信分享
 	 */
-	var wx = __webpack_require__(20);
+	var wx = __webpack_require__(21);
 	var imageUrl = "http://www.li-li.cn/app/icon.png";
 	var wxConfig = {
 	    wxConfig: function(type) {
@@ -3250,11 +3488,11 @@
 	}
 	
 	module.exports = wxConfig;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ },
 
-/***/ 20:
+/***/ 21:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!function(a,b){ true?!(__WEBPACK_AMD_DEFINE_RESULT__ = function(){return b(a)}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)):b(a,!0);}(window,function(a,b){function c(b,c,d){a.WeixinJSBridge?WeixinJSBridge.invoke(b,e(c),function(a){g(b,a,d)}):j(b,d)}function d(b,c,d){a.WeixinJSBridge?WeixinJSBridge.on(b,function(a){d&&d.trigger&&d.trigger(a),g(b,a,c)}):d?j(b,d):j(b,c)}function e(a){return a=a||{},a.appId=E.appId,a.verifyAppId=E.appId,a.verifySignType="sha1",a.verifyTimestamp=E.timestamp+"",a.verifyNonceStr=E.nonceStr,a.verifySignature=E.signature,a}function f(a){return{timeStamp:a.timestamp+"",nonceStr:a.nonceStr,"package":a.package,paySign:a.paySign,signType:a.signType||"SHA1"}}function g(a,b,c){var d,e,f;switch(delete b.err_code,delete b.err_desc,delete b.err_detail,d=b.errMsg,d||(d=b.err_msg,delete b.err_msg,d=h(a,d),b.errMsg=d),c=c||{},c._complete&&(c._complete(b),delete c._complete),d=b.errMsg||"",E.debug&&!c.isInnerInvoke&&alert(JSON.stringify(b)),e=d.indexOf(":"),f=d.substring(e+1)){case"ok":c.success&&c.success(b);break;case"cancel":c.cancel&&c.cancel(b);break;default:c.fail&&c.fail(b)}c.complete&&c.complete(b)}function h(a,b){var e,f,c=a,d=p[c];return d&&(c=d),e="ok",b&&(f=b.indexOf(":"),e=b.substring(f+1),"confirm"==e&&(e="ok"),"failed"==e&&(e="fail"),-1!=e.indexOf("failed_")&&(e=e.substring(7)),-1!=e.indexOf("fail_")&&(e=e.substring(5)),e=e.replace(/_/g," "),e=e.toLowerCase(),("access denied"==e||"no permission to execute"==e)&&(e="permission denied"),"config"==c&&"function not exist"==e&&(e="ok"),""==e&&(e="fail")),b=c+":"+e}function i(a){var b,c,d,e;if(a){for(b=0,c=a.length;c>b;++b)d=a[b],e=o[d],e&&(a[b]=e);return a}}function j(a,b){if(!(!E.debug||b&&b.isInnerInvoke)){var c=p[a];c&&(a=c),b&&b._complete&&delete b._complete,console.log('"'+a+'",',b||"")}}function k(){0!=D.preVerifyState&&(u||v||E.debug||"6.0.2">z||D.systemType<0||A||(A=!0,D.appId=E.appId,D.initTime=C.initEndTime-C.initStartTime,D.preVerifyTime=C.preVerifyEndTime-C.preVerifyStartTime,H.getNetworkType({isInnerInvoke:!0,success:function(a){var b,c;D.networkType=a.networkType,b="http://open.weixin.qq.com/sdk/report?v="+D.version+"&o="+D.preVerifyState+"&s="+D.systemType+"&c="+D.clientVersion+"&a="+D.appId+"&n="+D.networkType+"&i="+D.initTime+"&p="+D.preVerifyTime+"&u="+D.url,c=new Image,c.src=b}})))}function l(){return(new Date).getTime()}function m(b){w&&(a.WeixinJSBridge?b():q.addEventListener&&q.addEventListener("WeixinJSBridgeReady",b,!1))}function n(){H.invoke||(H.invoke=function(b,c,d){a.WeixinJSBridge&&WeixinJSBridge.invoke(b,e(c),d)},H.on=function(b,c){a.WeixinJSBridge&&WeixinJSBridge.on(b,c)})}var o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H;if(!a.jWeixin)return o={config:"preVerifyJSAPI",onMenuShareTimeline:"menu:share:timeline",onMenuShareAppMessage:"menu:share:appmessage",onMenuShareQQ:"menu:share:qq",onMenuShareWeibo:"menu:share:weiboApp",onMenuShareQZone:"menu:share:QZone",previewImage:"imagePreview",getLocation:"geoLocation",openProductSpecificView:"openProductViewWithPid",addCard:"batchAddCard",openCard:"batchViewCard",chooseWXPay:"getBrandWCPayRequest"},p=function(){var b,a={};for(b in o)a[o[b]]=b;return a}(),q=a.document,r=q.title,s=navigator.userAgent.toLowerCase(),t=navigator.platform.toLowerCase(),u=!(!t.match("mac")&&!t.match("win")),v=-1!=s.indexOf("wxdebugger"),w=-1!=s.indexOf("micromessenger"),x=-1!=s.indexOf("android"),y=-1!=s.indexOf("iphone")||-1!=s.indexOf("ipad"),z=function(){var a=s.match(/micromessenger\/(\d+\.\d+\.\d+)/)||s.match(/micromessenger\/(\d+\.\d+)/);return a?a[1]:""}(),A=!1,B=!1,C={initStartTime:l(),initEndTime:0,preVerifyStartTime:0,preVerifyEndTime:0},D={version:1,appId:"",initTime:0,preVerifyTime:0,networkType:"",preVerifyState:1,systemType:y?1:x?2:-1,clientVersion:z,url:encodeURIComponent(location.href)},E={},F={_completes:[]},G={state:0,data:{}},m(function(){C.initEndTime=l()}),H={config:function(a){E=a,j("config",a);var b=E.check===!1?!1:!0;m(function(){var a,d,e;if(b)c(o.config,{verifyJsApiList:i(E.jsApiList)},function(){F._complete=function(a){C.preVerifyEndTime=l(),G.state=1,G.data=a},F.success=function(){D.preVerifyState=0},F.fail=function(a){F._fail?F._fail(a):G.state=-1};var a=F._completes;return a.push(function(){k()}),F.complete=function(){for(var c=0,d=a.length;d>c;++c)a[c]();F._completes=[]},F}()),C.preVerifyStartTime=l();else{for(G.state=1,a=F._completes,d=0,e=a.length;e>d;++d)a[d]();F._completes=[]}}),E.beta&&n()},ready:function(a){0!=G.state?a():(F._completes.push(a),!w&&E.debug&&a())},error:function(a){"6.0.2">z||B||(B=!0,-1==G.state?a(G.data):F._fail=a)},checkJsApi:function(a){var b=function(a){var c,d,b=a.checkResult;for(c in b)d=p[c],d&&(b[d]=b[c],delete b[c]);return a};c("checkJsApi",{jsApiList:i(a.jsApiList)},function(){return a._complete=function(a){if(x){var c=a.checkResult;c&&(a.checkResult=JSON.parse(c))}a=b(a)},a}())},onMenuShareTimeline:function(a){d(o.onMenuShareTimeline,{complete:function(){c("shareTimeline",{title:a.title||r,desc:a.title||r,img_url:a.imgUrl||"",link:a.link||location.href,type:a.type||"link",data_url:a.dataUrl||""},a)}},a)},onMenuShareAppMessage:function(a){d(o.onMenuShareAppMessage,{complete:function(){c("sendAppMessage",{title:a.title||r,desc:a.desc||"",link:a.link||location.href,img_url:a.imgUrl||"",type:a.type||"link",data_url:a.dataUrl||""},a)}},a)},onMenuShareQQ:function(a){d(o.onMenuShareQQ,{complete:function(){c("shareQQ",{title:a.title||r,desc:a.desc||"",img_url:a.imgUrl||"",link:a.link||location.href},a)}},a)},onMenuShareWeibo:function(a){d(o.onMenuShareWeibo,{complete:function(){c("shareWeiboApp",{title:a.title||r,desc:a.desc||"",img_url:a.imgUrl||"",link:a.link||location.href},a)}},a)},onMenuShareQZone:function(a){d(o.onMenuShareQZone,{complete:function(){c("shareQZone",{title:a.title||r,desc:a.desc||"",img_url:a.imgUrl||"",link:a.link||location.href},a)}},a)},startRecord:function(a){c("startRecord",{},a)},stopRecord:function(a){c("stopRecord",{},a)},onVoiceRecordEnd:function(a){d("onVoiceRecordEnd",a)},playVoice:function(a){c("playVoice",{localId:a.localId},a)},pauseVoice:function(a){c("pauseVoice",{localId:a.localId},a)},stopVoice:function(a){c("stopVoice",{localId:a.localId},a)},onVoicePlayEnd:function(a){d("onVoicePlayEnd",a)},uploadVoice:function(a){c("uploadVoice",{localId:a.localId,isShowProgressTips:0==a.isShowProgressTips?0:1},a)},downloadVoice:function(a){c("downloadVoice",{serverId:a.serverId,isShowProgressTips:0==a.isShowProgressTips?0:1},a)},translateVoice:function(a){c("translateVoice",{localId:a.localId,isShowProgressTips:0==a.isShowProgressTips?0:1},a)},chooseImage:function(a){c("chooseImage",{scene:"1|2",count:a.count||9,sizeType:a.sizeType||["original","compressed"],sourceType:a.sourceType||["album","camera"]},function(){return a._complete=function(a){if(x){var b=a.localIds;b&&(a.localIds=JSON.parse(b))}},a}())},previewImage:function(a){c(o.previewImage,{current:a.current,urls:a.urls},a)},uploadImage:function(a){c("uploadImage",{localId:a.localId,isShowProgressTips:0==a.isShowProgressTips?0:1},a)},downloadImage:function(a){c("downloadImage",{serverId:a.serverId,isShowProgressTips:0==a.isShowProgressTips?0:1},a)},getNetworkType:function(a){var b=function(a){var c,d,e,b=a.errMsg;if(a.errMsg="getNetworkType:ok",c=a.subtype,delete a.subtype,c)a.networkType=c;else switch(d=b.indexOf(":"),e=b.substring(d+1)){case"wifi":case"edge":case"wwan":a.networkType=e;break;default:a.errMsg="getNetworkType:fail"}return a};c("getNetworkType",{},function(){return a._complete=function(a){a=b(a)},a}())},openLocation:function(a){c("openLocation",{latitude:a.latitude,longitude:a.longitude,name:a.name||"",address:a.address||"",scale:a.scale||28,infoUrl:a.infoUrl||""},a)},getLocation:function(a){a=a||{},c(o.getLocation,{type:a.type||"wgs84"},function(){return a._complete=function(a){delete a.type},a}())},hideOptionMenu:function(a){c("hideOptionMenu",{},a)},showOptionMenu:function(a){c("showOptionMenu",{},a)},closeWindow:function(a){a=a||{},c("closeWindow",{},a)},hideMenuItems:function(a){c("hideMenuItems",{menuList:a.menuList},a)},showMenuItems:function(a){c("showMenuItems",{menuList:a.menuList},a)},hideAllNonBaseMenuItem:function(a){c("hideAllNonBaseMenuItem",{},a)},showAllNonBaseMenuItem:function(a){c("showAllNonBaseMenuItem",{},a)},scanQRCode:function(a){a=a||{},c("scanQRCode",{needResult:a.needResult||0,scanType:a.scanType||["qrCode","barCode"]},function(){return a._complete=function(a){var b,c;y&&(b=a.resultStr,b&&(c=JSON.parse(b),a.resultStr=c&&c.scan_code&&c.scan_code.scan_result))},a}())},openProductSpecificView:function(a){c(o.openProductSpecificView,{pid:a.productId,view_type:a.viewType||0,ext_info:a.extInfo},a)},addCard:function(a){var e,f,g,h,b=a.cardList,d=[];for(e=0,f=b.length;f>e;++e)g=b[e],h={card_id:g.cardId,card_ext:g.cardExt},d.push(h);c(o.addCard,{card_list:d},function(){return a._complete=function(a){var c,d,e,b=a.card_list;if(b){for(b=JSON.parse(b),c=0,d=b.length;d>c;++c)e=b[c],e.cardId=e.card_id,e.cardExt=e.card_ext,e.isSuccess=e.is_succ?!0:!1,delete e.card_id,delete e.card_ext,delete e.is_succ;a.cardList=b,delete a.card_list}},a}())},chooseCard:function(a){c("chooseCard",{app_id:E.appId,location_id:a.shopId||"",sign_type:a.signType||"SHA1",card_id:a.cardId||"",card_type:a.cardType||"",card_sign:a.cardSign,time_stamp:a.timestamp+"",nonce_str:a.nonceStr},function(){return a._complete=function(a){a.cardList=a.choose_card_info,delete a.choose_card_info},a}())},openCard:function(a){var e,f,g,h,b=a.cardList,d=[];for(e=0,f=b.length;f>e;++e)g=b[e],h={card_id:g.cardId,code:g.code},d.push(h);c(o.openCard,{card_list:d},a)},chooseWXPay:function(a){c(o.chooseWXPay,f(a),a)}},b&&(a.wx=a.jWeixin=H),H});
@@ -3262,10 +3500,10 @@
 
 /***/ },
 
-/***/ 21:
+/***/ 22:
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {var Dom = __webpack_require__(15);
+	/* WEBPACK VAR INJECTION */(function($) {var Dom = __webpack_require__(16);
 	var Ajax = {
 	    init: function() {
 	        setInterval(function () {
@@ -3485,28 +3723,81 @@
 	            }
 	        })
 	    },
+	    //获取天气
+	    getWeather:function(date){
+	        $.get(
+	            "http://www.li-li.cn/llwx/weather/get",
+	            {"date":date},
+	            function(data) {
+	                if(data.code ==0){
+	                    if(data.data){
+	                        var weatherList = data.data;
+	                        var html = "";
+	                        if(weatherList.qlty){
+	                            html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
+	                        }else{
+	                            html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+	                        }
+	                        $('.weather').append(html);
+	                    }else{
+	                        $('.weather').css("display","none");
+	                    }
+	                }else{
+	                    $('.weather').css("display","none");
+	                }
+	            }
+	        )
+	    },
+	    //获取私人运势
+	    getPersonalFortune:function(dateTime){
+	        $.get("http://www.li-li.cn/llwx/fortune/get", {"dateTime": dateTime + " 08:00:00"}, function (data) {
+	            if (data.code == 0) {
+	                var list = data.data;
+	                if (list.personal) {
+	                    var html = "";
+	                    if (list.personal.type3) {
+	                        var type = data.personal.type3.replace(/\,/g, "&nbsp;&nbsp;");
+	                        html = "<span>" + type + "</span>";
+	                        $('.suitable .itemCon').append(html);
+	                    } else {
+	                        $('.suitable .itemCon').html("诸事不宜");
+	                    }
+	                }else{
+	                    $('.eventContainer .suitable').css("display","none");
+	                }
+	            }
+	        });
+	    },
 	    //添加事件页面数据提交
-	    eventAdd: function(name,tagName, startTime, endTime, tipType, tipTime, repeatType, location, remark) {
+	    eventAdd: function(name,eventType,tagId, startTime, endTime, tipType, tipTime, repeatType, location,longitude,latitude, remark,remarkImgs,bgColor,themeId) {
 	        $.ajax({
 	            type: "post",
 	            url: "http://www.li-li.cn/llwx/event/add",
 	            data: {
-	                name: name,
-	                tags:tagName,
-	                startTime: startTime,
-	                endTime: endTime,
-	                tipType: tipType,
-	                tipTime: tipTime,
-	                repeatType: repeatType,
-	                location: location,
-	                remark: remark,
+	                "name":name,
+	                "eventType":eventType,
+	                "tagId":tagId,
+	                "startTime":startTime,
+	                "endTime":endTime,
+	                "tipType":tipType,
+	                "tipTime":tipTime,
+	                "repeatType":repeatType,
+	                "location":location,
+	                "longitude":longitude,
+	                "latitude":latitude,
+	                "remark":remark,
+	                "remarkImgs":remarkImgs,
+	                "bgColor":bgColor,
+	                "theme.themeId":themeId
 	            },
 	            dataType: "json",
 	            success: function (data) {
 	                //console.log(data);
 	                if (data.code == 0) {//提交成功
+	                    $('#loadingToast').fadeOut();
 	                    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/calendar.html");
 	                }else{//提交失败提醒错误信息
+	                    $('#loadingToast').fadeOut();
 	                    var error = data.msg;
 	                    $('#dialog2 .weui_dialog_bd').html(error);
 	                    $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
@@ -3517,27 +3808,71 @@
 	        })
 	    },
 	    //添加事件页面数据提交
-	    eventAdd2: function(name,tagName,startTime, endTime, tipType, tipTime, repeatType, location, remark) {
+	    eventAdd2: function(name,eventType,tagId, startTime, endTime, tipType, tipTime, repeatType, location,longitude,latitude, remark,remarkImgs,bgColor,themeId) {
 	        $.ajax({
 	            type: "post",
 	            url: "http://www.li-li.cn/llwx/event/add",
 	            data: {
-	                name: name,
-	                tags:tagName,
-	                startTime: startTime,
-	                endTime: endTime,
-	                tipType: tipType,
-	                tipTime: tipTime,
-	                repeatType: repeatType,
-	                location: location,
-	                remark: remark,
+	                "name":name,
+	                "eventType":eventType,
+	                "tagId":tagId,
+	                "startTime":startTime,
+	                "endTime":endTime,
+	                "tipType":tipType,
+	                "tipTime":tipTime,
+	                "repeatType":repeatType,
+	                "location":location,
+	                "longitude":longitude,
+	                "latitude":latitude,
+	                "remark":remark,
+	                "remarkImgs":remarkImgs,
+	                "bgColor":bgColor,
+	                "theme.themeId":themeId
 	            },
 	            dataType: "json",
 	            async: false,
 	            success: function (data) {
 	                if (data.code == 0) {
-	                    eventId = data.data;
+	                    that.config.eventId = data.data;
 	                }else{//提交失败提醒错误信息
+	                    var error = data.msg;
+	                    $('#dialog2 .weui_dialog_bd').html(error);
+	                    $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
+	                        $('#dialog2').off('click').hide();
+	                    });
+	                }
+	            }
+	        })
+	    },
+	    //修改事件页面数据提交
+	    eventModify: function(eventId,name,tagId, startTime, endTime, tipType, tipTime, repeatType, location,longitude,latitude, remark,remarkImgs,bgColor,themeId) {
+	        $.ajax({
+	            type: "post",
+	            url: "http://www.li-li.cn/llwx/event/add",
+	            data: {
+	                "eventId":eventId,
+	                "name":name,
+	                "tagId":tagId,
+	                "startTime":startTime,
+	                "endTime":endTime,
+	                "tipType":tipType,
+	                "tipTime":tipTime,
+	                "repeatType":repeatType,
+	                "location":location,
+	                "longitude":longitude,
+	                "latitude":latitude,
+	                "remark":remark,
+	                "remarkImgs":remarkImgs,
+	                "bgColor":bgColor,
+	                "theme.themeId":themeId
+	            },
+	            dataType: "json",
+	            success: function (data) {
+	                if (data.code == 0) {
+	                    $('#loadingToast').fadeOut();
+	                    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/calendar.html");
+	                } else {//修改失败弹出提示框
+	                    $('#loadingToast').fadeOut();
 	                    var error = data.msg;
 	                    $('#dialog2 .weui_dialog_bd').html(error);
 	                    $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
@@ -3552,11 +3887,11 @@
 	Ajax.init();
 	
 	module.exports = Ajax;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ },
 
-/***/ 22:
+/***/ 23:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_RESULT__;;(function () {
@@ -5245,7 +5580,7 @@
 
 /***/ },
 
-/***/ 55:
+/***/ 60:
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin

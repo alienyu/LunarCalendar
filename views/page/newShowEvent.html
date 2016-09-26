@@ -67,8 +67,20 @@
             </div>
         </div>
     </div>
-    <div class="bottom">
-
+    <!--事件创建人进入页面时底部显示样式-->
+    <div class="bottom bottom1">
+        <div class="bottomText ccc fl">是否需要邀请好友？</div>
+        <div class="share c6c fr">邀请微信好友</div>
+    </div>
+    <!--未加入事件者进入页面时底部显示样式-->
+    <div class="bottom bottom2">
+        <div class="bottomText ccc fl">来自#<span></span>的邀请</div>
+        <div class="join c6c fr">接受邀请</div>
+    </div>
+    <!--已加入事件者进入页面时-->
+    <div class="bottom bottom3">
+        <div class="exit fl">已接受</div>
+        <div class="share c6c fr">邀请微信好友</div>
     </div>
 </div>
 
@@ -82,6 +94,69 @@
 <div class="shareShadow" id="shareShadow">
     <div class="shadowImg">
         <img src="../../assets/imgs/page/addEvent/share-tips.png" alt="">
+    </div>
+</div>
+<!--弹出二维码-->
+<div class="wxQrcode">
+    <span class="wxQrcodeClose"></span>
+    <div class="qrcodeImgCon">
+        <div class="qrcodeImg"></div>
+        <p>长按二维码关注历历<br/>即可加入日程</p>
+    </div>
+</div>
+<!--用户退出事件时的弹框提醒-->
+<div id="dialog1" style="opacity: 0;display: none">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__hd">
+            <strong class="weui-dialog__title">温馨提示</strong>
+        </div>
+        <div class="weui-dialog_bd">您确定要退出该事件吗？</div>
+        <div class="weui-dialog__ft">
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" id="cancel">取消</a>
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" id="confirm">确定</a>
+        </div>
+    </div>
+</div>
+<!--用户退出事件成功后的提示-->
+<div id="toast" style="opacity: 0;display: none">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+        <p class="weui-toast__content">已完成</p>
+    </div>
+</div>
+<!--用户操作失败后的提示-->
+<div id="dialog2" style="opacity: 0;display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__bd"></div>
+        <div class="weui-dialog__ft">
+            <a href="javascript:;" class="weui-dialog__bgn weui-dialog__btn_primary">知道了</a>
+        </div>
+    </div>
+</div>
+<!--数据加载时的loading-->
+<div id="loadingToast" class="weui_loading_toast" style="display:none;">
+    <div class="weui_mask_transparent"></div>
+    <div class="weui_toast">
+        <div class="ll-loading" style="top:40%;">
+            <div class="ll-load-inner">
+                <div class="ll-load-container">
+                    <div class="ll-load-scale-multiple la-2x">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div><!-- end la-2x -->
+                </div><!-- end ll-load-container -->
+            </div><!-- end ll-load-inner -->
+            <div class="ll-load-logo">
+                <span class="ll-logo-1"></span>
+                <span class="ll-logo-2"></span>
+                <span class="ll-logo-3"></span>
+            </div><!-- end ll-loading -->
+        </div><!-- end ll-loading -->
+        <p class="weui_toast_content">数据加载中</p>
     </div>
 </div>
 </body>
