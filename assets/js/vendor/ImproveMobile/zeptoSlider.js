@@ -70,17 +70,20 @@
             var curPos = $(document.body).scrollTop();
             var distance = this.options.toTo - curPos;
             var times = parseInt((this.options.duration / 20), 10);
-            var step = distance / times;
-            window.fuc = setInterval(function() {
+            var step = parseInt(distance / times ,10);
+            var that = this;
+            var fuc = setInterval(function() {
                 if(distance > 0) {
                     if($(document.body).scrollTop() >= that.options.toTo) {
-                        clearInterval(window.fuc);
+                        $(document.body).scrollTop(that.options.toTo);
+                        clearInterval(fuc);
                     } else {
                         $(document.body).scrollTop($(document.body).scrollTop() + step);
                     }
                 } else {
                     if($(document.body).scrollTop() <= that.options.toTo) {
-                    clearInterval(window.fuc);
+                        $(document.body).scrollTop(that.options.toTo)
+                        clearInterval(fuc);
                     } else {
                         $(document.body).scrollTop($(document.body).scrollTop() + step);
                     }

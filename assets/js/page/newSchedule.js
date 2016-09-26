@@ -131,14 +131,19 @@ var fuc = {
             } else {
                 //如果新数据中最后一条与原数据第一条不是同年同月的就给原数据补充头部月份图
                 var dom = $("#container .record").first();
+                dom.attr("id", "current");
                 var firstDate = dom.data("date");
                 if((this.config.bottomDate.split("-")[0] != firstDate.split("-")[0]) || (this.config.bottomDate.split("-")[1] != firstDate.split("-")[1])) {
+                    var year = firstDate.split('-')[0];
                     var month = firstDate.split('-')[1];
+                    var dateClass = "headDate_" + year + "_" + month;
                     var monthDom = '<div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/' + month + '.jpg) fixed center center;"><div class="text">' + month + '月</div></div>';
                     $("#container").find("div").first().before(monthDom);
-                    dom.addClass("first_day");
+                    dom.addClass("first_day").addClass(dateClass);
                 }
                 $("#container").find("div").first().before(html({data: data}));
+                window.location.href = "#current";
+                dom.removeAttr("id");
             }
         }
         this.renderBMP();
@@ -151,14 +156,13 @@ var fuc = {
         this.config.monthPos.min = "";
         this.config.monthPos.list = {};
         $(".first_day").each(function(i ,e){
-            var key = $(e).attr("class").split(" ")[2];
+            var key = $(e).attr("class").match(/headDate_\d+_\d+/);
             var position = $(e).position().top - 30;
             that.config.monthPos.list[key] = position;
             if(i == 0) {
                 that.config.monthPos.min = position;
             }
         });
-        console.log(this.config.monthPos);
     },
     bindEvent: function() {
         var that = this;
@@ -189,37 +193,54 @@ var fuc = {
 
         //go today
         $(".back_today").on("tap", function(e) {
-            var todayPos = $("#today").position().top;
-
+            var todayPos = $("#today").position().top - 30;
+            $(document.body).scrollTo({toTo: todayPos});
         });
+
+        //添加活动按钮
+        $("#addActivity").on('tap', function(e) {
+            if($(e.target).hasClass("open")) {
+                $(e.target).removeClass("open");
+                $(".select_mask").css("display", "none");
+                $("#btnDetail").removeClass("move_up").addClass("move_down");
+            } else {
+                $(e.target).addClass("open");
+                $(".select_mask").css("display", "block");
+                $("#btnDetail").removeClass("move_down").addClass("move_up");
+            }
+        })
     },
     getSideDomDate: function() {
         return {
-            topDate: $(".record").first().data("date"),
+            topDate: $(".record:not(.no_record)").first().data("date"),
             bottomDate: $(".record").last().data("date")
         }
     },
     checkHeadDate: function(pos) {
-        //如果有跨月的情况
-        if(this.config.monthPos.min) {
-            if(pos < this.config.monthPos.min) {
-                var date = $(".record").first().data("date");
-                var text = date.split("-")[0] + "年" + date.split("-")[1] + "月";
-                $(".current_month").text(text);
-                return false;
-            } else {
-                var resultKey = "";
-                for(var i in this.config.monthPos.list) {
-                    if(pos > this.config.monthPos.list[i]) {
-                        resultKey = i;
-                    } else {
-                        break;
+        try {
+            //如果有跨月的情况
+            if(this.config.monthPos.min) {
+                if(pos < this.config.monthPos.min) {
+                    var date = $(".record").first().data("date");
+                    var text = date.split("-")[0] + "年" + date.split("-")[1] + "月";
+                    $(".current_month").text(text);
+                    return false;
+                } else {
+                    var resultKey = "";
+                    for(var i in this.config.monthPos.list) {
+                        if(pos > this.config.monthPos.list[i]) {
+                            resultKey = i;
+                        } else {
+                            break;
+                        }
                     }
+                    var date = $("." + resultKey).data("date");
+                    var text = parseInt(date.split("-")[0], 10) + "年" + parseInt(date.split("-")[1], 10) + "月";
+                    $(".current_month").text(text);
                 }
-                var date = $("." + resultKey).data("date");
-                var text = date.split("-")[0] + "年" + date.split("-")[1] + "月";
-                $(".current_month").text(text);
             }
+        } catch(e) {
+            console.log(e);
         }
     }
 }

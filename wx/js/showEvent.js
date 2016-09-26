@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "e799c8b4b2864a2cd148"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "c573a6eee8e6dc7fecbc"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -260,7 +260,7 @@
 /******/ 			hotSetStatus("prepare");
 /******/ 			hotCallback = callback;
 /******/ 			hotUpdate = {};
-/******/ 			var chunkId = 5;
+/******/ 			var chunkId = 6;
 /******/ 			{ // eslint-disable-line no-lone-blocks
 /******/ 				/*globals chunkId */
 /******/ 				hotEnsureUpdateChunk(chunkId);
@@ -579,21 +579,22 @@
 /******/ 	return hotCreateRequire(0)(0);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(49);
-	var pageLoad = __webpack_require__(10);
-	var touchSlider = __webpack_require__(22);
-	__webpack_require__(11);
-	var ac = __webpack_require__(23);
+	/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(60);
+	var pageLoad = __webpack_require__(8);
+	var touchSlider = __webpack_require__(9);
+	__webpack_require__(10);
+	var ac = __webpack_require__(11);
 	var Dom = __webpack_require__(12);
 	var mobiScroll = __webpack_require__(14);
 	var wx = __webpack_require__(16);
 	var fastClick = __webpack_require__(19);
 	var autoTextArea = __webpack_require__(20);
-	__webpack_require__(52);
+	__webpack_require__(63);
 	var fuc = {
 	    config: {
 	        eventId: Dom.getRequest("eventId"),
@@ -1203,11 +1204,8 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 1 */,
-/* 2 */,
-/* 3 */,
-/* 4 */,
-/* 5 */
+
+/***/ 5:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* Zepto v1.1.7 - zepto event ajax form ie - zeptojs.com/license */
@@ -3210,11 +3208,8 @@
 
 
 /***/ },
-/* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */
+
+/***/ 8:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {module.exports = function(options) {
@@ -3238,7 +3233,749 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 11 */
+
+/***/ 9:
+/***/ function(module, exports) {
+
+	/*
+	 * TouchSlider
+	 * @author qiqiboy
+	 * @github https://github.com/qiqiboy/touchslider
+	 */
+	
+	(function (ROOT, struct, undefined) {
+	
+	    "use strict";
+	
+	    var VERSION = '2.0.1';
+	    var lastTime = 0,
+	        nextFrame = ROOT.requestAnimationFrame ||
+	            ROOT.webkitRequestAnimationFrame ||
+	            ROOT.mozRequestAnimationFrame ||
+	            ROOT.msRequestAnimationFrame ||
+	            function (callback) {
+	                var currTime = +new Date,
+	                    delay = Math.max(1000 / 60, 1000 / 60 - (currTime - lastTime));
+	                lastTime = currTime + delay;
+	                return setTimeout(callback, delay);
+	            },
+	        cancelFrame = ROOT.cancelAnimationFrame ||
+	            ROOT.webkitCancelAnimationFrame ||
+	            ROOT.webkitCancelRequestAnimationFrame ||
+	            ROOT.mozCancelRequestAnimationFrame ||
+	            ROOT.msCancelRequestAnimationFrame ||
+	            clearTimeout,
+	        DOC = ROOT.document,
+	        divstyle = DOC.createElement('div').style,
+	        cssVendor = function () {
+	            var tests = "-webkit- -moz- -o- -ms-".split(" "),
+	                prop;
+	            while (prop = tests.shift()) {
+	                if (camelCase(prop + 'transform') in divstyle) {
+	                    return prop;
+	                }
+	            }
+	            return '';
+	        }(),
+	        transition = cssTest('transition'),
+	        toString = Object.prototype.toString,
+	        slice = [].slice,
+	        class2type = {},
+	        event2type = {},
+	        event2code = {
+	            click: 4,
+	            mousewheel: 5,
+	            dommousescroll: 5,
+	            keydown: 6,
+	            resize: 7
+	        },
+	        POINTERTYPES = {
+	            2: 'touch',
+	            3: 'pen',
+	            4: 'mouse',
+	            pen: 'pen'
+	        },
+	        STARTEVENT = [],
+	        MOVEEVENT = [],
+	        EVENT = function () {
+	            var ret = {},
+	                states = {
+	                    start: 1,
+	                    down: 1,
+	                    move: 2,
+	                    end: 3,
+	                    up: 3,
+	                    cancel: 3
+	                };
+	            each("mouse touch pointer MSPointer-".split(" "), function (prefix) {
+	                var _prefix = /pointer/i.test(prefix) ? 'pointer' : prefix;
+	                ret[_prefix] = ret[_prefix] || {};
+	                POINTERTYPES[_prefix] = _prefix;
+	                each(states, function (endfix, code) {
+	                    var ev = camelCase(prefix + endfix);
+	                    ret[_prefix][ev] = code;
+	                    event2type[ev.toLowerCase()] = _prefix;
+	                    event2code[ev.toLowerCase()] = code;
+	                    if (code == 1) {
+	                        STARTEVENT.push(ev);
+	                    } else {
+	                        MOVEEVENT.push(ev);
+	                    }
+	                });
+	            });
+	            each("otransitionend oTransitionEnd webkitTransitionEnd mozTransitionEnd MSTransitionEnd transitionend".split(" "), function (ev) {
+	                STARTEVENT.push(ev);
+	                event2code[ev.toLowerCase()] = 8;
+	            });
+	            return ret;
+	        }(),
+	        POINTERS = {
+	            touch: {},
+	            pointer: {},
+	            mouse: {}
+	        };
+	
+	    each("Boolean Number String Function Array Date RegExp Object Error".split(" "), function (name) {
+	        class2type["[object " + name + "]"] = name.toLowerCase();
+	    });
+	
+	    function type(obj) {
+	        if (obj == null) {
+	            return obj + "";
+	        }
+	
+	        return typeof obj == 'object' || typeof obj == 'function' ? class2type[toString.call(obj)] || "object" :
+	            typeof obj;
+	    }
+	
+	    function isArrayLike(elem) {
+	        var tp = type(elem);
+	        return !!elem && tp != 'function' && tp != 'string' && (elem.length === 0 || elem.length && (elem.nodeType == 1 || (elem.length - 1) in elem));
+	    }
+	
+	    function camelCase(str) {
+	        return (str + '').replace(/^-ms-/, 'ms-').replace(/-([a-z]|[0-9])/ig, function (all, letter) {
+	            return (letter + '').toUpperCase();
+	        });
+	    }
+	
+	    function cssTest(name) {
+	        var prop = camelCase(name),
+	            _prop = camelCase(cssVendor + prop);
+	        return (prop in divstyle) && prop || (_prop in divstyle) && _prop || '';
+	    }
+	
+	    function isFunction(func) {
+	        return type(func) == 'function';
+	    }
+	
+	    function pointerLength(obj) {
+	        var len = 0, key;
+	        if (type(obj.length) == 'number') {
+	            len = obj.length;
+	        } else if ('keys' in Object) {
+	            len = Object.keys(obj).length;
+	        } else {
+	            for (key in obj) {
+	                if (obj.hasOwnProperty(key)) {
+	                    len++;
+	                }
+	            }
+	        }
+	        return len;
+	    }
+	
+	    function pointerItem(obj, n) {
+	        return 'item' in obj ? obj.item(n) : function () {
+	            var i = 0, key;
+	            for (key in this) {
+	                if (i++ == n) {
+	                    return this[key];
+	                }
+	            }
+	        }.call(obj, n);
+	    }
+	
+	    function each(arr, iterate) {
+	        if (isArrayLike(arr)) {
+	            if (type(arr.forEach) == 'function') {
+	                return arr.forEach(iterate);
+	            }
+	            var i = 0, len = arr.length, item;
+	            for (; i < len; i++) {
+	                item = arr[i];
+	                if (type(item) != 'undefined') {
+	                    iterate(item, i, arr);
+	                }
+	            }
+	        } else {
+	            var key;
+	            for (key in arr) {
+	                iterate(key, arr[key], arr);
+	            }
+	        }
+	    }
+	
+	    function children(elem) {
+	        var ret = [];
+	        each(elem.children || elem.childNodes, function (elem) {
+	            if (elem.nodeType == 1) {
+	                ret.push(elem);
+	            }
+	        });
+	        return ret;
+	    }
+	
+	    function getStyle(elem, prop) {
+	        var style = ROOT.getComputedStyle && ROOT.getComputedStyle(elem, null) || elem.currentStyle || elem.style;
+	        return style[prop];
+	    }
+	
+	    function setStyle(elem, props) {
+	        each(props, function (name, value) {
+	            var prop;
+	            switch (name) {
+	                case 'float':
+	                    prop = cssTest('cssFloat') ? 'cssFloat' : 'styleFloat';
+	                    break;
+	                default:
+	                    prop = camelCase(name);
+	            }
+	            try {
+	                elem.style[prop] = value;
+	            } catch (e) {
+	            }
+	        });
+	    }
+	
+	    function addListener(elem, evstr, handler) {
+	        if (type(evstr) == 'object') {
+	            return each(evstr, function (evstr, handler) {
+	                addListener(elem, evstr, handler);
+	            });
+	        }
+	        each(evstr.split(" "), function (ev) {
+	            if (elem.addEventListener) {
+	                elem.addEventListener(ev, handler, false);
+	            } else if (elem.attachEvent) {
+	                elem.attachEvent('on' + ev, handler);
+	            } else elem['on' + ev] = handler;
+	        });
+	    }
+	
+	    function offListener(elem, evstr, handler) {
+	        if (type(evstr) == 'object') {
+	            return each(evstr, function (evstr, handler) {
+	                offListener(elem, evstr, handler);
+	            });
+	        }
+	        each(evstr.split(" "), function (ev) {
+	            if (elem.removeEventListener) {
+	                elem.removeEventListener(ev, handler, false);
+	            } else if (elem.detachEvent) {
+	                elem.detachEvent('on' + ev, handler);
+	            } else elem['on' + ev] = null;
+	        });
+	    }
+	
+	    function removeRange() {
+	        var range;
+	        if (ROOT.getSelection) {
+	            range = getSelection();
+	            if ('empty' in range)range.empty();
+	            else if ('removeAllRanges' in range)range.removeAllRanges();
+	        } else {
+	            DOC.selection.empty();
+	        }
+	    }
+	
+	    function EASE(t, b, c, d) {
+	        return -c * ((t = t / d - 1) * t * t * t - 1) + b;
+	    }
+	
+	    function filterEvent(oldEvent) {
+	        var ev = {},
+	            which = oldEvent.which,
+	            button = oldEvent.button,
+	            pointers, pointer;
+	
+	        each("wheelDelta detail which keyCode".split(" "), function (prop) {
+	            ev[prop] = oldEvent[prop];
+	        });
+	
+	        ev.oldEvent = oldEvent;
+	
+	        ev.type = oldEvent.type.toLowerCase();
+	        ev.eventType = event2type[ev.type] || ev.type;
+	        ev.eventCode = event2code[ev.type] || 0;
+	        ev.pointerType = POINTERTYPES[oldEvent.pointerType] || oldEvent.pointerType || ev.eventType;
+	
+	        ev.target = oldEvent.target || oldEvent.srcElement || DOC.documentElement;
+	        if (ev.target.nodeType === 3) {
+	            ev.target = ev.target.parentNode;
+	        }
+	
+	        ev.preventDefault = function () {
+	            oldEvent.preventDefault && oldEvent.preventDefault();
+	            ev.returnValue = oldEvent.returnValue = false;
+	        }
+	
+	        if (pointers = POINTERS[ev.eventType]) {
+	            switch (ev.eventType) {
+	                case 'mouse':
+	                case 'pointer':
+	                    var id = oldEvent.pointerId || 0;
+	                    ev.eventCode == 3 ? delete pointers[id] : pointers[id] = oldEvent;
+	                    break;
+	                case 'touch':
+	                    POINTERS[ev.eventType] = pointers = oldEvent.touches;
+	                    break;
+	            }
+	
+	            if (pointer = pointerItem(pointers, 0)) {
+	                ev.clientX = pointer.clientX;
+	                ev.clientY = pointer.clientY;
+	            }
+	
+	            ev.button = which < 4 ? Math.max(0, which - 1) : button & 4 && 1 || button & 2; // left:0 middle:1 right:2
+	            ev.length = pointerLength(pointers);
+	        }
+	
+	        return ev;
+	    }
+	
+	    struct.prototype = {
+	        version: VERSION,
+	        constructor: struct,
+	        latestTime: 0,
+	        init: function (config) {
+	            var self = this,
+	                handler = this.handler = function (ev) {
+	                    self.handleEvent(ev);
+	                }
+	
+	            this.events = {};
+	            this.duration = isNaN(parseInt(config.duration)) ? 600 : parseInt(config.duration);
+	            this.direction = parseInt(config.direction) == 0 ? 0 : 1;
+	            this.current = parseInt(config.start) || 0;
+	            this.mouse = config.mouse == null ? true : !!config.mouse;
+	            this.mousewheel = !!config.mousewheel;
+	            this.interval = parseInt(config.interval) || 5000;
+	            this.playing = config.autoplay == null ? true : !!config.autoplay;
+	            this.arrowkey = !!config.arrowkey;
+	            this.fullsize = config.fullsize == null ? true : !!config.fullsize;
+	            this.align = config.align || 'center';
+	            this.pages = children(this.container);
+	            this.length = this.pages.length;
+	
+	            this.pageData = [];
+	
+	            addListener(this.container, STARTEVENT.join(" ") + " click" + (this.mousewheel ? " mousewheel DOMMouseScroll" : ""), handler);
+	            addListener(DOC, MOVEEVENT.join(" ") + (this.arrowkey ? " keydown" : ""), handler);
+	            addListener(ROOT, 'resize', handler);
+	
+	            each(this.pages, function (page) {
+	                self.pageData.push({
+	                    cssText: page.style.cssText || ''
+	                });
+	            });
+	            this.pageData.container = this.container.style.cssText || '';
+	
+	            this.on({
+	                before: function () {
+	                    clearTimeout(this.playTimer);
+	                },
+	                dragStart: function () {
+	                    clearTimeout(this.playTimer);
+	                    removeRange();
+	                },
+	                after: this.firePlay
+	            }).firePlay();
+	
+	            this.comment = document.createComment(' Powered by TouchSlider v' + this.version + '  https://github.com/qiqiboy/touchslider ');
+	            this.container.appendChild(this.comment);
+	
+	            this.resize();
+	        },
+	        resize: function () {
+	            var self = this,
+	                pst = getStyle(this.container, 'position'),
+	                css;
+	
+	            this.size = this.getSize(this.offsetParent = this.container[pst == 'absolute' || pst == 'fixed' ? 'offsetParent' : 'parentNode'] || DOC.body);
+	
+	            css = {
+	                float: 'left',
+	                display: 'inline'
+	            }
+	            each(this.pages, function (page) {
+	                if (self.fullsize) {
+	                    css[type] = self.size - self.getMarginSize(page) - self.getPaddingSize(page) - self.getBorderSize(page) + 'px';
+	                }
+	                if (type == 'height') {
+	                    css['clear'] = 'both';
+	                }
+	                setStyle(page, css);
+	            });
+	
+	            this.total = this.getSum(0, this.length);
+	
+	            css = {};
+	            if (pst == 'static') {
+	                css = {position: 'relative'};
+	            }
+	            css[transition] = 'none';
+	            css[type] = this.total + 'px';
+	            css[this.direction ? 'top' : 'left'] = this.getPos(this.current) + 'px';
+	            cancelFrame(this.timer);
+	            setStyle(this.container, css);
+	
+	            return this;
+	        },
+	        on: function (ev, callback) {
+	            var self = this;
+	            if (type(ev) == 'object') {
+	                each(ev, function (ev, callback) {
+	                    self.on(ev, callback);
+	                });
+	            } else {
+	                if (!this.events[ev]) {
+	                    this.events[ev] = [];
+	                }
+	                this.events[ev].push(callback);
+	            }
+	            return this;
+	        },
+	        fire: function (ev) {
+	            var self = this,
+	                args = slice.call(arguments, 1);
+	            each(this.events[ev] || [], function (func) {
+	                if (isFunction(func)) {
+	                    func.apply(self, args);
+	                }
+	            });
+	            return this;
+	        },
+	        isStatic: function () {
+	            return !this.timer && !this.drag;
+	        },
+	        prev: function () {
+	            return this.slide((this.current - 1 + this.length) % this.length);
+	        },
+	        next: function () {
+	            return this.slide((this.current + 1) % this.length);
+	        },
+	        play: function () {
+	            this.playing = true;
+	            return this.firePlay();
+	        },
+	        firePlay: function () {
+	            var self = this;
+	            if (this.playing) {
+	                this.playTimer = setTimeout(function () {
+	                    self.next();
+	                }, this.interval);
+	            }
+	            return this;
+	        },
+	        pause: function () {
+	            this.playing = false;
+	            clearTimeout(this.playTimer);
+	            return this;
+	        },
+	        slide: function (_index) {
+	            var self = this,
+	                dir = this.direction,
+	                stime = +new Date,
+	                duration = this.duration,
+	                current = this.current,
+	                index = Math.min(Math.max(0, _index), this.length - 1),
+	                curSize = this.getSum(index, index + 1),
+	                curPos = parseFloat(getStyle(this.container, dir ? 'top' : 'left')) || 0,
+	                type = dir ? 'top' : 'left',
+	                css = {}, tarPos;
+	
+	            tarPos = this.getPos(index);
+	            duration *= Math.min(1, Math.abs(tarPos - curPos) / curSize) || 10;
+	            this.current = index;
+	            this.latestTime = stime + duration;
+	            this.fire('before', current, index);
+	            this.end = function () {
+	                delete self.timer;
+	                self.fire('after', index, current);
+	            }
+	            if (transition) {
+	                this.timer = 1;
+	                css[transition] = type + ' ' + duration + 'ms ease';
+	                css[type] = tarPos + 'px';
+	                setStyle(this.container, css);
+	            } else {
+	                cancelFrame(this.timer);
+	                ani();
+	            }
+	
+	            function ani() {
+	                var offset = Math.min(duration, +new Date - stime),
+	                    s = EASE(offset, 0, 1, duration);
+	                var cp = (tarPos - curPos) * s + curPos;
+	                self.container.style[type] = cp + 'px';
+	                if (offset == duration) {
+	                    self.end();
+	                } else {
+	                    self.timer = nextFrame(ani);
+	                }
+	            }
+	        },
+	        handleEvent: function (oldEvent) {
+	            var ev = filterEvent(oldEvent),
+	                canDrag = ev.button < 1 && ev.length < 2 && (!this.pointerType || this.pointerType == ev.eventType) && (this.mouse || ev.pointerType != 'mouse');
+	
+	            switch (ev.eventCode) {
+	                case 2:
+	                    if (canDrag && this.rect) {
+	                        var index = this.current,
+	                            dir = this.direction,
+	                            rect = [ev.clientX, ev.clientY],
+	                            _rect = this.rect,
+	                            offset = rect[dir] - _rect[dir];
+	                        if (this.drag == null && _rect.toString() != rect.toString()) {
+	                            this.drag = Math.abs(offset) >= Math.abs(rect[1 - dir] - _rect[1 - dir]);
+	                            this.drag && this.fire('dragStart', ev);
+	                        }
+	                        if (this.drag) {
+	                            if (!this.pages[index + (offset > 0 ? -1 : 1)]) {
+	                                offset /= Math.abs(offset) / this.size + 2;
+	                            }
+	                            this.container.style[dir ? 'top' : 'left'] = this.startPos + offset + 'px';
+	                            this.fire('dragMove', ev);
+	                            this._offset = offset;
+	                            ev.preventDefault();
+	                        }
+	                    }
+	                    break;
+	
+	                case 1:
+	                case 3:
+	                    if (canDrag) {
+	                        var self = this,
+	                            index = this.current,
+	                            type = this.direction ? 'top' : 'left',
+	                            isDrag, offset, tm, nn, sub, curPos, tarPos, myWidth;
+	                        if (ev.length && (ev.eventCode == 1 || this.drag)) {
+	                            nn = ev.target.nodeName.toLowerCase();
+	                            clearTimeout(this.eventTimer);
+	                            if (!this.pointerType) {
+	                                this.pointerType = ev.eventType;
+	                            }
+	                            this.startPos = parseFloat(getStyle(this.container, type)) || 0;
+	                            if (transition) {
+	                                this.container.style[transition] = 'none';
+	                            } else if (this.timer) {
+	                                cancelFrame(this.timer);
+	                                delete this.timer;
+	                            }
+	                            this.rect = [ev.clientX, ev.clientY];
+	                            this.time = +new Date;
+	                            this.container.style[type] = this.startPos + 'px';
+	                            if (ev.eventType != 'touch' && (nn == 'a' || nn == 'img')) {
+	                                ev.preventDefault();
+	                            }
+	                        } else if (tm = this.time) {
+	                            offset = this._offset || 0;
+	                            isDrag = this.drag;
+	                            curPos = this.startPos + offset;
+	                            tarPos = this.getPos(index);
+	
+	                            each("rect drag time startPos _offset".split(" "), function (prop) {
+	                                delete self[prop];
+	                            });
+	
+	                            if (isDrag) {
+	                                sub = offset > 0 ? 1 : -1;
+	                                while (sub * (curPos - tarPos) > this.getOuterSize(this.pages[index]) / 2 && this.pages[index - sub]) {
+	                                    tarPos = this.getPos(index -= sub);
+	                                }
+	
+	                                if (Math.abs(offset) > 20 && +new Date - tm < 500) {
+	                                    index -= sub;
+	                                }
+	
+	                                this.fire('dragEnd', ev);
+	                                ev.preventDefault();
+	                            }
+	
+	                            if (curPos != tarPos) {
+	                                this.slide(index);
+	                            }
+	
+	                            this.eventTimer = setTimeout(function () {
+	                                delete self.pointerType;
+	                            }, 30);
+	                        }
+	                    }
+	                    break;
+	
+	                case 4:
+	                    if (this.timer) {
+	                        ev.preventDefault();
+	                    }
+	                    break;
+	
+	                case 5:
+	                    ev.preventDefault();
+	                    if (this.isStatic() && +new Date - this.latestTime > Math.max(1000 - this.duration, 0)) {
+	                        var wd = ev.wheelDelta || -ev.detail;
+	                        Math.abs(wd) >= 3 && this[wd > 0 ? 'prev' : 'next']();
+	                    }
+	                    break;
+	
+	                case 6:
+	                    var nn = ev.target.nodeName.toLowerCase();
+	                    if (this.isStatic() && nn != 'input' && nn != 'textarea' && nn != 'select') {
+	                        switch (ev.keyCode || ev.which) {
+	                            case 33:
+	                            case 37:
+	                            case 38:
+	                                this.prev();
+	                                break;
+	                            case 32:
+	                            case 34:
+	                            case 39:
+	                            case 40:
+	                                this.next();
+	                                break;
+	                            case 35:
+	                                this.slide(this.length - 1);
+	                                break;
+	                            case 36:
+	                                this.slide(0);
+	                                break;
+	                        }
+	                    }
+	                    break;
+	
+	                case 7:
+	                    this.resize();
+	                    break;
+	
+	                case 8:
+	                    if (oldEvent.propertyName == (this.direction ? 'top' : 'left')) {
+	                        this.container.style[transition] = 'none';
+	                        this.end();
+	                    }
+	                    break;
+	            }
+	        },
+	        getSum: function (from, to) {
+	            var sum = 0;
+	            while (from < to) {
+	                sum += this.getOuterSize(this.pages[from++], true);
+	            }
+	            return sum;
+	        },
+	        getPos: function (index) {
+	            var type = this.direction ? 'Top' : 'Left',
+	                myWidth = this.getOuterSize(this.pages[index], true),
+	                sum = this.getSum(0, index) + this['getMargin' + type + 'Size'](this.container) + this['getBorder' + type + 'Size'](this.container);
+	
+	            switch (this.align) {
+	                case 'top':
+	                case 'left':
+	                    return -sum;
+	                case 'bottom':
+	                case 'right':
+	                    return this.size - myWidth - sum;
+	                default:
+	                    return (this.size - myWidth) / 2 - sum;
+	            }
+	        },
+	        getOuterSize: function (elem, withMargin) {
+	            return elem[this.direction ? 'offsetHeight' : 'offsetWidth'] + (withMargin ? this.getMarginSize(elem) : 0);
+	        },
+	        getInnerSize: function (elem) {
+	            return this.getOuterSize(elem) - this.getBorderSize(elem);
+	        },
+	        getSize: function (elem) {
+	            return elem[this.direction ? 'offsetHeight' : 'offsetWidth'] - this.getPaddingSize(elem) - this.getBorderSize(elem);
+	        },
+	        destroy: function () {
+	            var pageData = this.pageData;
+	
+	            offListener(this.container, STARTEVENT.join(" ") + " click" + (this.mousewheel ? " mousewheel DOMMouseScroll" : ""), this.handler);
+	            offListener(DOC, MOVEEVENT.join(" ") + (this.arrowkey ? " keydown" : ""), this.handler);
+	            offListener(ROOT, 'resize', this.handler);
+	
+	            each(this.pages, function (page, index) {
+	                page.style.cssText = pageData[index].cssText;
+	            });
+	
+	            this.container.style.cssText = pageData.container;
+	            this.container.removeChild(this.comment);
+	            this.length = 0;
+	
+	            return this.pause();
+	        },
+	        refresh: function () {
+	            this.pages = children(this.container);
+	            this.length = this.pages.length;
+	            this.current = Math.max(Math.min(this.length - 1, this.current), 0);
+	            return this.resize();
+	        },
+	        append: function (elem, index) {
+	            if (null == index) {
+	                index = this.pages.length;
+	            }
+	            this.pageData.splice(index, 0, {
+	                cssText: elem.style.cssText || ''
+	            });
+	            this.container.insertBefore(elem, this.pages[index] || null);
+	
+	            return this.refresh();
+	        },
+	        prepend: function (elem) {
+	            return this.append(elem, 0);
+	        },
+	        insertBefore: function (elem, index) {
+	            return this.append(elem, index - 1);
+	        },
+	        insertAfter: function (elem, index) {
+	            return this.append(elem, index + 1);
+	        },
+	        remove: function (index) {
+	            this.container.removeChild(this.pages[index]);
+	            this.pageData.splice(index, 1);
+	
+	            return this.refresh();
+	        }
+	    }
+	
+	
+	    each("margin padding border".split(" "), function (type) {
+	        each("Top Left Right Bottom".split(" "), function (dir) {
+	            var prop = type + dir;
+	            struct.prototype[camelCase('get-' + prop) + 'Size'] = function (elem) {
+	                return parseFloat(getStyle(elem, prop + (type == 'border' ? 'Width' : ''))) || 0;
+	            }
+	        });
+	        struct.prototype[camelCase('get-' + type) + 'Size'] = function (elem) {
+	            return this[camelCase('get-' + type) + (this.direction ? 'Top' : 'Left') + 'Size'](elem) + this[camelCase('get-' + type) + (this.direction ? 'Bottom' : 'Right') + 'Size'](elem);
+	        }
+	    });
+	
+	    ROOT.TouchSlider = struct;
+	    module.exports = struct;
+	})(window, function (wrap, config) {
+	    if (!(this instanceof arguments.callee)) {
+	        return new arguments.callee(wrap, config);
+	    }
+	
+	    this.container = typeof wrap == 'string' ? document.getElementById(wrap) : wrap;
+	    this.init(config || {});
+	});
+
+/***/ },
+
+/***/ 10:
 /***/ function(module, exports) {
 
 	(function ($) {
@@ -3303,10 +4040,81 @@
 	            }, duration);
 	        };
 	    })(Zepto);
+	
+	    (function($) {
+	        $.fn.scrollTo = function(ops) {
+	            this.options = $.extend({
+	                toTo: 0,
+	                duration: 500
+	            }, ops);
+	            var curPos = $(document.body).scrollTop();
+	            var distance = this.options.toTo - curPos;
+	            var times = parseInt((this.options.duration / 20), 10);
+	            var step = parseInt(distance / times ,10);
+	            var that = this;
+	            var fuc = setInterval(function() {
+	                if(distance > 0) {
+	                    if($(document.body).scrollTop() >= that.options.toTo) {
+	                        $(document.body).scrollTop(that.options.toTo);
+	                        clearInterval(fuc);
+	                    } else {
+	                        $(document.body).scrollTop($(document.body).scrollTop() + step);
+	                    }
+	                } else {
+	                    if($(document.body).scrollTop() <= that.options.toTo) {
+	                        $(document.body).scrollTop(that.options.toTo)
+	                        clearInterval(fuc);
+	                    } else {
+	                        $(document.body).scrollTop($(document.body).scrollTop() + step);
+	                    }
+	                }
+	            }, 20);
+	        }
+	    })(Zepto);
 	})(Zepto);
 
 /***/ },
-/* 12 */
+
+/***/ 11:
+/***/ function(module, exports) {
+
+	/*------------------------------地点输入提示功能-----------------------------------*/
+	//百度地图API功能
+	function G(id) {
+	    return document.getElementById(id);
+	}
+	var ac = new BMap.Autocomplete({
+	    "input": "site"
+	});
+	ac.setLocation("上海");
+	ac.addEventListener("onhightlight", function (e) {
+	    var str = "";
+	    var _value = e.fromitem.value;
+	    var value = "";
+	    if (e.fromitem.index > -1) {
+	        value = _value.province + _value.city + _value.district + _value.street + _value.business;
+	    }
+	    str = "FromItem<br/>index=" + e.fromitem.index + "<br/>value=" + value;
+	    value = "";
+	    if (e.toitem.index > -1) {
+	        _value = e.toitem.value;
+	        value = _value.province + _value.city + _value.district + _value.street + _value.business;
+	    }
+	    str += "<br/>ToItem<br/>index=" + e.toitem.index + "<br/>value=" + value;
+	    G("searchResultPanel").innerHTML = str;
+	});
+	var myValue;
+	ac.addEventListener("onconfirm", function (e) {
+	    var _value = e.item.value;
+	    myValue = _value.province + _value.city + _value.district + _value.street + _value.business;
+	    G("searchResultPanel").innerHTML = "onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+	});
+	
+	module.exports = ac;
+
+/***/ },
+
+/***/ 12:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {var transCalendar = __webpack_require__(13);
@@ -3385,25 +4193,25 @@
 	        var week = day.getDay();
 	        switch (week){
 	            case 0:
-	                week = "星期日";
+	                week = "周日";
 	                break;
 	            case 1:
-	                week = "星期一";
+	                week = "周一";
 	                break;
 	            case 2:
-	                week = "星期二";
+	                week = "周二";
 	                break;
 	            case 3:
-	                week = "星期三";
+	                week = "周三";
 	                break;
 	            case 4:
-	                week = "星期四";
+	                week = "周四";
 	                break;
 	            case 5:
-	                week = "星期五";
+	                week = "周五";
 	                break;
 	            case 6:
-	                week = "星期六";
+	                week = "周六";
 	                break;
 	        }
 	        return week;
@@ -3491,6 +4299,79 @@
 	        var scheHeight = parseInt($('.scheduleList').css('height'));
 	        $('.schedule').css('height', 40 + scheHeight + "px");
 	    },
+	    //比较两个时间
+	    compareTimeDate: function(time, current) {
+	        if(current) {
+	            var curYear = parseInt(current.split(" ")[0].split("-")[0], 10),
+	                curMonth = parseInt(current.split(" ")[0].split("-")[1], 10),
+	                curDay = parseInt(current.split(" ")[0].split("-")[2], 10),
+	                curHour = current.split(" ")[1] ? parseInt(current.split(" ")[1].split(":")[0], 10) : 0,
+	                curMin = current.split(" ")[1] ? parseIntc(current.split(" ")[1].split(":")[1], 10) : 0;
+	        } else {
+	            var today = new Date();
+	            var curYear = today.getFullYear(),
+	                curMonth = today.getMonth() + 1,
+	                curDay = today.getDate(),
+	                curHour = today.getHours(),
+	                curMin = today.getMinutes();
+	        }
+	        var toYear = parseInt(time.split(" ")[0].split("-")[0], 10),
+	            toMonth = parseInt(time.split(" ")[0].split("-")[1], 10),
+	            toDay = parseInt(time.split(" ")[0].split("-")[2], 10),
+	            toHour = time.split(" ")[1] ? parseInt(time.split(" ")[1].split(":")[0], 10) : 0,
+	            toMin = time.split(" ")[1] ? parseIntc(time.split(" ")[1].split(":")[1], 10) : 0;
+	        //比较
+	        if(toYear > curYear) {
+	            return "over";
+	        } else if(toYear < curYear) {
+	            return "below";
+	        } else {
+	            if(toMonth > curMonth) {
+	                return "over";
+	            } else if(toMonth < curMonth) {
+	                return "below";
+	            } else {
+	                if(toDay > curDay) {
+	                    return "over";
+	                } else if(toDay < curDay) {
+	                    return "below";
+	                } else {
+	                    if(toHour > curHour) {
+	                        return "over";
+	                    } else if(toHour < curHour) {
+	                        return "below";
+	                    } else {
+	                        if(toMin > curMin) {
+	                            return "over";
+	                        } else if(toMin < curMin) {
+	                            return "below";
+	                        } else {
+	                            return "equal";
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	    },
+	    getToday: function(date) {
+	        var today = new Date();
+	        var year = today.getFullYear(),
+	            month = today.getMonth() + 1,
+	            day = today.getDate();
+	        var isToday = false;
+	        if(date) {
+	            if(year == date.split("-")[0] && month == date.split("-")[1] && day == date.split("-")[2]) {
+	                isToday = true;
+	            }
+	        }
+	        return {
+	            year: year,
+	            month: month,
+	            day: day,
+	            weekDay: this.transWeek(today),
+	            isToday: isToday
+	        }
+	    }
 	}
 	
 	Dom.checkUserAgent();
@@ -3498,7 +4379,8 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 13 */
+
+/***/ 13:
 /***/ function(module, exports) {
 
 	function tranCalendar() {
@@ -3667,7 +4549,8 @@
 	module.exports = tranCalendar;
 
 /***/ },
-/* 14 */
+
+/***/ 14:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(15);
@@ -3682,13 +4565,15 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 15 */
+
+/***/ 15:
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 16 */
+
+/***/ 16:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {/**
@@ -3781,15 +4666,16 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 17 */
+
+/***/ 17:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!function(a,b){ true?!(__WEBPACK_AMD_DEFINE_RESULT__ = function(){return b(a)}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)):b(a,!0);}(window,function(a,b){function c(b,c,d){a.WeixinJSBridge?WeixinJSBridge.invoke(b,e(c),function(a){g(b,a,d)}):j(b,d)}function d(b,c,d){a.WeixinJSBridge?WeixinJSBridge.on(b,function(a){d&&d.trigger&&d.trigger(a),g(b,a,c)}):d?j(b,d):j(b,c)}function e(a){return a=a||{},a.appId=E.appId,a.verifyAppId=E.appId,a.verifySignType="sha1",a.verifyTimestamp=E.timestamp+"",a.verifyNonceStr=E.nonceStr,a.verifySignature=E.signature,a}function f(a){return{timeStamp:a.timestamp+"",nonceStr:a.nonceStr,"package":a.package,paySign:a.paySign,signType:a.signType||"SHA1"}}function g(a,b,c){var d,e,f;switch(delete b.err_code,delete b.err_desc,delete b.err_detail,d=b.errMsg,d||(d=b.err_msg,delete b.err_msg,d=h(a,d),b.errMsg=d),c=c||{},c._complete&&(c._complete(b),delete c._complete),d=b.errMsg||"",E.debug&&!c.isInnerInvoke&&alert(JSON.stringify(b)),e=d.indexOf(":"),f=d.substring(e+1)){case"ok":c.success&&c.success(b);break;case"cancel":c.cancel&&c.cancel(b);break;default:c.fail&&c.fail(b)}c.complete&&c.complete(b)}function h(a,b){var e,f,c=a,d=p[c];return d&&(c=d),e="ok",b&&(f=b.indexOf(":"),e=b.substring(f+1),"confirm"==e&&(e="ok"),"failed"==e&&(e="fail"),-1!=e.indexOf("failed_")&&(e=e.substring(7)),-1!=e.indexOf("fail_")&&(e=e.substring(5)),e=e.replace(/_/g," "),e=e.toLowerCase(),("access denied"==e||"no permission to execute"==e)&&(e="permission denied"),"config"==c&&"function not exist"==e&&(e="ok"),""==e&&(e="fail")),b=c+":"+e}function i(a){var b,c,d,e;if(a){for(b=0,c=a.length;c>b;++b)d=a[b],e=o[d],e&&(a[b]=e);return a}}function j(a,b){if(!(!E.debug||b&&b.isInnerInvoke)){var c=p[a];c&&(a=c),b&&b._complete&&delete b._complete,console.log('"'+a+'",',b||"")}}function k(){0!=D.preVerifyState&&(u||v||E.debug||"6.0.2">z||D.systemType<0||A||(A=!0,D.appId=E.appId,D.initTime=C.initEndTime-C.initStartTime,D.preVerifyTime=C.preVerifyEndTime-C.preVerifyStartTime,H.getNetworkType({isInnerInvoke:!0,success:function(a){var b,c;D.networkType=a.networkType,b="http://open.weixin.qq.com/sdk/report?v="+D.version+"&o="+D.preVerifyState+"&s="+D.systemType+"&c="+D.clientVersion+"&a="+D.appId+"&n="+D.networkType+"&i="+D.initTime+"&p="+D.preVerifyTime+"&u="+D.url,c=new Image,c.src=b}})))}function l(){return(new Date).getTime()}function m(b){w&&(a.WeixinJSBridge?b():q.addEventListener&&q.addEventListener("WeixinJSBridgeReady",b,!1))}function n(){H.invoke||(H.invoke=function(b,c,d){a.WeixinJSBridge&&WeixinJSBridge.invoke(b,e(c),d)},H.on=function(b,c){a.WeixinJSBridge&&WeixinJSBridge.on(b,c)})}var o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H;if(!a.jWeixin)return o={config:"preVerifyJSAPI",onMenuShareTimeline:"menu:share:timeline",onMenuShareAppMessage:"menu:share:appmessage",onMenuShareQQ:"menu:share:qq",onMenuShareWeibo:"menu:share:weiboApp",onMenuShareQZone:"menu:share:QZone",previewImage:"imagePreview",getLocation:"geoLocation",openProductSpecificView:"openProductViewWithPid",addCard:"batchAddCard",openCard:"batchViewCard",chooseWXPay:"getBrandWCPayRequest"},p=function(){var b,a={};for(b in o)a[o[b]]=b;return a}(),q=a.document,r=q.title,s=navigator.userAgent.toLowerCase(),t=navigator.platform.toLowerCase(),u=!(!t.match("mac")&&!t.match("win")),v=-1!=s.indexOf("wxdebugger"),w=-1!=s.indexOf("micromessenger"),x=-1!=s.indexOf("android"),y=-1!=s.indexOf("iphone")||-1!=s.indexOf("ipad"),z=function(){var a=s.match(/micromessenger\/(\d+\.\d+\.\d+)/)||s.match(/micromessenger\/(\d+\.\d+)/);return a?a[1]:""}(),A=!1,B=!1,C={initStartTime:l(),initEndTime:0,preVerifyStartTime:0,preVerifyEndTime:0},D={version:1,appId:"",initTime:0,preVerifyTime:0,networkType:"",preVerifyState:1,systemType:y?1:x?2:-1,clientVersion:z,url:encodeURIComponent(location.href)},E={},F={_completes:[]},G={state:0,data:{}},m(function(){C.initEndTime=l()}),H={config:function(a){E=a,j("config",a);var b=E.check===!1?!1:!0;m(function(){var a,d,e;if(b)c(o.config,{verifyJsApiList:i(E.jsApiList)},function(){F._complete=function(a){C.preVerifyEndTime=l(),G.state=1,G.data=a},F.success=function(){D.preVerifyState=0},F.fail=function(a){F._fail?F._fail(a):G.state=-1};var a=F._completes;return a.push(function(){k()}),F.complete=function(){for(var c=0,d=a.length;d>c;++c)a[c]();F._completes=[]},F}()),C.preVerifyStartTime=l();else{for(G.state=1,a=F._completes,d=0,e=a.length;e>d;++d)a[d]();F._completes=[]}}),E.beta&&n()},ready:function(a){0!=G.state?a():(F._completes.push(a),!w&&E.debug&&a())},error:function(a){"6.0.2">z||B||(B=!0,-1==G.state?a(G.data):F._fail=a)},checkJsApi:function(a){var b=function(a){var c,d,b=a.checkResult;for(c in b)d=p[c],d&&(b[d]=b[c],delete b[c]);return a};c("checkJsApi",{jsApiList:i(a.jsApiList)},function(){return a._complete=function(a){if(x){var c=a.checkResult;c&&(a.checkResult=JSON.parse(c))}a=b(a)},a}())},onMenuShareTimeline:function(a){d(o.onMenuShareTimeline,{complete:function(){c("shareTimeline",{title:a.title||r,desc:a.title||r,img_url:a.imgUrl||"",link:a.link||location.href,type:a.type||"link",data_url:a.dataUrl||""},a)}},a)},onMenuShareAppMessage:function(a){d(o.onMenuShareAppMessage,{complete:function(){c("sendAppMessage",{title:a.title||r,desc:a.desc||"",link:a.link||location.href,img_url:a.imgUrl||"",type:a.type||"link",data_url:a.dataUrl||""},a)}},a)},onMenuShareQQ:function(a){d(o.onMenuShareQQ,{complete:function(){c("shareQQ",{title:a.title||r,desc:a.desc||"",img_url:a.imgUrl||"",link:a.link||location.href},a)}},a)},onMenuShareWeibo:function(a){d(o.onMenuShareWeibo,{complete:function(){c("shareWeiboApp",{title:a.title||r,desc:a.desc||"",img_url:a.imgUrl||"",link:a.link||location.href},a)}},a)},onMenuShareQZone:function(a){d(o.onMenuShareQZone,{complete:function(){c("shareQZone",{title:a.title||r,desc:a.desc||"",img_url:a.imgUrl||"",link:a.link||location.href},a)}},a)},startRecord:function(a){c("startRecord",{},a)},stopRecord:function(a){c("stopRecord",{},a)},onVoiceRecordEnd:function(a){d("onVoiceRecordEnd",a)},playVoice:function(a){c("playVoice",{localId:a.localId},a)},pauseVoice:function(a){c("pauseVoice",{localId:a.localId},a)},stopVoice:function(a){c("stopVoice",{localId:a.localId},a)},onVoicePlayEnd:function(a){d("onVoicePlayEnd",a)},uploadVoice:function(a){c("uploadVoice",{localId:a.localId,isShowProgressTips:0==a.isShowProgressTips?0:1},a)},downloadVoice:function(a){c("downloadVoice",{serverId:a.serverId,isShowProgressTips:0==a.isShowProgressTips?0:1},a)},translateVoice:function(a){c("translateVoice",{localId:a.localId,isShowProgressTips:0==a.isShowProgressTips?0:1},a)},chooseImage:function(a){c("chooseImage",{scene:"1|2",count:a.count||9,sizeType:a.sizeType||["original","compressed"],sourceType:a.sourceType||["album","camera"]},function(){return a._complete=function(a){if(x){var b=a.localIds;b&&(a.localIds=JSON.parse(b))}},a}())},previewImage:function(a){c(o.previewImage,{current:a.current,urls:a.urls},a)},uploadImage:function(a){c("uploadImage",{localId:a.localId,isShowProgressTips:0==a.isShowProgressTips?0:1},a)},downloadImage:function(a){c("downloadImage",{serverId:a.serverId,isShowProgressTips:0==a.isShowProgressTips?0:1},a)},getNetworkType:function(a){var b=function(a){var c,d,e,b=a.errMsg;if(a.errMsg="getNetworkType:ok",c=a.subtype,delete a.subtype,c)a.networkType=c;else switch(d=b.indexOf(":"),e=b.substring(d+1)){case"wifi":case"edge":case"wwan":a.networkType=e;break;default:a.errMsg="getNetworkType:fail"}return a};c("getNetworkType",{},function(){return a._complete=function(a){a=b(a)},a}())},openLocation:function(a){c("openLocation",{latitude:a.latitude,longitude:a.longitude,name:a.name||"",address:a.address||"",scale:a.scale||28,infoUrl:a.infoUrl||""},a)},getLocation:function(a){a=a||{},c(o.getLocation,{type:a.type||"wgs84"},function(){return a._complete=function(a){delete a.type},a}())},hideOptionMenu:function(a){c("hideOptionMenu",{},a)},showOptionMenu:function(a){c("showOptionMenu",{},a)},closeWindow:function(a){a=a||{},c("closeWindow",{},a)},hideMenuItems:function(a){c("hideMenuItems",{menuList:a.menuList},a)},showMenuItems:function(a){c("showMenuItems",{menuList:a.menuList},a)},hideAllNonBaseMenuItem:function(a){c("hideAllNonBaseMenuItem",{},a)},showAllNonBaseMenuItem:function(a){c("showAllNonBaseMenuItem",{},a)},scanQRCode:function(a){a=a||{},c("scanQRCode",{needResult:a.needResult||0,scanType:a.scanType||["qrCode","barCode"]},function(){return a._complete=function(a){var b,c;y&&(b=a.resultStr,b&&(c=JSON.parse(b),a.resultStr=c&&c.scan_code&&c.scan_code.scan_result))},a}())},openProductSpecificView:function(a){c(o.openProductSpecificView,{pid:a.productId,view_type:a.viewType||0,ext_info:a.extInfo},a)},addCard:function(a){var e,f,g,h,b=a.cardList,d=[];for(e=0,f=b.length;f>e;++e)g=b[e],h={card_id:g.cardId,card_ext:g.cardExt},d.push(h);c(o.addCard,{card_list:d},function(){return a._complete=function(a){var c,d,e,b=a.card_list;if(b){for(b=JSON.parse(b),c=0,d=b.length;d>c;++c)e=b[c],e.cardId=e.card_id,e.cardExt=e.card_ext,e.isSuccess=e.is_succ?!0:!1,delete e.card_id,delete e.card_ext,delete e.is_succ;a.cardList=b,delete a.card_list}},a}())},chooseCard:function(a){c("chooseCard",{app_id:E.appId,location_id:a.shopId||"",sign_type:a.signType||"SHA1",card_id:a.cardId||"",card_type:a.cardType||"",card_sign:a.cardSign,time_stamp:a.timestamp+"",nonce_str:a.nonceStr},function(){return a._complete=function(a){a.cardList=a.choose_card_info,delete a.choose_card_info},a}())},openCard:function(a){var e,f,g,h,b=a.cardList,d=[];for(e=0,f=b.length;f>e;++e)g=b[e],h={card_id:g.cardId,code:g.code},d.push(h);c(o.openCard,{card_list:d},a)},chooseWXPay:function(a){c(o.chooseWXPay,f(a),a)}},b&&(a.wx=a.jWeixin=H),H});
 
 
 /***/ },
-/* 18 */,
-/* 19 */
+
+/***/ 19:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_RESULT__;;(function () {
@@ -5477,7 +6363,8 @@
 
 
 /***/ },
-/* 20 */
+
+/***/ 20:
 /***/ function(module, exports) {
 
 	/**
@@ -5550,819 +6437,15 @@
 
 
 /***/ },
-/* 21 */,
-/* 22 */
-/***/ function(module, exports) {
 
-	/*
-	 * TouchSlider
-	 * @author qiqiboy
-	 * @github https://github.com/qiqiboy/touchslider
-	 */
-	
-	(function (ROOT, struct, undefined) {
-	
-	    "use strict";
-	
-	    var VERSION = '2.0.1';
-	    var lastTime = 0,
-	        nextFrame = ROOT.requestAnimationFrame ||
-	            ROOT.webkitRequestAnimationFrame ||
-	            ROOT.mozRequestAnimationFrame ||
-	            ROOT.msRequestAnimationFrame ||
-	            function (callback) {
-	                var currTime = +new Date,
-	                    delay = Math.max(1000 / 60, 1000 / 60 - (currTime - lastTime));
-	                lastTime = currTime + delay;
-	                return setTimeout(callback, delay);
-	            },
-	        cancelFrame = ROOT.cancelAnimationFrame ||
-	            ROOT.webkitCancelAnimationFrame ||
-	            ROOT.webkitCancelRequestAnimationFrame ||
-	            ROOT.mozCancelRequestAnimationFrame ||
-	            ROOT.msCancelRequestAnimationFrame ||
-	            clearTimeout,
-	        DOC = ROOT.document,
-	        divstyle = DOC.createElement('div').style,
-	        cssVendor = function () {
-	            var tests = "-webkit- -moz- -o- -ms-".split(" "),
-	                prop;
-	            while (prop = tests.shift()) {
-	                if (camelCase(prop + 'transform') in divstyle) {
-	                    return prop;
-	                }
-	            }
-	            return '';
-	        }(),
-	        transition = cssTest('transition'),
-	        toString = Object.prototype.toString,
-	        slice = [].slice,
-	        class2type = {},
-	        event2type = {},
-	        event2code = {
-	            click: 4,
-	            mousewheel: 5,
-	            dommousescroll: 5,
-	            keydown: 6,
-	            resize: 7
-	        },
-	        POINTERTYPES = {
-	            2: 'touch',
-	            3: 'pen',
-	            4: 'mouse',
-	            pen: 'pen'
-	        },
-	        STARTEVENT = [],
-	        MOVEEVENT = [],
-	        EVENT = function () {
-	            var ret = {},
-	                states = {
-	                    start: 1,
-	                    down: 1,
-	                    move: 2,
-	                    end: 3,
-	                    up: 3,
-	                    cancel: 3
-	                };
-	            each("mouse touch pointer MSPointer-".split(" "), function (prefix) {
-	                var _prefix = /pointer/i.test(prefix) ? 'pointer' : prefix;
-	                ret[_prefix] = ret[_prefix] || {};
-	                POINTERTYPES[_prefix] = _prefix;
-	                each(states, function (endfix, code) {
-	                    var ev = camelCase(prefix + endfix);
-	                    ret[_prefix][ev] = code;
-	                    event2type[ev.toLowerCase()] = _prefix;
-	                    event2code[ev.toLowerCase()] = code;
-	                    if (code == 1) {
-	                        STARTEVENT.push(ev);
-	                    } else {
-	                        MOVEEVENT.push(ev);
-	                    }
-	                });
-	            });
-	            each("otransitionend oTransitionEnd webkitTransitionEnd mozTransitionEnd MSTransitionEnd transitionend".split(" "), function (ev) {
-	                STARTEVENT.push(ev);
-	                event2code[ev.toLowerCase()] = 8;
-	            });
-	            return ret;
-	        }(),
-	        POINTERS = {
-	            touch: {},
-	            pointer: {},
-	            mouse: {}
-	        };
-	
-	    each("Boolean Number String Function Array Date RegExp Object Error".split(" "), function (name) {
-	        class2type["[object " + name + "]"] = name.toLowerCase();
-	    });
-	
-	    function type(obj) {
-	        if (obj == null) {
-	            return obj + "";
-	        }
-	
-	        return typeof obj == 'object' || typeof obj == 'function' ? class2type[toString.call(obj)] || "object" :
-	            typeof obj;
-	    }
-	
-	    function isArrayLike(elem) {
-	        var tp = type(elem);
-	        return !!elem && tp != 'function' && tp != 'string' && (elem.length === 0 || elem.length && (elem.nodeType == 1 || (elem.length - 1) in elem));
-	    }
-	
-	    function camelCase(str) {
-	        return (str + '').replace(/^-ms-/, 'ms-').replace(/-([a-z]|[0-9])/ig, function (all, letter) {
-	            return (letter + '').toUpperCase();
-	        });
-	    }
-	
-	    function cssTest(name) {
-	        var prop = camelCase(name),
-	            _prop = camelCase(cssVendor + prop);
-	        return (prop in divstyle) && prop || (_prop in divstyle) && _prop || '';
-	    }
-	
-	    function isFunction(func) {
-	        return type(func) == 'function';
-	    }
-	
-	    function pointerLength(obj) {
-	        var len = 0, key;
-	        if (type(obj.length) == 'number') {
-	            len = obj.length;
-	        } else if ('keys' in Object) {
-	            len = Object.keys(obj).length;
-	        } else {
-	            for (key in obj) {
-	                if (obj.hasOwnProperty(key)) {
-	                    len++;
-	                }
-	            }
-	        }
-	        return len;
-	    }
-	
-	    function pointerItem(obj, n) {
-	        return 'item' in obj ? obj.item(n) : function () {
-	            var i = 0, key;
-	            for (key in this) {
-	                if (i++ == n) {
-	                    return this[key];
-	                }
-	            }
-	        }.call(obj, n);
-	    }
-	
-	    function each(arr, iterate) {
-	        if (isArrayLike(arr)) {
-	            if (type(arr.forEach) == 'function') {
-	                return arr.forEach(iterate);
-	            }
-	            var i = 0, len = arr.length, item;
-	            for (; i < len; i++) {
-	                item = arr[i];
-	                if (type(item) != 'undefined') {
-	                    iterate(item, i, arr);
-	                }
-	            }
-	        } else {
-	            var key;
-	            for (key in arr) {
-	                iterate(key, arr[key], arr);
-	            }
-	        }
-	    }
-	
-	    function children(elem) {
-	        var ret = [];
-	        each(elem.children || elem.childNodes, function (elem) {
-	            if (elem.nodeType == 1) {
-	                ret.push(elem);
-	            }
-	        });
-	        return ret;
-	    }
-	
-	    function getStyle(elem, prop) {
-	        var style = ROOT.getComputedStyle && ROOT.getComputedStyle(elem, null) || elem.currentStyle || elem.style;
-	        return style[prop];
-	    }
-	
-	    function setStyle(elem, props) {
-	        each(props, function (name, value) {
-	            var prop;
-	            switch (name) {
-	                case 'float':
-	                    prop = cssTest('cssFloat') ? 'cssFloat' : 'styleFloat';
-	                    break;
-	                default:
-	                    prop = camelCase(name);
-	            }
-	            try {
-	                elem.style[prop] = value;
-	            } catch (e) {
-	            }
-	        });
-	    }
-	
-	    function addListener(elem, evstr, handler) {
-	        if (type(evstr) == 'object') {
-	            return each(evstr, function (evstr, handler) {
-	                addListener(elem, evstr, handler);
-	            });
-	        }
-	        each(evstr.split(" "), function (ev) {
-	            if (elem.addEventListener) {
-	                elem.addEventListener(ev, handler, false);
-	            } else if (elem.attachEvent) {
-	                elem.attachEvent('on' + ev, handler);
-	            } else elem['on' + ev] = handler;
-	        });
-	    }
-	
-	    function offListener(elem, evstr, handler) {
-	        if (type(evstr) == 'object') {
-	            return each(evstr, function (evstr, handler) {
-	                offListener(elem, evstr, handler);
-	            });
-	        }
-	        each(evstr.split(" "), function (ev) {
-	            if (elem.removeEventListener) {
-	                elem.removeEventListener(ev, handler, false);
-	            } else if (elem.detachEvent) {
-	                elem.detachEvent('on' + ev, handler);
-	            } else elem['on' + ev] = null;
-	        });
-	    }
-	
-	    function removeRange() {
-	        var range;
-	        if (ROOT.getSelection) {
-	            range = getSelection();
-	            if ('empty' in range)range.empty();
-	            else if ('removeAllRanges' in range)range.removeAllRanges();
-	        } else {
-	            DOC.selection.empty();
-	        }
-	    }
-	
-	    function EASE(t, b, c, d) {
-	        return -c * ((t = t / d - 1) * t * t * t - 1) + b;
-	    }
-	
-	    function filterEvent(oldEvent) {
-	        var ev = {},
-	            which = oldEvent.which,
-	            button = oldEvent.button,
-	            pointers, pointer;
-	
-	        each("wheelDelta detail which keyCode".split(" "), function (prop) {
-	            ev[prop] = oldEvent[prop];
-	        });
-	
-	        ev.oldEvent = oldEvent;
-	
-	        ev.type = oldEvent.type.toLowerCase();
-	        ev.eventType = event2type[ev.type] || ev.type;
-	        ev.eventCode = event2code[ev.type] || 0;
-	        ev.pointerType = POINTERTYPES[oldEvent.pointerType] || oldEvent.pointerType || ev.eventType;
-	
-	        ev.target = oldEvent.target || oldEvent.srcElement || DOC.documentElement;
-	        if (ev.target.nodeType === 3) {
-	            ev.target = ev.target.parentNode;
-	        }
-	
-	        ev.preventDefault = function () {
-	            oldEvent.preventDefault && oldEvent.preventDefault();
-	            ev.returnValue = oldEvent.returnValue = false;
-	        }
-	
-	        if (pointers = POINTERS[ev.eventType]) {
-	            switch (ev.eventType) {
-	                case 'mouse':
-	                case 'pointer':
-	                    var id = oldEvent.pointerId || 0;
-	                    ev.eventCode == 3 ? delete pointers[id] : pointers[id] = oldEvent;
-	                    break;
-	                case 'touch':
-	                    POINTERS[ev.eventType] = pointers = oldEvent.touches;
-	                    break;
-	            }
-	
-	            if (pointer = pointerItem(pointers, 0)) {
-	                ev.clientX = pointer.clientX;
-	                ev.clientY = pointer.clientY;
-	            }
-	
-	            ev.button = which < 4 ? Math.max(0, which - 1) : button & 4 && 1 || button & 2; // left:0 middle:1 right:2
-	            ev.length = pointerLength(pointers);
-	        }
-	
-	        return ev;
-	    }
-	
-	    struct.prototype = {
-	        version: VERSION,
-	        constructor: struct,
-	        latestTime: 0,
-	        init: function (config) {
-	            var self = this,
-	                handler = this.handler = function (ev) {
-	                    self.handleEvent(ev);
-	                }
-	
-	            this.events = {};
-	            this.duration = isNaN(parseInt(config.duration)) ? 600 : parseInt(config.duration);
-	            this.direction = parseInt(config.direction) == 0 ? 0 : 1;
-	            this.current = parseInt(config.start) || 0;
-	            this.mouse = config.mouse == null ? true : !!config.mouse;
-	            this.mousewheel = !!config.mousewheel;
-	            this.interval = parseInt(config.interval) || 5000;
-	            this.playing = config.autoplay == null ? true : !!config.autoplay;
-	            this.arrowkey = !!config.arrowkey;
-	            this.fullsize = config.fullsize == null ? true : !!config.fullsize;
-	            this.align = config.align || 'center';
-	            this.pages = children(this.container);
-	            this.length = this.pages.length;
-	
-	            this.pageData = [];
-	
-	            addListener(this.container, STARTEVENT.join(" ") + " click" + (this.mousewheel ? " mousewheel DOMMouseScroll" : ""), handler);
-	            addListener(DOC, MOVEEVENT.join(" ") + (this.arrowkey ? " keydown" : ""), handler);
-	            addListener(ROOT, 'resize', handler);
-	
-	            each(this.pages, function (page) {
-	                self.pageData.push({
-	                    cssText: page.style.cssText || ''
-	                });
-	            });
-	            this.pageData.container = this.container.style.cssText || '';
-	
-	            this.on({
-	                before: function () {
-	                    clearTimeout(this.playTimer);
-	                },
-	                dragStart: function () {
-	                    clearTimeout(this.playTimer);
-	                    removeRange();
-	                },
-	                after: this.firePlay
-	            }).firePlay();
-	
-	            this.comment = document.createComment(' Powered by TouchSlider v' + this.version + '  https://github.com/qiqiboy/touchslider ');
-	            this.container.appendChild(this.comment);
-	
-	            this.resize();
-	        },
-	        resize: function () {
-	            var self = this,
-	                pst = getStyle(this.container, 'position'),
-	                css;
-	
-	            this.size = this.getSize(this.offsetParent = this.container[pst == 'absolute' || pst == 'fixed' ? 'offsetParent' : 'parentNode'] || DOC.body);
-	
-	            css = {
-	                float: 'left',
-	                display: 'inline'
-	            }
-	            each(this.pages, function (page) {
-	                if (self.fullsize) {
-	                    css[type] = self.size - self.getMarginSize(page) - self.getPaddingSize(page) - self.getBorderSize(page) + 'px';
-	                }
-	                if (type == 'height') {
-	                    css['clear'] = 'both';
-	                }
-	                setStyle(page, css);
-	            });
-	
-	            this.total = this.getSum(0, this.length);
-	
-	            css = {};
-	            if (pst == 'static') {
-	                css = {position: 'relative'};
-	            }
-	            css[transition] = 'none';
-	            css[type] = this.total + 'px';
-	            css[this.direction ? 'top' : 'left'] = this.getPos(this.current) + 'px';
-	            cancelFrame(this.timer);
-	            setStyle(this.container, css);
-	
-	            return this;
-	        },
-	        on: function (ev, callback) {
-	            var self = this;
-	            if (type(ev) == 'object') {
-	                each(ev, function (ev, callback) {
-	                    self.on(ev, callback);
-	                });
-	            } else {
-	                if (!this.events[ev]) {
-	                    this.events[ev] = [];
-	                }
-	                this.events[ev].push(callback);
-	            }
-	            return this;
-	        },
-	        fire: function (ev) {
-	            var self = this,
-	                args = slice.call(arguments, 1);
-	            each(this.events[ev] || [], function (func) {
-	                if (isFunction(func)) {
-	                    func.apply(self, args);
-	                }
-	            });
-	            return this;
-	        },
-	        isStatic: function () {
-	            return !this.timer && !this.drag;
-	        },
-	        prev: function () {
-	            return this.slide((this.current - 1 + this.length) % this.length);
-	        },
-	        next: function () {
-	            return this.slide((this.current + 1) % this.length);
-	        },
-	        play: function () {
-	            this.playing = true;
-	            return this.firePlay();
-	        },
-	        firePlay: function () {
-	            var self = this;
-	            if (this.playing) {
-	                this.playTimer = setTimeout(function () {
-	                    self.next();
-	                }, this.interval);
-	            }
-	            return this;
-	        },
-	        pause: function () {
-	            this.playing = false;
-	            clearTimeout(this.playTimer);
-	            return this;
-	        },
-	        slide: function (_index) {
-	            var self = this,
-	                dir = this.direction,
-	                stime = +new Date,
-	                duration = this.duration,
-	                current = this.current,
-	                index = Math.min(Math.max(0, _index), this.length - 1),
-	                curSize = this.getSum(index, index + 1),
-	                curPos = parseFloat(getStyle(this.container, dir ? 'top' : 'left')) || 0,
-	                type = dir ? 'top' : 'left',
-	                css = {}, tarPos;
-	
-	            tarPos = this.getPos(index);
-	            duration *= Math.min(1, Math.abs(tarPos - curPos) / curSize) || 10;
-	            this.current = index;
-	            this.latestTime = stime + duration;
-	            this.fire('before', current, index);
-	            this.end = function () {
-	                delete self.timer;
-	                self.fire('after', index, current);
-	            }
-	            if (transition) {
-	                this.timer = 1;
-	                css[transition] = type + ' ' + duration + 'ms ease';
-	                css[type] = tarPos + 'px';
-	                setStyle(this.container, css);
-	            } else {
-	                cancelFrame(this.timer);
-	                ani();
-	            }
-	
-	            function ani() {
-	                var offset = Math.min(duration, +new Date - stime),
-	                    s = EASE(offset, 0, 1, duration);
-	                var cp = (tarPos - curPos) * s + curPos;
-	                self.container.style[type] = cp + 'px';
-	                if (offset == duration) {
-	                    self.end();
-	                } else {
-	                    self.timer = nextFrame(ani);
-	                }
-	            }
-	        },
-	        handleEvent: function (oldEvent) {
-	            var ev = filterEvent(oldEvent),
-	                canDrag = ev.button < 1 && ev.length < 2 && (!this.pointerType || this.pointerType == ev.eventType) && (this.mouse || ev.pointerType != 'mouse');
-	
-	            switch (ev.eventCode) {
-	                case 2:
-	                    if (canDrag && this.rect) {
-	                        var index = this.current,
-	                            dir = this.direction,
-	                            rect = [ev.clientX, ev.clientY],
-	                            _rect = this.rect,
-	                            offset = rect[dir] - _rect[dir];
-	                        if (this.drag == null && _rect.toString() != rect.toString()) {
-	                            this.drag = Math.abs(offset) >= Math.abs(rect[1 - dir] - _rect[1 - dir]);
-	                            this.drag && this.fire('dragStart', ev);
-	                        }
-	                        if (this.drag) {
-	                            if (!this.pages[index + (offset > 0 ? -1 : 1)]) {
-	                                offset /= Math.abs(offset) / this.size + 2;
-	                            }
-	                            this.container.style[dir ? 'top' : 'left'] = this.startPos + offset + 'px';
-	                            this.fire('dragMove', ev);
-	                            this._offset = offset;
-	                            ev.preventDefault();
-	                        }
-	                    }
-	                    break;
-	
-	                case 1:
-	                case 3:
-	                    if (canDrag) {
-	                        var self = this,
-	                            index = this.current,
-	                            type = this.direction ? 'top' : 'left',
-	                            isDrag, offset, tm, nn, sub, curPos, tarPos, myWidth;
-	                        if (ev.length && (ev.eventCode == 1 || this.drag)) {
-	                            nn = ev.target.nodeName.toLowerCase();
-	                            clearTimeout(this.eventTimer);
-	                            if (!this.pointerType) {
-	                                this.pointerType = ev.eventType;
-	                            }
-	                            this.startPos = parseFloat(getStyle(this.container, type)) || 0;
-	                            if (transition) {
-	                                this.container.style[transition] = 'none';
-	                            } else if (this.timer) {
-	                                cancelFrame(this.timer);
-	                                delete this.timer;
-	                            }
-	                            this.rect = [ev.clientX, ev.clientY];
-	                            this.time = +new Date;
-	                            this.container.style[type] = this.startPos + 'px';
-	                            if (ev.eventType != 'touch' && (nn == 'a' || nn == 'img')) {
-	                                ev.preventDefault();
-	                            }
-	                        } else if (tm = this.time) {
-	                            offset = this._offset || 0;
-	                            isDrag = this.drag;
-	                            curPos = this.startPos + offset;
-	                            tarPos = this.getPos(index);
-	
-	                            each("rect drag time startPos _offset".split(" "), function (prop) {
-	                                delete self[prop];
-	                            });
-	
-	                            if (isDrag) {
-	                                sub = offset > 0 ? 1 : -1;
-	                                while (sub * (curPos - tarPos) > this.getOuterSize(this.pages[index]) / 2 && this.pages[index - sub]) {
-	                                    tarPos = this.getPos(index -= sub);
-	                                }
-	
-	                                if (Math.abs(offset) > 20 && +new Date - tm < 500) {
-	                                    index -= sub;
-	                                }
-	
-	                                this.fire('dragEnd', ev);
-	                                ev.preventDefault();
-	                            }
-	
-	                            if (curPos != tarPos) {
-	                                this.slide(index);
-	                            }
-	
-	                            this.eventTimer = setTimeout(function () {
-	                                delete self.pointerType;
-	                            }, 30);
-	                        }
-	                    }
-	                    break;
-	
-	                case 4:
-	                    if (this.timer) {
-	                        ev.preventDefault();
-	                    }
-	                    break;
-	
-	                case 5:
-	                    ev.preventDefault();
-	                    if (this.isStatic() && +new Date - this.latestTime > Math.max(1000 - this.duration, 0)) {
-	                        var wd = ev.wheelDelta || -ev.detail;
-	                        Math.abs(wd) >= 3 && this[wd > 0 ? 'prev' : 'next']();
-	                    }
-	                    break;
-	
-	                case 6:
-	                    var nn = ev.target.nodeName.toLowerCase();
-	                    if (this.isStatic() && nn != 'input' && nn != 'textarea' && nn != 'select') {
-	                        switch (ev.keyCode || ev.which) {
-	                            case 33:
-	                            case 37:
-	                            case 38:
-	                                this.prev();
-	                                break;
-	                            case 32:
-	                            case 34:
-	                            case 39:
-	                            case 40:
-	                                this.next();
-	                                break;
-	                            case 35:
-	                                this.slide(this.length - 1);
-	                                break;
-	                            case 36:
-	                                this.slide(0);
-	                                break;
-	                        }
-	                    }
-	                    break;
-	
-	                case 7:
-	                    this.resize();
-	                    break;
-	
-	                case 8:
-	                    if (oldEvent.propertyName == (this.direction ? 'top' : 'left')) {
-	                        this.container.style[transition] = 'none';
-	                        this.end();
-	                    }
-	                    break;
-	            }
-	        },
-	        getSum: function (from, to) {
-	            var sum = 0;
-	            while (from < to) {
-	                sum += this.getOuterSize(this.pages[from++], true);
-	            }
-	            return sum;
-	        },
-	        getPos: function (index) {
-	            var type = this.direction ? 'Top' : 'Left',
-	                myWidth = this.getOuterSize(this.pages[index], true),
-	                sum = this.getSum(0, index) + this['getMargin' + type + 'Size'](this.container) + this['getBorder' + type + 'Size'](this.container);
-	
-	            switch (this.align) {
-	                case 'top':
-	                case 'left':
-	                    return -sum;
-	                case 'bottom':
-	                case 'right':
-	                    return this.size - myWidth - sum;
-	                default:
-	                    return (this.size - myWidth) / 2 - sum;
-	            }
-	        },
-	        getOuterSize: function (elem, withMargin) {
-	            return elem[this.direction ? 'offsetHeight' : 'offsetWidth'] + (withMargin ? this.getMarginSize(elem) : 0);
-	        },
-	        getInnerSize: function (elem) {
-	            return this.getOuterSize(elem) - this.getBorderSize(elem);
-	        },
-	        getSize: function (elem) {
-	            return elem[this.direction ? 'offsetHeight' : 'offsetWidth'] - this.getPaddingSize(elem) - this.getBorderSize(elem);
-	        },
-	        destroy: function () {
-	            var pageData = this.pageData;
-	
-	            offListener(this.container, STARTEVENT.join(" ") + " click" + (this.mousewheel ? " mousewheel DOMMouseScroll" : ""), this.handler);
-	            offListener(DOC, MOVEEVENT.join(" ") + (this.arrowkey ? " keydown" : ""), this.handler);
-	            offListener(ROOT, 'resize', this.handler);
-	
-	            each(this.pages, function (page, index) {
-	                page.style.cssText = pageData[index].cssText;
-	            });
-	
-	            this.container.style.cssText = pageData.container;
-	            this.container.removeChild(this.comment);
-	            this.length = 0;
-	
-	            return this.pause();
-	        },
-	        refresh: function () {
-	            this.pages = children(this.container);
-	            this.length = this.pages.length;
-	            this.current = Math.max(Math.min(this.length - 1, this.current), 0);
-	            return this.resize();
-	        },
-	        append: function (elem, index) {
-	            if (null == index) {
-	                index = this.pages.length;
-	            }
-	            this.pageData.splice(index, 0, {
-	                cssText: elem.style.cssText || ''
-	            });
-	            this.container.insertBefore(elem, this.pages[index] || null);
-	
-	            return this.refresh();
-	        },
-	        prepend: function (elem) {
-	            return this.append(elem, 0);
-	        },
-	        insertBefore: function (elem, index) {
-	            return this.append(elem, index - 1);
-	        },
-	        insertAfter: function (elem, index) {
-	            return this.append(elem, index + 1);
-	        },
-	        remove: function (index) {
-	            this.container.removeChild(this.pages[index]);
-	            this.pageData.splice(index, 1);
-	
-	            return this.refresh();
-	        }
-	    }
-	
-	
-	    each("margin padding border".split(" "), function (type) {
-	        each("Top Left Right Bottom".split(" "), function (dir) {
-	            var prop = type + dir;
-	            struct.prototype[camelCase('get-' + prop) + 'Size'] = function (elem) {
-	                return parseFloat(getStyle(elem, prop + (type == 'border' ? 'Width' : ''))) || 0;
-	            }
-	        });
-	        struct.prototype[camelCase('get-' + type) + 'Size'] = function (elem) {
-	            return this[camelCase('get-' + type) + (this.direction ? 'Top' : 'Left') + 'Size'](elem) + this[camelCase('get-' + type) + (this.direction ? 'Bottom' : 'Right') + 'Size'](elem);
-	        }
-	    });
-	
-	    ROOT.TouchSlider = struct;
-	    module.exports = struct;
-	})(window, function (wrap, config) {
-	    if (!(this instanceof arguments.callee)) {
-	        return new arguments.callee(wrap, config);
-	    }
-	
-	    this.container = typeof wrap == 'string' ? document.getElementById(wrap) : wrap;
-	    this.init(config || {});
-	});
-
-/***/ },
-/* 23 */
-/***/ function(module, exports) {
-
-	/*------------------------------地点输入提示功能-----------------------------------*/
-	//百度地图API功能
-	function G(id) {
-	    return document.getElementById(id);
-	}
-	var ac = new BMap.Autocomplete({
-	    "input": "site"
-	});
-	ac.setLocation("上海");
-	ac.addEventListener("onhightlight", function (e) {
-	    var str = "";
-	    var _value = e.fromitem.value;
-	    var value = "";
-	    if (e.fromitem.index > -1) {
-	        value = _value.province + _value.city + _value.district + _value.street + _value.business;
-	    }
-	    str = "FromItem<br/>index=" + e.fromitem.index + "<br/>value=" + value;
-	    value = "";
-	    if (e.toitem.index > -1) {
-	        _value = e.toitem.value;
-	        value = _value.province + _value.city + _value.district + _value.street + _value.business;
-	    }
-	    str += "<br/>ToItem<br/>index=" + e.toitem.index + "<br/>value=" + value;
-	    G("searchResultPanel").innerHTML = str;
-	});
-	var myValue;
-	ac.addEventListener("onconfirm", function (e) {
-	    var _value = e.item.value;
-	    myValue = _value.province + _value.city + _value.district + _value.street + _value.business;
-	    G("searchResultPanel").innerHTML = "onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
-	});
-	
-	module.exports = ac;
-
-/***/ },
-/* 24 */,
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */
+/***/ 60:
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 50 */,
-/* 51 */,
-/* 52 */
+
+/***/ 63:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {/*!
@@ -6447,5 +6530,6 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }
-/******/ ]);
+
+/******/ });
 //# sourceMappingURL=showEvent.js.map

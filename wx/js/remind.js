@@ -260,7 +260,7 @@
 /******/ 			hotSetStatus("prepare");
 /******/ 			hotCallback = callback;
 /******/ 			hotUpdate = {};
-/******/ 			var chunkId = 0;
+/******/ 			var chunkId = 4;
 /******/ 			{ // eslint-disable-line no-lone-blocks
 /******/ 				/*globals chunkId */
 /******/ 				hotEnsureUpdateChunk(chunkId);
@@ -583,11 +583,13 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(6);
+	/* WEBPACK VAR INJECTION */(function($) {/**
+	 * Created by admin on 2016/9/22.
+	 */
+	__webpack_require__(51);
 	var pageLoad = __webpack_require__(8);
-	var touchSlider = __webpack_require__(9);
 	__webpack_require__(10);
-	__webpack_require__(11);
+	//require("../common/BMap.js");
 	var Dom = __webpack_require__(12);
 	var mobiScroll = __webpack_require__(14);
 	var wx = __webpack_require__(16);
@@ -599,24 +601,57 @@
 	    config: {
 	        eventId: "",
 	        nickName: "",
-	        tagName: "",
+	        tagId: "",
 	        time: "",
-	        timeArr: ""
-	},
-	    init: function() {
+	        timeArr: "",
+	        repeatSelect: "",
+	    },
+	    init: function () {
 	        pageLoad({backgroundColor: "#66cccc"});
 	        this.config.time = this.ifTimeExist(Dom.getRequest("date"));
 	        this.config.timeArr = this.transTime(this.config.time);
+	        this.config.eventId = Dom.getRequest("eventId");
+	        this.config.repeatSelect = document.getElementById('select');
 	        this.rem();
-	        this.addRemind();
 	        this.renderPage();
+	        this.getTags();
 	        this.bindEvent();
 	    },
-	    rem: function() {
+	    rem: function () {
 	        fastClick.attach(document.body);
-	        (function($,undefined){"use strict";var pluginName='scojs_message';$[pluginName]=function(message,type){clearTimeout($[pluginName].timeout);var $selector=$('#'+$[pluginName].options.id);if(!$selector.length){$selector=$('<div/>',{id:$[pluginName].options.id}).appendTo($[pluginName].options.appendTo)}$selector.html(message);if(type===undefined||type==$[pluginName].TYPE_ERROR){$selector.removeClass($[pluginName].options.okClass).addClass($[pluginName].options.errClass)}else if(type==$[pluginName].TYPE_OK){$selector.removeClass($[pluginName].options.errClass).addClass($[pluginName].options.okClass)}$selector.slideDown('fast',function(){$[pluginName].timeout=setTimeout(function(){$selector.slideUp('fast')},$[pluginName].options.delay)})};$.extend($[pluginName],{options:{id:'page_message',okClass:'page_mess_ok',errClass:'page_mess_error',delay:500,appendTo:'body'},TYPE_ERROR:1,TYPE_OK:2})})($);
+	        (function ($, undefined) {
+	            "use strict";
+	            var pluginName = 'scojs_message';
+	            $[pluginName] = function (message, type) {
+	                clearTimeout($[pluginName].timeout);
+	                var $selector = $('#' + $[pluginName].options.id);
+	                if (!$selector.length) {
+	                    $selector = $('<div/>', {id: $[pluginName].options.id}).appendTo($[pluginName].options.appendTo)
+	                }
+	                $selector.html(message);
+	                if (type === undefined || type == $[pluginName].TYPE_ERROR) {
+	                    $selector.removeClass($[pluginName].options.okClass).addClass($[pluginName].options.errClass)
+	                } else if (type == $[pluginName].TYPE_OK) {
+	                    $selector.removeClass($[pluginName].options.errClass).addClass($[pluginName].options.okClass)
+	                }
+	                $selector.slideDown('fast', function () {
+	                    $[pluginName].timeout = setTimeout(function () {
+	                        $selector.slideUp('fast')
+	                    }, $[pluginName].options.delay)
+	                })
+	            };
+	            $.extend($[pluginName], {
+	                options: {
+	                    id: 'page_message',
+	                    okClass: 'page_mess_ok',
+	                    errClass: 'page_mess_error',
+	                    delay: 500,
+	                    appendTo: 'body'
+	                }, TYPE_ERROR: 1, TYPE_OK: 2
+	            })
+	        })($);
 	    },
-	    selectTimes: function(obj1, obj2) {
+	    selectTimes: function (obj1, obj2) {
 	        var that = this;
 	        var selb = mobiScroll.datetime(obj1, {
 	            theme: 'android-holo-light',
@@ -629,7 +664,7 @@
 	            readonly: false,
 	            onShow: function (event, inst) {
 	                var theDate = inst._tempValue;
-	                Dom.transDate(theDate,true);
+	                Dom.transDate(theDate, true);
 	            },
 	            onSet: function (event, inst) {
 	                var selectedDate = inst.getVal();//获取选择时间的标准形式
@@ -637,77 +672,44 @@
 	                var selectedDateArr = inst._wheelArray;//获取选择时间的数组 [yy,mm,dd,hh,ii]
 	                var selectedTimeArr = selectedTime.split(" ");
 	                var theWeek = Dom.transWeek(selectedDate);
-	                $(obj2).html(selectedDateArr[0] + "年" + that.tf(parseInt(selectedDateArr[1]) + 1) + "月" + that.tf(selectedDateArr[2]) + "日" + " " + theWeek + " " + selectedTimeArr[1]);
+	                $(obj2).html(selectedDateArr[0] + "年" + (parseInt(selectedDateArr[1]) + 1) + "月" + that.tf(selectedDateArr[2]) + "日" + " " + theWeek + " " + selectedTimeArr[1]);
 	                var theId = selectedDateArr[0] + "-" + that.tf(parseInt(selectedDateArr[1]) + 1) + "-" + that.tf(selectedDateArr[2]) + " " + selectedTimeArr[1] + ":00";
 	                $(obj2).attr("id", theId);
-	                if(obj2 =='.startTime'){//若修改的是开始时间的日期，则指定提醒时间日期等于开始时间，结束时间比开始时间大10分钟
-	                    $('.remindTime').html(selectedDateArr[0] + "年" + that.tf(parseInt(selectedDateArr[1]) + 1) + "月" + that.tf(selectedDateArr[2]) + "日" + " " + theWeek + " " + selectedTimeArr[1]);
-	                    $(".remindTime").attr("id", theId);
-	                    var endMinute = selectedDateArr[4]+10,endHour = selectedDateArr[3];
-	                    if(endMinute>=60){
-	                        endHour = endHour+1;
-	                        if(endMinute-60>=10){
-	                            endMinute = endMinute-60;
-	                        }else{
-	                            endMinute = that.tf(endMinute-60);
-	                        }
-	                        if(endHour==24){
-	                            endHour = 23;
-	                            endMinute = selectedDateArr[4];
-	                        }
-	                    }
-	                    $('.endTime').html(selectedDateArr[0] + "年" + that.tf(parseInt(selectedDateArr[1]) + 1) + "月" + that.tf(selectedDateArr[2]) + "日" + " " + theWeek + " " +endHour+":"+endMinute);
-	                    var theEndId = selectedDateArr[0] + "-" + that.tf(parseInt(selectedDateArr[1]) + 1) + "-" + that.tf(selectedDateArr[2]) + " " + endHour+":"+endMinute + ":00";
-	                    $('.endTime').attr("id",theEndId);
-	                    that.selectTimes('#endTime', '.endTime').setVal(new Date(that.setInitTime($('.endTime'))));//重新设置结束时间的初始值
-	                    that.selectTimes('#remindTime', '.remindTime').setVal(new Date(that.setInitTime($('.remindTime'))));//重新设置提醒时间的初始值
+	                if (obj2 == '.startCon') {//若修改的是开始时间的日期，则指定提醒时间日期等于开始时间，结束时间比开始时间大10分钟
+	                    $('.endCon').html(selectedDateArr[0] + "年" + (parseInt(selectedDateArr[1]) + 1) + "月" + that.tf(selectedDateArr[2]) + "日" + " " + theWeek + " " + selectedTimeArr[1]);
+	                    $('.endCon').attr("id", theId);
+	                    that.selectTimes('#endTime', '.endCon').setVal(new Date(that.setInitTime($('.endCon'))));//重新设置结束时间的初始值
 	                }
 	            },
 	            onChange: function (event, inst) {
 	                var changeDate = inst._tempValue;
-	                Dom.transDate(changeDate,true);
+	                Dom.transDate(changeDate, true);
 	            }
 	        });
 	        return selb;
 	    },
-	    shareShadow: function() {
-	        var shareShadow = $('.shareShadow');
-	        shareShadow.css("display","block");//显示分享提示层
-	        var qrcodeImg = $('.qrcodeImgBox');
-	        qrcodeImg.click(function () {
-	            $(this).addClass("q-big");
-	            event.stopPropagation();
-	        });//放大二维码
-	        shareShadow.click(function(){
-	            $(this).fadeOut();
-	            event.stopPropagation();
-	        });
-	        var share = document.getElementById('shareShadow');
-	        share.addEventListener('touchmove', function (e) {
-	            e.preventDefault();
-	        });
-	    },
 	    /*----------------------若日期中的数组小于10，则在前面加0-------------------*/
-	    tf: function(time) {
-	        if(time<10){
-	            time = "0"+time;
+	    tf: function (time) {
+	        if (time < 10) {
+	            time = "0" + time;
 	        }
 	        return time;
 	    },
-	    /*-------------------------------转换日期格式，开始时间加10分钟，结束时间加20分钟-------------------------------------*/
-	    ifTimeExist:function(time){
+	    /*-------------------------------转换日期格式，开始时间加10分钟-------------------------------------*/
+	    ifTimeExist: function (time) {
 	        var that = this;
-	        if(!time){
+	        if (!time) {
 	            var d = new Date();//获得当天日期
 	            var years = d.getFullYear();
 	            var months = d.getMonth() + 1;
 	            var days = that.tf(d.getDate());
 	            return years + "-" + months + "-" + days;
-	        }else{
+	        } else {
 	            return time;
 	        }
 	    },
-	    transTime: function(time) {
+	    transTime: function (time) {
+	        var that = this;
 	        var date = new Date();
 	        var timeArr = time.split('-');
 	        var theTime = time.replace(/\-/g, "/");
@@ -726,48 +728,66 @@
 	                startMinute = date.getMinutes();
 	            }
 	        }
-	        var startId = time + " " + startHour + ":" + startMinute + ":00";
+	        var startId = timeArr[0] + "-" + that.tf(parseInt(timeArr[1])) + "-" + timeArr[2] + " " + startHour + ":" + startMinute + ":00";
 	        //给开始时间，结束时间，提醒时间设置ID，提交数据时只需要提交id内容即可
-	        $('.startTime').attr("id", startId);
-	        $('.endTime').attr("id", startId);
-	        $('.remindTime').attr("id", startId);
+	        $('.startCon').attr("id", startId);
+	        $('.endCon').attr("id", startId);
 	        var startTime = timeArr[0] + "年" + timeArr[1] + "月" + timeArr[2] + "日" + " " + theWeek + " " + startHour + ":" + startMinute,
 	            endTime = timeArr[0] + "年" + timeArr[1] + "月" + timeArr[2] + "日" + " " + theWeek + " " + startHour + ":" + startMinute;
 	        return [startTime, endTime];
 	    },
 	    /*---------------------修改开始时间、结束时间、指定提醒时间样式，为其设置时间选择器的初始值---------------------*/
-	    setInitTime: function(obj) {
+	    setInitTime: function (obj) {
 	        var time = obj.attr("id");
 	        var date = time.split(" ");
-	        var theDate = date[0].replace(/\-/g,"/"),
+	        var theDate = date[0].replace(/\-/g, "/"),
 	            theTime = date[1].split(":");
-	        return theDate+" "+theTime[0]+":"+theTime[1];
+	        return theDate + " " + theTime[0] + ":" + theTime[1];
 	    },
-	    hideTags: function() {
+	    /*----------------获取用户选择快捷标签对应的主题-------------------*/
+	    getTemplate: function (templateId) {
+	        if (tamplateId) {
+	            $.get(
+	                "http://www.li-li.cn/llwx/template/detail",
+	                {
+	                    'tid': templateId
+	                },
+	                function (data) {
+	                    if (data.code == 0) {
+	                        var list = data.data;
+	                        if (list.color) {
+	                            $('.colorShow').css("background", list.color);
+	                            $('.colorText').html(that.config.map.list.color);
+	                        }
+	                    }
+	                }
+	            )
+	        }
+	    },
+	    hideTags: function () {
 	        var that = this;
 	        $('.tipsCon a').click(function (event) {
 	            $('.eventName').val($(this).html());
-	            that.config.tagName  = $(this).html();
+	            that.config.tagId = $(this).attr("data-tag");//保存用户选择的标签id
+	            that.getTemplate();
 	            $('.tips').slideUp();
 	            event.preventDefault();
 	        });
 	    },
-	    getTags: function() {
+	    getTags: function () {
 	        var that = this;
 	        var template = $('#tagListTemplate').html();
 	        var html = "";
-	        $.get("http://www.li-li.cn/llwx/tag/list",function(data){
+	        $.get("http://www.li-li.cn/llwx/tag/list", {"all": true}, function (data) {
 	//                console.log(data);
-	            if(data.code==0) {
-	                $('#loadingToast').fadeOut();//隐藏loading
+	            if (data.code == 0) {
 	                var list = data.data;
-	                for (var i = 0; i < list.length; i++) {
-	                    html += template.replace(/{{tagName}}/g, list[i].tagName);
+	                for (var i = 0; i < list.length; i++) {//显示标签对应的内容及模板ID
+	                    html += template.replace(/{{templateId}}/g, list[i].templateId).replace(/{{tagId}}/g, list[i].tagId).replace(/{{tagName}}/g, list[i].tagName);
 	                }
 	                $('.tipsCon').html("").append(html);
 	                that.hideTags();
-	            }else{//数据加载失败显示错误提示框
-	                $('#loadingToast').fadeOut();//隐藏loading
+	            } else {//数据加载失败显示错误提示框
 	                var error = data.msg;
 	                $('#dialog2 .weui_dialog_bd').html(error);
 	                $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
@@ -776,228 +796,138 @@
 	            }
 	        })
 	    },
-	    /*-------------生成事件二维码--------------*/
-	    createQrcode:function(eventId){
-	        $('.qrcodeImg').html("");
-	        $.get("http://www.li-li.cn/llwx/wx/qrcode/ticket",{"sceneId":eventId},function(data){
-	            if(data.code == 0){
-	                $('#loadingToast').fadeOut();
-	                var html = "<img src='https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + ticket + "' />";
-	                $('.qrcodeImg').append(html);
-	                $('.wxQrcode').css("display", "block");
-	            }
-	        })
-	    },
-	    renderPage: function() {
+	    renderPage: function () {
 	        var that = this;
 	        wx.wxConfig(1);
-	        /*----------------------底部按钮动态显示------------------------*/
-	        setTimeout(function(){
-	            $('.bottom').animate({"bottom":"0px"},500);
-	        },500);
-	        this.getTags();
-	        /*---------------------开始时间、结束时间、指定提醒时间的时间显示---------------------*/
-	        $('.startTime').html(that.config.timeArr[0]);
-	        $('.endTime').html(that.config.timeArr[1]);
-	        $('.remindTime').html(that.config.timeArr[0]);
+	        if (that.config.eventId) {
+	            that.getData();
+	        } else {
+	            /*---------------------开始时间、结束时间、指定提醒时间的时间显示---------------------*/
+	            $('.startCon').html(that.config.timeArr[0]);
+	            $('.endCon').html(that.config.timeArr[1]);
+	        }
 	        /*---------------------------------开始时间、结束时间、指定提醒时间三个地方的日期选择功能---------------------------------*/
-	        this.selectTimes('#startTime', '.startTime').setVal(new Date(that.setInitTime($('.startTime'))));
-	        this.selectTimes('#endTime', '.endTime').setVal(new Date(that.setInitTime($('.endTime'))));
-	        this.selectTimes('#remindTime', '.remindTime').setVal(new Date(that.setInitTime($('.remindTime'))));
+	        this.selectTimes('#startTime', '.startCon').setVal(new Date(that.setInitTime($('.startCon'))));
+	        this.selectTimes('#endTime', '.endCon').setVal(new Date(that.setInitTime($('.endCon'))));
 	    },
-	    /*----------------------------------------提醒、重复下方的滑动选择效果-------------------------------*/
-	    addRemind: function() {
-	        var active = 0,
-	            re = document.getElementById('addRemind').getElementsByTagName('span');
-	        for (var i = 0; i < re.length; i++) {
-	            (function () {
-	                var j = i;
-	                re[i].onclick = function () {
-	                    remind.slide(j);
-	                    return false;
-	                }
-	            })();
-	        }
-	        var remind = new touchSlider('addRemind', {
-	            duration: 1000,
-	            direction: 0,
-	            start: 2,
-	            align: 'center',
-	            mouse: true,
-	            mousewheel: false,
-	            arrowkey: false,
-	            fullsize: false,
-	            autoplay: false
-	        });
-	        remind.on('before', function (m, n) {
-	            re[m].className = '';
-	            re[n].className = 'active';
-	            if (n == 3) {
-	                if($(".remind_time").css("display") == "none") {
-	                    $('.remind_time').slideDown();
-	                }
-	            } else {
-	                $('.remind_time').css({'display': 'none'});
-	            }
-	        });
-	        var repe = document.getElementById('addRepetition').getElementsByTagName('span');
-	        for (var k = 0; k < repe.length; k++) {
-	            (function () {
-	                var l = k;
-	                repe[l].onclick = function () {
-	                    repetition.slide(l);
-	                    return false;
-	                }
-	            })();
-	        }
-	        var repetition = new touchSlider('addRepetition', {
-	            duration: 1000,
-	            direction: 0,
-	            start: 0,
-	            align: 'center',
-	            mouse: true,
-	            mousewheel: false,
-	            arrowkey: false,
-	            fullsize: false,
-	            autoplay: false
-	        });
-	        repetition.on('before', function (m, n) {
-	            repe[m].className = '';
-	            repe[n].className = 'active';
-	        });
-	    },
-	    bindEvent: function() {
+	    /*--------------页面内容初始化------------------*/
+	    getData: function () {
 	        var that = this;
-	
-	        $('.eventName').focus(function () {
-	            $('.tips').slideUp(800);
-	        });
-	
-	        /*-------------------------页面加载时，点击换一批时像后台请求事件标签------------------------*/
-	
-	        $('.change').on("tap", function(){
-	            $('#loadingToast').show();
-	            that.getTags();
-	        });
-	
-	        /*-----------------------------------显示隐藏部分---------------------------------------*/
-	        $('.othersShadow').on("tap", function () {
-	            $('.othersShadow').css({'display': 'none'});
-	            $('.othersCon').css({'height': 'auto'});
-	        });
-	        $('.Addendtime').click(function () {
-	            $(this).hide();
-	            $('.endTimeCon').animate({'height':'1rem'},300);
-	            $('#endTime').css("display","block");
-	        });
-	        /*--------------------------------------------点击完成按钮，提交数据，提交成功后跳转至月历页面-----------------------------------------*/
-	        $('.finished').on("tap", function () {
-	            $('#loadingToast').show();//显示loading
-	            var name = $('.eventName').val().replace(/\s+/, ""),
-	                startTime = $('.startTime').attr('id'),
-	                endTime = $('.endTime').attr('id'),
-	                tipType = $('.remindCon .choice .active').index(),
-	                repeatType = $('.repetitionCon .choice .active').index(),
-	                remark = $('#remarks').val(),
-	                location = $('#site').val(),
-	                tipTime = "";
-	            if (tipType == 3) {
-	                tipTime = $('.remindTime').attr("id");
-	            }
-	            if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
-	                $.scojs_message('缺少事件名称', $.scojs_message.TYPE_ERROR);
-	                $('#loadingToast').fadeOut();
-	            } else {
-	                if (that.config.eventId) {
-	                    var data = sessionStorage.getItem(that.config.eventId);//获得存储的事件信息
-	                    if (name == data[0] && that.config.tagName ==data[1] &&startTime == data[2] && endTime == data[3] && tipType == data[4] && repeatType == data[5] && remark == data[6] && location == data[7] && tipTime == data[8]) {//事件未修改
-	                        $('#loadingToast').fadeOut();
-	                        window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/calendar.html");
+	        if (that.config.eventId) {//若用户点击事件详情页的编辑按钮进入此页面
+	            $('.delete').css("display", "block");//用户可删除事件
+	            $(".topTips").css("display", "none");//隐藏头部的快捷标签
+	            $.get(
+	                "http://www.li-li.cn/llwx/event/detail",
+	                {
+	                    "eventId": that.config.eventId
+	                },
+	                function (data) {
+	                    if (data.code == 0) {
+	                        var eventList = data.data;
+	                        $('.eventName').val(eventList.name);//标题内容
+	                        autoTextArea(document.getElementById("eventTitle"));
+	                        var theStartTime = Dom.tranDate(eventList.startTime),
+	                            theEndTime = Dom.tranDate(eventList.endTime),
+	                            repeatType = eventList.repeatType
+	                        $('.startCon').html(theStartTime).attr("id", eventList.startTime);
+	                        $('.endCon').html(theEndTime).attr("id", eventList.endTime);
+	                        /*------------设置重复类型----------------*/
+	                        var repeatOptions = that.config.repeatSelect.getElementByTagName("option");
+	                        for (var j = 0; j < repeatOptions.length; j++) {
+	                            repeatOptions[j].setAttribute("selected", false);
+	                        }
+	                        repeatOptions[repeatType].setAttribute("selected", true);
 	                    } else {
-	                        $.post('http://www.li-li.cn/llwx/event/modify', {
-	                                "eventId": that.config.eventId,
-	                                "name": name,
-	                                "tags":that.config.tagName,
-	                                "startTime": startTime,
-	                                "endTime": endTime,
-	                                "tipType": tipType,
-	                                "repeatType": repeatType,
-	                                "location": location,
-	                                "remark": remark,
-	                            }, function (data) {
-	                                if (data.code == 0) {//修改成功弹出提示框
-	                                    $('#loadingToast').fadeOut();
-	                                    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/calendar.html");
-	                                } else {//修改失败弹出提示框
-	                                    $('#loadingToast').fadeOut();
-	                                    var error = data.msg;
-	                                    $('#dialog2 .weui_dialog_bd').html(error);
-	                                    $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
-	                                        $('#dialog2').off('click').hide();
-	                                    });
-	                                }
-	                            }
-	                        )
-	                    }
-	                } else {
-	                    Ajax.eventAdd(name,that.config.tagName,startTime, endTime, tipType, tipTime, repeatType, location, remark);
-	                }
-	            }
-	        });
-	        /*-----------------------------------------------点击取消按钮，跳转至月历页面/上一页------------------------------------------*/
-	        $('.cancel').on("tap", function () {
-	            if(document.referrer==""){
-	                WeixinJSBridge.call("closeWindow");
-	            }else{
-	                window.location.href = document.referrer;//返回上一个页面并刷新
-	            }
-	        });
 	
-	        /*------------------------点击分享------------------------*/
-	        $(".share").on("tap", function () {
+	                    }
+	                }
+	            )
+	        }
+	    },
+	    bindEvent: function () {
+	        var that = this;
+	        $('.eventName').focus(function () {
+	            $('.topTips').slideUp(800);
+	        });
+	        /*------------点击地图，图标跳动------------*/
+	        $('.mapCon').click(function () {
+	            $('.imgCon').addClass('active');
+	            setTimeout(function () {
+	                $('.imgCon').removeClass('active');
+	            }, 600);
+	        })
+	        /*-------------点击开始时间后面的展开按钮---------*/
+	        $('.timeIconCon').click(function () {
+	            if ($(".timeIcon").attr("class") == "timeIcon active") {
+	                $(".timeIcon").removeClass("active");
+	                $('.endTime').animate({'height': '0px'}, 300);
+	                $('.timeText').animate({"width": "0px"}, 300);
+	            } else {
+	                $(".timeIcon").addClass("active");
+	                $('.endTime').animate({'height': '60px'}, 300);
+	                $('.timeText').animate({"width": "33px"}, 300);
+	            }
+	        })
+	        /*-----------展开顶部的快捷标签-------------*/
+	        $('.showAll').click(function () {
+	            if ($('.showAll span').attr("class") == "active") {
+	                $('.showAll span').removeClass("active");
+	                $('.tipsCon').animate({"height": "60px"}, 300);
+	            } else {
+	                $('.showAll span').addClass("active");
+	                $('.tipsCon').animate({"height": "auto"}, 300);
+	            }
+	        })
+	        /*----------点击地图，地图弹层从右侧进入----------*/
+	        $('.site').click(function () {
+	            $('.mapShadow').animate({"top": "0px"}, 300);
+	        })
+	        /*------------点击分享--------------*/
+	        $('.share').click(function () {
+	            that.shareShadow(); //显示分享提示弹出层，点击后隐藏
 	            if (that.config.eventId) {
 	                //todo 弹出蒙层
-	                if(!$('.qrcodeImg').html()){
-	                    that.createQrcode(that.config.eventId);
-	                }
 	                that.shareShadow(); //显示分享提示弹出层，点击后隐藏
-	            } else {
-	                var name = $('.eventName').val().replace(/\s+/, ""),
-	                    startTime = $('.startTime').attr('id'),
-	                    endTime = $('.endTime').attr('id'),
-	                    tipType = $('.remindCon .choice .active').index(),
-	                    repeatType = $('.repetitionCon .choice .active').index(),
-	                    remark = $('#remarks').val(),
-	                    location = $('#site').val(),
-	                    tipTime = "";
-	                if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
-	//                    $('.errorTips').css("display", "block");
-	                    $.scojs_message('缺少事件名称', $.scojs_message.TYPE_ERROR);
-	                }else {
-	                    $('#dialog1').show();
-	                    $('#dialog1 .confirm').on("tap", function () {//点击确定
-	                        Ajax.eventAdd2(name,that.config.tagName,startTime, endTime, tipType, tipTime, repeatType, location, remark);
-	                        Ajax.getUserInformation2();
-	                        wx.wxConfig(2, that.config.nickName + " 邀请您参加 「" + name+"」", $('.startTime').html(),
-	                            "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + that.config.eventId));
-	                        sessionStorage.setItem(that.config.eventId, [name, that.config.tagName,startTime, endTime, tipType, repeatType, remark, location, tipTime]);
-	                        $('#dialog1').hide();
-	                        //todo 弹出蒙层
-	                        if(!$('.qrcodeImg').html()){
-	                            that.createQrcode(that.config.eventId);
-	                        }
-	                        that.shareShadow(); //显示分享提示弹出层，点击后隐藏
-	                    });
-	                    $('.default').on("tap", function () {
-	                        $('#dialog1').hide();
-	                    });
-	                }
 	            }
-	        });
+	        })
+	        /*-------点击颜色，显示颜色选择弹层-------*/
+	        $('.color').click(function () {
+	
+	        })
+	        /*------------点击保存--------------*/
+	        $('.saveBtn').click(function () {
+	            var that = this;
+	            $.post(
+	                "http://www.li-li.cn/llwx/event/add",
+	                {
+	                    //"name":;
+	                    //"eventType":
+	                },
+	                function (data) {
+	                    if (data.code == 0) {
+	
+	                    } else {
+	
+	                    }
+	                }
+	            )
+	        })
+	        /*---------------点击删除---------------*/
+	        $('.delete').click(function () {
+	            var that = this;
+	            $.get("http://www.li-li.cn/llwx/event.del", {"eventId": that.config.eventId}, function (data) {
+	                if (data.code == 0) {
+	
+	                } else {
+	
+	                }
+	            })
+	        })
 	    }
 	}
 	
 	fuc.init();
+	
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
@@ -3008,12 +2938,7 @@
 
 
 /***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
+/* 6 */,
 /* 7 */,
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
@@ -3039,746 +2964,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 9 */
-/***/ function(module, exports) {
-
-	/*
-	 * TouchSlider
-	 * @author qiqiboy
-	 * @github https://github.com/qiqiboy/touchslider
-	 */
-	
-	(function (ROOT, struct, undefined) {
-	
-	    "use strict";
-	
-	    var VERSION = '2.0.1';
-	    var lastTime = 0,
-	        nextFrame = ROOT.requestAnimationFrame ||
-	            ROOT.webkitRequestAnimationFrame ||
-	            ROOT.mozRequestAnimationFrame ||
-	            ROOT.msRequestAnimationFrame ||
-	            function (callback) {
-	                var currTime = +new Date,
-	                    delay = Math.max(1000 / 60, 1000 / 60 - (currTime - lastTime));
-	                lastTime = currTime + delay;
-	                return setTimeout(callback, delay);
-	            },
-	        cancelFrame = ROOT.cancelAnimationFrame ||
-	            ROOT.webkitCancelAnimationFrame ||
-	            ROOT.webkitCancelRequestAnimationFrame ||
-	            ROOT.mozCancelRequestAnimationFrame ||
-	            ROOT.msCancelRequestAnimationFrame ||
-	            clearTimeout,
-	        DOC = ROOT.document,
-	        divstyle = DOC.createElement('div').style,
-	        cssVendor = function () {
-	            var tests = "-webkit- -moz- -o- -ms-".split(" "),
-	                prop;
-	            while (prop = tests.shift()) {
-	                if (camelCase(prop + 'transform') in divstyle) {
-	                    return prop;
-	                }
-	            }
-	            return '';
-	        }(),
-	        transition = cssTest('transition'),
-	        toString = Object.prototype.toString,
-	        slice = [].slice,
-	        class2type = {},
-	        event2type = {},
-	        event2code = {
-	            click: 4,
-	            mousewheel: 5,
-	            dommousescroll: 5,
-	            keydown: 6,
-	            resize: 7
-	        },
-	        POINTERTYPES = {
-	            2: 'touch',
-	            3: 'pen',
-	            4: 'mouse',
-	            pen: 'pen'
-	        },
-	        STARTEVENT = [],
-	        MOVEEVENT = [],
-	        EVENT = function () {
-	            var ret = {},
-	                states = {
-	                    start: 1,
-	                    down: 1,
-	                    move: 2,
-	                    end: 3,
-	                    up: 3,
-	                    cancel: 3
-	                };
-	            each("mouse touch pointer MSPointer-".split(" "), function (prefix) {
-	                var _prefix = /pointer/i.test(prefix) ? 'pointer' : prefix;
-	                ret[_prefix] = ret[_prefix] || {};
-	                POINTERTYPES[_prefix] = _prefix;
-	                each(states, function (endfix, code) {
-	                    var ev = camelCase(prefix + endfix);
-	                    ret[_prefix][ev] = code;
-	                    event2type[ev.toLowerCase()] = _prefix;
-	                    event2code[ev.toLowerCase()] = code;
-	                    if (code == 1) {
-	                        STARTEVENT.push(ev);
-	                    } else {
-	                        MOVEEVENT.push(ev);
-	                    }
-	                });
-	            });
-	            each("otransitionend oTransitionEnd webkitTransitionEnd mozTransitionEnd MSTransitionEnd transitionend".split(" "), function (ev) {
-	                STARTEVENT.push(ev);
-	                event2code[ev.toLowerCase()] = 8;
-	            });
-	            return ret;
-	        }(),
-	        POINTERS = {
-	            touch: {},
-	            pointer: {},
-	            mouse: {}
-	        };
-	
-	    each("Boolean Number String Function Array Date RegExp Object Error".split(" "), function (name) {
-	        class2type["[object " + name + "]"] = name.toLowerCase();
-	    });
-	
-	    function type(obj) {
-	        if (obj == null) {
-	            return obj + "";
-	        }
-	
-	        return typeof obj == 'object' || typeof obj == 'function' ? class2type[toString.call(obj)] || "object" :
-	            typeof obj;
-	    }
-	
-	    function isArrayLike(elem) {
-	        var tp = type(elem);
-	        return !!elem && tp != 'function' && tp != 'string' && (elem.length === 0 || elem.length && (elem.nodeType == 1 || (elem.length - 1) in elem));
-	    }
-	
-	    function camelCase(str) {
-	        return (str + '').replace(/^-ms-/, 'ms-').replace(/-([a-z]|[0-9])/ig, function (all, letter) {
-	            return (letter + '').toUpperCase();
-	        });
-	    }
-	
-	    function cssTest(name) {
-	        var prop = camelCase(name),
-	            _prop = camelCase(cssVendor + prop);
-	        return (prop in divstyle) && prop || (_prop in divstyle) && _prop || '';
-	    }
-	
-	    function isFunction(func) {
-	        return type(func) == 'function';
-	    }
-	
-	    function pointerLength(obj) {
-	        var len = 0, key;
-	        if (type(obj.length) == 'number') {
-	            len = obj.length;
-	        } else if ('keys' in Object) {
-	            len = Object.keys(obj).length;
-	        } else {
-	            for (key in obj) {
-	                if (obj.hasOwnProperty(key)) {
-	                    len++;
-	                }
-	            }
-	        }
-	        return len;
-	    }
-	
-	    function pointerItem(obj, n) {
-	        return 'item' in obj ? obj.item(n) : function () {
-	            var i = 0, key;
-	            for (key in this) {
-	                if (i++ == n) {
-	                    return this[key];
-	                }
-	            }
-	        }.call(obj, n);
-	    }
-	
-	    function each(arr, iterate) {
-	        if (isArrayLike(arr)) {
-	            if (type(arr.forEach) == 'function') {
-	                return arr.forEach(iterate);
-	            }
-	            var i = 0, len = arr.length, item;
-	            for (; i < len; i++) {
-	                item = arr[i];
-	                if (type(item) != 'undefined') {
-	                    iterate(item, i, arr);
-	                }
-	            }
-	        } else {
-	            var key;
-	            for (key in arr) {
-	                iterate(key, arr[key], arr);
-	            }
-	        }
-	    }
-	
-	    function children(elem) {
-	        var ret = [];
-	        each(elem.children || elem.childNodes, function (elem) {
-	            if (elem.nodeType == 1) {
-	                ret.push(elem);
-	            }
-	        });
-	        return ret;
-	    }
-	
-	    function getStyle(elem, prop) {
-	        var style = ROOT.getComputedStyle && ROOT.getComputedStyle(elem, null) || elem.currentStyle || elem.style;
-	        return style[prop];
-	    }
-	
-	    function setStyle(elem, props) {
-	        each(props, function (name, value) {
-	            var prop;
-	            switch (name) {
-	                case 'float':
-	                    prop = cssTest('cssFloat') ? 'cssFloat' : 'styleFloat';
-	                    break;
-	                default:
-	                    prop = camelCase(name);
-	            }
-	            try {
-	                elem.style[prop] = value;
-	            } catch (e) {
-	            }
-	        });
-	    }
-	
-	    function addListener(elem, evstr, handler) {
-	        if (type(evstr) == 'object') {
-	            return each(evstr, function (evstr, handler) {
-	                addListener(elem, evstr, handler);
-	            });
-	        }
-	        each(evstr.split(" "), function (ev) {
-	            if (elem.addEventListener) {
-	                elem.addEventListener(ev, handler, false);
-	            } else if (elem.attachEvent) {
-	                elem.attachEvent('on' + ev, handler);
-	            } else elem['on' + ev] = handler;
-	        });
-	    }
-	
-	    function offListener(elem, evstr, handler) {
-	        if (type(evstr) == 'object') {
-	            return each(evstr, function (evstr, handler) {
-	                offListener(elem, evstr, handler);
-	            });
-	        }
-	        each(evstr.split(" "), function (ev) {
-	            if (elem.removeEventListener) {
-	                elem.removeEventListener(ev, handler, false);
-	            } else if (elem.detachEvent) {
-	                elem.detachEvent('on' + ev, handler);
-	            } else elem['on' + ev] = null;
-	        });
-	    }
-	
-	    function removeRange() {
-	        var range;
-	        if (ROOT.getSelection) {
-	            range = getSelection();
-	            if ('empty' in range)range.empty();
-	            else if ('removeAllRanges' in range)range.removeAllRanges();
-	        } else {
-	            DOC.selection.empty();
-	        }
-	    }
-	
-	    function EASE(t, b, c, d) {
-	        return -c * ((t = t / d - 1) * t * t * t - 1) + b;
-	    }
-	
-	    function filterEvent(oldEvent) {
-	        var ev = {},
-	            which = oldEvent.which,
-	            button = oldEvent.button,
-	            pointers, pointer;
-	
-	        each("wheelDelta detail which keyCode".split(" "), function (prop) {
-	            ev[prop] = oldEvent[prop];
-	        });
-	
-	        ev.oldEvent = oldEvent;
-	
-	        ev.type = oldEvent.type.toLowerCase();
-	        ev.eventType = event2type[ev.type] || ev.type;
-	        ev.eventCode = event2code[ev.type] || 0;
-	        ev.pointerType = POINTERTYPES[oldEvent.pointerType] || oldEvent.pointerType || ev.eventType;
-	
-	        ev.target = oldEvent.target || oldEvent.srcElement || DOC.documentElement;
-	        if (ev.target.nodeType === 3) {
-	            ev.target = ev.target.parentNode;
-	        }
-	
-	        ev.preventDefault = function () {
-	            oldEvent.preventDefault && oldEvent.preventDefault();
-	            ev.returnValue = oldEvent.returnValue = false;
-	        }
-	
-	        if (pointers = POINTERS[ev.eventType]) {
-	            switch (ev.eventType) {
-	                case 'mouse':
-	                case 'pointer':
-	                    var id = oldEvent.pointerId || 0;
-	                    ev.eventCode == 3 ? delete pointers[id] : pointers[id] = oldEvent;
-	                    break;
-	                case 'touch':
-	                    POINTERS[ev.eventType] = pointers = oldEvent.touches;
-	                    break;
-	            }
-	
-	            if (pointer = pointerItem(pointers, 0)) {
-	                ev.clientX = pointer.clientX;
-	                ev.clientY = pointer.clientY;
-	            }
-	
-	            ev.button = which < 4 ? Math.max(0, which - 1) : button & 4 && 1 || button & 2; // left:0 middle:1 right:2
-	            ev.length = pointerLength(pointers);
-	        }
-	
-	        return ev;
-	    }
-	
-	    struct.prototype = {
-	        version: VERSION,
-	        constructor: struct,
-	        latestTime: 0,
-	        init: function (config) {
-	            var self = this,
-	                handler = this.handler = function (ev) {
-	                    self.handleEvent(ev);
-	                }
-	
-	            this.events = {};
-	            this.duration = isNaN(parseInt(config.duration)) ? 600 : parseInt(config.duration);
-	            this.direction = parseInt(config.direction) == 0 ? 0 : 1;
-	            this.current = parseInt(config.start) || 0;
-	            this.mouse = config.mouse == null ? true : !!config.mouse;
-	            this.mousewheel = !!config.mousewheel;
-	            this.interval = parseInt(config.interval) || 5000;
-	            this.playing = config.autoplay == null ? true : !!config.autoplay;
-	            this.arrowkey = !!config.arrowkey;
-	            this.fullsize = config.fullsize == null ? true : !!config.fullsize;
-	            this.align = config.align || 'center';
-	            this.pages = children(this.container);
-	            this.length = this.pages.length;
-	
-	            this.pageData = [];
-	
-	            addListener(this.container, STARTEVENT.join(" ") + " click" + (this.mousewheel ? " mousewheel DOMMouseScroll" : ""), handler);
-	            addListener(DOC, MOVEEVENT.join(" ") + (this.arrowkey ? " keydown" : ""), handler);
-	            addListener(ROOT, 'resize', handler);
-	
-	            each(this.pages, function (page) {
-	                self.pageData.push({
-	                    cssText: page.style.cssText || ''
-	                });
-	            });
-	            this.pageData.container = this.container.style.cssText || '';
-	
-	            this.on({
-	                before: function () {
-	                    clearTimeout(this.playTimer);
-	                },
-	                dragStart: function () {
-	                    clearTimeout(this.playTimer);
-	                    removeRange();
-	                },
-	                after: this.firePlay
-	            }).firePlay();
-	
-	            this.comment = document.createComment(' Powered by TouchSlider v' + this.version + '  https://github.com/qiqiboy/touchslider ');
-	            this.container.appendChild(this.comment);
-	
-	            this.resize();
-	        },
-	        resize: function () {
-	            var self = this,
-	                pst = getStyle(this.container, 'position'),
-	                css;
-	
-	            this.size = this.getSize(this.offsetParent = this.container[pst == 'absolute' || pst == 'fixed' ? 'offsetParent' : 'parentNode'] || DOC.body);
-	
-	            css = {
-	                float: 'left',
-	                display: 'inline'
-	            }
-	            each(this.pages, function (page) {
-	                if (self.fullsize) {
-	                    css[type] = self.size - self.getMarginSize(page) - self.getPaddingSize(page) - self.getBorderSize(page) + 'px';
-	                }
-	                if (type == 'height') {
-	                    css['clear'] = 'both';
-	                }
-	                setStyle(page, css);
-	            });
-	
-	            this.total = this.getSum(0, this.length);
-	
-	            css = {};
-	            if (pst == 'static') {
-	                css = {position: 'relative'};
-	            }
-	            css[transition] = 'none';
-	            css[type] = this.total + 'px';
-	            css[this.direction ? 'top' : 'left'] = this.getPos(this.current) + 'px';
-	            cancelFrame(this.timer);
-	            setStyle(this.container, css);
-	
-	            return this;
-	        },
-	        on: function (ev, callback) {
-	            var self = this;
-	            if (type(ev) == 'object') {
-	                each(ev, function (ev, callback) {
-	                    self.on(ev, callback);
-	                });
-	            } else {
-	                if (!this.events[ev]) {
-	                    this.events[ev] = [];
-	                }
-	                this.events[ev].push(callback);
-	            }
-	            return this;
-	        },
-	        fire: function (ev) {
-	            var self = this,
-	                args = slice.call(arguments, 1);
-	            each(this.events[ev] || [], function (func) {
-	                if (isFunction(func)) {
-	                    func.apply(self, args);
-	                }
-	            });
-	            return this;
-	        },
-	        isStatic: function () {
-	            return !this.timer && !this.drag;
-	        },
-	        prev: function () {
-	            return this.slide((this.current - 1 + this.length) % this.length);
-	        },
-	        next: function () {
-	            return this.slide((this.current + 1) % this.length);
-	        },
-	        play: function () {
-	            this.playing = true;
-	            return this.firePlay();
-	        },
-	        firePlay: function () {
-	            var self = this;
-	            if (this.playing) {
-	                this.playTimer = setTimeout(function () {
-	                    self.next();
-	                }, this.interval);
-	            }
-	            return this;
-	        },
-	        pause: function () {
-	            this.playing = false;
-	            clearTimeout(this.playTimer);
-	            return this;
-	        },
-	        slide: function (_index) {
-	            var self = this,
-	                dir = this.direction,
-	                stime = +new Date,
-	                duration = this.duration,
-	                current = this.current,
-	                index = Math.min(Math.max(0, _index), this.length - 1),
-	                curSize = this.getSum(index, index + 1),
-	                curPos = parseFloat(getStyle(this.container, dir ? 'top' : 'left')) || 0,
-	                type = dir ? 'top' : 'left',
-	                css = {}, tarPos;
-	
-	            tarPos = this.getPos(index);
-	            duration *= Math.min(1, Math.abs(tarPos - curPos) / curSize) || 10;
-	            this.current = index;
-	            this.latestTime = stime + duration;
-	            this.fire('before', current, index);
-	            this.end = function () {
-	                delete self.timer;
-	                self.fire('after', index, current);
-	            }
-	            if (transition) {
-	                this.timer = 1;
-	                css[transition] = type + ' ' + duration + 'ms ease';
-	                css[type] = tarPos + 'px';
-	                setStyle(this.container, css);
-	            } else {
-	                cancelFrame(this.timer);
-	                ani();
-	            }
-	
-	            function ani() {
-	                var offset = Math.min(duration, +new Date - stime),
-	                    s = EASE(offset, 0, 1, duration);
-	                var cp = (tarPos - curPos) * s + curPos;
-	                self.container.style[type] = cp + 'px';
-	                if (offset == duration) {
-	                    self.end();
-	                } else {
-	                    self.timer = nextFrame(ani);
-	                }
-	            }
-	        },
-	        handleEvent: function (oldEvent) {
-	            var ev = filterEvent(oldEvent),
-	                canDrag = ev.button < 1 && ev.length < 2 && (!this.pointerType || this.pointerType == ev.eventType) && (this.mouse || ev.pointerType != 'mouse');
-	
-	            switch (ev.eventCode) {
-	                case 2:
-	                    if (canDrag && this.rect) {
-	                        var index = this.current,
-	                            dir = this.direction,
-	                            rect = [ev.clientX, ev.clientY],
-	                            _rect = this.rect,
-	                            offset = rect[dir] - _rect[dir];
-	                        if (this.drag == null && _rect.toString() != rect.toString()) {
-	                            this.drag = Math.abs(offset) >= Math.abs(rect[1 - dir] - _rect[1 - dir]);
-	                            this.drag && this.fire('dragStart', ev);
-	                        }
-	                        if (this.drag) {
-	                            if (!this.pages[index + (offset > 0 ? -1 : 1)]) {
-	                                offset /= Math.abs(offset) / this.size + 2;
-	                            }
-	                            this.container.style[dir ? 'top' : 'left'] = this.startPos + offset + 'px';
-	                            this.fire('dragMove', ev);
-	                            this._offset = offset;
-	                            ev.preventDefault();
-	                        }
-	                    }
-	                    break;
-	
-	                case 1:
-	                case 3:
-	                    if (canDrag) {
-	                        var self = this,
-	                            index = this.current,
-	                            type = this.direction ? 'top' : 'left',
-	                            isDrag, offset, tm, nn, sub, curPos, tarPos, myWidth;
-	                        if (ev.length && (ev.eventCode == 1 || this.drag)) {
-	                            nn = ev.target.nodeName.toLowerCase();
-	                            clearTimeout(this.eventTimer);
-	                            if (!this.pointerType) {
-	                                this.pointerType = ev.eventType;
-	                            }
-	                            this.startPos = parseFloat(getStyle(this.container, type)) || 0;
-	                            if (transition) {
-	                                this.container.style[transition] = 'none';
-	                            } else if (this.timer) {
-	                                cancelFrame(this.timer);
-	                                delete this.timer;
-	                            }
-	                            this.rect = [ev.clientX, ev.clientY];
-	                            this.time = +new Date;
-	                            this.container.style[type] = this.startPos + 'px';
-	                            if (ev.eventType != 'touch' && (nn == 'a' || nn == 'img')) {
-	                                ev.preventDefault();
-	                            }
-	                        } else if (tm = this.time) {
-	                            offset = this._offset || 0;
-	                            isDrag = this.drag;
-	                            curPos = this.startPos + offset;
-	                            tarPos = this.getPos(index);
-	
-	                            each("rect drag time startPos _offset".split(" "), function (prop) {
-	                                delete self[prop];
-	                            });
-	
-	                            if (isDrag) {
-	                                sub = offset > 0 ? 1 : -1;
-	                                while (sub * (curPos - tarPos) > this.getOuterSize(this.pages[index]) / 2 && this.pages[index - sub]) {
-	                                    tarPos = this.getPos(index -= sub);
-	                                }
-	
-	                                if (Math.abs(offset) > 20 && +new Date - tm < 500) {
-	                                    index -= sub;
-	                                }
-	
-	                                this.fire('dragEnd', ev);
-	                                ev.preventDefault();
-	                            }
-	
-	                            if (curPos != tarPos) {
-	                                this.slide(index);
-	                            }
-	
-	                            this.eventTimer = setTimeout(function () {
-	                                delete self.pointerType;
-	                            }, 30);
-	                        }
-	                    }
-	                    break;
-	
-	                case 4:
-	                    if (this.timer) {
-	                        ev.preventDefault();
-	                    }
-	                    break;
-	
-	                case 5:
-	                    ev.preventDefault();
-	                    if (this.isStatic() && +new Date - this.latestTime > Math.max(1000 - this.duration, 0)) {
-	                        var wd = ev.wheelDelta || -ev.detail;
-	                        Math.abs(wd) >= 3 && this[wd > 0 ? 'prev' : 'next']();
-	                    }
-	                    break;
-	
-	                case 6:
-	                    var nn = ev.target.nodeName.toLowerCase();
-	                    if (this.isStatic() && nn != 'input' && nn != 'textarea' && nn != 'select') {
-	                        switch (ev.keyCode || ev.which) {
-	                            case 33:
-	                            case 37:
-	                            case 38:
-	                                this.prev();
-	                                break;
-	                            case 32:
-	                            case 34:
-	                            case 39:
-	                            case 40:
-	                                this.next();
-	                                break;
-	                            case 35:
-	                                this.slide(this.length - 1);
-	                                break;
-	                            case 36:
-	                                this.slide(0);
-	                                break;
-	                        }
-	                    }
-	                    break;
-	
-	                case 7:
-	                    this.resize();
-	                    break;
-	
-	                case 8:
-	                    if (oldEvent.propertyName == (this.direction ? 'top' : 'left')) {
-	                        this.container.style[transition] = 'none';
-	                        this.end();
-	                    }
-	                    break;
-	            }
-	        },
-	        getSum: function (from, to) {
-	            var sum = 0;
-	            while (from < to) {
-	                sum += this.getOuterSize(this.pages[from++], true);
-	            }
-	            return sum;
-	        },
-	        getPos: function (index) {
-	            var type = this.direction ? 'Top' : 'Left',
-	                myWidth = this.getOuterSize(this.pages[index], true),
-	                sum = this.getSum(0, index) + this['getMargin' + type + 'Size'](this.container) + this['getBorder' + type + 'Size'](this.container);
-	
-	            switch (this.align) {
-	                case 'top':
-	                case 'left':
-	                    return -sum;
-	                case 'bottom':
-	                case 'right':
-	                    return this.size - myWidth - sum;
-	                default:
-	                    return (this.size - myWidth) / 2 - sum;
-	            }
-	        },
-	        getOuterSize: function (elem, withMargin) {
-	            return elem[this.direction ? 'offsetHeight' : 'offsetWidth'] + (withMargin ? this.getMarginSize(elem) : 0);
-	        },
-	        getInnerSize: function (elem) {
-	            return this.getOuterSize(elem) - this.getBorderSize(elem);
-	        },
-	        getSize: function (elem) {
-	            return elem[this.direction ? 'offsetHeight' : 'offsetWidth'] - this.getPaddingSize(elem) - this.getBorderSize(elem);
-	        },
-	        destroy: function () {
-	            var pageData = this.pageData;
-	
-	            offListener(this.container, STARTEVENT.join(" ") + " click" + (this.mousewheel ? " mousewheel DOMMouseScroll" : ""), this.handler);
-	            offListener(DOC, MOVEEVENT.join(" ") + (this.arrowkey ? " keydown" : ""), this.handler);
-	            offListener(ROOT, 'resize', this.handler);
-	
-	            each(this.pages, function (page, index) {
-	                page.style.cssText = pageData[index].cssText;
-	            });
-	
-	            this.container.style.cssText = pageData.container;
-	            this.container.removeChild(this.comment);
-	            this.length = 0;
-	
-	            return this.pause();
-	        },
-	        refresh: function () {
-	            this.pages = children(this.container);
-	            this.length = this.pages.length;
-	            this.current = Math.max(Math.min(this.length - 1, this.current), 0);
-	            return this.resize();
-	        },
-	        append: function (elem, index) {
-	            if (null == index) {
-	                index = this.pages.length;
-	            }
-	            this.pageData.splice(index, 0, {
-	                cssText: elem.style.cssText || ''
-	            });
-	            this.container.insertBefore(elem, this.pages[index] || null);
-	
-	            return this.refresh();
-	        },
-	        prepend: function (elem) {
-	            return this.append(elem, 0);
-	        },
-	        insertBefore: function (elem, index) {
-	            return this.append(elem, index - 1);
-	        },
-	        insertAfter: function (elem, index) {
-	            return this.append(elem, index + 1);
-	        },
-	        remove: function (index) {
-	            this.container.removeChild(this.pages[index]);
-	            this.pageData.splice(index, 1);
-	
-	            return this.refresh();
-	        }
-	    }
-	
-	
-	    each("margin padding border".split(" "), function (type) {
-	        each("Top Left Right Bottom".split(" "), function (dir) {
-	            var prop = type + dir;
-	            struct.prototype[camelCase('get-' + prop) + 'Size'] = function (elem) {
-	                return parseFloat(getStyle(elem, prop + (type == 'border' ? 'Width' : ''))) || 0;
-	            }
-	        });
-	        struct.prototype[camelCase('get-' + type) + 'Size'] = function (elem) {
-	            return this[camelCase('get-' + type) + (this.direction ? 'Top' : 'Left') + 'Size'](elem) + this[camelCase('get-' + type) + (this.direction ? 'Bottom' : 'Right') + 'Size'](elem);
-	        }
-	    });
-	
-	    ROOT.TouchSlider = struct;
-	    module.exports = struct;
-	})(window, function (wrap, config) {
-	    if (!(this instanceof arguments.callee)) {
-	        return new arguments.callee(wrap, config);
-	    }
-	
-	    this.container = typeof wrap == 'string' ? document.getElementById(wrap) : wrap;
-	    this.init(config || {});
-	});
-
-/***/ },
+/* 9 */,
 /* 10 */
 /***/ function(module, exports) {
 
@@ -3878,44 +3064,7 @@
 	})(Zepto);
 
 /***/ },
-/* 11 */
-/***/ function(module, exports) {
-
-	/*------------------------------地点输入提示功能-----------------------------------*/
-	//百度地图API功能
-	function G(id) {
-	    return document.getElementById(id);
-	}
-	var ac = new BMap.Autocomplete({
-	    "input": "site"
-	});
-	ac.setLocation("上海");
-	ac.addEventListener("onhightlight", function (e) {
-	    var str = "";
-	    var _value = e.fromitem.value;
-	    var value = "";
-	    if (e.fromitem.index > -1) {
-	        value = _value.province + _value.city + _value.district + _value.street + _value.business;
-	    }
-	    str = "FromItem<br/>index=" + e.fromitem.index + "<br/>value=" + value;
-	    value = "";
-	    if (e.toitem.index > -1) {
-	        _value = e.toitem.value;
-	        value = _value.province + _value.city + _value.district + _value.street + _value.business;
-	    }
-	    str += "<br/>ToItem<br/>index=" + e.toitem.index + "<br/>value=" + value;
-	    G("searchResultPanel").innerHTML = str;
-	});
-	var myValue;
-	ac.addEventListener("onconfirm", function (e) {
-	    var _value = e.item.value;
-	    myValue = _value.province + _value.city + _value.district + _value.street + _value.business;
-	    G("searchResultPanel").innerHTML = "onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
-	});
-	
-	module.exports = ac;
-
-/***/ },
+/* 11 */,
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -6524,6 +5673,42 @@
 	autoTextarea(eventTitle);
 
 
+/***/ },
+/* 21 */,
+/* 22 */,
+/* 23 */,
+/* 24 */,
+/* 25 */,
+/* 26 */,
+/* 27 */,
+/* 28 */,
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */,
+/* 48 */,
+/* 49 */,
+/* 50 */,
+/* 51 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
 /***/ }
 /******/ ]);
-//# sourceMappingURL=addEvent.js.map
+//# sourceMappingURL=remind.js.map
