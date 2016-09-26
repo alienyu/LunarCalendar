@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>添加提醒</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="x5-orientation" content="portrait">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link href="/wx/css/remind.css?c573a6eee8e6dc7fecbc" rel="stylesheet"></head>
+<body>
+<div class="eventCon fs14">
+    <div class="topTips">
+        <div class="tipsCon"></div>
+        <div class="showAll">
+            <span></span>
+        </div>
+    </div>
+    <div class="item eventTitle">
+        <textarea class="eventName" id="eventTitle" placeholder="输入标题" rows="1"></textarea>
+    </div>
+    <div class="item time">
+        <div class="icon">
+            <img src="/wx/./img/b7b405cb4c40040418f5e4a295d8c5c5.png" alt="">
+        </div>
+        <div class="itemCon">
+            <div class="startTime">
+                <span class="timeText">开始</span>
+                <span class="startCon timeCon">2016年9月20日 星期二 13:00</span>
+                <div class="timeIconCon">
+                    <span class="timeIcon"></span>
+                </div>
+            </div>
+            <input type="text" id="startTime">
+            <div class="endTime">
+                <span class="timeText">结束</span>
+                <span class="endCon timeCon">2016年9月20日 星期二 13:00</span>
+            </div>
+            <input type="text" id="endTime">
+        </div>
+    </div>
+    <div class="item repetition">
+        <div class="icon">
+            <img src="/wx/./img/362553738984133b454927b8986760dd.png" alt="">
+        </div>
+        <div class="itemCon">
+            <select name="select" class="select fs14" id="select">
+                <option value="0">不重复</option>
+                <option value="1">每天</option>
+                <option value="2">每周</option>
+                <option value="3">每工作日</option>
+                <option value="4">每月</option>
+                <option value="5">每年</option>
+            </select>
+        </div>
+    </div>
+</div>
+<a href="javascript:;" class="saveBtn cff">保存活动</a>
+<div class="delete fs12">删除此活动</div>
+
+<div id="orientLayer" class="mod-orient-layer">
+    <div class="mod-orient-layer__content"><i class="icon mod-orient-layer__icon-orient"></i>
+        <div class="mod-orient-layer__desc">为了更好的体验，请使用竖屏浏览</div>
+    </div>
+</div>
+<script type="text/x-address" id="addressListTemplate">
+    <div class="item">
+                <div class="icon">
+                    <img src="/wx/./img/695697cdc21cc1eb54a94086171a63e8.png" alt="">
+                </div>
+                <div class="itemCon">
+                    <span class="name">{{name}}</span>
+                    <span class="address fs12 c33">{{address}}</span>
+                </div>
+            </div>
+</script>
+<script type="text/javascript" src="/wx/js/remind.js?c573a6eee8e6dc7fecbc"></script></body>
+</html>

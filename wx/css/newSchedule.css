@@ -26,42 +26,6 @@ body section {
   margin-top: 30px;
   padding-top: 10px;
 }
-body section .month_01 {
-  background: url(/wx/./img/c8d9fad0d67296b3bff54038624dc097.jpg);
-}
-body section .month_02 {
-  background: url(/wx/./img/4f6f7c718af7eadeea57f64194fbd833.jpg);
-}
-body section .month_03 {
-  background: url(/wx/./img/74eb501b2b7178e788550b021e36e9bd.jpg);
-}
-body section .month_04 {
-  background: url(/wx/./img/0b3a43262435276c6ab0ef317a975423.jpg);
-}
-body section .month_05 {
-  background: url(/wx/./img/194f659873ea71a047016eccdc82b213.jpg);
-}
-body section .month_06 {
-  background: url(/wx/./img/9a6316a4fca2ce24f6de609e6e75779a.jpg);
-}
-body section .month_07 {
-  background: url(/wx/./img/a3d7ca2afc6f5609353c078655f2198c.jpg);
-}
-body section .month_08 {
-  background: url(/wx/./img/91ae0ccd6aa1ca59956e0db273e9dcda.jpg);
-}
-body section .month_09 {
-  background: url(/wx/./img/57c3d99c73080b8d54a7e77225e24f26.jpg);
-}
-body section .month_10 {
-  background: url(/wx/./img/f2029959897f7a220f17052f2542f5d5.jpg);
-}
-body section .month_11 {
-  background: url(/wx/./img/47ec1280f0c556e3b13c13e9e3003238.jpg);
-}
-body section .month_12 {
-  background: url(/wx/./img/1753c020162473a84c058b6840b8313b.jpg);
-}
 body section .record {
   width: 100%;
   margin-bottom: 10px;
@@ -78,6 +42,9 @@ body section .record .date {
 }
 body section .record .date.out_of_date {
   color: #999;
+}
+body section .record .date.invisibile {
+  visibility: hidden;
 }
 body section .record .date .day {
   font-size: 30px;
@@ -176,64 +143,128 @@ body section .month_divide .text {
   font-weight: bold;
   font-size: 20px;
 }
-.dropload-up,
-.dropload-down {
-  position: relative;
-  height: 0;
-  overflow: hidden;
-  font-size: 12px;
-  /* 开启硬件加速 */
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-}
-.dropload-down {
-  height: 50px;
-}
-.dropload-refresh,
-.dropload-update,
-.dropload-load,
-.dropload-noData {
-  height: 50px;
-  line-height: 50px;
+body .add_btn {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  box-shadow: 0px 1px 10px #888888;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #52CECE;
   text-align: center;
+  line-height: 70px;
+  font-size: 40px;
+  color: #fff;
+  z-index: 10004;
+  transform: rotate(0deg);
+  transition: 0.5s;
 }
-.dropload-load .loading {
-  display: inline-block;
-  height: 15px;
-  width: 15px;
-  border-radius: 100%;
-  margin: 6px;
-  border: 2px solid #666;
-  border-bottom-color: transparent;
-  vertical-align: middle;
-  -webkit-animation: rotate 0.75s linear infinite;
-  animation: rotate 0.75s linear infinite;
+body .add_btn.open {
+  transform: rotate(45deg);
+  transition: 0.5s;
+  background-color: #8F8F8F;
 }
-@-webkit-keyframes rotate {
-  0% {
-    -webkit-transform: rotate(0deg);
+body .btn_detail {
+  position: fixed;
+  right: 25px;
+  z-index: 10003;
+  opacity: 0;
+}
+body .btn_detail.move_up {
+  -webkit-animation-name: move_up 0.5s;
+  animation: move_up 0.5s;
+  opacity: 1;
+  bottom: 90px;
+}
+body .btn_detail.move_down {
+  -webkit-animation-name: move_down 0.5s;
+  animation: move_down 0.5s;
+  opacity: 0;
+  bottom: 20px;
+}
+body .btn_detail div {
+  margin-bottom: 20px;
+  height: 60px;
+}
+body .btn_detail div span {
+  float: left;
+  border: 1px solid #e4e4e4;
+  background-color: #fff;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  padding: 0px 3px;
+  box-shadow: 0px 1px 10px #888888;
+  margin-right: 30px;
+  margin-top: 18px;
+}
+body .btn_detail div a {
+  float: left;
+  width: 60px;
+  height: 60px;
+  background-color: #52CECE;
+  border-radius: 50%;
+  box-shadow: 0px 1px 10px #888888;
+}
+body .btn_detail div a.activity {
+  background: url(/wx/./img/263ceb09fca44ba737d5cd488fd8c434.png) no-repeat #52CECE 13px 13px;
+  background-size: 55%;
+}
+body .btn_detail div a.remind {
+  background: url(/wx/./img/3b21aa79e1dc9b693cde2da65da1e82c.png) no-repeat #52CECE 13px 13px;
+  background-size: 55%;
+}
+body .select_mask {
+  position: fixed;
+  display: none;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  opacity: 0.9;
+  z-index: 10002;
+}
+@-webkit-keyframes move_up {
+  from {
+    opacity: 0;
+    bottom: 20px;
   }
-  50% {
-    -webkit-transform: rotate(180deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
+  to {
+    opacity: 1;
+    bottom: 90px;
   }
 }
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
+@keyframes move_up {
+  from {
+    opacity: 0;
+    bottom: 20px;
   }
-  50% {
-    transform: rotate(180deg);
-  }
-  100% {
-    transform: rotate(360deg);
+  to {
+    opacity: 1;
+    bottom: 90px;
   }
 }
-.dropload-up,
-.dropload-down {
-  color: #000;
+@-webkit-keyframes move_down {
+  from {
+    opacity: 1;
+    bottom: 90px;
+  }
+  to {
+    opacity: 0;
+    bottom: 20px;
+  }
+}
+@keyframes move_down {
+  from {
+    opacity: 1;
+    bottom: 90px;
+  }
+  to {
+    opacity: 0;
+    bottom: 20px;
+  }
 }
 .mask {
   position: absolute;
@@ -243,7 +274,7 @@ body section .month_divide .text {
   background: #000;
   opacity: 0.6;
   filter: alpha(opacity=60);
-  z-index: 10000;
+  z-index: 11000;
   width: 100%;
   height: 100%;
   display: none;

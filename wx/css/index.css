@@ -168,6 +168,9 @@ select:focus {
 .cgreen {
   color: #00cc00;
 }
+.c33 {
+  color: #333;
+}
 .opa2 {
   opacity: 0.2;
 }
@@ -408,6 +411,7 @@ span.ll-logo-3 {
   left: 0px;
   background-color: rgba(0, 0, 0, 0.5);
   display: none;
+  z-index: 999;
 }
 .shareShadow .shadowImg {
   position: relative;
