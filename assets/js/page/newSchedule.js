@@ -124,6 +124,7 @@ var fuc = {
         var html = _.template(tmp);
         if(data.type == "init") {
             $("#container").append(html({data: data}));
+            $(".today_has_date").length > 0 && this.renderCurrentTimeLine();
             $(document.body).scrollTop(0);
         } else {
             if(this.config.direction == "up") {
@@ -149,6 +150,22 @@ var fuc = {
         this.renderBMP();
         mask.close();
         this.calculateMonthPos();
+    },
+    renderCurrentTimeLine: function() {
+        var dom = $(".today_has_date").eq(0),
+            times = 0;
+        $(".today_has_date").each(function(i,e) {
+            var time = $(e).data("date") + " " + $(e).find(".time").text().split("-")[0];
+            if(Dom.compareTimeDate(time) == "below") {
+                dom = $(e);
+                times ++;
+            }
+        });
+        if(times == 0) {
+            $(dom).before($('<div id="today" class="current_time_line"></div>'));
+        } else {
+            $(dom).after($('<div id="today" class="current_time_line"></div>'));
+        }
     },
     calculateMonthPos: function() {
         var that = this;
@@ -193,7 +210,8 @@ var fuc = {
 
         //go today
         $(".back_today").on("tap", function(e) {
-            var todayPos = $("#today").position().top - 30;
+            var dom = $("#today").prev().hasClass("record") ? $("#today").prev() : $("#today")
+            var todayPos = dom.position().top - 30;
             $(document.body).scrollTo({toTo: todayPos});
         });
 

@@ -200,7 +200,7 @@ var Dom = {
             toMonth = parseInt(time.split(" ")[0].split("-")[1], 10),
             toDay = parseInt(time.split(" ")[0].split("-")[2], 10),
             toHour = time.split(" ")[1] ? parseInt(time.split(" ")[1].split(":")[0], 10) : 0,
-            toMin = time.split(" ")[1] ? parseIntc(time.split(" ")[1].split(":")[1], 10) : 0;
+            toMin = time.split(" ")[1] ? parseInt(time.split(" ")[1].split(":")[1], 10) : 0;
         //比较
         if(toYear > curYear) {
             return "over";
