@@ -62,7 +62,7 @@
                 <img src="../../assets/imgs/page/activity/ic_place.png" alt="">
             </div>
             <div class="itemCon">
-                <div class="site ccc">添加地点</div>
+                <div class="siteText ccc">添加地点</div>
                 <!--<textarea name="site" id="site" class="fs26" rows="1" placeholder="添加地点"></textarea>-->
             </div>
         </div>
@@ -96,7 +96,10 @@
                 <img src="../../assets/imgs/page/activity/ic_sort.png" alt="">
             </div>
             <div class="itemCon">
-                <div class="remark ccc">添加备注</div>
+                <div class="remarkCon">
+                    <div class="remarkText ccc">添加备注添加备注添加备注添加备注添加备注添加备注添加备注</div>
+                    <div class="remarkImgs"></div>
+                </div>
                 <!--<textarea name="remarks" id="remarks" class="fs26" rows="1" placeholder="添加备注"></textarea>-->
             </div>
         </div>
@@ -117,26 +120,25 @@
     <a href="javascript:;" class="c00" data-template="{{templateId}}" data-tag="{{tagId}}">{{tagName}}</a>
 </script>
 <!--点击完成，若开始时间在结束时间之后，则弹出提示框-->
-<div class="weui_dialog_alert" id="dialog2" style="display: none;">
-    <div class="weui_mask"></div>
-    <div class="weui_dialog">
-        <div class="weui_dialog_hd"><strong class="weui_dialog_title">温馨提示</strong></div>
-        <div class="weui_dialog_bd">结束时间不能在开始时间之前</div>
-        <div class="weui_dialog_ft">
-            <a href="javascript:;" class="weui_btn_dialog primary">确定</a>
+<div id="dialog2" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__bd">结束时间不能在开始时间之前</div>
+        <div class="weui-dialog__ft">
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
         </div>
     </div>
 </div>
-<div class="weui_dialog_confirm" id="dialog1" style="display: none;">
-    <div class="weui_mask"></div>
-    <div class="weui_dialog">
-        <div class="weui_dialog_hd">
-            <strong class="weui_dialog_title">温馨提示</strong>
+<div  id="dialog1" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__hd">
+            <strong class="weui-dialog__title">温馨提示</strong>
         </div>
-        <div class="weui_dialog_bd">确认保存事件并分享给好友吗？</div>
-        <div class="weui_dialog_ft">
-            <a href="javascript:;" class="weui_btn_dialog default">取消</a>
-            <a href="javascript:;" class="weui_btn_dialog primary confirm">确定</a>
+        <div class="weui_dialog__bd">确认保存事件并分享给好友吗？</div>
+        <div class="weui_dialog__ft">
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default default">取消</a>
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary confirm">确定</a>
         </div>
     </div>
 </div>
@@ -220,18 +222,57 @@
         <div class="textCon">
             <textarea name="" id="remarkText" rows="6"></textarea>
         </div>
-        <div class="remarkImg">
-            <div class="weui_cell">
-                <div class="weui_cell_bd weui_cell_primary">
-                    <div class="weui_uploader">
-                        <ul class="weui_uploader_files"></ul>
-                        <div class="weui_uploader_input_wrp">
-                            <input type="file" class="weui_uploader_input" accept="image/*" multiple>
+        <div class="remarkImg ">
+            <div class="page__bd">
+                <div class="weui-gallery" id="gallery">
+                    <span class="weui-gallery__img" id="galleryImg"></span>
+                    <div class="weui-gallery__opr">
+                        <a href="javascript:" class="weui-gallery__del">
+                            <i class="weui-icon-delete weui-icon_gallery-delete"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="weui-cells weui-cells_form">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <div class="weui-uploader">
+                                <div class="weui-uploader__bd">
+                                    <ul class="weui-uploader__files" id="uploaderFiles"></ul>
+                                    <div class="weui-uploader__input-box">
+                                        <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
+    </div>
+</div>
+<!--数据加载时的loading-->
+<div id="loadingToast" class="weui_loading_toast" style="display:none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <div class="ll-loading" style="top:40%;">
+            <div class="ll-load-inner">
+                <div class="ll-load-container">
+                    <div class="ll-load-scale-multiple la-2x">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div><!-- end la-2x -->
+                </div><!-- end ll-load-container -->
+            </div><!-- end ll-load-inner -->
+            <div class="ll-load-logo">
+                <span class="ll-logo-1"></span>
+                <span class="ll-logo-2"></span>
+                <span class="ll-logo-3"></span>
+            </div><!-- end ll-loading -->
+        </div><!-- end ll-loading -->
+        <p class="weui-toast_content">数据加载中</p>
     </div>
 </div>
 <!--横屏-->

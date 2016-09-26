@@ -111,5 +111,6 @@ initConfig([
     "schedule",
     "remind",
     "activity",
-    "newSchedule"
+    "newSchedule",
+    "newShowEvent"
 ])

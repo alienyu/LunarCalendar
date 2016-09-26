@@ -218,6 +218,51 @@ var Ajax = {
             }
         })
     },
+    //获取天气
+    getWeather:function(date){
+        $.get(
+            "http://www.li-li.cn/llwx/weather/get",
+            {"date":date},
+            function(data) {
+                if(data.code ==0){
+                    if(data.data){
+                        var weatherList = data.data;
+                        var html = "";
+                        if(weatherList.qlty){
+                            html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
+                        }else{
+                            html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                        }
+                        $('.weather').append(html);
+                    }else{
+                        $('.weather').css("display","none");
+                    }
+                }else{
+                    $('.weather').css("display","none");
+                }
+            }
+        )
+    },
+    //获取私人运势
+    getPersonalFortune:function(dateTime){
+        $.get("http://www.li-li.cn/llwx/fortune/get", {"dateTime": dateTime + " 08:00:00"}, function (data) {
+            if (data.code == 0) {
+                var list = data.data;
+                if (list.personal) {
+                    var html = "";
+                    if (list.personal.type3) {
+                        var type = data.personal.type3.replace(/\,/g, "&nbsp;&nbsp;");
+                        html = "<span>" + type + "</span>";
+                        $('.suitable .itemCon').append(html);
+                    } else {
+                        $('.suitable .itemCon').html("诸事不宜");
+                    }
+                }else{
+                    $('.eventContainer .suitable').css("display","none");
+                }
+            }
+        });
+    },
     //添加事件页面数据提交
     eventAdd: function(name,tagName, startTime, endTime, tipType, tipTime, repeatType, location, remark) {
         $.ajax({
