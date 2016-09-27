@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link href="/wx/css/newSchedule.css?6755a5bfeb9f0f7a3559" rel="stylesheet"></head>
+<link href="/wx/css/newSchedule.css?ed68701a0fe328ccf134" rel="stylesheet"></head>
 <body>
     <header>
         <div class="current_month">2016年9月</div>
@@ -139,7 +139,7 @@
                                 </div>
                             <% } %>
                             <!--渲染具体记录-->
-                            <div class="record<%= (j == 0 && dayData.firstEventDayOfMonth) ? ' first_day' + ' headDate_' + parseInt(dayData.date.split('-')[0], 10) + '_' + parseInt(dayData.date.split('-')[1], 10) : '' %><%= (j== timeData.length -1) ? ' day_end' : '' %>" data-date="<%= dayData.date %>">
+                            <div class="record<%= (j == 0 && dayData.firstEventDayOfMonth) ? ' first_day' + ' headDate_' + parseInt(dayData.date.split('-')[0], 10) + '_' + parseInt(dayData.date.split('-')[1], 10) : '' %><%= (j== timeData.length -1) ? ' day_end' : '' %><%= i==0 ? ' today_has_date' : '' %>" data-date="<%= dayData.date %>">
                                 <div class="date<%= j != 0 ? ' invisibile' : '' %>">
                                     <div class="day"><%= dayData.detailDate.day %></div>
                                     <div class="weekday"><%= dayData.detailDate.weekDay %></div>
@@ -166,9 +166,6 @@
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
-                            <% if(j==0) { %>
-                                <div id="today" class="current_time_line"></div>
-                            <% } %>
                         <% } %>
                     <% } %>
                 <% } %>
@@ -222,4 +219,4 @@
         <% } %>
     </script>
     <script src="http://api.map.baidu.com/api?v=2.0&ak=Nv4xifhhDjKpB1DP6uDwd3cNbHeH2PaV"></script>
-<script type="text/javascript" src="/wx/js/newSchedule.js?6755a5bfeb9f0f7a3559"></script></body></html>
+<script type="text/javascript" src="/wx/js/newSchedule.js?ed68701a0fe328ccf134"></script></body></html>

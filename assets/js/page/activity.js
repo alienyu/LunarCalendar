@@ -70,7 +70,7 @@ var fuc = {
 
     rem: function() {
         fastClick.attach(document.body);
-        (function($,undefined){"use strict";var pluginName='scojs_message';$[pluginName]=function(message,type){clearTimeout($[pluginName].timeout);var $selector=$('#'+$[pluginName].options.id);if(!$selector.length){$selector=$('<div/>',{id:$[pluginName].options.id}).appendTo($[pluginName].options.appendTo)}$selector.html(message);if(type===undefined||type==$[pluginName].TYPE_ERROR){$selector.removeClass($[pluginName].options.okClass).addClass($[pluginName].options.errClass)}else if(type==$[pluginName].TYPE_OK){$selector.removeClass($[pluginName].options.errClass).addClass($[pluginName].options.okClass)}$selector.slideDown('fast',function(){$[pluginName].timeout=setTimeout(function(){$selector.slideUp('fast')},$[pluginName].options.delay)})};$.extend($[pluginName],{options:{id:'page_message',okClass:'page_mess_ok',errClass:'page_mess_error',delay:500,appendTo:'body'},TYPE_ERROR:1,TYPE_OK:2})})($);
+        //(function($,undefined){"use strict";var pluginName='scojs_message';$[pluginName]=function(message,type){clearTimeout($[pluginName].timeout);var $selector=$('#'+$[pluginName].options.id);if(!$selector.length){$selector=$('<div/>',{id:$[pluginName].options.id}).appendTo($[pluginName].options.appendTo)}$selector.html(message);if(type===undefined||type==$[pluginName].TYPE_ERROR){$selector.removeClass($[pluginName].options.okClass).addClass($[pluginName].options.errClass)}else if(type==$[pluginName].TYPE_OK){$selector.removeClass($[pluginName].options.errClass).addClass($[pluginName].options.okClass)}$selector.slideDown('fast',function(){$[pluginName].timeout=setTimeout(function(){$selector.slideUp('fast')},$[pluginName].options.delay)})};$.extend($[pluginName],{options:{id:'page_message',okClass:'page_mess_ok',errClass:'page_mess_error',delay:500,appendTo:'body'},TYPE_ERROR:1,TYPE_OK:2})})($);
     },
 
     selectTimes: function(obj1, obj2) {
@@ -195,7 +195,8 @@ var fuc = {
 
     /*----------------获取用户选择快捷标签对应的主题-------------------*/
     getTemplate:function(templateId){
-        if(tamplateId){
+        var that = this;
+        if(templateId != null){
             $.get(
                 "http://www.li-li.cn/llwx/template/detail",
                 {
@@ -205,15 +206,18 @@ var fuc = {
                     if(data.code == 0){
                         var list = data.data;
                         if(list.color){//若对应的是背景颜色
+                            that.config.bgColor = list.color;
                             $('.colorShow').css("background",list.color);
-                            $('.colorText').html(that.config.map.list.color);
+                            $('.colorText').html(that.config.map. list.color);
                         }else if(list.theme.themeId){//若对应的是背景图片
+                            that.config.bgColor = "";
                             that.config.themeId = list.theme.themeId;
                             that.config.themeName = list.theme.themeName;
                             that.config.themeColor = list.theme.themeColor;
                             $('.colorShow').css("background",that.config.themeColor);
                             $('.colorText').html(that.config.themeName);
                         }
+                        that.colorInit();
                     }
                 }
             )
@@ -247,8 +251,8 @@ var fuc = {
             }else{//数据加载失败显示错误提示框
                 var error = data.msg;
                 $('#dialog2 .weui_dialog_bd').html(error);
-                $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
-                    $('#dialog2').off('click').hide();
+                $('#dialog2').fadeIn().on('click', '.weui_btn_dialog', function () {
+                    $('#dialog2').off('click').fadeOut();
                 });
             }
         })
@@ -440,7 +444,7 @@ var fuc = {
         )
     },
 
-    /*-----------------选择颜色--------------------*/
+    /*-----------------选择颜色或图片后的显示--------------------*/
     selectColor:function(){
         var that = this;
         var items = $('.colorShadow .items'),
@@ -460,6 +464,7 @@ var fuc = {
                 $('.colorShow').css("background",that.config.bgColor);
                 $('.colorText').html(that.config.map[that.config.bgColor]);
             }else{
+                that.config.bgColor = "";
                 that.config.themeId = $(this).attr("data-id");
                 that.config.themeColor = $(this).attr("data-color");
                 that.config.themeName = $(this).attr("data-name");
@@ -579,7 +584,11 @@ var fuc = {
             }
             if (that.config.eventId) {
                 if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
-                    $.scojs_message('缺少事件名称', $.scojs_message.TYPE_ERROR);
+                    // todo 提醒用户设置名称
+                    $('.titleNone').slideDown();
+                    setTimeout(function(){
+                        $('.titleNone').slideUp();
+                    },300);
                 }else{
                     Ajax.eventModify(that.config.eventId,name,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,'longitude','latitude', that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.themeId);
                     //todo 弹出蒙层
@@ -587,16 +596,20 @@ var fuc = {
                 }
             }else{
                 if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
-                    $.scojs_message('缺少事件名称', $.scojs_message.TYPE_ERROR);
+                    // todo 提醒用户设置名称
+                    $('.titleNone').slideDown();
+                    setTimeout(function(){
+                        $('.titleNone').slideUp();
+                    },300);
                 }else{
-                    $('#dialog1').show();
+                    $('#dialog1').fadeIn();
                     $('#dialog1 .confirm').on("tap", function () {//点击确定
                         Ajax.eventAdd2(name,1,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,'longitude','latitude', that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.themeId);
                         Ajax.getUserInformation2();
                         wx.wxConfig(2, that.config.nickName + " 邀请您参加 「" + name+"」", $('.startTime').html(),
                             "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + that.config.eventId));
                         sessionStorage.setItem(that.config.eventId, [name, that.config.tagName,startTime, endTime, tipType, repeatType, remark, location, tipTime]);
-                        $('#dialog1').hide();
+                        $('#dialog1').fadeOut();
                         //todo 弹出蒙层
                         if(!$('.qrcodeImg').html()){
                             that.createQrcode(that.config.eventId);
@@ -604,7 +617,7 @@ var fuc = {
                         that.shareShadow(); //显示分享提示弹出层，点击后隐藏
                     });
                     $('.default').on("tap", function () {
-                        $('#dialog1').hide();
+                        $('#dialog1').fadeOut();
                     });
                 }
             }
@@ -612,8 +625,7 @@ var fuc = {
 
         /*------------点击保存--------------*/
         $('.saveBtn').click(function(){
-
-            $('#loadingToast').show();//显示loading
+            $('#loadingToast').fadeIn();//显示loading
             var name = $('#eventTitle').val().replace(/\s+/, ""),
                 startTime = $('.startCon').attr("id"),
                 endTime = $('.endCon').attr("id"),
@@ -625,8 +637,12 @@ var fuc = {
                 tipTime =$('.remindTime').attr("id");
             }
             if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
-                $.scojs_message('缺少事件名称', $.scojs_message.TYPE_ERROR);
                 $('#loadingToast').fadeOut();
+                // todo  提示用户设置名称
+                $('.titleNone').slideDown();
+                setTimeout(function(){
+                    $('.titleNone').slideUp();
+                },300);
             }else{
                 if(that.config.eventId){//若事件已保存，则调用修改事件
                     Ajax.eventModify(that.config.eventId,name,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,121.25,23,that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.themeId);
@@ -638,16 +654,16 @@ var fuc = {
         });
         /*---------------点击删除---------------*/
         $('.delete').click(function(){
-            $('#dialog1').show();
+            $('#dialog1').fadeIn();
             $('#confirm').on('tap', function () {//点击确定按钮
-                $('#dialog1').hide();
-                $('#loadingToast').show();//显示loading
+                $('#dialog1').fadeOut();
+                $('#loadingToast').fadeIn();//显示loading
                 $.get("http://www.li-li.cn/llwx/event/del", {"eventId": that.config.eventId}, function (data) {
                     if (data.code == 0) {//删除成功
                         $('#loadingToast').fadeOut();//隐藏loading
-                        $('#toast').show();
+                        $('#toast').fadeIn();
                         setTimeout(function () {
-                            $('#toast').hide();
+                            $('#toast').fadeOut();
                             if(document.referrer==""){
                                 WeixinJSBridge.call("closeWindow");
                             }else{
@@ -658,14 +674,14 @@ var fuc = {
                         $('#loadingToast').fadeOut();//隐藏loading
                         var error = data.msg;
                         $('#dialog2 .weui_dialog_bd').html(error);
-                        $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
-                            $('#dialog2').off('click').hide();
+                        $('#dialog2').fadeIn().on('click', '.weui_btn_dialog', function () {
+                            $('#dialog2').off('click').fadeOut();
                         });
                     }
                 })
             });
             $('#cancel').on('tap', function () {//点击取消按钮
-                $('#dialog1').hide();
+                $('#dialog1').fadeOut();
             });
         })
     },

@@ -1,4 +1,5 @@
 @import "../common/common.less";
+@import "../common/weui1.0.0.less";
 
 body{
   color: #000;
@@ -24,6 +25,10 @@ body{
   box-flex:1;
   position: relative;
   line-height:60px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding-right: 10px;
 }
 .icon img{
   height:60%;
@@ -89,7 +94,62 @@ body{
   height:auto;
   overflow: hidden;
 }
-
+.peopleList{
+  width:100%;
+  min-height:50px;
+  overflow: hidden;
+}
+.peopleItem{
+  width:50%;
+  height:50px;
+  margin-bottom: 5px;
+  line-height: 50px;
+  overflow: hidden;
+}
+.peopleItem img{
+  height:40px;
+  width:40px;
+  border-radius: 100%;
+  -webkit-border-radius: 100%;
+  margin-right: 5px;
+  margin-top: 5px;
+}
+.ownerNickName{
+  height:50px;
+}
+.nickName{
+  height:25px;
+  line-height:26px;
+  overflow: hidden;
+}
+.ownerNickName .ownerPosition{
+  line-height: 20px;
+}
+.peopleItem .nickNames{
+  height:100%;
+  line-height: 50px;
+}
+/*-----------remark-----------*/
+.remark .itemCon{
+  padding-top: 10px;
+}
+.remark .itemCon .remarkText{
+  height:auto;
+  line-height: 30px;
+}
+.remark .itemCon .remarkImgs{
+  width:100%;
+  height:auto;
+  overflow: hidden;
+}
+.remarkImgs img{
+  display: block;
+  float: left;
+  width:30%;
+  height:auto;
+  margin-right: 2%;
+  margin-bottom: 2%;
+}
 /*------------bottom-----------*/
 .bottom{
   width:100%;
@@ -117,7 +177,7 @@ body{
   height:100%;
 }
 
-/*-------------事件二维码----------------*/
+/*-------------分享遮罩层，事件二维码----------------*/
 .shareShadow,.wxQrcode{
   position: fixed;
   top:0px;
@@ -126,6 +186,28 @@ body{
   height:100%;
   background-color: rgba(0,0,0,0.5);
   display: none;
+}
+.shareShadow .shadowImg{
+  height:auto;
+  width:80%;
+  margin: 0 auto;
+  //background: #fff;
+  margin-top: 20%;
+  text-align: center;
+}
+.shareShadow .shadowImg img{
+  position: static;
+  width:60%;
+  height:auto;
+}
+.shareShadow .shareImgClose{
+  display: block;
+  width:80%;
+  height:36px;
+  margin: 10px auto;
+  background: #66cccc;
+  line-height: 36px;
+  text-align: center;
 }
 .wxQrcode .wxQrcodeClose{
   display: block;

@@ -3,7 +3,9 @@ var pageLoad = require("../common/pageLoad.js");
 var transCalendar = require("../vendor/LunarCalendar/transCalendar.js");
 var wx = require("../vendor/weChat/wxInit.js");
 var fuc = {
-    config: {},
+    config: {
+        today:""
+    },
     init: function() {
         pageLoad({backgroundColor: "#12101A"});
         this.renderPage();
@@ -44,13 +46,14 @@ var fuc = {
             return (i < 10 ? '0' : '') + i
         };
         var years = d.getFullYear();
-        var months = d.getMonth() + 1;
+        var months = tf(d.getMonth() + 1);
         var days = tf(d.getDate());
         var weeks = d.getDay();
         $('.day').html(days);
         $('.month').html(months + "月");
         $('.lunarCalendar').html(nl);
         var dateTime = years + "-" + months + "-" + days;
+        that.config.today = years + "-" + months + "-" + days;
 //        console.log(dateTime);
         switch (weeks) {
             case 0:
@@ -167,10 +170,16 @@ var fuc = {
             }
         });
         //天气
-        $.get("http://www.li-li.cn/llwx/weather/get",{"date":"2016-09-21"},function(data){
+        $.get(
+            "http://www.li-li.cn/llwx/weather/get",
+            {
+                "date":that.config.today,
+                "days":1
+            },
+            function(data){
             if(data.code==0){
                 if(data.data){
-                    var weatherList = data.data;
+                    var weatherList = data.data[0];
                     var html = "",weatherCode = weatherList.dCode;
                     if(weatherList.qlty){
                         html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;

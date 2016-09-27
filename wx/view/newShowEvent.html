@@ -9,7 +9,7 @@
     <meta name="x5-orientation" content="portrait">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link href="/wx/css/newShowEvent.css?6755a5bfeb9f0f7a3559" rel="stylesheet"></head>
+<link href="/wx/css/newShowEvent.css?ed68701a0fe328ccf134" rel="stylesheet"></head>
 <body>
 
 <div class="eventContainer fs14">
@@ -54,7 +54,22 @@
             <div class="icon">
                 <img src="/wx/./img/0dddee1beca81f825d6093febd4881b4.png" alt="">
             </div>
-            <div class="itemCon"></div>
+            <div class="itemCon">
+                <div class="peopleCount"><span class="count"></span>位邀请对象</div>
+                <div class="peopleList">
+                    <div class="peopleItem fl">
+                        <img src="/wx/./img/b69e19980b6eee6a71cad41fc96bf669.png" alt="" class="fl eventOwner">
+                        <div class="ownerNickName fl">
+                            <div class="nickName">Yara</div>
+                            <div class="ccc ownerPosition">组织者</div>
+                        </div>
+                    </div>
+                    <div class="peopleItem fl morePeople">
+                        <img src="/wx/./img/b69e19980b6eee6a71cad41fc96bf669.png" alt="" class="fl">
+                        <div class="c6c nickNames fl">更多对象</div>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <div class="remark item">
@@ -63,7 +78,9 @@
             </div>
             <div class="itemCon">
                 <div class="remarkText"></div>
-                <div class="remarkImgs"></div>
+                <div class="remarkImgs">
+                    <img src="/wx/./img/1662ec4a599cc3de2256ee7a3fee4610.png" alt="">
+                </div>
             </div>
         </div>
     </div>
@@ -93,8 +110,9 @@
 
 <div class="shareShadow" id="shareShadow">
     <div class="shadowImg">
-        <img src="/wx/./img/af9427dd0c8029e00018178528146f71.png" alt="">
+        <img src="/wx/./img/ce4757245fcfe1859b72a559146aba86.png" alt="">
     </div>
+    <a href="javascript:;" class="shareImgClose cff fs14">去转发给微信好友</a>
 </div>
 
 <div class="wxQrcode">
@@ -132,14 +150,14 @@
     <div class="weui-dialog">
         <div class="weui-dialog__bd"></div>
         <div class="weui-dialog__ft">
-            <a href="javascript:;" class="weui-dialog__bgn weui-dialog__btn_primary">知道了</a>
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
         </div>
     </div>
 </div>
 
-<div id="loadingToast" class="weui_loading_toast" style="display:none">
-    <div class="weui_mask_transparent"></div>
-    <div class="weui_toast">
+<div id="loadingToast" style="display:none">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
         <div class="ll-loading" style="top:40%">
             <div class="ll-load-inner">
                 <div class="ll-load-container">
@@ -156,8 +174,15 @@
                 <span class="ll-logo-3"></span>
             </div>
         </div>
-        <p class="weui_toast_content">数据加载中</p>
+        <p class="weui-toast__content">数据加载中</p>
     </div>
 </div>
-<script type="text/javascript" src="/wx/js/newShowEvent.js?6755a5bfeb9f0f7a3559"></script></body>
+
+<script type="text/x-people" id="peopleListTemplate">
+    <div class="peopleItem fl joinerItem">
+            <img src="{{imgUrl}}" alt="" class="fl">
+            <div class="nickNames fl">{{nickName}}</div>
+    </div>
+</script>
+<script type="text/javascript" src="/wx/js/newShowEvent.js?ed68701a0fe328ccf134"></script></body>
 </html>

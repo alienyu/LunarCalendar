@@ -54,7 +54,22 @@
             <div class="icon">
                 <img src="../../assets/imgs/page/activity/ic_social.png" alt="">
             </div>
-            <div class="itemCon"></div>
+            <div class="itemCon">
+                <div class="peopleCount"><span class="count"></span>位邀请对象</div>
+                <div class="peopleList">
+                    <div class="peopleItem fl">
+                        <img src="../../assets/imgs/page/showEvent/default_photo.png" alt="" class="fl eventOwner">
+                        <div class="ownerNickName fl">
+                            <div class="nickName">Yara</div>
+                            <div class="ccc ownerPosition">组织者</div>
+                        </div>
+                    </div>
+                    <div class="peopleItem fl morePeople">
+                        <img src="../../assets/imgs/page/showEvent/default_photo.png" alt="" class="fl">
+                        <div class="c6c nickNames fl">更多对象</div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!--备注-->
         <div class="remark item">
@@ -63,7 +78,9 @@
             </div>
             <div class="itemCon">
                 <div class="remarkText"></div>
-                <div class="remarkImgs"></div>
+                <div class="remarkImgs">
+                    <img src="../../assets/imgs/common/weixin_icon.png" alt="">
+                </div>
             </div>
         </div>
     </div>
@@ -93,8 +110,9 @@
 <!--提示用户点击右上角实现分享功能-->
 <div class="shareShadow" id="shareShadow">
     <div class="shadowImg">
-        <img src="../../assets/imgs/page/addEvent/share-tips.png" alt="">
+        <img src="../../assets/imgs/common/icon-NoContent.png" alt="">
     </div>
+    <a href="javascript:;" class="shareImgClose cff fs14">去转发给微信好友</a>
 </div>
 <!--弹出二维码-->
 <div class="wxQrcode">
@@ -132,14 +150,14 @@
     <div class="weui-dialog">
         <div class="weui-dialog__bd"></div>
         <div class="weui-dialog__ft">
-            <a href="javascript:;" class="weui-dialog__bgn weui-dialog__btn_primary">知道了</a>
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
         </div>
     </div>
 </div>
 <!--数据加载时的loading-->
-<div id="loadingToast" class="weui_loading_toast" style="display:none;">
-    <div class="weui_mask_transparent"></div>
-    <div class="weui_toast">
+<div id="loadingToast" style="display:none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
         <div class="ll-loading" style="top:40%;">
             <div class="ll-load-inner">
                 <div class="ll-load-container">
@@ -156,8 +174,17 @@
                 <span class="ll-logo-3"></span>
             </div><!-- end ll-loading -->
         </div><!-- end ll-loading -->
-        <p class="weui_toast_content">数据加载中</p>
+        <p class="weui-toast__content">数据加载中</p>
     </div>
 </div>
+<!--邀请对象样式模板-->
+<script type="text/x-people" id="peopleListTemplate">
+    <div class="peopleItem fl joinerItem">
+            <img src="{{imgUrl}}" alt="" class="fl">
+            <div class="nickNames fl">{{nickName}}</div>
+    </div>
+</script>
+<!--批量查看大图功能-->
+<div class=""></div>
 </body>
 </html>

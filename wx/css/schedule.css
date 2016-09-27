@@ -309,10 +309,7 @@ select:focus {
 .ll-loading {
   width: 80px;
   height: 80px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin: -40px 0 0 -40px;
+  margin: 0 auto;
 }
 .ll-load-scale-multiple,
 .ll-load-scale-multiple > div {
