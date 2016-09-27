@@ -112,5 +112,6 @@ initConfig([
     "remind",
     "activity",
     "newSchedule",
-    "newShowEvent"
+    "newShowEvent",
+    "multiImgUpload"
 ])
