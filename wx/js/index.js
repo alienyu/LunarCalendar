@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "ed68701a0fe328ccf134"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "fcc47be7a1636477b72a"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -589,9 +589,7 @@
 	var transCalendar = __webpack_require__(17);
 	var wx = __webpack_require__(20);
 	var fuc = {
-	    config: {
-	        today:""
-	    },
+	    config: {},
 	    init: function() {
 	        pageLoad({backgroundColor: "#12101A"});
 	        this.renderPage();
@@ -632,14 +630,13 @@
 	            return (i < 10 ? '0' : '') + i
 	        };
 	        var years = d.getFullYear();
-	        var months = tf(d.getMonth() + 1);
+	        var months = d.getMonth() + 1;
 	        var days = tf(d.getDate());
 	        var weeks = d.getDay();
 	        $('.day').html(days);
 	        $('.month').html(months + "月");
 	        $('.lunarCalendar').html(nl);
 	        var dateTime = years + "-" + months + "-" + days;
-	        that.config.today = years + "-" + months + "-" + days;
 	//        console.log(dateTime);
 	        switch (weeks) {
 	            case 0:
@@ -756,16 +753,10 @@
 	            }
 	        });
 	        //天气
-	        $.get(
-	            "http://www.li-li.cn/llwx/weather/get",
-	            {
-	                "date":that.config.today,
-	                "days":1
-	            },
-	            function(data){
+	        $.get("http://www.li-li.cn/llwx/weather/get",{"date":"2016-09-21"},function(data){
 	            if(data.code==0){
 	                if(data.data){
-	                    var weatherList = data.data[0];
+	                    var weatherList = data.data;
 	                    var html = "",weatherCode = weatherList.dCode;
 	                    if(weatherList.qlty){
 	                        html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
@@ -3057,12 +3048,9 @@
 	 * 微信分享
 	 */
 	var wx = __webpack_require__(21);
-	var imageUrl = "http://www.li-li.cn/app/icon.png";
 	var wxConfig = {
-	    wxConfig: function(type) {
-	        this.wxConfig(type, "", "", "")
-	    },
-	    wxConfig: function(type, title, desc, link) {
+	
+	    wxConfig: function (type) {
 	        var url = window.location.href;
 	        var urlArr = url.split("#");
 	        var noncestr = "";
@@ -3089,7 +3077,7 @@
 	        wx.config({
 	            debug: false,
 	            //appId: "wx82c10b61c95e9f30",//正式
-	            appId:"wxd8c1d6ab5eb3c981",//测试
+	            appId: "wxd8c1d6ab5eb3c981",//测试
 	            timestamp: timestamp,//时间戳
 	            nonceStr: noncestr,//随机串
 	            signature: signature,//签名
@@ -3097,45 +3085,49 @@
 	                'onMenuShareTimeline',
 	                'onMenuShareAppMessage',
 	                'hideAllNonBaseMenuItem',
-	                'showMenuItems'
+	                'showMenuItems',
+	                'getLocation'
 	            ]
 	        });
 	
 	        wx.ready(function () {
-	            switch (type) {
-	                case 1://隐藏其他选项
-	                    wx.hideAllNonBaseMenuItem();
-	                    break;
-	                case 2://显示分享功能并设置分享内容
-	                    wx.showMenuItems({
-	                        menuList: ["menuItem:share:appMessage", "menuItem:share:timeline"] // 要显示的菜单项，所有menu项见附录3
-	                    });
-	                    //获取"分享给朋友"按钮点击状态及自定义分享内容接口
-	                    wx.onMenuShareAppMessage({
-	                        title: title,
-	                        desc: desc,
-	                        link: link,
-	                        imgUrl: imageUrl,
-	                        type: "link",//分享类型，music、video或link，不填默认为link
-	                    });
-	                    //获取"分享到朋友圈"按钮点击状态及自定义分享内容接口
-	                    wx.onMenuShareTimeline({
-	                        title: title,
-	                        link: link,
-	                        imgUrl: imageUrl
-	                    });
-	                    break;
-	            }
-	            //$('#onMenuShareTimeline').click(function () {
-	            //    //获取"分享到朋友圈"按钮点击状态及自定义分享内容接口
-	            //    wx.onMenuShareTimeline({
-	            //        title: "分享标题",
-	            //        link: "分享的URL",
-	            //        imgUrl: "",
-	            //    });
-	            //})
+	            //隐藏其他选项
+	            wx.hideAllNonBaseMenuItem();
 	        })
-	    }
+	    },
+	    wxShare: function (title, desc, link) {
+	        wx.showMenuItems({
+	            menuList: ["menuItem:share:appMessage", "menuItem:share:timeline"] // 要显示的菜单项，所有menu项见附录3
+	        });
+	        //获取"分享给朋友"按钮点击状态及自定义分享内容接口
+	        wx.onMenuShareAppMessage({
+	            title: title,
+	            desc: desc,
+	            link: link,
+	            imgUrl: imageUrl,
+	            type: "link",//分享类型，music、video或link，不填默认为link
+	        });
+	        //获取"分享到朋友圈"按钮点击状态及自定义分享内容接口
+	        wx.onMenuShareTimeline({
+	            title: title,
+	            link: link,
+	            imgUrl: imageUrl
+	        });
+	    },
+	    getWx: function () {
+	        return wx;
+	    },
+	
+	    wxLocation: function () {
+	        wx.getLocation({
+	            success: function (res) {
+	                return res.latitude + "," + res.longitude;
+	            },
+	            cancel: function (res) {
+	                //alert('用户拒绝授权获取地理位置');
+	            }
+	        });
+	    },
 	}
 	
 	module.exports = wxConfig;

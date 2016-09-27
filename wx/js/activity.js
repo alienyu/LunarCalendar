@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "ed68701a0fe328ccf134"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "fcc47be7a1636477b72a"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -586,6 +586,7 @@
 	/* WEBPACK VAR INJECTION */(function($) {/**
 	 * Created by admin on 2016/9/22.
 	 */
+	
 	__webpack_require__(7);
 	var pageLoad = __webpack_require__(14);
 	__webpack_require__(15);
@@ -605,25 +606,28 @@
 	        tagId: "",//用户选择的快捷标签Id
 	        time: "",
 	        timeArr: "",
-	        remindSelect:"",
-	        repeatSelect:"",
-	        map:"",
-	        bgColor:"",//背景颜色
-	        themeId:"",//背景图id
-	        themeName:"",
-	        themeColor:"",
-	        remarkText:"",
-	        remarkImgs:""
+	        remindSelect: "",
+	        repeatSelect: "",
+	        map: "",
+	        bgColor: "",//背景颜色
+	        themeId: "",//背景图id
+	        themeName: "",
+	        themeColor: "",
+	        remarkText: "",
+	        remarkImgs: ""
 	    },
 	    mapConfig: {
 	        map: "",
 	        moveendPoint: "",
 	        page: "",
 	        template: $('#addressListTemplate').html(),
-	        pois: []
+	        pois: [],
+	        location: "",//地址
+	        latitude: "",//纬度
+	        longitude: ""//经度
 	    },
 	
-	    init:function(){
+	    init: function () {
 	        pageLoad({backgroundColor: "#66cccc"});
 	        this.config.time = this.ifTimeExist(Dom.getRequest("date"));
 	        this.config.timeArr = this.transTime(this.config.time);
@@ -631,17 +635,17 @@
 	        this.config.remindSelect = document.getElementById("select");
 	        this.config.repeatSelect = document.getElementById('select1');
 	        this.config.map = {//颜色与其名称的键值对
-	            '#66cccc':'默认颜色',
-	            '#0b8043':'罗勒绿',
-	            '#33b679':'鼠尾草绿',
-	            '#039be5':'孔雀蓝',
-	            '#4285f4':'钴蓝',
-	            '#8e24aa':'葡萄紫',
-	            '#9e69af':'水晶紫',
-	            '#d50000':'番茄红',
-	            '#f4511e':'橘红',
-	            '#795548':'可可棕',
-	            '#616161':'石墨黑'
+	            '#66cccc': '默认颜色',
+	            '#0b8043': '罗勒绿',
+	            '#33b679': '鼠尾草绿',
+	            '#039be5': '孔雀蓝',
+	            '#4285f4': '钴蓝',
+	            '#8e24aa': '葡萄紫',
+	            '#9e69af': '水晶紫',
+	            '#d50000': '番茄红',
+	            '#f4511e': '橘红',
+	            '#795548': '可可棕',
+	            '#616161': '石墨黑'
 	        };
 	        this.config.bgColor = '#66cccc';
 	        this.rem();
@@ -653,12 +657,42 @@
 	        this.initDropLoad();
 	    },
 	
-	    rem: function() {
+	    rem: function () {
 	        fastClick.attach(document.body);
-	        //(function($,undefined){"use strict";var pluginName='scojs_message';$[pluginName]=function(message,type){clearTimeout($[pluginName].timeout);var $selector=$('#'+$[pluginName].options.id);if(!$selector.length){$selector=$('<div/>',{id:$[pluginName].options.id}).appendTo($[pluginName].options.appendTo)}$selector.html(message);if(type===undefined||type==$[pluginName].TYPE_ERROR){$selector.removeClass($[pluginName].options.okClass).addClass($[pluginName].options.errClass)}else if(type==$[pluginName].TYPE_OK){$selector.removeClass($[pluginName].options.errClass).addClass($[pluginName].options.okClass)}$selector.slideDown('fast',function(){$[pluginName].timeout=setTimeout(function(){$selector.slideUp('fast')},$[pluginName].options.delay)})};$.extend($[pluginName],{options:{id:'page_message',okClass:'page_mess_ok',errClass:'page_mess_error',delay:500,appendTo:'body'},TYPE_ERROR:1,TYPE_OK:2})})($);
+	        (function ($, undefined) {
+	            "use strict";
+	            var pluginName = 'scojs_message';
+	            $[pluginName] = function (message, type) {
+	                clearTimeout($[pluginName].timeout);
+	                var $selector = $('#' + $[pluginName].options.id);
+	                if (!$selector.length) {
+	                    $selector = $('<div/>', {id: $[pluginName].options.id}).appendTo($[pluginName].options.appendTo)
+	                }
+	                $selector.html(message);
+	                if (type === undefined || type == $[pluginName].TYPE_ERROR) {
+	                    $selector.removeClass($[pluginName].options.okClass).addClass($[pluginName].options.errClass)
+	                } else if (type == $[pluginName].TYPE_OK) {
+	                    $selector.removeClass($[pluginName].options.errClass).addClass($[pluginName].options.okClass)
+	                }
+	                $selector.slideDown('fast', function () {
+	                    $[pluginName].timeout = setTimeout(function () {
+	                        $selector.slideUp('fast')
+	                    }, $[pluginName].options.delay)
+	                })
+	            };
+	            $.extend($[pluginName], {
+	                options: {
+	                    id: 'page_message',
+	                    okClass: 'page_mess_ok',
+	                    errClass: 'page_mess_error',
+	                    delay: 500,
+	                    appendTo: 'body'
+	                }, TYPE_ERROR: 1, TYPE_OK: 2
+	            })
+	        })($);
 	    },
 	
-	    selectTimes: function(obj1, obj2) {
+	    selectTimes: function (obj1, obj2) {
 	        var that = this;
 	        var selb = mobiScroll.datetime(obj1, {
 	            theme: 'android-holo-light',
@@ -671,7 +705,7 @@
 	            readonly: false,
 	            onShow: function (event, inst) {
 	                var theDate = inst._tempValue;
-	                Dom.transDate(theDate,true);
+	                Dom.transDate(theDate, true);
 	            },
 	            onSet: function (event, inst) {
 	                var selectedDate = inst.getVal();//获取选择时间的标准形式
@@ -680,26 +714,26 @@
 	                var selectedTimeArr = selectedTime.split(" ");
 	                var theWeek = Dom.transWeek(selectedDate);
 	                $(obj2).html(selectedDateArr[0] + "年" + (parseInt(selectedDateArr[1]) + 1) + "月" + that.tf(selectedDateArr[2]) + "日" + " " + theWeek + " " + selectedTimeArr[1]);
-	                var theId = selectedDateArr[0] + "-" + that.tf(parseInt(selectedDateArr[1]) + 1)+ "-" + that.tf(selectedDateArr[2]) + " " + selectedTimeArr[1] + ":00";
+	                var theId = selectedDateArr[0] + "-" + that.tf(parseInt(selectedDateArr[1]) + 1) + "-" + that.tf(selectedDateArr[2]) + " " + selectedTimeArr[1] + ":00";
 	                $(obj2).attr("id", theId);
-	                if(obj2 =='.startCon'){//若修改的是开始时间的日期，则指定提醒时间日期等于开始时间，结束时间比开始时间大10分钟
+	                if (obj2 == '.startCon') {//若修改的是开始时间的日期，则指定提醒时间日期等于开始时间，结束时间比开始时间大10分钟
 	                    $('.remindTime').html(selectedDateArr[0] + "年" + (parseInt(selectedDateArr[1]) + 1) + "月" + that.tf(selectedDateArr[2]) + "日" + " " + theWeek + " " + selectedTimeArr[1]);
 	                    $(".remindTime").attr("id", theId);
 	                    $('.endCon').html(selectedDateArr[0] + "年" + (parseInt(selectedDateArr[1]) + 1) + "月" + that.tf(selectedDateArr[2]) + "日" + " " + theWeek + " " + selectedTimeArr[1]);
-	                    $('.endCon').attr("id",theId);
+	                    $('.endCon').attr("id", theId);
 	                    that.selectTimes('#endTime', '.endCon').setVal(new Date(that.setInitTime($('.endCon'))));//重新设置结束时间的初始值
 	                    that.selectTimes('#remindTime', '.remindTime').setVal(new Date(that.setInitTime($('.remindTime'))));//重新设置提醒时间的初始值
 	                }
 	            },
 	            onChange: function (event, inst) {
 	                var changeDate = inst._tempValue;
-	                Dom.transDate(changeDate,true);
+	                Dom.transDate(changeDate, true);
 	            }
 	        });
 	        return selb;
 	    },
 	
-	    shareShadow: function() {
+	    shareShadow: function () {
 	        var shareShadow = $('.shareShadow');
 	        shareShadow.fadeIn();//显示分享提示层
 	        var qrcodeImg = $('.qrcodeImgBox');
@@ -707,7 +741,7 @@
 	            $(this).addClass("q-big");
 	            event.stopPropagation();
 	        });//放大二维码
-	        shareShadow.click(function(){
+	        shareShadow.click(function () {
 	            $(this).fadeOut();
 	            event.stopPropagation();
 	        });
@@ -718,28 +752,28 @@
 	    },
 	
 	    /*----------------------若日期中的数组小于10，则在前面加0-------------------*/
-	    tf: function(time) {
-	        if(time<10){
-	            time = "0"+time;
+	    tf: function (time) {
+	        if (time < 10) {
+	            time = "0" + time;
 	        }
 	        return time;
 	    },
 	
 	    /*-------------------------------转换日期格式，开始时间加10分钟-------------------------------------*/
-	    ifTimeExist:function(time){
+	    ifTimeExist: function (time) {
 	        var that = this;
-	        if(!time){
+	        if (!time) {
 	            var d = new Date();//获得当天日期
 	            var years = d.getFullYear();
 	            var months = d.getMonth() + 1;
 	            var days = that.tf(d.getDate());
 	            return years + "-" + months + "-" + days;
-	        }else{
+	        } else {
 	            return time;
 	        }
 	    },
 	
-	    transTime: function(time) {
+	    transTime: function (time) {
 	        var that = this;
 	        var date = new Date();
 	        var timeArr = time.split('-');
@@ -770,89 +804,85 @@
 	    },
 	
 	    /*---------------------修改开始时间、结束时间、指定提醒时间样式，为其设置时间选择器的初始值---------------------*/
-	    setInitTime: function(obj) {
+	    setInitTime: function (obj) {
 	        var time = obj.attr("id");
 	        var date = time.split(" ");
-	        var theDate = date[0].replace(/\-/g,"/"),
+	        var theDate = date[0].replace(/\-/g, "/"),
 	            theTime = date[1].split(":");
-	        return theDate+" "+theTime[0]+":"+theTime[1];
+	        return theDate + " " + theTime[0] + ":" + theTime[1];
 	    },
 	
 	    /*----------------获取用户选择快捷标签对应的主题-------------------*/
-	    getTemplate:function(templateId){
-	        var that = this;
-	        if(templateId != null){
+	    getTemplate: function (templateId) {
+	        if (templateId != "null") {
 	            $.get(
 	                "http://www.li-li.cn/llwx/template/detail",
 	                {
-	                    'tid':templateId
+	                    'tid': templateId
 	                },
-	                function(data){
-	                    if(data.code == 0){
+	                function (data) {
+	                    if (data.code == 0) {
 	                        var list = data.data;
-	                        if(list.color){//若对应的是背景颜色
-	                            that.config.bgColor = list.color;
-	                            $('.colorShow').css("background",list.color);
-	                            $('.colorText').html(that.config.map. list.color);
-	                        }else if(list.theme.themeId){//若对应的是背景图片
-	                            that.config.bgColor = "";
+	                        if (list.color) {//若对应的是背景颜色
+	                            $('.colorShow').css("background", list.color);
+	                            $('.colorText').html(that.config.map.list.color);
+	                        } else if (list.theme.themeId) {//若对应的是背景图片
 	                            that.config.themeId = list.theme.themeId;
 	                            that.config.themeName = list.theme.themeName;
 	                            that.config.themeColor = list.theme.themeColor;
-	                            $('.colorShow').css("background",that.config.themeColor);
+	                            $('.colorShow').css("background", that.config.themeColor);
 	                            $('.colorText').html(that.config.themeName);
 	                        }
-	                        that.colorInit();
 	                    }
 	                }
 	            )
 	        }
 	    },
 	
-	    hideTags: function() {
+	    hideTags: function () {
 	        var that = this;
 	        $('.tipsCon a').click(function (event) {
 	            $('.eventName').val($(this).html());
-	            that.config.tagId  = $(this).attr("data-tag");//保存用户选择的标签id
+	            that.config.tagId = $(this).attr("data-tag");//保存用户选择的标签id
 	            that.getTemplate($(this).attr("data-template"));
 	            $('.tips').slideUp();
 	            event.preventDefault();
 	        });
 	    },
 	
-	    getTags: function() {
+	    getTags: function () {
 	        var that = this;
 	        var template = $('#tagListTemplate').html();
 	        var html = "";
-	        $.get("http://www.li-li.cn/llwx/tag/list",{"all":true},function(data){
+	        $.get("http://www.li-li.cn/llwx/tag/list", {"all": true}, function (data) {
 	//                console.log(data);
-	            if(data.code==0) {
+	            if (data.code == 0) {
 	                var list = data.data;
 	                for (var i = 0; i < list.length; i++) {//显示标签对应的内容及模板ID
-	                    html += template.replace(/{{templateId}}/g,list[i].templateId).replace(/{{tagId}}/g,list[i].tagId).replace(/{{tagName}}/g, list[i].tagName);
+	                    html += template.replace(/{{templateId}}/g, list[i].templateId).replace(/{{tagId}}/g, list[i].tagId).replace(/{{tagName}}/g, list[i].tagName);
 	                }
 	                $('.tipsCon').html("").append(html);
 	                that.hideTags();
-	            }else{//数据加载失败显示错误提示框
+	            } else {//数据加载失败显示错误提示框
 	                var error = data.msg;
 	                $('#dialog2 .weui_dialog_bd').html(error);
-	                $('#dialog2').fadeIn().on('click', '.weui_btn_dialog', function () {
-	                    $('#dialog2').off('click').fadeOut();
+	                $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
+	                    $('#dialog2').off('click').hide();
 	                });
 	            }
 	        })
 	    },
 	
-	    renderPage:function(){
+	    renderPage: function () {
+	        wx.wxConfig(1);
 	        var that = this;
 	        this.getTags();
-	        //wx.wxConfig(1);
-	        if(that.config.eventId){//若用户是通过编辑按钮进入 页面，则拉取事件ID对应的信息
+	        if (that.config.eventId) {//若用户是通过编辑按钮进入 页面，则拉取事件ID对应的信息
 	            that.getData();
 	            that.colorInit();
-	        }else{
+	        } else {
 	            /*--------------设置颜色初始值------------------*/
-	            $('.colorShow').css("background",that.config.bgColor);
+	            $('.colorShow').css("background", that.config.bgColor);
 	            $('.colorText').html(that.config.map[that.config.bgColor]);
 	            that.colorInit();
 	            /*---------------------开始时间、结束时间、指定提醒时间的时间显示---------------------*/
@@ -862,13 +892,13 @@
 	        }
 	        /*---------提醒类型选择的监听事件---------*/
 	        var select = document.getElementById('select1');
-	        select.onchange = function(){
-	            if(select.value == 3){
-	                $('.remindTime').animate({"height":"30px"},200);
-	                $('#remindTime').css("display","block");
-	            }else{
-	                $('.remindTime').animate({"height":"0px"},200);
-	                $('#remindTime').css("display","none");
+	        select.onchange = function () {
+	            if (select.value == 3) {
+	                $('.remindTime').animate({"height": "30px"}, 200);
+	                $('#remindTime').css("display", "block");
+	            } else {
+	                $('.remindTime').animate({"height": "0px"}, 200);
+	                $('#remindTime').css("display", "none");
 	            }
 	        }
 	        /*---------------------------------开始时间、结束时间、指定提醒时间三个地方的日期选择功能---------------------------------*/
@@ -878,61 +908,61 @@
 	    },
 	
 	    /*--------------通过eventID拉去页面数据------------------*/
-	    getData:function(){
+	    getData: function () {
 	        var that = this;
-	        $('.delete').css("display","block");//用户可删除事件
-	        $(".topTips").css("display","none");//隐藏头部的快捷标签
+	        $('.delete').css("display", "block");//用户可删除事件
+	        $(".topTips").css("display", "none");//隐藏头部的快捷标签
 	        $.get(
 	            "http://www.li-li.cn/llwx/event/detail",
 	            {
-	                "eventId":that.config.eventId
+	                "eventId": that.config.eventId
 	            },
-	            function(data){
-	                if(data.code == 0){
+	            function (data) {
+	                if (data.code == 0) {
 	                    var eventList = data.data;
 	                    $('.eventName').val(eventList.name);//标题内容
 	                    autoTextArea(document.getElementById("eventTitle"));
 	                    var theStartTime = Dom.tranDate(eventList.startTime),
-	                            theEndTime = Dom.tranDate(eventList.endTime),
-	                            tipType = eventList.tipType,
-	                            repeatType = eventList.repeatType,
-	                            location = eventList.location;
+	                        theEndTime = Dom.tranDate(eventList.endTime),
+	                        tipType = eventList.tipType,
+	                        repeatType = eventList.repeatType,
+	                        location = eventList.location;
 	                    that.config.bgColor = eventList.bgColor;
 	                    that.config.themeId = eventList.theme.themeId;//获取用户设置的背景图id
 	                    that.config.remarkText = eventList.remark;
 	                    that.config.remarkImgs = eventList.remarkImgs;
 	                    that.config.nickName = eventList.user;//当前用户昵称
-	                    $('.startCon').html(theStartTime).attr("id",eventList.startTime);
-	                    $('.endCon').html(theEndTime).attr("id",eventList.endTime);
-	                        /*------------设置重复类型----------------*/
+	                    $('.startCon').html(theStartTime).attr("id", eventList.startTime);
+	                    $('.endCon').html(theEndTime).attr("id", eventList.endTime);
+	                    /*------------设置重复类型----------------*/
 	                    var repeatOptions = that.config.repeatSelect.getElementByTagName("option");
-	                    for(var j=0;j<repeatOptions.length;j++){
-	                        repeatOptions[j].setAttribute("selected",false);
+	                    for (var j = 0; j < repeatOptions.length; j++) {
+	                        repeatOptions[j].setAttribute("selected", false);
 	                    }
-	                    repeatOptions[repeatType].setAttribute("selected",true);
-	                        /*-------------设置提醒类型------------------*/
+	                    repeatOptions[repeatType].setAttribute("selected", true);
+	                    /*-------------设置提醒类型------------------*/
 	                    var remindOption = that.config.remindSelect.getElementsByTagName('option');
-	                    for(var i=0;i<remindOption.length;i++){
-	                        remindOption[i].setAttribute("selected",false);
+	                    for (var i = 0; i < remindOption.length; i++) {
+	                        remindOption[i].setAttribute("selected", false);
 	                    }
-	                    remindOption[tipType].setAttribute("selected",true);//设置默认选中值
-	                    if(tipType==3){
-	                        $('.remindTime').animate({"height":"30px"},200);
-	                        $('#remindTime').css("display","block");
+	                    remindOption[tipType].setAttribute("selected", true);//设置默认选中值
+	                    if (tipType == 3) {
+	                        $('.remindTime').animate({"height": "30px"}, 200);
+	                        $('#remindTime').css("display", "block");
 	                    }
-	                    if(location){
+	                    if (location) {
 	                        $('.site').removeClass('ccc');
 	                        $('.siteText').html(location);
 	                    }
-	                    if(that.config.remarkText){
+	                    if (that.config.remarkText) {
 	                        $('.remarkCon .remarkText').removeClass('ccc').html(that.config.remarkText);
 	                        $('#remarkText').val(that.config.remarkText);
 	                    }
-	                    if(that.config.bgColor){
-	                        $('.colorShow').css("background",that.config.bgColor);
+	                    if (that.config.bgColor) {
+	                        $('.colorShow').css("background", that.config.bgColor);
 	                        $('.colorText').html(that.config.map[that.config.bgColor]);
 	                    }
-	                }else{
+	                } else {
 	
 	                }
 	            }
@@ -940,23 +970,7 @@
 	    },
 	
 	    /*---------------弹层效果------------------*/
-	    shadow:function(obj,shadow,container){
-	        obj.click(function(){
-	            $('.shadowBg').fadeIn();
-	            shadow.show();
-	            container.animate({"top":"10%"},200);
-	        });
-	        $('.shadowClose').click(function(){
-	            container.animate({"top":"100%"},200,function(){
-	                $(this).parent().hide();
-	            });
-	            $('.shadowBg').fadeOut();
-	        });
-	    },
-	
-	    /*---------------地图弹层效果------------------*/
-	    mapShadow: function (obj, shadow, container) {
-	        var that = this;
+	    shadow: function (obj, shadow, container) {
 	        obj.click(function () {
 	            $('.shadowBg').fadeIn();
 	            shadow.show();
@@ -970,57 +984,91 @@
 	        });
 	    },
 	
+	    /*---------------地图弹层效果------------------*/
+	    mapShadow: function (obj, shadow, container) {
+	        var that = this;
+	        obj.click(function () {
+	            $('.shadowBg').fadeIn();
+	            shadow.show();
+	            container.animate({"top": "10%"}, 200);
+	            //console.log(wx.wxLocation());
+	
+	            wx.getWx().getLocation({
+	                type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+	                success: function (res) {
+	                    console.log("getlocation");
+	                    var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+	                    var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+	                    //var speed = res.speed; // 速度，以米/每秒计
+	                    //var accuracy = res.accuracy; // 位置精度
+	                    that.mapConfig.latitude = latitude;
+	                    that.mapConfig.longitude = longitude;
+	                    console.log(that.mapConfig.latitude + ":" + that.mapConfig.longitude);
+	                }
+	            });
+	        });
+	        $('.shadowClose').click(function () {
+	            container.animate({"top": "100%"}, 200, function () {
+	                $(this).parent().hide();
+	            });
+	            $('.shadowBg').fadeOut();
+	        });
+	    },
+	
 	    /*--------------颜色弹层中的颜色初始化--------------*/
-	    colorInit:function(){
+	    colorInit: function () {
 	        var that = this,
 	            colorTemplate = $('#colorsListTemplate').html(),
 	            imgTemplate = $('#imgListTemplate').html(),
-	            colorHtml="",
+	            colorHtml = "",
 	            colorArr = [];
 	        //颜色列表初始化
-	        for(var i in that.config.map){
-	            colorHtml += colorTemplate.replace(/{{color}}/g,i).replace(/{{colorName}}/g,that.config.map[i]);
+	        for (var i in that.config.map) {
+	            colorHtml += colorTemplate.replace(/{{color}}/g, i).replace(/{{colorName}}/g, that.config.map[i]);
 	            colorArr.push(i);
 	        }
 	        $('.colorCon').append(colorHtml);
 	        var theBigger = $('.bigger');
-	        for(var k= 0;k<theBigger.size();k++){
-	            theBigger.eq(k).css("background",colorArr[k]);
+	        for (var k = 0; k < theBigger.size(); k++) {
+	            theBigger.eq(k).css("background", colorArr[k]);
 	        }
 	        //设置选中的颜色
 	        var colorItem = $('.colorCon .colorItem');
-	        for(var m=0;m<colorItem.size();m++){
-	            if(colorItem.eq(m).attr("data-colors") ==that.config.bgColor){
+	        for (var m = 0; m < colorItem.size(); m++) {
+	            if (colorItem.eq(m).attr("data-colors") == that.config.bgColor) {
 	                colorItem.eq(m).addClass("active");
-	                colorItem.eq(m).find(".smaller").css("background",that.config.bgColor);
+	                colorItem.eq(m).find(".smaller").css("background", that.config.bgColor);
 	            }
 	        }
 	        //图片列表初始化
 	        $.get(
 	            "http://www.li-li.cn/llwx/theme/list",
 	            {
-	                "all":true
+	                "all": true
 	            },
-	            function(data){
-	                if(data.code == 0){
-	                    var imgList = data.data.list,imgHtml="";
+	            function (data) {
+	                if (data.code == 0) {
+	                    var imgList = data.data.list, imgHtml = "";
 	                    console.log(imgList);
-	                    for(var n=0;n<imgList.length;n++){
+	                    for (var n = 0; n < imgList.length; n++) {
 	                        //console.log(n);
-	                        imgHtml+=imgTemplate.replace(/{{themeId}}/g,imgList[n].themeId).replace(/{{themeName}}/g,imgList[n].themeName).replace(/{{themeColor}}/g,imgList[n].themeColor);
+	                        imgHtml += imgTemplate.replace(/{{themeId}}/g, imgList[n].themeId).replace(/{{themeName}}/g, imgList[n].themeName).replace(/{{themeColor}}/g, imgList[n].themeColor);
 	                    }
 	                    $('.imageCon').append(imgHtml);
 	                    var imgName = $('.imgItem .imgName');
-	                    for(var p=0;p<imgName.size();p++){
+	                    for (var p = 0; p < imgName.size(); p++) {
 	                        //console.log(imgList[p].themeUrl);
-	                        imgName.eq(p).css({"background-image":"url("+imgList[p].themeUrl+")","background-color":imgList[p].themeColor});
+	                        imgName.eq(p).css({
+	                            "background-image": "url(" + imgList[p].themeUrl + ")",
+	                            "background-color": imgList[p].themeColor
+	                        });
 	                    }
 	                    var imgItem = $('.imgItem');
-	                    for(var j=0;j<imgItem.size();j++){
-	                        if(imgItem.eq(j).attr("data-themeId")==that.config.themeId){
+	                    for (var j = 0; j < imgItem.size(); j++) {
+	                        if (imgItem.eq(j).attr("data-themeId") == that.config.themeId) {
 	                            $('.items').removeClass("active");
 	                            imgItem.eq(j).addClass("active");
-	                            $('.colorCon .colorItem').find("smaller").css("background","#fff");
+	                            $('.colorCon .colorItem').find("smaller").css("background", "#fff");
 	                        }
 	                    }
 	                    that.selectColor();
@@ -1029,35 +1077,34 @@
 	        )
 	    },
 	
-	    /*-----------------选择颜色或图片后的显示--------------------*/
-	    selectColor:function(){
+	    /*-----------------选择颜色--------------------*/
+	    selectColor: function () {
 	        var that = this;
 	        var items = $('.colorShadow .items'),
 	            smaller = $('.bigger .smaller');
-	        items.click(function(){
-	            for(var i=0;i<items.size();i++){
+	        items.click(function () {
+	            for (var i = 0; i < items.size(); i++) {
 	                items.eq(i).removeClass("active");
 	            }
-	            for(var j=0;j<smaller.size();j++){
-	                smaller.eq(j).css("background","#fff");
+	            for (var j = 0; j < smaller.size(); j++) {
+	                smaller.eq(j).css("background", "#fff");
 	            }
 	            $(this).addClass("active");
-	            if($(this).attr("class")=="colorItem items active"){//若点击的是颜色
+	            if ($(this).attr("class") == "colorItem items active") {//若点击的是颜色
 	                that.config.bgColor = $(this).attr("data-colors");
-	                $(this).find(".smaller").css("background",that.config.bgColor);
+	                $(this).find(".smaller").css("background", that.config.bgColor);
 	                //设置显示页面的颜色显示
-	                $('.colorShow').css("background",that.config.bgColor);
+	                $('.colorShow').css("background", that.config.bgColor);
 	                $('.colorText').html(that.config.map[that.config.bgColor]);
-	            }else{
-	                that.config.bgColor = "";
+	            } else {
 	                that.config.themeId = $(this).attr("data-id");
 	                that.config.themeColor = $(this).attr("data-color");
 	                that.config.themeName = $(this).attr("data-name");
 	                //设置显示页面的颜色显示
-	                $('.colorShow').css("background",that.config.themeColor);
+	                $('.colorShow').css("background", that.config.themeColor);
 	                $('.colorText').html(that.config.themeName);
 	            }
-	            $(".colorShadow .container").animate({"top":"100%"},200,function(){
+	            $(".colorShadow .container").animate({"top": "100%"}, 200, function () {
 	                $(this).parent().hide();
 	            });
 	            $('.shadowBg').fadeOut();
@@ -1065,13 +1112,13 @@
 	    },
 	
 	    /*------------------------备注中上传图片-------------------------*/
-	    uploaderImg:function(){
+	    uploaderImg: function () {
 	        var tmpl = '<li class="weui-uploader__file" style="background-image:url(#url#)"></li>',
 	            $gallery = $("#gallery"), $galleryImg = $("#galleryImg"),
 	            $uploaderInput = $("#uploaderInput"),
 	            $uploaderFiles = $("#uploaderFiles");
 	
-	        $uploaderInput.on("change", function(e){
+	        $uploaderInput.on("change", function (e) {
 	            var src, url = window.URL || window.webkitURL || window.mozURL, files = e.target.files;
 	            for (var i = 0, len = files.length; i < len; ++i) {
 	                var file = files[i];
@@ -1098,41 +1145,41 @@
 	                $uploaderFiles.append($(tmpl.replace('#url#', src)));
 	            }
 	        });
-	        $uploaderFiles.on("click", "li", function(){
+	        $uploaderFiles.on("click", "li", function () {
 	            $galleryImg.attr("style", this.getAttribute("style"));
 	            $gallery.fadeIn(100);
 	        });
-	        $gallery.on("click", function(){
+	        $gallery.on("click", function () {
 	            $gallery.fadeOut(100);
 	        });
 	    },
 	
-	    bindEvent:function(){
+	    bindEvent: function () {
 	        var that = this;
 	        $('.eventName').focus(function () {
 	            $('.topTips').slideUp(800);
 	        });
 	
 	        /*-------------点击开始时间后面的展开按钮---------*/
-	        $('.timeIconCon').click(function(){
-	            if($(".timeIcon").attr("class")=="timeIcon active"){
+	        $('.timeIconCon').click(function () {
+	            if ($(".timeIcon").attr("class") == "timeIcon active") {
 	                $(".timeIcon").removeClass("active");
-	                $('.endTime').animate({'height':'0px'},300);
-	                $('.timeText').animate({"width":"0px"},300);
-	            }else{
+	                $('.endTime').animate({'height': '0px'}, 300);
+	                $('.timeText').animate({"width": "0px"}, 300);
+	            } else {
 	                $(".timeIcon").addClass("active");
-	                $('.endTime').animate({'height':'60px'},300);
-	                $('.timeText').animate({"width":"33px"},300);
+	                $('.endTime').animate({'height': '60px'}, 300);
+	                $('.timeText').animate({"width": "33px"}, 300);
 	            }
 	        })
 	        /*-----------展开顶部的快捷标签-------------*/
-	        $('.showAll').click(function(){
-	            if($('.showAll span').attr("class")=="active"){
+	        $('.showAll').click(function () {
+	            if ($('.showAll span').attr("class") == "active") {
 	                $('.showAll span').removeClass("active");
-	                $('.tipsCon').animate({"height":"60px"},300);
-	            }else{
+	                $('.tipsCon').animate({"height": "60px"}, 300);
+	            } else {
 	                $('.showAll span').addClass("active");
-	                $('.tipsCon').animate({"height":"auto"},300);
+	                $('.tipsCon').animate({"height": "auto"}, 300);
 	            }
 	        })
 	        /*----------弹层----------*/
@@ -1140,23 +1187,23 @@
 	        that.shadow($('.colors'), $('.colorShadow'), $('.colorShadow .container'));
 	        that.shadow($('.remark'), $('.remarkShadow'), $('.remarkShadow .container'));
 	        /*----------备注弹层中的点击事件-------------*/
-	        $('.remarkShadow .cancel').click(function(){
-	            $('.remarkShadow .container').animate({"top":"100%"},200,function(){
+	        $('.remarkShadow .cancel').click(function () {
+	            $('.remarkShadow .container').animate({"top": "100%"}, 200, function () {
 	                $('.remarkShadow').hide();
 	            });
 	            $('.shadowBg').fadeOut();
 	        });
-	        $('.remarkShadow .finished').click(function(){
+	        $('.remarkShadow .finished').click(function () {
 	            that.config.remarkText = $('#remarkText').val();
 	            //that.config.remarkImgs = ;
 	            $('.remarkCon .remarkText').removeClass("ccc").html(that.config.remarkText);
-	            $('.remarkShadow .container').animate({"top":"100%"},200,function(){
+	            $('.remarkShadow .container').animate({"top": "100%"}, 200, function () {
 	                $('.remarkShadow').hide();
 	            });
 	            $('.shadowBg').fadeOut();
 	        });
 	        /*------------点击分享--------------*/
-	        $('.share').click(function(){
+	        $('.share').click(function () {
 	            var name = $('#eventTitle').val().replace(/\s+/, ""),
 	                startTime = $('.startCon').attr("id"),
 	                endTime = $('.endCon').attr("id"),
@@ -1164,45 +1211,46 @@
 	                location = $('.siteText').html(),
 	                tipType = that.config.remindSelect.value,
 	                tipTime = "";
-	            if(tipType == 3){
-	                tipTime =$('.remindTime').attr("id");
+	            if (tipType == 3) {
+	                tipTime = $('.remindTime').attr("id");
 	            }
 	            if (that.config.eventId) {
 	                if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
-	                    // todo 提醒用户设置名称
-	                }else{
-	                    Ajax.eventModify(that.config.eventId,name,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,'longitude','latitude', that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.themeId);
+	                    $.scojs_message('缺少事件名称', $.scojs_message.TYPE_ERROR);
+	                } else {
+	                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 'longitude', 'latitude', that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
 	                    //todo 弹出蒙层
 	                    that.shareShadow(); //显示分享提示弹出层，点击后隐藏
 	                }
-	            }else{
+	            } else {
 	                if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
-	                    // todo 提醒用户设置名称
-	                }else{
-	                    $('#dialog1').fadeIn();
+	                    $.scojs_message('缺少事件名称', $.scojs_message.TYPE_ERROR);
+	                } else {
+	                    $('#dialog1').show();
 	                    $('#dialog1 .confirm').on("tap", function () {//点击确定
-	                        Ajax.eventAdd2(name,1,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,'longitude','latitude', that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.themeId);
+	                        Ajax.eventAdd2(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 'longitude', 'latitude', that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
 	                        Ajax.getUserInformation2();
-	                        wx.wxConfig(2, that.config.nickName + " 邀请您参加 「" + name+"」", $('.startTime').html(),
+	                        wx.wxConfig(2, that.config.nickName + " 邀请您参加 「" + name + "」", $('.startTime').html(),
 	                            "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + that.config.eventId));
-	                        sessionStorage.setItem(that.config.eventId, [name, that.config.tagName,startTime, endTime, tipType, repeatType, remark, location, tipTime]);
-	                        $('#dialog1').fadeOut();
+	                        sessionStorage.setItem(that.config.eventId, [name, that.config.tagName, startTime, endTime, tipType, repeatType, remark, location, tipTime]);
+	                        $('#dialog1').hide();
 	                        //todo 弹出蒙层
-	                        if(!$('.qrcodeImg').html()){
+	                        if (!$('.qrcodeImg').html()) {
 	                            that.createQrcode(that.config.eventId);
 	                        }
 	                        that.shareShadow(); //显示分享提示弹出层，点击后隐藏
 	                    });
 	                    $('.default').on("tap", function () {
-	                        $('#dialog1').fadeOut();
+	                        $('#dialog1').hide();
 	                    });
 	                }
 	            }
 	        });
 	
 	        /*------------点击保存--------------*/
-	        $('.saveBtn').click(function(){
-	            $('#loadingToast').fadeIn();//显示loading
+	        $('.saveBtn').click(function () {
+	
+	            $('#loadingToast').show();//显示loading
 	            var name = $('#eventTitle').val().replace(/\s+/, ""),
 	                startTime = $('.startCon').attr("id"),
 	                endTime = $('.endCon').attr("id"),
@@ -1210,36 +1258,36 @@
 	                location = $('.siteText').html(),
 	                tipType = that.config.remindSelect.value,
 	                tipTime = "";
-	            if(tipType == 3){
-	                tipTime =$('.remindTime').attr("id");
+	            if (tipType == 3) {
+	                tipTime = $('.remindTime').attr("id");
 	            }
 	            if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
-	                // todo  提示用户设置名称
+	                $.scojs_message('缺少事件名称', $.scojs_message.TYPE_ERROR);
 	                $('#loadingToast').fadeOut();
-	            }else{
-	                if(that.config.eventId){//若事件已保存，则调用修改事件
-	                    Ajax.eventModify(that.config.eventId,name,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,121.25,23,that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.themeId);
-	                }else{
-	                    Ajax.eventAdd(name,1,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,121.25,23,that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.themeId);
+	            } else {
+	                if (that.config.eventId) {//若事件已保存，则调用修改事件
+	                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 121.25, 23, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+	                } else {
+	                    Ajax.eventAdd(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 121.25, 23, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
 	                }
 	            }
 	
 	        });
 	        /*---------------点击删除---------------*/
-	        $('.delete').click(function(){
-	            $('#dialog1').fadeIn();
+	        $('.delete').click(function () {
+	            $('#dialog1').show();
 	            $('#confirm').on('tap', function () {//点击确定按钮
-	                $('#dialog1').fadeOut();
-	                $('#loadingToast').fadeIn();//显示loading
+	                $('#dialog1').hide();
+	                $('#loadingToast').show();//显示loading
 	                $.get("http://www.li-li.cn/llwx/event/del", {"eventId": that.config.eventId}, function (data) {
 	                    if (data.code == 0) {//删除成功
 	                        $('#loadingToast').fadeOut();//隐藏loading
-	                        $('#toast').fadeIn();
+	                        $('#toast').show();
 	                        setTimeout(function () {
-	                            $('#toast').fadeOut();
-	                            if(document.referrer==""){
+	                            $('#toast').hide();
+	                            if (document.referrer == "") {
 	                                WeixinJSBridge.call("closeWindow");
-	                            }else{
+	                            } else {
 	                                window.location.href = document.referrer;//返回上一个页面
 	                            }
 	                        }, 1500);
@@ -1247,20 +1295,20 @@
 	                        $('#loadingToast').fadeOut();//隐藏loading
 	                        var error = data.msg;
 	                        $('#dialog2 .weui_dialog_bd').html(error);
-	                        $('#dialog2').fadeIn().on('click', '.weui_btn_dialog', function () {
-	                            $('#dialog2').off('click').fadeOut();
+	                        $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
+	                            $('#dialog2').off('click').hide();
 	                        });
 	                    }
 	                })
 	            });
 	            $('#cancel').on('tap', function () {//点击取消按钮
-	                $('#dialog1').fadeOut();
+	                $('#dialog1').hide();
 	            });
 	        })
 	    },
 	
 	    /*----------初始化地图----------------------*/
-	    initMap: function() {
+	    initMap: function () {
 	        var that = this;
 	        that.mapConfig.page = 1;
 	        that.mapConfig.map = new AMap.Map("mapCon", {
@@ -1280,6 +1328,8 @@
 	    },
 	
 	    initDropLoad: function () {
+	        var listHeight = parseInt($(document.body).height() * 0.9 - 300) + "px";
+	        $(".addressCon").css("height", listHeight);
 	        var that = this;
 	        /*--------------------------上拉刷新、下拉刷新------------------------*/
 	        $('.addressCon').dropload({
@@ -1305,7 +1355,7 @@
 	                that.mapConfig.page++;
 	                that.searchNearByResult(me);
 	            },
-	            threshold: 50//提前加载距离
+	            threshold: 20//提前加载距离
 	        });
 	    },
 	
@@ -1355,11 +1405,25 @@
 	            $('.imgCon').removeClass('active');
 	        }, 600);
 	    }
-	
-	
 	}
 	
 	fuc.init();
+	//wx.ready(function () {
+	//
+	//    wx.getLocation({
+	//        type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+	//        success: function (res) {
+	//            console.log("getlocation");
+	//            var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+	//            var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+	//            //var speed = res.speed; // 速度，以米/每秒计
+	//            //var accuracy = res.accuracy; // 位置精度
+	//            that.mapConfig.latitude = latitude;
+	//            that.mapConfig.longitude = longitude;
+	//            console.log(that.mapConfig.latitude + ":" + that.mapConfig.longitude);
+	//        }
+	//    });
+	//})
 	
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
@@ -4008,12 +4072,9 @@
 	 * 微信分享
 	 */
 	var wx = __webpack_require__(21);
-	var imageUrl = "http://www.li-li.cn/app/icon.png";
 	var wxConfig = {
-	    wxConfig: function(type) {
-	        this.wxConfig(type, "", "", "")
-	    },
-	    wxConfig: function(type, title, desc, link) {
+	
+	    wxConfig: function (type) {
 	        var url = window.location.href;
 	        var urlArr = url.split("#");
 	        var noncestr = "";
@@ -4040,7 +4101,7 @@
 	        wx.config({
 	            debug: false,
 	            //appId: "wx82c10b61c95e9f30",//正式
-	            appId:"wxd8c1d6ab5eb3c981",//测试
+	            appId: "wxd8c1d6ab5eb3c981",//测试
 	            timestamp: timestamp,//时间戳
 	            nonceStr: noncestr,//随机串
 	            signature: signature,//签名
@@ -4048,45 +4109,49 @@
 	                'onMenuShareTimeline',
 	                'onMenuShareAppMessage',
 	                'hideAllNonBaseMenuItem',
-	                'showMenuItems'
+	                'showMenuItems',
+	                'getLocation'
 	            ]
 	        });
 	
 	        wx.ready(function () {
-	            switch (type) {
-	                case 1://隐藏其他选项
-	                    wx.hideAllNonBaseMenuItem();
-	                    break;
-	                case 2://显示分享功能并设置分享内容
-	                    wx.showMenuItems({
-	                        menuList: ["menuItem:share:appMessage", "menuItem:share:timeline"] // 要显示的菜单项，所有menu项见附录3
-	                    });
-	                    //获取"分享给朋友"按钮点击状态及自定义分享内容接口
-	                    wx.onMenuShareAppMessage({
-	                        title: title,
-	                        desc: desc,
-	                        link: link,
-	                        imgUrl: imageUrl,
-	                        type: "link",//分享类型，music、video或link，不填默认为link
-	                    });
-	                    //获取"分享到朋友圈"按钮点击状态及自定义分享内容接口
-	                    wx.onMenuShareTimeline({
-	                        title: title,
-	                        link: link,
-	                        imgUrl: imageUrl
-	                    });
-	                    break;
-	            }
-	            //$('#onMenuShareTimeline').click(function () {
-	            //    //获取"分享到朋友圈"按钮点击状态及自定义分享内容接口
-	            //    wx.onMenuShareTimeline({
-	            //        title: "分享标题",
-	            //        link: "分享的URL",
-	            //        imgUrl: "",
-	            //    });
-	            //})
+	            //隐藏其他选项
+	            wx.hideAllNonBaseMenuItem();
 	        })
-	    }
+	    },
+	    wxShare: function (title, desc, link) {
+	        wx.showMenuItems({
+	            menuList: ["menuItem:share:appMessage", "menuItem:share:timeline"] // 要显示的菜单项，所有menu项见附录3
+	        });
+	        //获取"分享给朋友"按钮点击状态及自定义分享内容接口
+	        wx.onMenuShareAppMessage({
+	            title: title,
+	            desc: desc,
+	            link: link,
+	            imgUrl: imageUrl,
+	            type: "link",//分享类型，music、video或link，不填默认为link
+	        });
+	        //获取"分享到朋友圈"按钮点击状态及自定义分享内容接口
+	        wx.onMenuShareTimeline({
+	            title: title,
+	            link: link,
+	            imgUrl: imageUrl
+	        });
+	    },
+	    getWx: function () {
+	        return wx;
+	    },
+	
+	    wxLocation: function () {
+	        wx.getLocation({
+	            success: function (res) {
+	                return res.latitude + "," + res.longitude;
+	            },
+	            cancel: function (res) {
+	                //alert('用户拒绝授权获取地理位置');
+	            }
+	        });
+	    },
 	}
 	
 	module.exports = wxConfig;
