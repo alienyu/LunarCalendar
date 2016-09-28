@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "c62a1798a81e57a509b2"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "77a723380cd00c77b9ce"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -734,10 +734,10 @@
 	                            $('.eventOwner').attr("src",dataList.owner.headImgUrl);
 	                            $('.ownerNickName .nickName').html(dataList.owner.nickName);
 	                            if(dataList.user){
-	                                wx.wxConfig(2, dataList.user + " 邀请您参加 「" + dataList.event.name + "」", Dom.tranDate(dataList.event.startTime),
+	                                wx.wxShare(dataList.user + " 邀请您参加 「" + dataList.event.name + "」", Dom.tranDate(dataList.event.startTime),
 	                                "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + dataList.event.eventId));
 	                            }else{//用户没有关注历历
-	                                wx.wxConfig(2, dataList.owner.nickName + " 邀请您参加 「" + dataList.event.name + "」", Dom.tranDate(dataList.event.startTime),
+	                                wx.wxShare(dataList.owner.nickName + " 邀请您参加 「" + dataList.event.name + "」", Dom.tranDate(dataList.event.startTime),
 	                                "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + dataList.event.eventId));
 	                            }
 	                        }
