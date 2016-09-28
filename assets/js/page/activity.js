@@ -11,7 +11,8 @@ var mobiScroll = require("../vendor/mobiScroll/mobiScroll.js");
 var wx = require("../vendor/weChat/wxInit.js");
 var Ajax = require("../common/ajax.js");
 var fastClick = require("../vendor/ImproveMobile/fastClick.js");
-var autoTextArea = require("../vendor/ImproveMobile/autoTextArea.js");
+//var autoTextArea = require("../vendor/ImproveMobile/autoTextArea.js");
+require("../vendor/ImproveMobile/autoTextArea.js");
 require("../vendor/dropLoad/dropLoad.js")
 
 var fuc = {
@@ -47,8 +48,8 @@ var fuc = {
         this.config.time = this.ifTimeExist(Dom.getRequest("date"));
         this.config.timeArr = this.transTime(this.config.time);
         this.config.eventId = Dom.getRequest("eventId");
-        this.config.remindSelect = document.getElementById("select");
-        this.config.repeatSelect = document.getElementById('select1');
+        this.config.remindSelect = document.getElementById("select1");
+        this.config.repeatSelect = document.getElementById('select');
         this.config.map = {//颜色与其名称的键值对
             '#66cccc': '默认颜色',
             '#0b8043': '罗勒绿',
@@ -235,7 +236,7 @@ var fuc = {
             $('.eventName').val($(this).html());
             that.config.tagId = $(this).attr("data-tag");//保存用户选择的标签id
             that.getTemplate($(this).attr("data-template"));
-            $('.tips').slideUp();
+            $('.topTips').slideUp();
             event.preventDefault();
         });
     },
@@ -461,7 +462,6 @@ var fuc = {
                     $('.imageCon').append(imgHtml);
                     var imgName = $('.imgItem .imgName');
                     for (var p = 0; p < imgName.size(); p++) {
-                        //console.log(imgList[p].themeUrl);
                         imgName.eq(p).css({
                             "background-image": "url(" + imgList[p].themeUrl + ")",
                             "background-color": imgList[p].themeColor
@@ -708,6 +708,7 @@ var fuc = {
         });
         /*---------------点击删除---------------*/
         $('.delete').click(function () {
+            $('#dialog1 .weui_dialog__bd').html("确定要删除该事件吗？")
             $('#dialog1').fadeIn();
             $('#confirm').on('tap', function () {//点击确定按钮
                 $('#dialog1').fadeOut();
@@ -727,8 +728,8 @@ var fuc = {
                     } else {//删除失败弹出提示框
                         $('#loadingToast').fadeOut();//隐藏loading
                         var error = data.msg;
-                        $('#dialog2 .weui_dialog_bd').html(error);
-                        $('#dialog2').fadeIn().on('click', '.weui_btn_dialog', function () {
+                        $('#dialog2 .weui-dialog__bd').html(error);
+                        $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
                             $('#dialog2').off('click').fadeOut();
                         });
                     }

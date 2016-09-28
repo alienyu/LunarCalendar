@@ -222,18 +222,21 @@ var Ajax = {
     getWeather:function(date){
         $.get(
             "http://www.li-li.cn/llwx/weather/get",
-            {"date":date},
+            {
+                "date":date,
+                "days":1
+            },
             function(data) {
                 if(data.code ==0){
                     if(data.data){
-                        var weatherList = data.data;
+                        var weatherList = data.data[0];
                         var html = "";
                         if(weatherList.qlty){
-                            html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
+                            html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
                         }else{
-                            html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                            html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
                         }
-                        $('.weather').append(html);
+                        $('.weather .itemCon').append(html);
                     }else{
                         $('.weather').css("display","none");
                     }
@@ -251,7 +254,7 @@ var Ajax = {
                 if (list.personal) {
                     var html = "";
                     if (list.personal.type3) {
-                        var type = data.personal.type3.replace(/\,/g, "&nbsp;&nbsp;");
+                        var type = list.personal.type3.replace(/\,/g, "&nbsp;");
                         html = "<span>" + type + "</span>";
                         $('.suitable .itemCon').append(html);
                     } else {
@@ -294,8 +297,8 @@ var Ajax = {
                 }else{//提交失败提醒错误信息
                     $('#loadingToast').fadeOut();
                     var error = data.msg;
-                    $('#dialog2 .weui_dialog_bd').html(error);
-                    $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
+                    $('#dialog2 .weui-dialog__bd').html(error);
+                    $('#dialog2').show().on('click', '.weui-dialog__btn', function () {
                         $('#dialog2').off('click').hide();
                     });
                 }
@@ -331,8 +334,8 @@ var Ajax = {
                     that.config.eventId = data.data;
                 }else{//提交失败提醒错误信息
                     var error = data.msg;
-                    $('#dialog2 .weui_dialog_bd').html(error);
-                    $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
+                    $('#dialog2 .weui-dialog__bd').html(error);
+                    $('#dialog2').show().on('click', '.weui-dialog__btn', function () {
                         $('#dialog2').off('click').hide();
                     });
                 }
@@ -370,7 +373,7 @@ var Ajax = {
                     $('#loadingToast').fadeOut();
                     var error = data.msg;
                     $('#dialog2 .weui_dialog_bd').html(error);
-                    $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
+                    $('#dialog2').show().on('click', '.weui-dialog__btn', function () {
                         $('#dialog2').off('click').hide();
                     });
                 }

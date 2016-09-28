@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <title>添加提醒</title>
     <meta name="format-detection" content="telephone=no"/>
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="x5-orientation" content="portrait">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,6 +12,7 @@
 </head>
 <body>
 <div class="eventCon fs14">
+    <div class="titleNone cff">缺少事件名称</div>
     <div class="topTips">
         <div class="tipsCon"></div>
         <div class="showAll">
@@ -28,18 +28,9 @@
         </div>
         <div class="itemCon">
             <div class="startTime">
-                <span class="timeText">开始</span>
                 <span class="startCon timeCon">2016年9月20日 星期二 13:00</span>
-                <div class="timeIconCon">
-                    <span class="timeIcon"></span>
-                </div>
             </div>
             <input type="text" id="startTime">
-            <div class="endTime">
-                <span class="timeText">结束</span>
-                <span class="endCon timeCon">2016年9月20日 星期二 13:00</span>
-            </div>
-            <input type="text" id="endTime">
         </div>
     </div>
     <div class="item repetition">
@@ -58,24 +49,63 @@
         </div>
     </div>
 </div>
-<a href="javascript:;" class="saveBtn cff">保存活动</a>
-<div class="delete fs12">删除此活动</div>
+<a href="javascript:;" class="saveBtn cff">保存提醒</a>
+<div class="delete fs12">删除此提醒</div>
+<!--标题标签模板-->
+<script type="text/x-list" id="tagListTemplate">
+    <a href="javascript:;" class="c00" data-template="{{templateId}}" data-tag="{{tagId}}">{{tagName}}</a>
+</script>
+<!--数据加载时的loading-->
+<div id="loadingToast" style="opacity:0;display:none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <div class="ll-loading">
+            <div class="ll-load-inner">
+                <div class="ll-load-container">
+                    <div class="ll-load-scale-multiple la-2x">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div><!-- end la-2x -->
+                </div><!-- end ll-load-container -->
+            </div><!-- end ll-load-inner -->
+            <div class="ll-load-logo">
+                <span class="ll-logo-1"></span>
+                <span class="ll-logo-2"></span>
+                <span class="ll-logo-3"></span>
+            </div><!-- end ll-loading -->
+        </div><!-- end ll-loading -->
+        <p class="weui-toast__content">数据加载中</p>
+    </div>
+</div>
 <!--横屏-->
 <div id="orientLayer" class="mod-orient-layer">
     <div class="mod-orient-layer__content"><i class="icon mod-orient-layer__icon-orient"></i>
         <div class="mod-orient-layer__desc">为了更好的体验，请使用竖屏浏览</div>
     </div>
 </div>
-<script  type="text/x-address" id="addressListTemplate">
-    <div class="item">
-                <div class="icon">
-                    <img src="../../assets/imgs/page/activity/ic_place.png" alt="">
-                </div>
-                <div class="itemCon">
-                    <span class="name">{{name}}</span>
-                    <span class="address fs12 c33">{{address}}</span>
-                </div>
-            </div>
-</script>
+<div id="dialog1" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__hd">
+            <strong class="weui-dialog__title">温馨提示</strong>
+        </div>
+        <div class="weui_dialog__bd">确定要删除该事件吗？</div>
+        <div class="weui_dialog__ft">
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default default">取消</a>
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary confirm">确定</a>
+        </div>
+    </div>
+</div>
+<!--点击完成，若开始时间在结束时间之后，则弹出提示框-->
+<div id="dialog2" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__bd"></div>
+        <div class="weui-dialog__ft">
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+        </div>
+    </div>
+</div>
 </body>
 </html>

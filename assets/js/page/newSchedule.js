@@ -45,7 +45,7 @@ var fuc = {
             type: "get",
             url: "http://www.li-li.cn/llwx/event/getSchedule",
             data: param,
-            async: false,
+            async: true,
             success: function(data) {
                 if(data.code == 0) {
                     var newData = {},
@@ -67,6 +67,7 @@ var fuc = {
                             } else if(that.config.direction == "down") {
                                 that.config.stopSliderDown = true;
                             }
+                            mask.close();
                         } else {
                             $.extend(newData, {type: type, today: today});
                             if(that.config.direction == "down") {
@@ -183,29 +184,11 @@ var fuc = {
     },
     bindEvent: function() {
         var that = this;
-        $("#container").on("swipeUp", function(e) {
-            //判断是否还有后续数据
-            if(!that.config.stopSliderUp) {
-                that.config.direction = "up";
-                that.config.pageIndex = ++that.config.pageUp;
-                that.config.lastDate = that.getSideDomDate().bottomDate;
-                that.getData();
-            }
-        });
-
-        $("#container").on("swipeDown", function(e) {
-            //判断是否还有前面数据
-            if(!that.config.stopSliderDown) {
-                that.config.direction = "down";
-                that.config.pageIndex = --that.config.pageDown;
-                that.config.lastDate = that.getSideDomDate().topDate;
-                that.getData();
-            }
-        });
 
         $(window).on("scroll", function() {
             //渲染吸顶日期
             that.checkHeadDate($(document.body).scrollTop() + parseInt($(window).height()/2), 10);
+            that.renderOtherData();
         });
 
         //go today
@@ -226,7 +209,35 @@ var fuc = {
                 $(".select_mask").css("display", "block");
                 $("#btnDetail").removeClass("move_down").addClass("move_up");
             }
-        })
+        });
+
+        //添加活动详情跳转地址
+        $("#container").on('tap', '.record', function(e) {
+            var id = $(e.target).data("eventId");
+            window.location .href = "http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2fnewShowEvent.html?eventId=" + id;
+        });
+    },
+    renderOtherData: function() {
+        var that = this;
+        var top = $(document.body).scrollTop();
+        //判断滚动到底部
+        if(top + $(window).height() >= $(document.body).height()) {
+            //判断是否还有后续数据
+            if(!that.config.stopSliderUp) {
+                that.config.direction = "up";
+                that.config.pageIndex = ++that.config.pageUp;
+                that.config.lastDate = that.getSideDomDate().bottomDate;
+                that.getData();
+            }
+        } else if(top == 0) {
+            //判断是否还有前面数据
+            if(!that.config.stopSliderDown) {
+                that.config.direction = "down";
+                that.config.pageIndex = --that.config.pageDown;
+                that.config.lastDate = that.getSideDomDate().topDate;
+                that.getData();
+            }
+        }
     },
     getSideDomDate: function() {
         return {
