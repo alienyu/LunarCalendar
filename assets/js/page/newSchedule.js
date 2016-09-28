@@ -67,6 +67,7 @@ var fuc = {
                             } else if(that.config.direction == "down") {
                                 that.config.stopSliderDown = true;
                             }
+                            mask.close();
                         } else {
                             $.extend(newData, {type: type, today: today});
                             if(that.config.direction == "down") {

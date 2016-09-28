@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link href="/wx/css/newSchedule.css?11d38b4f5bfe9d28ff6d" rel="stylesheet"></head>
+<link href="/wx/css/newSchedule.css?faf91ce7dc8714ccbfa0" rel="stylesheet"></head>
 <body>
     <header>
         <div class="current_month">2016年9月</div>
@@ -114,7 +114,7 @@
                                      <% } %>
                                     <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
-                                        <div class="time"><%= timeDetail.startTime.split(' ')[1] %>-<%= timeDetail.endTime ? timeDetail.endTime.split(' ')[1] : ''%></div>
+                                        <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %>-<%= timeDetail.endTime ? timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : ''%></div>
                                         <div class="address"><%= timeDetail.location %></div>
                                     </div>
                                 </div>
@@ -160,7 +160,7 @@
                                 <% } %>
                                     <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
-                                        <div class="time"><%= timeDetail.startTime.split(' ')[1] %>-<%= timeDetail.endTime ? timeDetail.endTime.split(' ')[1] : '' %></div>
+                                        <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %>-<%= timeDetail.endTime ? timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
                                         <div class="address"><%= timeDetail.location %></div>
                                     </div>
                                 </div>
@@ -208,7 +208,7 @@
                             <% } %>
                             <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                 <div class="title"><%= timeDetail.name %></div>
-                                <div class="time"><%= timeDetail.startTime.split(' ')[1] %>-<%= timeDetail.endTime ? timeDetail.endTime.split(' ')[1] : '' %></div>
+                                <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %>-<%= timeDetail.endTime ? timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
                                 <div class="address"><%= timeDetail.location %></div>
                             </div>
                         </div>
@@ -219,4 +219,4 @@
         <% } %>
     </script>
     <script src="http://api.map.baidu.com/api?v=2.0&ak=Nv4xifhhDjKpB1DP6uDwd3cNbHeH2PaV"></script>
-<script type="text/javascript" src="/wx/js/newSchedule.js?11d38b4f5bfe9d28ff6d"></script></body></html>
+<script type="text/javascript" src="/wx/js/newSchedule.js?faf91ce7dc8714ccbfa0"></script></body></html>
