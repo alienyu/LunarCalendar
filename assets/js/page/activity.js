@@ -212,7 +212,7 @@ var fuc = {
                         if (list.color) {//若对应的是背景颜色
                             that.config.bgColor = list.color;
                             $('.colorShow').css("background", list.color);
-                            $('.colorText').html(that.config.map(list.color));
+                            $('.colorText').html(that.config.map[list.color]);
                         } else if (list.theme.themeId) {//若对应的是背景图片
                             that.config.bgColor = "";
                             that.config.themeId = list.theme.themeId;
@@ -321,6 +321,10 @@ var fuc = {
                     that.config.remarkText = eventList.remark;
                     that.config.remarkImgs = eventList.remarkImgs;
                     that.config.nickName = eventList.user;//当前用户昵称
+                    that.mapConfig.location=location;
+                    that.mapConfig.latitude=eventList.latitude;
+                    that.mapConfig.longitude=eventList.longitude;
+                    that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
                     $('.startCon').html(theStartTime).attr("id", eventList.startTime);
                     $('.endCon').html(theEndTime).attr("id", eventList.endTime);
                     /*------------设置重复类型----------------*/
@@ -378,12 +382,13 @@ var fuc = {
         var that = this;
         obj.click(function () {
             if (that.mapConfig.latitude && that.mapConfig.longitude) {//地址存在,直接弹出
+                that.mapMove();
                 $('.shadowBg').fadeIn();
                 shadow.show();
                 container.animate({"top": "10%"}, 200);
             } else {//获取地址
                 wx.getWx().getLocation({
-                    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                    type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
                     success: function (res) {
                         console.log("getlocation");
                         var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
@@ -392,7 +397,8 @@ var fuc = {
                         //var accuracy = res.accuracy; // 位置精度
                         that.mapConfig.latitude = latitude;
                         that.mapConfig.longitude = longitude;
-                        that.mapConfig.moveendPoint = AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
+                        that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
+                        console.log(that.mapConfig.moveendPoint);
                         that.mapMove();
                         $('.shadowBg').fadeIn();
                         shadow.show();
@@ -606,7 +612,6 @@ var fuc = {
                 startTime = $('.startCon').attr("id"),
                 endTime = $('.endCon').attr("id"),
                 repeatType = that.config.repeatSelect.value,
-                location = $('.siteText').html(),
                 tipType = that.config.remindSelect.value,
                 tipTime = "";
             if (tipType == 3) {
@@ -620,7 +625,7 @@ var fuc = {
                         $('.titleNone').slideUp();
                     }, 300);
                 } else {
-                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 'longitude', 'latitude', that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.location, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
                     //todo 弹出蒙层
                     that.shareShadow(); //显示分享提示弹出层，点击后隐藏
                 }
@@ -634,7 +639,7 @@ var fuc = {
                 } else {
                     $('#dialog1').fadeIn();
                     $('#dialog1 .confirm').on("tap", function () {//点击确定
-                        Ajax.eventAdd2(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 'longitude', 'latitude', that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+                        Ajax.eventAdd2(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.location, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
                         Ajax.getUserInformation2();
                         wx.wxConfig(2, that.config.nickName + " 邀请您参加 「" + name + "」", $('.startTime').html(),
                             "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + that.config.eventId));
@@ -675,9 +680,9 @@ var fuc = {
                 }, 300);
             } else {
                 if (that.config.eventId) {//若事件已保存，则调用修改事件
-                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 121.25, 23, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.location, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
                 } else {
-                    Ajax.eventAdd(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 121.25, 23, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+                    Ajax.eventAdd(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.location, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
                 }
             }
 
@@ -796,11 +801,12 @@ var fuc = {
                 $('.listCon').append(html);
                 $('.addressItem').on('tap', function () {
                     var jw = $(this).attr('data-jw');
-                    that.mapConfig.latitude = jw.split(",")[0];
-                    that.mapConfig.longitude = jw.split(",")[1];
+                    that.mapConfig.latitude = jw.split(",")[1];
+                    that.mapConfig.longitude = jw.split(",")[0];
                     that.mapConfig.location = $(this).find(".name").html();
+                    that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
                     $(".siteText").removeClass("ccc").html(that.mapConfig.location);
-                    $(".mapShadow").animate({"top": "100%"}, 200, function () {
+                    $(".mapShadow .container").animate({"top": "100%"}, 200, function () {
                         $(this).parent().hide();
                     });
                     $('.shadowBg').fadeOut();
@@ -830,7 +836,10 @@ var fuc = {
     mapMove: function () {
         console.log("mapMove");
         var that = this;
-        that.mapConfig.map.setCenter(that.mapConfig.moveendPoint);
+        console.log(that.mapConfig.moveendPoint.getLng() + "");
+        that.mapConfig.map.panTo([that.mapConfig.moveendPoint.getLng(), that.mapConfig.moveendPoint.getLat()]);
+        that.mapConfig.page = 1;
+        that.searchNearByResult();
     }
 }
 

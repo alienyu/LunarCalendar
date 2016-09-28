@@ -3,6 +3,7 @@
  * 微信分享
  */
 var wx = require("./jweixin.js");
+var imageUrl = "http://www.li-li.cn/app/icon.png";
 var wxConfig = {
 
     wxConfig: function (type) {
