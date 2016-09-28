@@ -24,42 +24,42 @@ body {
     section {
         margin-top: 30px;
         padding-top: 10px;
-        //.month_01 {
-        //    background: url(../../imgs/page/newSchedule/monthBG/1.jpg);
-        //}
-        //.month_02 {
-        //    background: url(../../imgs/page/newSchedule/monthBG/2.jpg);
-        //}
-        //.month_03 {
-        //    background: url(../../imgs/page/newSchedule/monthBG/3.jpg);
-        //}
-        //.month_04 {
-        //    background: url(../../imgs/page/newSchedule/monthBG/4.jpg);
-        //}
-        //.month_05 {
-        //    background: url(../../imgs/page/newSchedule/monthBG/5.jpg);
-        //}
-        //.month_06 {
-        //    background: url(../../imgs/page/newSchedule/monthBG/6.jpg);
-        //}
-        //.month_07 {
-        //    background: url(../../imgs/page/newSchedule/monthBG/7.jpg);
-        //}
-        //.month_08 {
-        //    background: url(../../imgs/page/newSchedule/monthBG/8.jpg);
-        //}
-        //.month_09 {
-        //    background: url(../../imgs/page/newSchedule/monthBG/9.jpg);
-        //}
-        //.month_10 {
-        //    background: url(../../imgs/page/newSchedule/monthBG/10.jpg);
-        //}
-        //.month_11 {
-        //    background: url(../../imgs/page/newSchedule/monthBG/11.jpg);
-        //}
-        //.month_12 {
-        //    background: url(../../imgs/page/newSchedule/monthBG/12.jpg);
-        //}
+        .month_1 {
+            background: url(../../imgs/page/newSchedule/monthBG/1.jpg) scroll center center;
+        }
+        .month_2 {
+            background: url(../../imgs/page/newSchedule/monthBG/2.jpg) scroll center center;
+        }
+        .month_3 {
+            background: url(../../imgs/page/newSchedule/monthBG/3.jpg) scroll center center;
+        }
+        .month_4 {
+            background: url(../../imgs/page/newSchedule/monthBG/4.jpg) scroll center center;
+        }
+        .month_5 {
+            background: url(../../imgs/page/newSchedule/monthBG/5.jpg) scroll center center;
+        }
+        .month_6 {
+            background: url(../../imgs/page/newSchedule/monthBG/6.jpg) scroll center center;
+        }
+        .month_7 {
+            background: url(../../imgs/page/newSchedule/monthBG/7.jpg) scroll center center;
+        }
+        .month_8 {
+            background: url(../../imgs/page/newSchedule/monthBG/8.jpg) scroll center center;
+        }
+        .month_9 {
+            background: url(../../imgs/page/newSchedule/monthBG/9.jpg) scroll center center;
+        }
+        .month_10 {
+            background: url(../../imgs/page/newSchedule/monthBG/10.jpg) scroll center center;
+        }
+        .month_11 {
+            background: url(../../imgs/page/newSchedule/monthBG/11.jpg) scroll center center;
+        }
+        .month_12 {
+            background: url(../../imgs/page/newSchedule/monthBG/12.jpg) scroll center center;
+        }
         .record {
             width: 100%;
             margin-bottom: 10px;
@@ -94,12 +94,20 @@ body {
                 .text {
                     &.contain_img, &.contain_map {
                         margin-top: 25px;
-                        height: 90px;
+                        //height: 90px;
                     }
                     &.contain_map {
                         position: absolute;
                         bottom: 15px;
                         z-index: 102;
+                        &.no_address {
+                            bottom: -15px;
+                        }
+                    }
+                    &.contain_img {
+                        &.no_address {
+                            margin-top: 55px;
+                        }
                     }
                     font-size: 14px;
                     text-indent: 10px;
