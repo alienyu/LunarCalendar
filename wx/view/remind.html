@@ -9,9 +9,10 @@
     <meta name="x5-orientation" content="portrait">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link href="/wx/css/remind.css?c245da17a94ccdbcd0c4" rel="stylesheet"></head>
+<link href="/wx/css/remind.css?59c4d094b9a9d80b3857" rel="stylesheet"></head>
 <body>
 <div class="eventCon fs14">
+    <div class="titleNone cff">缺少事件名称</div>
     <div class="topTips">
         <div class="tipsCon"></div>
         <div class="showAll">
@@ -27,18 +28,9 @@
         </div>
         <div class="itemCon">
             <div class="startTime">
-                <span class="timeText">开始</span>
                 <span class="startCon timeCon">2016年9月20日 星期二 13:00</span>
-                <div class="timeIconCon">
-                    <span class="timeIcon"></span>
-                </div>
             </div>
             <input type="text" id="startTime">
-            <div class="endTime">
-                <span class="timeText">结束</span>
-                <span class="endCon timeCon">2016年9月20日 星期二 13:00</span>
-            </div>
-            <input type="text" id="endTime">
         </div>
     </div>
     <div class="item repetition">
@@ -57,24 +49,63 @@
         </div>
     </div>
 </div>
-<a href="javascript:;" class="saveBtn cff">保存活动</a>
-<div class="delete fs12">删除此活动</div>
+<a href="javascript:;" class="saveBtn cff">保存提醒</a>
+<div class="delete fs12">删除此提醒</div>
+
+<script type="text/x-list" id="tagListTemplate">
+    <a href="javascript:;" class="c00" data-template="{{templateId}}" data-tag="{{tagId}}">{{tagName}}</a>
+</script>
+
+<div id="loadingToast" style="opacity:0;display:none">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <div class="ll-loading">
+            <div class="ll-load-inner">
+                <div class="ll-load-container">
+                    <div class="ll-load-scale-multiple la-2x">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="ll-load-logo">
+                <span class="ll-logo-1"></span>
+                <span class="ll-logo-2"></span>
+                <span class="ll-logo-3"></span>
+            </div>
+        </div>
+        <p class="weui-toast__content">数据加载中</p>
+    </div>
+</div>
 
 <div id="orientLayer" class="mod-orient-layer">
     <div class="mod-orient-layer__content"><i class="icon mod-orient-layer__icon-orient"></i>
         <div class="mod-orient-layer__desc">为了更好的体验，请使用竖屏浏览</div>
     </div>
 </div>
-<script type="text/x-address" id="addressListTemplate">
-    <div class="item">
-                <div class="icon">
-                    <img src="/wx/./img/695697cdc21cc1eb54a94086171a63e8.png" alt="">
-                </div>
-                <div class="itemCon">
-                    <span class="name">{{name}}</span>
-                    <span class="address fs12 c33">{{address}}</span>
-                </div>
-            </div>
-</script>
-<script type="text/javascript" src="/wx/js/remind.js?c245da17a94ccdbcd0c4"></script></body>
+<div id="dialog1" style="display: none">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__hd">
+            <strong class="weui-dialog__title">温馨提示</strong>
+        </div>
+        <div class="weui_dialog__bd">确定要删除该事件吗？</div>
+        <div class="weui_dialog__ft">
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default default">取消</a>
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary confirm">确定</a>
+        </div>
+    </div>
+</div>
+
+<div id="dialog2" style="display: none">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__bd"></div>
+        <div class="weui-dialog__ft">
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="/wx/js/remind.js?59c4d094b9a9d80b3857"></script></body>
 </html>

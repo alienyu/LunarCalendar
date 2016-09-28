@@ -120,8 +120,6 @@
 <!--标题标签模板-->
 <script type="text/x-list" id="tagListTemplate">
     <a href="javascript:;" class="c00" data-template="{{templateId}}" data-tag="{{tagId}}">{{tagName}}</a>
-
-
 </script>
 <!--点击完成，若开始时间在结束时间之后，则弹出提示框-->
 <div id="dialog2" style="display: none;">
@@ -231,33 +229,14 @@
         <div class="textCon">
             <textarea name="" id="remarkText" rows="6"></textarea>
         </div>
-        <div class="remarkImg ">
-            <div class="page__bd">
-                <div class="weui-gallery" id="gallery">
-                    <span class="weui-gallery__img" id="galleryImg"></span>
-                    <div class="weui-gallery__opr">
-                        <a href="javascript:" class="weui-gallery__del">
-                            <i class="weui-icon-delete weui-icon_gallery-delete"></i>
-                        </a>
-                    </div>
-                </div>
 
-                <div class="weui-cells weui-cells_form">
-                    <div class="weui-cell">
-                        <div class="weui-cell__bd">
-                            <div class="weui-uploader">
-                                <div class="weui-uploader__bd">
-                                    <ul class="weui-uploader__files" id="uploaderFiles"></ul>
-                                    <div class="weui-uploader__input-box">
-                                        <input id="uploaderInput" class="weui-uploader__input" type="file"
-                                               accept="image/*" multiple/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="remarkImg ">
+            <form name="form1" id="form" runat="server" enctype="multipart/form-data" method="post" >
+                <div class="img_upload_box">
+                    <input type="file" class="img_upload_btn" name="file">
+                    <a href="javascript:;">+</a>
                 </div>
-            </div>
+            </form>
 
         </div>
     </div>
