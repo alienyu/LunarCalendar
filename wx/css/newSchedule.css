@@ -102,12 +102,17 @@ body section .record .content .text {
 body section .record .content .text.contain_img,
 body section .record .content .text.contain_map {
   margin-top: 25px;
-  height: 90px;
 }
 body section .record .content .text.contain_map {
   position: absolute;
   bottom: 15px;
   z-index: 102;
+}
+body section .record .content .text.contain_map.no_address {
+  bottom: -15px;
+}
+body section .record .content .text.contain_img.no_address {
+  margin-top: 55px;
 }
 body section .record .content .text div {
   height: 30px;

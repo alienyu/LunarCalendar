@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "695897ba9d78ce7b553f"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "b4ded52021f27c5239db"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -798,8 +798,8 @@
 	        });
 	
 	        //添加活动详情跳转地址
-	        $("#container").on('tap', '.record', function(e) {
-	            var id = $(e.target).data("eventId");
+	        $("#container").on('tap', '.content', function(e) {
+	            var id = $(e.target).parent('.record').data("eventId");
 	            window.location .href = "http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2fnewShowEvent.html?eventId=" + id;
 	        });
 	    },

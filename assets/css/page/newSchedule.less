@@ -94,12 +94,20 @@ body {
                 .text {
                     &.contain_img, &.contain_map {
                         margin-top: 25px;
-                        height: 90px;
+                        //height: 90px;
                     }
                     &.contain_map {
                         position: absolute;
                         bottom: 15px;
                         z-index: 102;
+                        &.no_address {
+                            bottom: -15px;
+                        }
+                    }
+                    &.contain_img {
+                        &.no_address {
+                            margin-top: 55px;
+                        }
                     }
                     font-size: 14px;
                     text-indent: 10px;

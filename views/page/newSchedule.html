@@ -115,7 +115,9 @@
                                     <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
                                         <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= timeDetail.endTime ? '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : ''%></div>
+                                        <% if(timeDetail.location) { %>
                                         <div class="address"><%= timeDetail.location %></div>
+                                        <% } %>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -161,7 +163,9 @@
                                     <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
                                         <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= timeDetail.endTime ?  '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
+                                        <% if(timeDetail.location) { %>
                                         <div class="address"><%= timeDetail.location %></div>
+                                        <% } %>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -209,7 +213,9 @@
                             <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                 <div class="title"><%= timeDetail.name %></div>
                                 <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= timeDetail.endTime ?  '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
+                                <% if(timeDetail.location) { %>
                                 <div class="address"><%= timeDetail.location %></div>
+                                <% } %>
                             </div>
                         </div>
                          <div class="clearfix"></div>
