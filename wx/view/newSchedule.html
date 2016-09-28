@@ -101,7 +101,7 @@
                                 <!--定义背景元素-->
                                 <% if(timeDetail.longitude == '') { %>
                                     <% if(timeDetail.theme) { %>
-                                        <div class="content" style="background: url(<%= timeDetail.theme.url %>) center center no-repeat;background-size: cover;">
+                                        <div class="content" style="background: url(<%= timeDetail.theme.themeUrl %>) center center no-repeat;background-size: cover;">
                                     <% } else { %>
                                         <div class="content" style="background-color: <%= timeDetail.bgColor %>">
                                     <% } %>
@@ -195,7 +195,7 @@
                         <!--定义背景元素-->
                         <% if(timeDetail.longitude == '') { %>
                             <% if(timeDetail.theme) { %>
-                                <div class="content" style="background: url(<%= timeDetail.theme.url %>) center center no-repeat;background-size: cover;">
+                                <div class="content" style="background: url(<%= timeDetail.theme.themeUrl %>) center center no-repeat;background-size: cover;">
                             <% } else { %>
                                 <div class="content" style="background-color: <%= timeDetail.bgColor %>">
                              <% } %>
