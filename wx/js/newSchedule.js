@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "faf91ce7dc8714ccbfa0"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "72e07cd586436ec51fab"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -629,7 +629,7 @@
 	        }
 	        $.ajax({
 	            type: "get",
-	            url: "http://www.li-li.cn/llwx/event/getSchedule",
+	            url: "/event/getSchedule",
 	            data: param,
 	            async: true,
 	            success: function(data) {
@@ -770,6 +770,7 @@
 	    },
 	    bindEvent: function() {
 	        var that = this;
+	
 	        $("#container").on("swipeUp", function(e) {
 	            //判断是否还有后续数据
 	            if(!that.config.stopSliderUp) {
@@ -813,7 +814,13 @@
 	                $(".select_mask").css("display", "block");
 	                $("#btnDetail").removeClass("move_down").addClass("move_up");
 	            }
-	        })
+	        });
+	
+	        //添加活动详情跳转地址
+	        $("#container").on('tap', '.record', function(e) {
+	            var id = $(e.target).data("eventId");
+	            window.location .href = "http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2fnewShowEvent.html?eventId=" + id;
+	        });
 	    },
 	    getSideDomDate: function() {
 	        return {
