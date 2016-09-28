@@ -13,6 +13,9 @@ var fuc = {
         pageSize: 10,
         scheduleData: [],
         direction: "",
+        isLoading: false,
+        startY: "", //判断滑动初始位置
+        endY: ",", //判断滑动结束位置
         lastDate: "",
         bottomDate: "", //拉取以前的数据中最后一条的日期
         monthPos: {},
@@ -41,57 +44,61 @@ var fuc = {
                 lastDate: that.config.lastDate //选填，进入页面时不传，上拉传最下面一天，下拉传最上面一天
             });
         }
-        $.ajax({
-            type: "get",
-            url: "http://www.li-li.cn/llwx/event/getSchedule",
-            data: param,
-            async: true,
-            success: function(data) {
-                if(data.code == 0) {
-                    var newData = {},
-                    today = Dom.getToday(data.data.length > 0 ? data.data[0].date : "");
-                    //初始化
-                    newData.dataArr = that.dealData(data.data);
-                    if(type == "init") {
-                        //没有数据说明今天以后一条数据都没有了
-                        if(data.data.length < 1) {
-                            that.config.stopSliderUp = true;
-                        }
-                        $.extend(newData, {type: type, today: today});
-                        that.renderPage(newData);
-                    } else {
-                        //滑动判断
-                        if(data.data.length < 1) {
-                            if(that.config.direction == "up") {
+        if(!this.config.isLoading) {
+            this.config.isLoading = true;
+            $.ajax({
+                type: "get",
+                url: "http://www.li-li.cn/llwx/event/getSchedule",
+                data: param,
+                async: true,
+                success: function(data) {
+                    that.config.isLoading = false;
+                    if(data.code == 0) {
+                        var newData = {},
+                            today = Dom.getToday(data.data.length > 0 ? data.data[0].date : "");
+                        //初始化
+                        newData.dataArr = that.dealData(data.data);
+                        if(type == "init") {
+                            //没有数据说明今天以后一条数据都没有了
+                            if(data.data.length < 1) {
                                 that.config.stopSliderUp = true;
-                            } else if(that.config.direction == "down") {
-                                that.config.stopSliderDown = true;
                             }
-                            mask.close();
-                        } else {
                             $.extend(newData, {type: type, today: today});
-                            if(that.config.direction == "down") {
-                                that.config.bottomDate = data.data[0].date;
-                            }
                             that.renderPage(newData);
+                        } else {
+                            //滑动判断
+                            if(data.data.length < 1) {
+                                if(that.config.direction == "up") {
+                                    that.config.stopSliderUp = true;
+                                } else if(that.config.direction == "down") {
+                                    that.config.stopSliderDown = true;
+                                }
+                                mask.close();
+                            } else {
+                                $.extend(newData, {type: type, today: today});
+                                if(that.config.direction == "down") {
+                                    that.config.bottomDate = data.data[0].date;
+                                }
+                                that.renderPage(newData);
+                            }
+                        }
+                    } else {
+                        mask.close();
+                        alert(data.msg);
+                    }
+                },
+                error: function() {
+                    mask.close();
+                    if(type != "init") {
+                        if(that.config.direction == "up") {
+                            that.config.pageIndex = --that.config.pageUp;
+                        } else {
+                            that.config.pageIndex = ++that.config.pageDown;
                         }
                     }
-                } else {
-                    mask.close();
-                    alert(data.msg);
                 }
-            },
-            error: function() {
-                mask.close();
-                if(type != "init") {
-                    if(that.config.direction == "up") {
-                        that.config.pageIndex = --that.config.pageUp;
-                    } else {
-                        that.config.pageIndex = ++that.config.pageDown;
-                    }
-                }
-            }
-        })
+            })
+        }
     },
     dealData: function(data) {
         if(data.length > 0) {
@@ -143,12 +150,21 @@ var fuc = {
                     $("#container").find("div").first().before(monthDom);
                     dom.addClass("first_day").addClass(dateClass);
                 }
+                if($(".record").first().hasClass(".no_record") && $(".record").first().data("date").split("-")[2] != 1) {
+                    $(".record").first().prev().remove();
+                }
                 $("#container").find("div").first().before(html({data: data}));
                 window.location.href = "#current";
                 dom.removeAttr("id");
             }
         }
         this.renderBMP();
+        $(".month_divide").each(function(i,e) {
+           $(e).css("margin-top", "50px");
+        });
+        if($("#container").find("div").first().hasClass("month_divide")) {
+            $("#container").find("div").first().css("margin-top", "0px");
+        }
         mask.close();
         this.calculateMonthPos();
     },
@@ -185,10 +201,16 @@ var fuc = {
     bindEvent: function() {
         var that = this;
 
-        $(window).on("scroll", function() {
+        $(window).on('touchstart', function(e) {
+            that.config.startY = e.targetTouches[0].pageY;
+        });
+
+        $(window).on("touchmove", function(e) {
             //渲染吸顶日期
             that.checkHeadDate($(document.body).scrollTop() + parseInt($(window).height()/2), 10);
-            that.renderOtherData();
+            that.config.endY = e.targetTouches[0].pageY;
+            var direct = (that.config.endY - that.config.startY > 0) ? "down" : "up";
+            that.renderOtherData(direct);
         });
 
         //go today
@@ -217,11 +239,11 @@ var fuc = {
             window.location .href = "http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2fnewShowEvent.html?eventId=" + id;
         });
     },
-    renderOtherData: function() {
+    renderOtherData: function(direct) {
         var that = this;
         var top = $(document.body).scrollTop();
         //判断滚动到底部
-        if(top + $(window).height() >= $(document.body).height()) {
+        if(direct == "up" && (top + $(window).height() >= $(document.body).height())) {
             //判断是否还有后续数据
             if(!that.config.stopSliderUp) {
                 that.config.direction = "up";
@@ -229,7 +251,8 @@ var fuc = {
                 that.config.lastDate = that.getSideDomDate().bottomDate;
                 that.getData();
             }
-        } else if(top == 0) {
+        }
+        if(direct == "down" && top == 0) {
             //判断是否还有前面数据
             if(!that.config.stopSliderDown) {
                 that.config.direction = "down";

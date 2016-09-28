@@ -39,12 +39,9 @@
         <% if(type == "init") { %>
             <!--初始化并且今天之后无数据-->
             <% if(eventArr.length < 1) { %>
-                <!--是否是月首-->
-                <% if(today.day == 1) { %>
-                    <div class="month_divide month_<%= parseInt(today.month, 10) %>">
-                        <div class="text"><%= today.month %>月</div>
-                    </div>
-                <% } %>
+                <div class="month_divide month_<%= parseInt(today.month, 10) %>">
+                    <div class="text"><%= today.month %>月</div>
+                </div>
                 <div class="record no_record<%= today.day == 1 ? ' first_day' + ' headDate_' + today.year + '_' + today.month : '' %>" data-date="<%= today.year + '-' + today.month + '-' + today.day %>">
                     <div class="date">
                         <div class="day"><%= today.day %></div>
@@ -109,7 +106,7 @@
                                     <div class="content">
                                 <% } %>
                                     <% if(timeDetail.longitude != "") { %>
-                                        <div id="bmap_<%= timeDetail.eventId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
+                                        <div id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
                                         <div class="map_mask"></div>
                                      <% } %>
                                     <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
@@ -157,7 +154,7 @@
                                     <div class="content">
                                 <% } %>
                                 <% if(timeDetail.longitude != "") { %>
-                                    <div id="bmap_<%= timeDetail.eventId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
+                                    <div id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
                                     <div class="map_mask"></div>
                                 <% } %>
                                     <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
@@ -207,7 +204,7 @@
                             <div class="content">
                         <% } %>
                             <% if(timeDetail.longitude != "") { %>
-                                <div id="bmap_<%= timeDetail.eventId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
+                                <div id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
                                 <div class="map_mask"></div>
                             <% } %>
                             <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
