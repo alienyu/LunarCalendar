@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "7cccefc4f565fc96aaa1"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "c62a1798a81e57a509b2"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -617,7 +617,7 @@
 	
 	    renderPage:function(){
 	        var that = this;
-	        wx.wxConfig(1);
+	        //wx.wxConfig(1);
 	        that.getJoiner();
 	        that.getData();
 	
@@ -683,7 +683,7 @@
 	                if(data.code == 0) {
 	                        console.log(data);
 	                        var dataList = data.data;
-	                        that.config.eventType = dataList.eventType;
+	                        that.config.eventType = dataList.event.eventType;
 	                        $('.eventName').html(dataList.event.name);
 	                        if (dataList.event.eventType == 0) {//提醒事件
 	                            $('.time .itemCon').html(Dom.transStartTime());
@@ -704,8 +704,8 @@
 	                            if(dataList.event.bgColor){//若用户设置了背景颜色
 	                                $('.topCon').css("height","100px");
 	                            }else if(dataList.event.theme){//若用户没有设置背景颜色，则从主题中选择
-	                                $('.topCon').css({"height":"200px","background-image":dataList.theme.themeUrl});
-	                                $('.compile').css("background",dataList.theme.themeColor);
+	                                $('.topCon').css({"height":"200px","background-image":"url("+dataList.event.theme.themeUrl+")"});
+	                                $('.compile').css("background",dataList.event.theme.themeColor);
 	                            }
 	                            if (dataList.event.remarkImgs !="") {//如果有备注
 	                                var imgArr = dataList.event.remarkImgs.split(",");//图片数组

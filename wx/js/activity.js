@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "7cccefc4f565fc96aaa1"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "c62a1798a81e57a509b2"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -783,9 +783,9 @@
 	    },
 	
 	    /*----------------获取用户选择快捷标签对应的主题-------------------*/
-	    getTemplate:function(templateId){
+	    getTemplate: function (templateId) {
 	        var that = this;
-	        if(templateId != "null"){
+	        if (templateId != "null") {
 	            $.get(
 	                "http://www.li-li.cn/llwx/template/detail",
 	                {
@@ -794,11 +794,11 @@
 	                function (data) {
 	                    if (data.code == 0) {
 	                        var list = data.data;
-	                        if(list.color){//若对应的是背景颜色
+	                        if (list.color) {//若对应的是背景颜色
 	                            that.config.bgColor = list.color;
-	                            $('.colorShow').css("background",list.color);
-	                            $('.colorText').html(that.config.map. list.color);
-	                        }else if(list.theme.themeId){//若对应的是背景图片
+	                            $('.colorShow').css("background", list.color);
+	                            $('.colorText').html(that.config.map(list.color));
+	                        } else if (list.theme.themeId) {//若对应的是背景图片
 	                            that.config.bgColor = "";
 	                            that.config.themeId = list.theme.themeId;
 	                            that.config.themeName = list.theme.themeName;
@@ -962,24 +962,32 @@
 	    mapShadow: function (obj, shadow, container) {
 	        var that = this;
 	        obj.click(function () {
-	            $('.shadowBg').fadeIn();
-	            shadow.show();
-	            container.animate({"top": "10%"}, 200);
-	            //console.log(wx.wxLocation());
+	            if (that.mapConfig.latitude && that.mapConfig.longitude) {//地址存在,直接弹出
+	                $('.shadowBg').fadeIn();
+	                shadow.show();
+	                container.animate({"top": "10%"}, 200);
+	            } else {//获取地址
+	                wx.getWx().getLocation({
+	                    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+	                    success: function (res) {
+	                        console.log("getlocation");
+	                        var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+	                        var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+	                        //var speed = res.speed; // 速度，以米/每秒计
+	                        //var accuracy = res.accuracy; // 位置精度
+	                        that.mapConfig.latitude = latitude;
+	                        that.mapConfig.longitude = longitude;
+	                        that.mapConfig.moveendPoint = AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
+	                        that.mapMove();
+	                        $('.shadowBg').fadeIn();
+	                        shadow.show();
+	                        container.animate({"top": "10%"}, 200);
+	                    },
+	                    cancel: function (res) {
 	
-	            wx.getWx().getLocation({
-	                type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-	                success: function (res) {
-	                    console.log("getlocation");
-	                    var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-	                    var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-	                    //var speed = res.speed; // 速度，以米/每秒计
-	                    //var accuracy = res.accuracy; // 位置精度
-	                    that.mapConfig.latitude = latitude;
-	                    that.mapConfig.longitude = longitude;
-	                    console.log(that.mapConfig.latitude + ":" + that.mapConfig.longitude);
-	                }
-	            });
+	                    }
+	                });
+	            }
 	        });
 	        $('.shadowClose').click(function () {
 	            container.animate({"top": "100%"}, 200, function () {
@@ -1052,7 +1060,7 @@
 	    },
 	
 	    /*-----------------选择颜色或图片后的显示--------------------*/
-	    selectColor:function(){
+	    selectColor: function () {
 	        var that = this;
 	        var items = $('.colorShadow .items'),
 	            smaller = $('.bigger .smaller');
@@ -1070,7 +1078,7 @@
 	                //设置显示页面的颜色显示
 	                $('.colorShow').css("background", that.config.bgColor);
 	                $('.colorText').html(that.config.map[that.config.bgColor]);
-	            }else{
+	            } else {
 	                that.config.bgColor = "";
 	                that.config.themeId = $(this).attr("data-id");
 	                that.config.themeColor = $(this).attr("data-color");
@@ -1193,11 +1201,11 @@
 	                if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
 	                    // todo 提醒用户设置名称
 	                    $('.titleNone').slideDown();
-	                    setTimeout(function(){
+	                    setTimeout(function () {
 	                        $('.titleNone').slideUp();
-	                    },300);
-	                }else{
-	                    Ajax.eventModify(that.config.eventId,name,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,'longitude','latitude', that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.themeId);
+	                    }, 300);
+	                } else {
+	                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 'longitude', 'latitude', that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
 	                    //todo 弹出蒙层
 	                    that.shareShadow(); //显示分享提示弹出层，点击后隐藏
 	                }
@@ -1205,20 +1213,20 @@
 	                if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
 	                    // todo 提醒用户设置名称
 	                    $('.titleNone').slideDown();
-	                    setTimeout(function(){
+	                    setTimeout(function () {
 	                        $('.titleNone').slideUp();
-	                    },300);
-	                }else{
+	                    }, 300);
+	                } else {
 	                    $('#dialog1').fadeIn();
 	                    $('#dialog1 .confirm').on("tap", function () {//点击确定
-	                        Ajax.eventAdd2(name,1,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,'longitude','latitude', that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.themeId);
+	                        Ajax.eventAdd2(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 'longitude', 'latitude', that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
 	                        Ajax.getUserInformation2();
-	                        wx.wxConfig(2, that.config.nickName + " 邀请您参加 「" + name+"」", $('.startTime').html(),
+	                        wx.wxConfig(2, that.config.nickName + " 邀请您参加 「" + name + "」", $('.startTime').html(),
 	                            "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + that.config.eventId));
-	                        sessionStorage.setItem(that.config.eventId, [name, that.config.tagName,startTime, endTime, tipType, repeatType, remark, location, tipTime]);
+	                        sessionStorage.setItem(that.config.eventId, [name, that.config.tagName, startTime, endTime, tipType, repeatType, remark, location, tipTime]);
 	                        $('#dialog1').fadeOut();
 	                        //todo 弹出蒙层
-	                        if(!$('.qrcodeImg').html()){
+	                        if (!$('.qrcodeImg').html()) {
 	                            that.createQrcode(that.config.eventId);
 	                        }
 	                        that.shareShadow(); //显示分享提示弹出层，点击后隐藏
@@ -1231,7 +1239,7 @@
 	        });
 	
 	        /*------------点击保存--------------*/
-	        $('.saveBtn').click(function(){
+	        $('.saveBtn').click(function () {
 	            $('#loadingToast').fadeIn();//显示loading
 	            var name = $('#eventTitle').val().replace(/\s+/, ""),
 	                startTime = $('.startCon').attr("id"),
@@ -1247,20 +1255,20 @@
 	                $('#loadingToast').fadeOut();
 	                // todo  提示用户设置名称
 	                $('.titleNone').slideDown();
-	                setTimeout(function(){
+	                setTimeout(function () {
 	                    $('.titleNone').slideUp();
-	                },300);
-	            }else{
-	                if(that.config.eventId){//若事件已保存，则调用修改事件
-	                    Ajax.eventModify(that.config.eventId,name,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,121.25,23,that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.themeId);
-	                }else{
-	                    Ajax.eventAdd(name,1,that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location,121.25,23,that.config.remarkText,that.config.remarkImgs,that.config.bgColor,that.config.themeId);
+	                }, 300);
+	            } else {
+	                if (that.config.eventId) {//若事件已保存，则调用修改事件
+	                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 121.25, 23, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+	                } else {
+	                    Ajax.eventAdd(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 121.25, 23, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
 	                }
 	            }
 	
 	        });
 	        /*---------------点击删除---------------*/
-	        $('.delete').click(function(){
+	        $('.delete').click(function () {
 	            $('#dialog1').fadeIn();
 	            $('#confirm').on('tap', function () {//点击确定按钮
 	                $('#dialog1').fadeOut();
@@ -1271,9 +1279,9 @@
 	                        $('#toast').fadeIn();
 	                        setTimeout(function () {
 	                            $('#toast').fadeOut();
-	                            if(document.referrer==""){
+	                            if (document.referrer == "") {
 	                                WeixinJSBridge.call("closeWindow");
-	                            }else{
+	                            } else {
 	                                window.location.href = document.referrer;//返回上一个页面
 	                            }
 	                        }, 1500);
@@ -1368,9 +1376,20 @@
 	                $('.listCon').html("");
 	                var html = "", addressList = "";
 	                for (var i = 0; i < that.mapConfig.pois.length; i++) {
-	                    html += that.mapConfig.template.replace(/{{name}}/g, that.mapConfig.pois[i].name).replace(/{{address}}/g, that.mapConfig.pois[i].address);
+	                    html += that.mapConfig.template.replace(/{{name}}/g, that.mapConfig.pois[i].name).replace(/{{address}}/g, that.mapConfig.pois[i].address).replace(/{{jw}}/g, that.mapConfig.pois[i].location);
 	                }
 	                $('.listCon').append(html);
+	                $('.addressItem').on('tap', function () {
+	                    var jw = $(this).attr('data-jw');
+	                    that.mapConfig.latitude = jw.split(",")[0];
+	                    that.mapConfig.longitude = jw.split(",")[1];
+	                    that.mapConfig.location = $(this).find(".name").html();
+	                    $(".siteText").removeClass("ccc").html(that.mapConfig.location);
+	                    $(".mapShadow").animate({"top": "100%"}, 200, function () {
+	                        $(this).parent().hide();
+	                    });
+	                    $('.shadowBg').fadeOut();
+	                });
 	                if (me) {
 	                    console.log("me");
 	                    me.resetload();
@@ -1390,6 +1409,13 @@
 	        setTimeout(function () {
 	            $('.imgCon').removeClass('active');
 	        }, 600);
+	    },
+	
+	    /**地图移动指定位置*/
+	    mapMove: function () {
+	        console.log("mapMove");
+	        var that = this;
+	        that.mapConfig.map.setCenter(that.mapConfig.moveendPoint);
 	    }
 	}
 	
