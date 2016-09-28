@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "59c4d094b9a9d80b3857"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "3893746729f0e90e5b62"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -593,12 +593,12 @@
 	var mobiScroll = __webpack_require__(19);
 	var wx = __webpack_require__(21);
 	var fastClick = __webpack_require__(24);
-	__webpack_require__(25);
+	var autoText = __webpack_require__(25);
 	
 	var fuc = {
 	    config: {
 	        eventId: "",
-	        eventType:"",
+	        eventType: "",
 	        tagId: "",
 	        time: "",
 	        timeArr: "",
@@ -710,7 +710,7 @@
 	    /*----------------获取用户选择快捷标签对应的主题-------------------*/
 	    getTemplate: function (templateId) {
 	        var that = this;
-	        if (templateId !="null") {
+	        if (templateId != "null") {
 	            $.get(
 	                "http://www.li-li.cn/llwx/template/detail",
 	                {
@@ -720,10 +720,11 @@
 	                    if (data.code == 0) {
 	                        var list = data.data;
 	                        that.config.repeatSelect.value = list.repeatType;//设置关联的重复类型
-	                        if(list.color != null){
-	                            that.config.bgColor = list.color;
-	                        }else{
-	                            that.config.themeId = list.themeId;
+	                        if (list.bgColor) {
+	                            that.config.bgColor = list.bgColor;
+	                        } else {
+	                            that.config.themeId = list.theme.themeId;
+	                            console.log(that.config.themeId);
 	                        }
 	                    }
 	                }
@@ -744,27 +745,33 @@
 	        var that = this;
 	        var template = $('#tagListTemplate').html();
 	        var html = "";
-	        $.get("http://www.li-li.cn/llwx/tag/list", {"all": true}, function (data) {
-	//                console.log(data);
-	            if (data.code == 0) {
-	                var list = data.data;
-	                for (var i = 0; i < list.length; i++) {//显示标签对应的内容及模板ID
-	                    html += template.replace(/{{templateId}}/g, list[i].templateId).replace(/{{tagId}}/g, list[i].tagId).replace(/{{tagName}}/g, list[i].tagName);
+	        $.get(
+	            "http://www.li-li.cn/llwx/tag/list",
+	            {"type": 1, "all": true},
+	            function (data) {
+	                //                console.log(data);
+	                if (data.code == 0) {
+	                    var list = data.data;
+	                    for (var i = 0; i < list.length; i++) {//显示标签对应的内容及模板ID
+	                        html += template.replace(/{{templateId}}/g, list[i].templateId).replace(/{{tagId}}/g, list[i].tagId).replace(/{{tagName}}/g, list[i].tagName);
+	                    }
+	                    $('.tipsCon').html("").append(html);
+	                    that.hideTags();
+	                } else {//数据加载失败显示错误提示框
+	                    var error = data.msg;
+	                    $('#dialog2 .weui_dialog_bd').html(error);
+	                    $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
+	                        $('#dialog2').off('click').hide();
+	                    });
 	                }
-	                $('.tipsCon').html("").append(html);
-	                that.hideTags();
-	            } else {//数据加载失败显示错误提示框
-	                var error = data.msg;
-	                $('#dialog2 .weui_dialog_bd').html(error);
-	                $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
-	                    $('#dialog2').off('click').hide();
-	                });
 	            }
-	        })
+	        )
 	    },
+	
 	    renderPage: function () {
 	        var that = this;
 	        wx.wxConfig(1);
+	        Dom.autoTextarea(document.getElementById("eventTitle"));
 	        if (that.config.eventId) {
 	            that.getData();
 	        } else {
@@ -788,15 +795,14 @@
 	                function (data) {
 	                    if (data.code == 0) {
 	                        var eventList = data.data;
-	                        $('.eventName').val(eventList.name);//标题内容
-	                        autoTextarea(document.getElementById("eventTitle"));
-	                        var theStartTime = Dom.tranDate(eventList.startTime),
-	                            theEndTime = Dom.tranDate(eventList.endTime),
-	                            repeatType = eventList.repeatType;
-	                        $('.startCon').html(theStartTime).attr("id", eventList.startTime);
-	                        $('.endCon').html(theEndTime).attr("id", eventList.endTime);
+	                        $('.eventName').val(eventList.event.name);//标题内容
+	                        Dom.autoTextarea(document.getElementById("eventTitle"));
+	                        var theStartTime = Dom.tranDate(eventList.event.startTime),
+	                            repeatType = eventList.event.repeatType;
+	                        $('.startCon').html(theStartTime).attr("id", eventList.event.startTime);
 	                        /*------------设置重复类型----------------*/
-	                        var repeatOptions = that.config.repeatSelect.getElementByTagName("option");
+	                        var repeatOptions = that.config.repeatSelect.getElementsByTagName("option");
+	                        console.log(repeatOptions);
 	                        for (var j = 0; j < repeatOptions.length; j++) {
 	                            repeatOptions[j].setAttribute("selected", false);
 	                        }
@@ -841,19 +847,19 @@
 	                    $.post(
 	                        "http://www.li-li.cn/llwx/event/modify",
 	                        {
-	                            "name":name,
-	                            "eventType":that.config.eventType,
-	                            "tagId":that.config.tagId,
-	                            "startTime":startTime,
-	                            "repeatType":repeatType,
-	                            "bgColor":that.config.bgColor,
-	                            "theme.themeId":that.config.themeId
+	                            "name": name,
+	                            "eventType": that.config.eventType,
+	                            "tagId": that.config.tagId,
+	                            "startTime": startTime,
+	                            "repeatType": repeatType,
+	                            "bgColor": that.config.bgColor,
+	                            "theme.themeId": that.config.themeId
 	                        },
-	                        function(data){
+	                        function (data) {
 	                            if (data.code == 0) {//提交成功
 	                                $('#loadingToast').fadeOut();
-	                                window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId="+that.config.eventId);
-	                            }else{//提交失败提醒错误信息
+	                                window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + that.config.eventId);
+	                            } else {//提交失败提醒错误信息
 	                                $('#loadingToast').fadeOut();
 	                                var error = data.msg;
 	                                $('#dialog2 .weui-dialog__bd').html(error);
@@ -867,20 +873,20 @@
 	                    $.post(
 	                        "http://www.li-li.cn/llwx/event/add",
 	                        {
-	                            "name":name,
-	                            "eventType":that.config.eventType,
-	                            "tagId":that.config.tagId,
-	                            "startTime":startTime,
-	                            "repeatType":repeatType,
-	                            "bgColor":that.config.bgColor,
-	                            "theme.themeId":that.config.themeId
+	                            "name": name,
+	                            "eventType": that.config.eventType,
+	                            "tagId": that.config.tagId,
+	                            "startTime": startTime,
+	                            "repeatType": repeatType,
+	                            "bgColor": that.config.bgColor,
+	                            "theme.themeId": that.config.themeId
 	                        },
-	                        function(data){
-	                            if(data.code == 0){
+	                        function (data) {
+	                            if (data.code == 0) {
 	                                $('#loadingToast').fadeOut();
 	                                that.config.eventId = data.data;
-	                                window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId="+that.config.eventId);
-	                            }else{
+	                                window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + that.config.eventId);
+	                            } else {
 	                                $('#loadingToast').fadeOut();
 	                                var error = data.msg;
 	                                $('#dialog2 .weui-dialog__bd').html(error);
@@ -3372,6 +3378,64 @@
 	            weekDay: this.transWeek(today),
 	            isToday: isToday
 	        }
+	    },
+	    /*--------------textarea高度自适应---------------*/
+	    autoTextarea: function (elem, extra, maxHeight) {
+	        extra = extra || 0;
+	        var isFirefox = !!document.getBoxObjectFor || 'mozInnerScreenX' in window,
+	            isOpera = !!window.opera && !!window.opera.toString().indexOf('Opera'),
+	            addEvent = function (type, callback) {
+	                elem.addEventListener ?
+	                    elem.addEventListener(type, callback, false) :
+	                    elem.attachEvent('on' + type, callback);
+	            },
+	            getStyle = elem.currentStyle ? function (name) {
+	                var val = elem.currentStyle[name];
+	                if (name === 'height' && val.search(/px/i) !== 1) {
+	                    var rect = elem.getBoundingClientRect();
+	                    return rect.bottom - rect.top -
+	                        parseFloat(getStyle('paddingTop')) -
+	                        parseFloat(getStyle('paddingBottom')) + 'px';
+	                };
+	                return val;
+	            } : function (name) {
+	                return getComputedStyle(elem, null)[name];
+	            },
+	            minHeight = parseFloat(getStyle('height'));
+	        elem.style.resize = 'none';
+	        var change = function () {
+	            var scrollTop, height,
+	                padding = 0,
+	                style = elem.style;
+	            if (elem._length === elem.value.length) return;
+	            elem._length = elem.value.length;
+	            if (!isFirefox && !isOpera) {
+	                padding = parseInt(getStyle('paddingTop')) + parseInt(getStyle('paddingBottom'));
+	            }
+	            ;
+	            scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+	            elem.style.height = minHeight + 'px';
+	            if (elem.scrollHeight > minHeight) {
+	                if (maxHeight && elem.scrollHeight > maxHeight) {
+	                    height = maxHeight - padding;
+	                    style.overflowY = 'auto';
+	                } else {
+	                    height = elem.scrollHeight - padding;
+	                    style.overflowY = 'hidden';
+	                }
+	                ;
+	                style.height = height + extra + 'px';
+	                scrollTop += parseInt(style.height) - elem.currHeight;
+	                document.body.scrollTop = scrollTop;
+	                document.documentElement.scrollTop = scrollTop;
+	                elem.currHeight = parseInt(style.height);
+	            }
+	            ;
+	        };
+	        addEvent('propertychange', change);
+	        addEvent('input', change);
+	        addEvent('focus', change);
+	        change();
 	    }
 	}
 	

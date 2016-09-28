@@ -2930,7 +2930,7 @@ textarea {
   width: 100%;
   border: none;
   outline: none;
-  line-height: 30px;
+  line-height: 40px;
   background: transparent;
   resize: none;
 }
@@ -3058,6 +3058,20 @@ textarea {
   height: 40px;
   font-size: 18px;
 }
+.remarkCon,
+.site .itemCon .siteText {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding-top: 15px;
+  padding-right: 10px;
+}
+.siteText .siteName {
+  line-height: 30px;
+}
+.siteText .siteAddress {
+  line-height: 20px;
+}
 .saveBtn {
   display: block;
   width: 90%;
@@ -3131,6 +3145,7 @@ textarea {
 #endTime {
   bottom: 0px;
   height: 0px;
+  display: none;
 }
 .time .timeIconCon {
   width: 30px;
@@ -3242,13 +3257,13 @@ textarea {
   height: 300px;
 }
 .container .imgCon {
-  width: 40px;
-  height: 40px;
+  width: 20px;
+  height: 44px;
   position: absolute;
-  top: 110px;
+  top: 128px;
   left: 50%;
   margin-left: -20px;
-  background: url(/wx/./img/695697cdc21cc1eb54a94086171a63e8.png) no-repeat center center;
+  background: url(/wx/./img/7996920839d2517e8c7222191150468b.png) no-repeat center center;
   background-size: contain;
   -webkit-background-size: contain;
 }
@@ -3293,7 +3308,8 @@ textarea {
   font-weight: 900;
 }
 /*------------颜色弹层-----------*/
-.items {
+.items,
+.partition {
   width: 100%;
   height: 40px;
   line-height: 40px;
@@ -3414,6 +3430,49 @@ textarea {
   position: relative;
   height: 300px;
   overflow: auto;
+}
+form {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0px 10px;
+}
+form .img_upload_box {
+  float: left;
+  width: 60px;
+  height: 60px;
+  margin-right: 10px;
+  position: relative;
+}
+form .img_upload_box .img_upload_btn {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 60px;
+  height: 60px;
+  opacity: 0;
+  z-index: 1001;
+}
+form .img_upload_box a {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  border: 2px solid #616161;
+  color: #616161;
+  font-size: 45px;
+  width: 56px;
+  height: 56px;
+  line-height: 46px;
+  text-align: center;
+  z-index: 1000;
+  text-decoration: none;
+}
+form .img_upload_box img {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 60px;
+  height: 60px;
+  z-index: 1004;
 }
 .mbsc-fr-popup,
 .mbsc-progress {

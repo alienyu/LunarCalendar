@@ -9,7 +9,7 @@
     <meta name="x5-orientation" content="portrait">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link href="/wx/css/activity.css?59c4d094b9a9d80b3857" rel="stylesheet"></head>
+<link href="/wx/css/activity.css?3893746729f0e90e5b62" rel="stylesheet"></head>
 <body>
 <div class="eventCon fs14">
     <div class="titleNone cff">缺少事件名称</div>
@@ -63,8 +63,10 @@
                 <img src="/wx/./img/695697cdc21cc1eb54a94086171a63e8.png" alt="">
             </div>
             <div class="itemCon">
-                <div class="siteText ccc">添加地点</div>
-                
+                <div class="siteText">
+                    <div class="siteName ccc">添加地点</div>
+                    <div class="siteAddress ccc f12"></div>
+                </div>
             </div>
         </div>
         <div class="item remind">
@@ -98,7 +100,7 @@
             </div>
             <div class="itemCon">
                 <div class="remarkCon">
-                    <div class="remarkText ccc">添加备注添加备注添加备注添加备注添加备注添加备注添加备注</div>
+                    <div class="remarkText ccc">添加备注</div>
                     <div class="remarkImgs"></div>
                 </div>
                 
@@ -136,8 +138,8 @@
         <div class="weui-dialog__hd">
             <strong class="weui-dialog__title">温馨提示</strong>
         </div>
-        <div class="weui_dialog__bd">确认保存事件并分享给好友吗？</div>
-        <div class="weui_dialog__ft">
+        <div class="weui-dialog__bd">确认保存事件并分享给好友吗？</div>
+        <div class="weui-dialog__ft">
             <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default default">取消</a>
             <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary confirm">确定</a>
         </div>
@@ -190,7 +192,7 @@
         <div class="colorCon"></div>
         
         <div class="imageCon">
-            <div class="colorItem items">
+            <div class="colorItem partition">
                 <div class="colorCircle"></div>
                 <div class="colorName ccc">图片主题</div>
             </div>
@@ -228,32 +230,14 @@
         <div class="textCon">
             <textarea name="" id="remarkText" rows="6"></textarea>
         </div>
-        <div class="remarkImg">
-            <div class="page__bd">
-                <div class="weui-gallery" id="gallery">
-                    <span class="weui-gallery__img" id="galleryImg"></span>
-                    <div class="weui-gallery__opr">
-                        <a href="javascript:" class="weui-gallery__del">
-                            <i class="weui-icon-delete weui-icon_gallery-delete"></i>
-                        </a>
-                    </div>
-                </div>
 
-                <div class="weui-cells weui-cells_form">
-                    <div class="weui-cell">
-                        <div class="weui-cell__bd">
-                            <div class="weui-uploader">
-                                <div class="weui-uploader__bd">
-                                    <ul class="weui-uploader__files" id="uploaderFiles"></ul>
-                                    <div class="weui-uploader__input-box">
-                                        <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple="multiple">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="remarkImg">
+            <form name="form1" id="form" runat="server" enctype="multipart/form-data" method="post">
+                <div class="img_upload_box">
+                    <input type="file" class="img_upload_btn" name="file">
+                    <a href="javascript:;">+</a>
                 </div>
-            </div>
+            </form>
 
         </div>
     </div>
@@ -304,5 +288,5 @@
 <script src="http://cache.amap.com/lbs/static/es5.min.js"></script>
 <script src="http://webapi.amap.com/maps?v=1.3&key=328b4ed0fd71e2782bf3677b9012a151"></script>
 
-<script type="text/javascript" src="/wx/js/activity.js?59c4d094b9a9d80b3857"></script></body>
+<script type="text/javascript" src="/wx/js/activity.js?3893746729f0e90e5b62"></script></body>
 </html>

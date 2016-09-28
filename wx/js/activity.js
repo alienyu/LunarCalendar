@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "59c4d094b9a9d80b3857"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "3893746729f0e90e5b62"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -623,7 +623,8 @@
 	        page: "",
 	        template: $('#addressListTemplate').html(),
 	        pois: [],
-	        location: "",//地址
+	        locaName: "",//地址名称
+	        locaAddress: "",//详细地址
 	        latitude: "",//纬度
 	        longitude: ""//经度
 	    },
@@ -635,6 +636,8 @@
 	        this.config.eventId = Dom.getRequest("eventId");
 	        this.config.remindSelect = document.getElementById("select1");
 	        this.config.repeatSelect = document.getElementById('select');
+	        this.mapConfig.latitude = 0;
+	        this.mapConfig.longitude = 0;
 	        this.config.map = {//颜色与其名称的键值对
 	            '#66cccc': '默认颜色',
 	            '#0b8043': '罗勒绿',
@@ -648,10 +651,10 @@
 	            '#795548': '可可棕',
 	            '#616161': '石墨黑'
 	        };
+	        this.boxDom = "";
 	        this.config.bgColor = '#66cccc';
 	        this.rem();
 	        this.renderPage();
-	        this.uploaderImg();
 	        this.bindEvent();
 	        this.initMap();
 	        this.searchNearByResult();
@@ -687,7 +690,7 @@
 	                $(obj2).html(selectedDateArr[0] + "年" + (parseInt(selectedDateArr[1]) + 1) + "月" + that.tf(selectedDateArr[2]) + "日" + " " + theWeek + " " + selectedTimeArr[1]);
 	                var theId = selectedDateArr[0] + "-" + that.tf(parseInt(selectedDateArr[1]) + 1) + "-" + that.tf(selectedDateArr[2]) + " " + selectedTimeArr[1] + ":00";
 	                $(obj2).attr("id", theId);
-	                if (obj2 == '.startCon') {//若修改的是开始时间的日期，则指定提醒时间日期等于开始时间，结束时间比开始时间大10分钟
+	                if (obj2 == '.startCon') {//若修改的是开始时间的日期，则指定提醒时间日期等于开始时间，结束时间等于开始时间
 	                    $('.remindTime').html(selectedDateArr[0] + "年" + (parseInt(selectedDateArr[1]) + 1) + "月" + that.tf(selectedDateArr[2]) + "日" + " " + theWeek + " " + selectedTimeArr[1]);
 	                    $(".remindTime").attr("id", theId);
 	                    $('.endCon').html(selectedDateArr[0] + "年" + (parseInt(selectedDateArr[1]) + 1) + "月" + that.tf(selectedDateArr[2]) + "日" + " " + theWeek + " " + selectedTimeArr[1]);
@@ -795,19 +798,21 @@
 	                function (data) {
 	                    if (data.code == 0) {
 	                        var list = data.data;
-	                        if (list.color) {//若对应的是背景颜色
-	                            that.config.bgColor = list.color;
-	                            $('.colorShow').css("background", list.color);
-	                            $('.colorText').html(that.config.map[list.color]);
-	                        } else if (list.theme.themeId) {//若对应的是背景图片
-	                            that.config.bgColor = "";
-	                            that.config.themeId = list.theme.themeId;
-	                            that.config.themeName = list.theme.themeName;
-	                            that.config.themeColor = list.theme.themeColor;
-	                            $('.colorShow').css("background", that.config.themeColor);
-	                            $('.colorText').html(that.config.themeName);
+	                        if(list){
+	                            if (list.bgColor) {//若对应的是背景颜色
+	                                that.config.bgColor = list.bgColor;
+	                                $('.colorShow').css("background", list.bgColor);
+	                                $('.colorText').html(that.config.map[list.bgColor]);
+	                            } else if (list.theme.themeId) {//若对应的是背景图片
+	                                that.config.bgColor = "";
+	                                that.config.themeId = list.theme.themeId;
+	                                that.config.themeName = list.theme.themeName;
+	                                that.config.themeColor = list.theme.themeColor;
+	                                $('.colorShow').css("background", that.config.themeColor);
+	                                $('.colorText').html(that.config.themeName);
+	                            }
+	                            that.setInitTheme();
 	                        }
-	                        that.colorInit();
 	                    }
 	                }
 	            )
@@ -829,37 +834,43 @@
 	        var that = this;
 	        var template = $('#tagListTemplate').html();
 	        var html = "";
-	        $.get("http://www.li-li.cn/llwx/tag/list", {"all": true}, function (data) {
+	        $.get(
+	            "http://www.li-li.cn/llwx/tag/list",
+	            {"type": 2, "all": true},
+	            function (data) {
 	//                console.log(data);
-	            if (data.code == 0) {
-	                var list = data.data;
-	                for (var i = 0; i < list.length; i++) {//显示标签对应的内容及模板ID
-	                    html += template.replace(/{{templateId}}/g, list[i].templateId).replace(/{{tagId}}/g, list[i].tagId).replace(/{{tagName}}/g, list[i].tagName);
+	                if (data.code == 0) {
+	                    var list = data.data;
+	                    for (var i = 0; i < list.length; i++) {//显示标签对应的内容及模板ID
+	                        html += template.replace(/{{templateId}}/g, list[i].templateId).replace(/{{tagId}}/g, list[i].tagId).replace(/{{tagName}}/g, list[i].tagName);
+	                    }
+	                    $('.tipsCon').html("").append(html);
+	                    that.hideTags();
+	                } else {//数据加载失败显示错误提示框
+	                    var error = data.msg;
+	                    $('#dialog2 .weui_dialog_bd').html(error);
+	                    $('#dialog2').fadeIn().on('click', '.weui_btn_dialog', function () {
+	                        $('#dialog2').off('click').fadeOut();
+	                    });
 	                }
-	                $('.tipsCon').html("").append(html);
-	                that.hideTags();
-	            } else {//数据加载失败显示错误提示框
-	                var error = data.msg;
-	                $('#dialog2 .weui_dialog_bd').html(error);
-	                $('#dialog2').fadeIn().on('click', '.weui_btn_dialog', function () {
-	                    $('#dialog2').off('click').fadeOut();
-	                });
 	            }
-	        })
+	        )
 	    },
 	
 	    renderPage: function () {
 	        wx.wxConfig(1);
 	        var that = this;
 	        this.getTags();
+	        this.colorInit();
+	        Dom.autoTextarea(document.getElementById("eventTitle"));
 	        if (that.config.eventId) {//若用户是通过编辑按钮进入 页面，则拉取事件ID对应的信息
 	            that.getData();
-	            that.colorInit();
+	            that.setInitTheme();
 	        } else {
 	            /*--------------设置颜色初始值------------------*/
 	            $('.colorShow').css("background", that.config.bgColor);
 	            $('.colorText').html(that.config.map[that.config.bgColor]);
-	            that.colorInit();
+	            that.setInitTheme();
 	            /*---------------------开始时间、结束时间、指定提醒时间的时间显示---------------------*/
 	            $('.startCon').html(that.config.timeArr[0]);
 	            $('.endCon').html(that.config.timeArr[1]);
@@ -896,17 +907,21 @@
 	                if (data.code == 0) {
 	                    var eventList = data.data;
 	                    $('.eventName').val(eventList.name);//标题内容
-	                    autoTextArea(document.getElementById("eventTitle"));
+	                    Dom.autoTextarea(document.getElementById("eventTitle"));
 	                    var theStartTime = Dom.tranDate(eventList.startTime),
 	                        theEndTime = Dom.tranDate(eventList.endTime),
 	                        tipType = eventList.tipType,
-	                        repeatType = eventList.repeatType,
-	                        location = eventList.location;
+	                        repeatType = eventList.repeatType;
 	                    that.config.bgColor = eventList.bgColor;
 	                    that.config.themeId = eventList.theme.themeId;//获取用户设置的背景图id
 	                    that.config.remarkText = eventList.remark;
 	                    that.config.remarkImgs = eventList.remarkImgs;
 	                    that.config.nickName = eventList.user;//当前用户昵称
+	                    that.mapConfig.locaName = eventList.location.split(",")[1];
+	                    that.mapConfig.locaAddress = eventList.location.split(",")[0];
+	                    that.mapConfig.latitude = eventList.latitude;
+	                    that.mapConfig.longitude = eventList.longitude;
+	                    that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
 	                    $('.startCon').html(theStartTime).attr("id", eventList.startTime);
 	                    $('.endCon').html(theEndTime).attr("id", eventList.endTime);
 	                    /*------------设置重复类型----------------*/
@@ -925,9 +940,9 @@
 	                        $('.remindTime').animate({"height": "30px"}, 200);
 	                        $('#remindTime').css("display", "block");
 	                    }
-	                    if (location) {
-	                        $('.site').removeClass('ccc');
-	                        $('.siteText').html(location);
+	                    if (that.mapConfig.locaAddress) {
+	                        $('.siteName').removeClass('ccc').html(that.mapConfig.locaName);
+	                        $('.siteAddress').html(that.mapConfig.locaAddress);
 	                    }
 	                    if (that.config.remarkText) {
 	                        $('.remarkCon .remarkText').removeClass('ccc').html(that.config.remarkText);
@@ -964,12 +979,13 @@
 	        var that = this;
 	        obj.click(function () {
 	            if (that.mapConfig.latitude && that.mapConfig.longitude) {//地址存在,直接弹出
+	                that.mapMove();
 	                $('.shadowBg').fadeIn();
 	                shadow.show();
 	                container.animate({"top": "10%"}, 200);
 	            } else {//获取地址
 	                wx.getWx().getLocation({
-	                    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+	                    type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
 	                    success: function (res) {
 	                        console.log("getlocation");
 	                        var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
@@ -978,7 +994,8 @@
 	                        //var accuracy = res.accuracy; // 位置精度
 	                        that.mapConfig.latitude = latitude;
 	                        that.mapConfig.longitude = longitude;
-	                        that.mapConfig.moveendPoint = AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
+	                        that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
+	                        console.log(that.mapConfig.moveendPoint);
 	                        that.mapMove();
 	                        $('.shadowBg').fadeIn();
 	                        shadow.show();
@@ -1015,14 +1032,6 @@
 	        for (var k = 0; k < theBigger.size(); k++) {
 	            theBigger.eq(k).css("background", colorArr[k]);
 	        }
-	        //设置选中的颜色
-	        var colorItem = $('.colorCon .colorItem');
-	        for (var m = 0; m < colorItem.size(); m++) {
-	            if (colorItem.eq(m).attr("data-colors") == that.config.bgColor) {
-	                colorItem.eq(m).addClass("active");
-	                colorItem.eq(m).find(".smaller").css("background", that.config.bgColor);
-	            }
-	        }
 	        //图片列表初始化
 	        $.get(
 	            "http://www.li-li.cn/llwx/theme/list",
@@ -1039,32 +1048,48 @@
 	                    }
 	                    $('.imageCon').append(imgHtml);
 	                    var imgName = $('.imgItem .imgName');
+	                    console.log(imgName);
 	                    for (var p = 0; p < imgName.size(); p++) {
 	                        imgName.eq(p).css({
 	                            "background-image": "url(" + imgList[p].themeUrl + ")",
 	                            "background-color": imgList[p].themeColor
 	                        });
 	                    }
-	                    var imgItem = $('.imgItem');
-	                    for (var j = 0; j < imgItem.size(); j++) {
-	                        if (imgItem.eq(j).attr("data-themeId") == that.config.themeId) {
-	                            $('.items').removeClass("active");
-	                            imgItem.eq(j).addClass("active");
-	                            $('.colorCon .colorItem').find("smaller").css("background", "#fff");
-	                        }
-	                    }
-	                    that.selectColor();
+	                    that.setInitTheme();
 	                }
-	            }
+	            }  
 	        )
+	        that.selectColor();
 	    },
-	
+	    /*-------------------设置初始时的选中状态--------------------*/
+	    setInitTheme: function () {
+	        var that = this;
+	        //设置选中的颜色
+	        var colorItem = $('.colorCon .colorItem');
+	        for (var m = 0; m < colorItem.size(); m++) {
+	            if (colorItem.eq(m).attr("data-colors") == that.config.bgColor) {
+	                colorItem.eq(m).addClass("active");
+	                colorItem.eq(m).find(".smaller").css("background", that.config.bgColor);
+	            }
+	        }
+	        //设置选中的背景图片
+	        var imgItem = $('.imgItem');
+	        for (var j = 0; j < imgItem.size(); j++) {
+	            if (imgItem.eq(j).attr("data-themeId") == that.config.themeId) {
+	                $('.items').removeClass("active");
+	                imgItem.eq(j).addClass("active");
+	                $('.colorCon .colorItem').find("smaller").css("background", "#fff");
+	            }
+	        }
+	    },
 	    /*-----------------选择颜色或图片后的显示--------------------*/
 	    selectColor: function () {
 	        var that = this;
-	        var items = $('.colorShadow .items'),
+	        var items = $('.colorShadow  .items'),
 	            smaller = $('.bigger .smaller');
+	        console.log(items);
 	        items.click(function () {
+	            console.log($(this).index());
 	            for (var i = 0; i < items.size(); i++) {
 	                items.eq(i).removeClass("active");
 	            }
@@ -1094,49 +1119,6 @@
 	        })
 	    },
 	
-	    /*------------------------备注中上传图片-------------------------*/
-	    uploaderImg: function () {
-	        var tmpl = '<li class="weui-uploader__file" style="background-image:url(#url#)"></li>',
-	            $gallery = $("#gallery"), $galleryImg = $("#galleryImg"),
-	            $uploaderInput = $("#uploaderInput"),
-	            $uploaderFiles = $("#uploaderFiles");
-	
-	        $uploaderInput.on("change", function (e) {
-	            var src, url = window.URL || window.webkitURL || window.mozURL, files = e.target.files;
-	            for (var i = 0, len = files.length; i < len; ++i) {
-	                var file = files[i];
-	                console.log(file);
-	                console.log(file.name);
-	                var reader = new FileReader();
-	                if (url) {
-	                    src = url.createObjectURL(file);
-	                } else {
-	                    src = e.target.result;
-	                }
-	                console.log(typeof src);
-	                //$.ajax({
-	                //    type: "post",
-	                //    url: "http://www.li-li.cn/llwx/file/upload",
-	                //    data:{
-	                //        "file":reader.readAsDataURL(src)
-	                //    },
-	                //    dataType: "json",
-	                //    success: function (data) {
-	                //        console.log(data);
-	                //    }
-	                //})
-	                $uploaderFiles.append($(tmpl.replace('#url#', src)));
-	            }
-	        });
-	        $uploaderFiles.on("click", "li", function () {
-	            $galleryImg.attr("style", this.getAttribute("style"));
-	            $gallery.fadeIn(100);
-	        });
-	        $gallery.on("click", function () {
-	            $gallery.fadeOut(100);
-	        });
-	    },
-	
 	    bindEvent: function () {
 	        var that = this;
 	        $('.eventName').focus(function () {
@@ -1149,10 +1131,12 @@
 	                $(".timeIcon").removeClass("active");
 	                $('.endTime').animate({'height': '0px'}, 300);
 	                $('.timeText').animate({"width": "0px"}, 300);
+	                $('#endTime').css("display", "none");
 	            } else {
 	                $(".timeIcon").addClass("active");
 	                $('.endTime').animate({'height': '60px'}, 300);
 	                $('.timeText').animate({"width": "33px"}, 300);
+	                $('#endTime').css("display", "block");
 	            }
 	        })
 	        /*-----------展开顶部的快捷标签-------------*/
@@ -1177,8 +1161,26 @@
 	            $('.shadowBg').fadeOut();
 	        });
 	        $('.remarkShadow .finished').click(function () {
+	            if ($("#form").length > 0) {
+	                for (var i = 0; i < $("#form").length; i++) {
+	                    var fileData = new FormData($("#form")[i]);
+	                    $.ajax({
+	                        type: "post",
+	                        url: "http://www.li-li.cn/llwx/file/upload",
+	                        data: fileData,
+	                        dataType: "json",
+	                        cache: false,
+	                        processData: false,
+	                        contentType: false,
+	                        async: false,
+	                        success: function (data) {
+	                            that.config.remarkImgs = that.config.remarkImgs + "," + data.data;
+	                        }
+	                    })
+	                }
+	                that.config.remarkImgs = that.config.remarkImgs.substr(1);
+	            }
 	            that.config.remarkText = $('#remarkText').val();
-	            //that.config.remarkImgs = ;
 	            $('.remarkCon .remarkText').removeClass("ccc").html(that.config.remarkText);
 	            $('.remarkShadow .container').animate({"top": "100%"}, 200, function () {
 	                $('.remarkShadow').hide();
@@ -1191,7 +1193,6 @@
 	                startTime = $('.startCon').attr("id"),
 	                endTime = $('.endCon').attr("id"),
 	                repeatType = that.config.repeatSelect.value,
-	                location = $('.siteText').html(),
 	                tipType = that.config.remindSelect.value,
 	                tipTime = "";
 	            if (tipType == 3) {
@@ -1205,7 +1206,7 @@
 	                        $('.titleNone').slideUp();
 	                    }, 300);
 	                } else {
-	                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 'longitude', 'latitude', that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+	                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.locaAddress + "," + that.mapConfig.locaName, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
 	                    //todo 弹出蒙层
 	                    that.shareShadow(); //显示分享提示弹出层，点击后隐藏
 	                }
@@ -1219,16 +1220,12 @@
 	                } else {
 	                    $('#dialog1').fadeIn();
 	                    $('#dialog1 .confirm').on("tap", function () {//点击确定
-	                        Ajax.eventAdd2(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 'longitude', 'latitude', that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
-	                        Ajax.getUserInformation2();
-	                        wx.wxConfig(2, that.config.nickName + " 邀请您参加 「" + name + "」", $('.startTime').html(),
+	                        that.eventAdd(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.locaAddress + "," + that.mapConfig.locaName, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+	                        that.getUserInformation();
+	                        wx.wxShare(that.config.nickName + " 邀请您参加 「" + name + "」", $('.startTime').html(),
 	                            "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + that.config.eventId));
-	                        sessionStorage.setItem(that.config.eventId, [name, that.config.tagName, startTime, endTime, tipType, repeatType, remark, location, tipTime]);
 	                        $('#dialog1').fadeOut();
 	                        //todo 弹出蒙层
-	                        if (!$('.qrcodeImg').html()) {
-	                            that.createQrcode(that.config.eventId);
-	                        }
 	                        that.shareShadow(); //显示分享提示弹出层，点击后隐藏
 	                    });
 	                    $('.default').on("tap", function () {
@@ -1245,9 +1242,12 @@
 	                startTime = $('.startCon').attr("id"),
 	                endTime = $('.endCon').attr("id"),
 	                repeatType = that.config.repeatSelect.value,
-	                location = $('.siteText').html(),
 	                tipType = that.config.remindSelect.value,
 	                tipTime = "";
+	            //if($('.siteName').html() !="添加地点"){
+	            //    location = $('.siteName').html()+","+$('.siteAddress').html();
+	            //    that.config.location = location;
+	            //}
 	            if (tipType == 3) {
 	                tipTime = $('.remindTime').attr("id");
 	            }
@@ -1260,9 +1260,9 @@
 	                }, 300);
 	            } else {
 	                if (that.config.eventId) {//若事件已保存，则调用修改事件
-	                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 121.25, 23, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+	                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.locaAddress + "," + that.mapConfig.locaName, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
 	                } else {
-	                    Ajax.eventAdd(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 121.25, 23, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+	                    that.eventAdd(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.locaAddress + "," + that.mapConfig.locaName, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
 	                }
 	            }
 	
@@ -1299,7 +1299,51 @@
 	            $('#cancel').on('tap', function () {//点击取消按钮
 	                $('#dialog1').fadeOut();
 	            });
-	        })
+	        });
+	
+	        /*上传图片*/
+	        $("#form").on("change", ".img_upload_btn", function (e) {
+	            that.btnDom = $(e.target);
+	            that.boxDom = $(e.target).parent();
+	            var file = e.target.files[0];
+	            var reader = new FileReader();
+	            reader.addEventListener("load", function () {
+	                var imgSrc = reader.result;
+	                var html = "<img src='" + imgSrc + "' class='img_upload_result' />";
+	                that.boxDom.append(html).removeClass("new_box").find("a").remove();
+	                if (that.checkBoxNum() && $(".new_box").length < 1) {
+	                    var newUploadBox = '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo"><a href="javascript:;">+</a></div>';
+	                    $(".img_upload_box").last().after(newUploadBox);
+	                }
+	            }, false);
+	            reader.readAsDataURL(file);
+	        });
+	
+	        $("#form").on("tap", ".img_upload_result", function (e) {
+	            $(e.target).parent().remove();
+	            if (that.checkBoxNum() && $(".new_box").length < 1) {
+	                var newUploadBox = '<div class="img_upload_box"><input type="file" class="img_upload_btn" name="photo_' + (that.btnIndex + 1) + '"><a href="javascript:;">+</a></div>';
+	                $(".img_upload_box").last().after(newUploadBox);
+	            }
+	        });
+	
+	        //$("#btn").on("tap", function () {
+	        //    $("#form").find(".new_box").remove();
+	        //    var data = new FormData($("#form")[0]);
+	        //    $.ajax({
+	        //        type: "post",
+	        //        url: "http://www.li-li.cn/llwx/file/upload",
+	        //        type: 'POST',
+	        //        data: data,
+	        //        dataType: 'JSON',
+	        //        cache: false,
+	        //        processData: false,
+	        //        contentType: false,
+	        //        success: function (data) {
+	        //            console.log(data);
+	        //        }
+	        //    })
+	        //});
 	    },
 	
 	    /*----------初始化地图----------------------*/
@@ -1382,11 +1426,14 @@
 	                $('.listCon').append(html);
 	                $('.addressItem').on('tap', function () {
 	                    var jw = $(this).attr('data-jw');
-	                    that.mapConfig.latitude = jw.split(",")[0];
-	                    that.mapConfig.longitude = jw.split(",")[1];
-	                    that.mapConfig.location = $(this).find(".name").html();
-	                    $(".siteText").removeClass("ccc").html(that.mapConfig.location);
-	                    $(".mapShadow").animate({"top": "100%"}, 200, function () {
+	                    that.mapConfig.latitude = jw.split(",")[1];
+	                    that.mapConfig.longitude = jw.split(",")[0];
+	                    that.mapConfig.locaName = $(this).find(".name").html();
+	                    that.mapConfig.locaAddress = $(this).find(".address").html();
+	                    that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
+	                    $(".siteName").removeClass("ccc").html(that.mapConfig.locaName);
+	                    $('.siteAddress').html(that.mapConfig.locaAddress);
+	                    $(".mapShadow .container").animate({"top": "100%"}, 200, function () {
 	                        $(this).parent().hide();
 	                    });
 	                    $('.shadowBg').fadeOut();
@@ -1416,7 +1463,74 @@
 	    mapMove: function () {
 	        console.log("mapMove");
 	        var that = this;
-	        that.mapConfig.map.setCenter(that.mapConfig.moveendPoint);
+	        console.log(that.mapConfig.moveendPoint.getLng() + "");
+	        that.mapConfig.map.panTo([that.mapConfig.moveendPoint.getLng(), that.mapConfig.moveendPoint.getLat()]);
+	        that.mapConfig.page = 1;
+	        that.searchNearByResult();
+	    },
+	
+	    checkBoxNum: function () {
+	        if ($(".img_upload_box").length < 9) {
+	            return true;
+	        } else {
+	            return false;
+	        }
+	    },
+	    //添加事件页面数据提交
+	    eventAdd: function (name, eventType, tagId, startTime, endTime, tipType, tipTime, repeatType, location, longitude, latitude, remark, remarkImgs, bgColor, themeId) {
+	        var that = this;
+	        $.ajax({
+	            type: "post",
+	            url: "http://www.li-li.cn/llwx/event/add",
+	            data: {
+	                "name": name,
+	                "eventType": eventType,
+	                "tagId": tagId,
+	                "startTime": startTime,
+	                "endTime": endTime,
+	                "tipType": tipType,
+	                "tipTime": tipTime,
+	                "repeatType": repeatType,
+	                "location": location,
+	                "longitude": longitude,
+	                "latitude": latitude,
+	                "remark": remark,
+	                "remarkImgs": remarkImgs,
+	                "bgColor": bgColor,
+	                "theme.themeId": themeId
+	            },
+	            dataType: "json",
+	            success: function (data) {
+	                //console.log(data);
+	                if (data.code == 0) {//提交成功
+	                    that.config.eventId = data.data;
+	                    $('#loadingToast').fadeOut();
+	                    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/activity.html?eventId=" + that.config.eventId);
+	                } else {//提交失败提醒错误信息
+	                    $('#loadingToast').fadeOut();
+	                    var error = data.msg;
+	                    $('#dialog2 .weui-dialog__bd').html(error);
+	                    $('#dialog2').show().on('click', '.weui-dialog__btn', function () {
+	                        $('#dialog2').off('click').hide();
+	                    });
+	                }
+	            }
+	        })
+	    },
+	    //首页获取用户信息
+	    getUserInformation: function () {
+	        var that = this;
+	        $.ajax({
+	            type: "get",
+	            url: "http://www.li-li.cn/llwx/user/detail",
+	            dataType: "json",
+	            async: false,
+	            success: function (data) {
+	                if (data.code == 0) {
+	                    that.config.nickName = data.data.nickName;
+	                }
+	            }
+	        });
 	    }
 	}
 	
@@ -3864,6 +3978,64 @@
 	            weekDay: this.transWeek(today),
 	            isToday: isToday
 	        }
+	    },
+	    /*--------------textarea高度自适应---------------*/
+	    autoTextarea: function (elem, extra, maxHeight) {
+	        extra = extra || 0;
+	        var isFirefox = !!document.getBoxObjectFor || 'mozInnerScreenX' in window,
+	            isOpera = !!window.opera && !!window.opera.toString().indexOf('Opera'),
+	            addEvent = function (type, callback) {
+	                elem.addEventListener ?
+	                    elem.addEventListener(type, callback, false) :
+	                    elem.attachEvent('on' + type, callback);
+	            },
+	            getStyle = elem.currentStyle ? function (name) {
+	                var val = elem.currentStyle[name];
+	                if (name === 'height' && val.search(/px/i) !== 1) {
+	                    var rect = elem.getBoundingClientRect();
+	                    return rect.bottom - rect.top -
+	                        parseFloat(getStyle('paddingTop')) -
+	                        parseFloat(getStyle('paddingBottom')) + 'px';
+	                };
+	                return val;
+	            } : function (name) {
+	                return getComputedStyle(elem, null)[name];
+	            },
+	            minHeight = parseFloat(getStyle('height'));
+	        elem.style.resize = 'none';
+	        var change = function () {
+	            var scrollTop, height,
+	                padding = 0,
+	                style = elem.style;
+	            if (elem._length === elem.value.length) return;
+	            elem._length = elem.value.length;
+	            if (!isFirefox && !isOpera) {
+	                padding = parseInt(getStyle('paddingTop')) + parseInt(getStyle('paddingBottom'));
+	            }
+	            ;
+	            scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+	            elem.style.height = minHeight + 'px';
+	            if (elem.scrollHeight > minHeight) {
+	                if (maxHeight && elem.scrollHeight > maxHeight) {
+	                    height = maxHeight - padding;
+	                    style.overflowY = 'auto';
+	                } else {
+	                    height = elem.scrollHeight - padding;
+	                    style.overflowY = 'hidden';
+	                }
+	                ;
+	                style.height = height + extra + 'px';
+	                scrollTop += parseInt(style.height) - elem.currHeight;
+	                document.body.scrollTop = scrollTop;
+	                document.documentElement.scrollTop = scrollTop;
+	                elem.currHeight = parseInt(style.height);
+	            }
+	            ;
+	        };
+	        addEvent('propertychange', change);
+	        addEvent('input', change);
+	        addEvent('focus', change);
+	        change();
 	    }
 	}
 	
@@ -4461,8 +4633,9 @@
 	            success: function (data) {
 	                //console.log(data);
 	                if (data.code == 0) {//提交成功
+	
 	                    $('#loadingToast').fadeOut();
-	                    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/calendar.html");
+	                    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html");
 	                }else{//提交失败提醒错误信息
 	                    $('#loadingToast').fadeOut();
 	                    var error = data.msg;

@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "59c4d094b9a9d80b3857"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "3893746729f0e90e5b62"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -630,7 +630,7 @@
 	            var data = new FormData($("#form")[0]);
 	            $.ajax({
 	                type: "post",
-	                url: "/multiImgUpload",
+	                url: "http://www.li-li.cn/llwx/file/upload",
 	                type: 'POST',
 	                data: data,
 	                dataType: 'JSON',
@@ -638,7 +638,7 @@
 	                processData: false,
 	                contentType: false,
 	                success: function(data) {
-	
+	                    console.log(data);
 	                }
 	            })
 	        })
