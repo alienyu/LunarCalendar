@@ -3058,6 +3058,28 @@ textarea {
   height: 40px;
   font-size: 18px;
 }
+.saveBtn {
+  display: block;
+  width: 90%;
+  height: 40px;
+  background: #66cccc;
+  margin: 10px auto 5px;
+  text-align: center;
+  line-height: 40px;
+}
+.delete {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  color: #f20d0d;
+  text-align: center;
+  display: none;
+}
+.eventCon {
+  width: 100%;
+  overflow: hidden;
+  text-align: left;
+}
 .time {
   width: 100%;
   border-bottom: 1px solid #eee;
@@ -3170,23 +3192,6 @@ textarea {
 .remarkCon .remarkText {
   min-height: 30px;
   line-height: 30px;
-}
-.saveBtn {
-  display: block;
-  width: 90%;
-  height: 40px;
-  background: #66cccc;
-  margin: 10px auto 5px;
-  text-align: center;
-  line-height: 40px;
-}
-.delete {
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  color: #f20d0d;
-  text-align: center;
-  display: none;
 }
 /*-------------弹层样式--------------*/
 .shadowBg {

@@ -44,7 +44,7 @@ var fuc = {
             var data = new FormData($("#form")[0]);
             $.ajax({
                 type: "post",
-                url: "/multiImgUpload",
+                url: "http://www.li-li.cn/llwx/file/upload",
                 type: 'POST',
                 data: data,
                 dataType: 'JSON',
@@ -52,7 +52,7 @@ var fuc = {
                 processData: false,
                 contentType: false,
                 success: function(data) {
-
+                    console.log(data);
                 }
             })
         })

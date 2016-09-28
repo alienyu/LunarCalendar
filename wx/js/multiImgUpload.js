@@ -65,7 +65,11 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
+<<<<<<< HEAD
 /******/ 	var hotCurrentHash = "59046868f18ac8d71e06"; // eslint-disable-line no-unused-vars
+=======
+/******/ 	var hotCurrentHash = "59c4d094b9a9d80b3857"; // eslint-disable-line no-unused-vars
+>>>>>>> 7a0ff05759245f8acc7769ce244d5edf24b1563e
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -584,7 +588,7 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(52);
+	/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(53);
 	
 	var fuc = {
 	    init: function() {
@@ -646,11 +650,11 @@
 	}
 	
 	fuc.init();
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ },
 
-/***/ 6:
+/***/ 7:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* Zepto v1.1.7 - zepto event ajax form ie - zeptojs.com/license */
@@ -2654,7 +2658,7 @@
 
 /***/ },
 
-/***/ 52:
+/***/ 53:
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin

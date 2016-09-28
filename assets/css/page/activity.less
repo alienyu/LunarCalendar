@@ -1,144 +1,14 @@
 @import "../common/common.less";
 @import "../common/weui1.0.0.less";
+@import "../common/newEvent.less";
 
-body{
-  color: #000;
-}
-textarea::-webkit-input-placeholder{
-  color: #ccc;
-}
-textarea{
-  display: block;
-  width: 100%;
-  border: none;
-  outline: none;
-  line-height: 30px;
-  background: transparent;
-  resize: none;
-}
-.select{
-  -webkit-appearance: none;
-  border: 0;
-  outline: 0;
-  background-color: transparent;
-  width: 100%;
-  height: 60px;
-  line-height: 60px;
-  position: relative;
-  z-index: 1;
-}
-.item{
-  width:100%;
-  height:auto;
-  position: relative;
-  border-bottom: 1px solid #eee;
-  overflow: hidden;
-  display: -webkit-box;
-  display: box;
-}
-.item:active{
-  background: rgba(0,0,0,0.1);
-}
-.eventCon .icon,.shadow .icon{
-  width:50px;
-  height:60px;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  position: relative;
-}
-.itemCon{
-  -webkit-box-flex:1;
-  box-flex:1;
-  position: relative;
-  line-height:60px;
-}
-.icon img{
-  height:60%;
-  position: absolute;
-  top:0;
-  bottom:0;
-  left:0;
-  right:0;
-  margin: auto;
-}
+
 .eventCon{
   width:100%;
   overflow:hidden;
   text-align: left;
 }
-.titleNone{
-  width:100%;
-  height:0;
-  position: fixed;
-  left:0;
-  top:0;
-  line-height: 36px;
-  text-align: center;
-  background: #66cccc;
-  overflow: hidden;
-}
-.topTips{
-  height:auto;
-  border-bottom: 1px solid #eee;
-  overflow: hidden;
-}
-.topTips .tipsCon{
-  width:100%;
-  height: 60px;
-  overflow: hidden;
-  padding: 5px;
-  text-align: center;
-}
-.topTips a{
-  display: inline-block;
-  height:20px;
-  line-height:20px;
-  padding: 0px 5px;
-  margin:  5px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  -webkit-border-radius: 10px;
-  word-break: keep-all;
-}
-.topTips a:active{
-  background: rgba(0,0,0,0.1);
-}
-.showAll{
-  width: 100%;
-  height:20px;
-}
-.showAll span{
-  display: block;
-  width: 20px;
-  height:12px;
-  margin: 5px auto;
-  background: url("../../imgs/page/activity/ic_down_1.png")  no-repeat center center;
-  background-size: contain;
-  -webkit-background-size: contain;
-  transition: all 0.4s;
-  -moz-transition: all 0.4s;
-  -webkit-transition: all 0.4s;
-  -o-transition: all 0.4s;
-}
-.showAll span.active{
-  transform: rotate(180deg);
-  -moz-transform: rotate(180deg);
-  -webkit-transform: rotate(180deg);
-  -o-transform: rotate(180deg);
-}
-.eventCon .eventTitle{
-  width:100%;
-  min-height:50px;
-  text-align: center;
-  padding: 5px 20px 0px;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-.eventCon .eventTitle .eventName{
-  height:40px;
-  font-size: 18px;
-}
+
 .time{
   width:100%;
   border-bottom: 1px solid #eee;
@@ -251,23 +121,7 @@ textarea{
   min-height: 30px;
   line-height: 30px;
 }
-.saveBtn{
-  display: block;
-  width:90%;
-  height:40px;
-  background: #66cccc;
-  margin: 10px auto 5px;
-  text-align: center;
-  line-height:40px;
-}
-.delete{
-  width:100%;
-  height:50px;
-  line-height:50px;
-  color: #f20d0d;
-  text-align: center;
-  display: none;
-}
+
 /*-------------弹层样式--------------*/
 .shadowBg{
   width:100%;
@@ -315,13 +169,13 @@ textarea{
   height:300px;
 }
 .container .imgCon{
-  width:40px;
-  height:40px;
+  width:20px;
+  height:44px;
   position: absolute;
-  top:110px;
+  top:128px;
   left:50%;
   margin-left: -20px;
-  background: url("../../imgs/page/activity/ic_place.png") no-repeat center center;
+  background: url("../../imgs/common/ic_place2.png") no-repeat center center;
   background-size: contain;
   -webkit-background-size: contain;
 }
@@ -484,3 +338,47 @@ textarea{
 .listCon{ min-height: 100%}
 
 .addressCon{position: relative; height: 300px; overflow: auto}
+
+form {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0px 10px;
+  .img_upload_box {
+    float: left;
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    position: relative;
+    .img_upload_btn {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      width: 50px;
+      height: 50px;
+      opacity: 0;
+      z-index: 1001;
+    }
+    a {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      border: 2px solid #616161;
+      color: #616161;
+      font-size: 45px;
+      width: 46px;
+      height:46px;
+      line-height: 40px;
+      text-align: center;
+      z-index: 1000;
+      text-decoration: none;
+    }
+    img {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      width: 50px;
+      height: 50px;
+      z-index: 1004;
+    }
+  }
+}
