@@ -45,7 +45,7 @@ var fuc = {
             type: "get",
             url: "http://www.li-li.cn/llwx/event/getSchedule",
             data: param,
-            async: false,
+            async: true,
             success: function(data) {
                 if(data.code == 0) {
                     var newData = {},

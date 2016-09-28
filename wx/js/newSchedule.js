@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "77a723380cd00c77b9ce"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "11d38b4f5bfe9d28ff6d"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -631,7 +631,7 @@
 	            type: "get",
 	            url: "http://www.li-li.cn/llwx/event/getSchedule",
 	            data: param,
-	            async: false,
+	            async: true,
 	            success: function(data) {
 	                if(data.code == 0) {
 	                    var newData = {},
