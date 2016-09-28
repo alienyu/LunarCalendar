@@ -18,9 +18,9 @@
           "longitude": "",
           "latitude": "",
           "bgColor": "#cc00ff",
-          "material": {
-            "materialId": "",
-            "url": ""
+          "theme": {
+            "themeId": "",
+            "themethemeUrl": ""
           },
           "remark": "23",
           "remarkImgs": ""
@@ -39,9 +39,9 @@
           "longitude": "",
           "latitude": "",
           "bgColor": "#0000ff",
-          "material": {
-            "materialId": "",
-            "url": "http://pic85.huitu.com/res/20160830/523_20160830222318301500_1.jpg"
+          "theme": {
+            "themeId": "",
+            "themeUrl": "http://pic85.huitu.com/res/20160830/523_20160830222318301500_1.jpg"
           },
           "remark": "23",
           "remarkImgs": ""
@@ -60,9 +60,9 @@
           "longitude": "116.331398",
           "latitude": "39.897445",
           "bgColor": "#cc00ff",
-          "material": {
-            "materialId": "",
-            "url": ""
+          "theme": {
+            "themeId": "",
+            "themeUrl": ""
           },
           "remark": "23",
           "remarkImgs": ""
@@ -87,9 +87,9 @@
           "longitude": "",
           "latitude": "",
           "bgColor": "#cc00ff",
-          "material": {
-            "materialId": "",
-            "url": ""
+          "theme": {
+            "themeId": "",
+            "themeUrl": ""
           },
           "remark": "23",
           "remarkImgs": ""
@@ -108,9 +108,9 @@
           "longitude": "",
           "latitude": "",
           "bgColor": "#0000ff",
-          "material": {
-            "materialId": "",
-            "url": "http://pic85.huitu.com/res/20160830/523_20160830222318301500_1.jpg"
+          "theme": {
+            "themeId": "",
+            "themeUrl": "http://pic85.huitu.com/res/20160830/523_20160830222318301500_1.jpg"
           },
           "remark": "23",
           "remarkImgs": ""
@@ -129,9 +129,9 @@
           "longitude": "116.331398",
           "latitude": "39.897445",
           "bgColor": "#cc00ff",
-          "material": {
-            "materialId": "",
-            "url": ""
+          "theme": {
+            "themeId": "",
+            "themeUrl": ""
           },
           "remark": "23",
           "remarkImgs": ""
@@ -156,9 +156,9 @@
           "longitude": "",
           "latitude": "",
           "bgColor": "#cc00ff",
-          "material": {
-            "materialId": "",
-            "url": ""
+          "theme": {
+            "themeId": "",
+            "themeUrl": ""
           },
           "remark": "23",
           "remarkImgs": ""
@@ -177,9 +177,9 @@
           "longitude": "",
           "latitude": "",
           "bgColor": "#0000ff",
-          "material": {
-            "materialId": "",
-            "url": "http://pic85.huitu.com/res/20160830/523_20160830222318301500_1.jpg"
+          "theme": {
+            "themeId": "",
+            "themeUrl": "http://pic85.huitu.com/res/20160830/523_20160830222318301500_1.jpg"
           },
           "remark": "23",
           "remarkImgs": ""
@@ -198,9 +198,9 @@
           "longitude": "116.431398",
           "latitude": "39.32543",
           "bgColor": "#cc00ff",
-          "material": {
-            "materialId": "",
-            "url": ""
+          "theme": {
+            "themeId": "",
+            "themeUrl": ""
           },
           "remark": "23",
           "remarkImgs": ""
@@ -225,9 +225,9 @@
           "longitude": "",
           "latitude": "",
           "bgColor": "#cc00ff",
-          "material": {
-            "materialId": "",
-            "url": ""
+          "theme": {
+            "themeId": "",
+            "themeUrl": ""
           },
           "remark": "23",
           "remarkImgs": ""
@@ -246,9 +246,9 @@
           "longitude": "",
           "latitude": "",
           "bgColor": "#0000ff",
-          "material": {
-            "materialId": "",
-            "url": "http://pic85.huitu.com/res/20160830/523_20160830222318301500_1.jpg"
+          "theme": {
+            "themeId": "",
+            "themeUrl": "http://pic85.huitu.com/res/20160830/523_20160830222318301500_1.jpg"
           },
           "remark": "23",
           "remarkImgs": ""
@@ -267,9 +267,9 @@
           "longitude": "116.431398",
           "latitude": "39.35324",
           "bgColor": "#cc00ff",
-          "material": {
-            "materialId": "",
-            "url": ""
+          "theme": {
+            "themeId": "",
+            "themeUrl": ""
           },
           "remark": "23",
           "remarkImgs": ""
@@ -294,9 +294,9 @@
           "longitude": "",
           "latitude": "",
           "bgColor": "#cc00ff",
-          "material": {
-            "materialId": "",
-            "url": ""
+          "theme": {
+            "themeId": "",
+            "themeUrl": ""
           },
           "remark": "23",
           "remarkImgs": ""
@@ -315,9 +315,9 @@
           "longitude": "",
           "latitude": "",
           "bgColor": "#0000ff",
-          "material": {
-            "materialId": "",
-            "url": "http://pic85.huitu.com/res/20160830/523_20160830222318301500_1.jpg"
+          "theme": {
+            "themeId": "",
+            "themeUrl": "http://pic85.huitu.com/res/20160830/523_20160830222318301500_1.jpg"
           },
           "remark": "23",
           "remarkImgs": ""
@@ -336,9 +336,9 @@
           "longitude": "116.331398",
           "latitude": "39.897445",
           "bgColor": "#cc00ff",
-          "material": {
-            "materialId": "",
-            "url": ""
+          "theme": {
+            "themeId": "",
+            "themeUrl": ""
           },
           "remark": "23",
           "remarkImgs": ""
