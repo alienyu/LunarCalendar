@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "c245da17a94ccdbcd0c4"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "59046868f18ac8d71e06"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -584,7 +584,7 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(64);
+	/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(76);
 	var pageLoad = __webpack_require__(14);
 	var touchSlider = __webpack_require__(28);
 	__webpack_require__(15);
@@ -594,7 +594,7 @@
 	var wx = __webpack_require__(20);
 	var fastClick = __webpack_require__(23);
 	var autoTextArea = __webpack_require__(24);
-	__webpack_require__(66);
+	__webpack_require__(78);
 	var fuc = {
 	    config: {
 	        eventId: Dom.getRequest("eventId"),
@@ -6477,14 +6477,14 @@
 
 /***/ },
 
-/***/ 64:
+/***/ 76:
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
 
-/***/ 66:
+/***/ 78:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {/*!

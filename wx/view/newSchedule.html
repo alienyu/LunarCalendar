@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link href="/wx/css/newSchedule.css?c245da17a94ccdbcd0c4" rel="stylesheet"></head>
+<link href="/wx/css/newSchedule.css?59046868f18ac8d71e06" rel="stylesheet"></head>
 <body>
     <header>
         <div class="current_month">2016年9月</div>
@@ -41,7 +41,7 @@
             <% if(eventArr.length < 1) { %>
                 <!--是否是月首-->
                 <% if(today.day == 1) { %>
-                    <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= parseInt(today.month, 10) %>.jpg) fixed center center;">
+                    <div class="month_divide month_<%= parseInt(today.month, 10) %>">
                         <div class="text"><%= today.month %>月</div>
                     </div>
                 <% } %>
@@ -62,7 +62,7 @@
                 <% if(today.isToday == false) { %>
                     <!--是否是月首-->
                     <% if(today.day == 1) { %>
-                        <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= parseInt(today.month, 10) %>.jpg) fixed center center;">
+                        <div class="month_divide month_<%= parseInt(today.month, 10) %>">
                             <div class="text"><%= today.month %>月</div>
                         </div>
                     <% } %>
@@ -88,7 +88,7 @@
                             <% var timeDetail = timeData[j]; %>
                             <!--是否是月首(今天与第一条数据不再同一月份)-->
                             <% if(j == 0 && dayData.firstEventDayOfMonth && dayData.date.split('-')[1] != today.month) { %>
-                                <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= parseInt(dayData.date.split('-')[1], 10) %>.jpg) fixed center center;">
+                                <div class="month_divide month_<%= parseInt(dayData.date.split('-')[1], 10) %>">
                                     <div class="text"><%= parseInt(dayData.date.split("-")[1], 10) %>月</div>
                                 </div>
                             <% } %>
@@ -114,7 +114,7 @@
                                      <% } %>
                                     <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
-                                        <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %>-<%= timeDetail.endTime ? timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : ''%></div>
+                                        <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= timeDetail.endTime ? '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : ''%></div>
                                         <div class="address"><%= timeDetail.location %></div>
                                     </div>
                                 </div>
@@ -134,7 +134,7 @@
                             <% var timeDetail = timeData[j]; %>
                             <!--是否是月首-->
                             <% if(j == 0 && dayData.firstEventDayOfMonth) { %>
-                                <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= parseInt(dayData.date.split('-')[1], 10) %>.jpg) fixed center center;">
+                                <div class="month_divide month_<%= parseInt(dayData.date.split('-')[1], 10) %>">
                                     <div class="text"><%= parseInt(dayData.date.split("-")[1], 10) %>月</div>
                                 </div>
                             <% } %>
@@ -147,7 +147,7 @@
                                 <!--定义背景元素-->
                                 <% if(timeDetail.longitude == '') { %>
                                     <% if(timeDetail.theme) { %>
-                                        <div class="content" style="background: url(<%= timeDetail.theme %>) center center no-repeat;background-size: cover;">
+                                        <div class="content" style="background: url(<%= timeDetail.theme.themeUrl %>) center center no-repeat;background-size: cover;">
                                     <% } else { %>
                                         <div class="content" style="background-color: <%= timeDetail.bgColor %>">
                                     <% } %>
@@ -160,7 +160,7 @@
                                 <% } %>
                                     <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
-                                        <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %>-<%= timeDetail.endTime ? timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
+                                        <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= timeDetail.endTime ?  '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
                                         <div class="address"><%= timeDetail.location %></div>
                                     </div>
                                 </div>
@@ -182,7 +182,7 @@
                     <% var timeDetail = timeData[j]; %>
                     <!--是否是月首-->
                     <% if(j == 0 && dayData.firstEventDayOfMonth) { %>
-                        <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= parseInt(dayData.date.split('-')[1], 10) %>.jpg) fixed center center;">
+                        <div class="month_divide month_<%= parseInt(dayData.date.split('-')[1], 10) %>">
                             <div class="text"><%= parseInt(dayData.date.split("-")[1], 10) %>月</div>
                         </div>
                     <% } %>
@@ -208,7 +208,7 @@
                             <% } %>
                             <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                 <div class="title"><%= timeDetail.name %></div>
-                                <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %>-<%= timeDetail.endTime ? timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
+                                <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= timeDetail.endTime ?  '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
                                 <div class="address"><%= timeDetail.location %></div>
                             </div>
                         </div>
@@ -219,4 +219,4 @@
         <% } %>
     </script>
     <script src="http://api.map.baidu.com/api?v=2.0&ak=Nv4xifhhDjKpB1DP6uDwd3cNbHeH2PaV"></script>
-<script type="text/javascript" src="/wx/js/newSchedule.js?c245da17a94ccdbcd0c4"></script></body></html>
+<script type="text/javascript" src="/wx/js/newSchedule.js?59046868f18ac8d71e06"></script></body></html>

@@ -43,7 +43,7 @@ var fuc = {
         }
         $.ajax({
             type: "get",
-            url: "http://www.li-li.cn/llwx/event/getSchedule",
+            url: "/event/getSchedule",
             data: param,
             async: true,
             success: function(data) {
