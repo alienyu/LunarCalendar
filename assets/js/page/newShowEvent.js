@@ -31,7 +31,7 @@ var fuc = {
 
     renderPage:function(){
         var that = this;
-        wx.wxConfig(1);
+        //wx.wxConfig(1);
         that.getJoiner();
         that.getData();
 
@@ -97,7 +97,7 @@ var fuc = {
                 if(data.code == 0) {
                         console.log(data);
                         var dataList = data.data;
-                        that.config.eventType = dataList.eventType;
+                        that.config.eventType = dataList.event.eventType;
                         $('.eventName').html(dataList.event.name);
                         if (dataList.event.eventType == 0) {//提醒事件
                             $('.time .itemCon').html(Dom.transStartTime());
@@ -118,8 +118,8 @@ var fuc = {
                             if(dataList.event.bgColor){//若用户设置了背景颜色
                                 $('.topCon').css("height","100px");
                             }else if(dataList.event.theme){//若用户没有设置背景颜色，则从主题中选择
-                                $('.topCon').css({"height":"200px","background-image":dataList.theme.themeUrl});
-                                $('.compile').css("background",dataList.theme.themeColor);
+                                $('.topCon').css({"height":"200px","background-image":"url("+dataList.event.theme.themeUrl+")"});
+                                $('.compile').css("background",dataList.event.theme.themeColor);
                             }
                             if (dataList.event.remarkImgs !="") {//如果有备注
                                 var imgArr = dataList.event.remarkImgs.split(",");//图片数组
@@ -148,10 +148,10 @@ var fuc = {
                             $('.eventOwner').attr("src",dataList.owner.headImgUrl);
                             $('.ownerNickName .nickName').html(dataList.owner.nickName);
                             if(dataList.user){
-                                wx.wxConfig(2, dataList.user + " 邀请您参加 「" + dataList.event.name + "」", Dom.tranDate(dataList.event.startTime),
+                                wx.wxShare(dataList.user + " 邀请您参加 「" + dataList.event.name + "」", Dom.tranDate(dataList.event.startTime),
                                 "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + dataList.event.eventId));
                             }else{//用户没有关注历历
-                                wx.wxConfig(2, dataList.owner.nickName + " 邀请您参加 「" + dataList.event.name + "」", Dom.tranDate(dataList.event.startTime),
+                                wx.wxShare(dataList.owner.nickName + " 邀请您参加 「" + dataList.event.name + "」", Dom.tranDate(dataList.event.startTime),
                                 "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + dataList.event.eventId));
                             }
                         }

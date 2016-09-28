@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>添加活动</title>
     <meta name="format-detection" content="telephone=no"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="x5-orientation" content="portrait">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -119,6 +120,8 @@
 <!--标题标签模板-->
 <script type="text/x-list" id="tagListTemplate">
     <a href="javascript:;" class="c00" data-template="{{templateId}}" data-tag="{{tagId}}">{{tagName}}</a>
+
+
 </script>
 <!--点击完成，若开始时间在结束时间之后，则弹出提示框-->
 <div id="dialog2" style="display: none;">
@@ -130,7 +133,7 @@
         </div>
     </div>
 </div>
-<div  id="dialog1" style="display: none;">
+<div id="dialog1" style="display: none;">
     <div class="weui-mask"></div>
     <div class="weui-dialog">
         <div class="weui-dialog__hd">
@@ -170,15 +173,15 @@
             <div class="listCon"></div>
         </div>
         <!--<div class="addressCon">-->
-            <!--<div class="item">-->
-                <!--<div class="icon">-->
-                    <!--<img src="../../assets/imgs/page/activity/ic_place.png" alt="">-->
-                <!--</div>-->
-                <!--<div class="itemCon">-->
-                    <!--<span class="name">上海</span>-->
-                    <!--<span class="address fs12 c33">邀请微信好友</span>-->
-                <!--</div>-->
-            <!--</div>-->
+        <!--<div class="item">-->
+        <!--<div class="icon">-->
+        <!--<img src="../../assets/imgs/page/activity/ic_place.png" alt="">-->
+        <!--</div>-->
+        <!--<div class="itemCon">-->
+        <!--<span class="name">上海</span>-->
+        <!--<span class="address fs12 c33">邀请微信好友</span>-->
+        <!--</div>-->
+        <!--</div>-->
         <!--</div>-->
     </div>
 </div>
@@ -207,12 +210,16 @@
            <div class="colorName fs12">{{colorName}}</div>
            <div class="selectImg"></div>
     </div>
+
+
 </script>
 <script type="text/x-imgItem" id="imgListTemplate">
     <div class="imgItem items" data-id="{{themeId}}" data-color="{{themeColor}}" data-name="{{themeName}}">
         <div class="imgName cff">{{themeName}}</div>
         <div class="selectImg"></div>
     </div>
+
+
 </script>
 <!------------备注弹层--------------->
 <div class="remarkShadow shadow" id="remarkShadow">
@@ -242,7 +249,8 @@
                                 <div class="weui-uploader__bd">
                                     <ul class="weui-uploader__files" id="uploaderFiles"></ul>
                                     <div class="weui-uploader__input-box">
-                                        <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple />
+                                        <input id="uploaderInput" class="weui-uploader__input" type="file"
+                                               accept="image/*" multiple/>
                                     </div>
                                 </div>
                             </div>
@@ -283,8 +291,8 @@
         <div class="mod-orient-layer__desc">为了更好的体验，请使用竖屏浏览</div>
     </div>
 </div>
-<script  type="text/x-address" id="addressListTemplate">
-    <div class="item">
+<script type="text/x-address" id="addressListTemplate">
+    <div class="item addressItem" data-jw="{{jw}}">
                 <div class="icon">
                     <img src="../../assets/imgs/page/activity/ic_place.png" alt="">
                 </div>
@@ -293,6 +301,8 @@
                     <span class="address fs12 c33">{{address}}</span>
                 </div>
             </div>
+
+
 </script>
 <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
 <script src="http://cache.amap.com/lbs/static/es5.min.js"></script>
