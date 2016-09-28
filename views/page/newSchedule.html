@@ -100,8 +100,8 @@
                                 </div>
                                 <!--定义背景元素-->
                                 <% if(timeDetail.longitude == '') { %>
-                                    <% if(timeDetail.material.url != '') { %>
-                                        <div class="content" style="background: url(<%= timeDetail.material.url %>) center center no-repeat;background-size: cover;">
+                                    <% if(timeDetail.theme) { %>
+                                        <div class="content" style="background: url(<%= timeDetail.theme.url %>) center center no-repeat;background-size: cover;">
                                     <% } else { %>
                                         <div class="content" style="background-color: <%= timeDetail.bgColor %>">
                                     <% } %>
@@ -112,7 +112,7 @@
                                         <div id="bmap_<%= timeDetail.eventId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
                                         <div class="map_mask"></div>
                                      <% } %>
-                                    <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.material.url ? ' contain_img' : '' %>">
+                                    <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
                                         <div class="time"><%= timeDetail.startTime.split(' ')[1] %>-<%= timeDetail.endTime.split(' ')[1] %></div>
                                         <div class="address"><%= timeDetail.location %></div>
@@ -146,8 +146,8 @@
                                 </div>
                                 <!--定义背景元素-->
                                 <% if(timeDetail.longitude == '') { %>
-                                    <% if(timeDetail.material.url != '') { %>
-                                        <div class="content" style="background: url(<%= timeDetail.material.url %>) center center no-repeat;background-size: cover;">
+                                    <% if(timeDetail.theme) { %>
+                                        <div class="content" style="background: url(<%= timeDetail.theme %>) center center no-repeat;background-size: cover;">
                                     <% } else { %>
                                         <div class="content" style="background-color: <%= timeDetail.bgColor %>">
                                     <% } %>
@@ -158,7 +158,7 @@
                                     <div id="bmap_<%= timeDetail.eventId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
                                     <div class="map_mask"></div>
                                 <% } %>
-                                    <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.material.url ? ' contain_img' : '' %>">
+                                    <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
                                         <div class="time"><%= timeDetail.startTime.split(' ')[1] %>-<%= timeDetail.endTime.split(' ')[1] %></div>
                                         <div class="address"><%= timeDetail.location %></div>
@@ -194,8 +194,8 @@
                         </div>
                         <!--定义背景元素-->
                         <% if(timeDetail.longitude == '') { %>
-                            <% if(timeDetail.material.url != '') { %>
-                                <div class="content" style="background: url(<%= timeDetail.material.url %>) center center no-repeat;background-size: cover;">
+                            <% if(timeDetail.theme) { %>
+                                <div class="content" style="background: url(<%= timeDetail.theme.url %>) center center no-repeat;background-size: cover;">
                             <% } else { %>
                                 <div class="content" style="background-color: <%= timeDetail.bgColor %>">
                              <% } %>
@@ -206,7 +206,7 @@
                                 <div id="bmap_<%= timeDetail.eventId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
                                 <div class="map_mask"></div>
                             <% } %>
-                            <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.material.url ? ' contain_img' : '' %>">
+                            <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                 <div class="title"><%= timeDetail.name %></div>
                                 <div class="time"><%= timeDetail.startTime.split(' ')[1] %>-<%= timeDetail.endTime.split(' ')[1] %></div>
                                 <div class="address"><%= timeDetail.location %></div>

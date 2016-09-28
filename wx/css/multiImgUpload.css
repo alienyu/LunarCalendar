@@ -1,0 +1,45 @@
+form {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0px 10px;
+}
+form .img_upload_box {
+  float: left;
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  position: relative;
+}
+form .img_upload_box .img_upload_btn {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 50px;
+  height: 50px;
+  opacity: 0;
+  z-index: 1001;
+}
+form .img_upload_box a {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  border: 2px solid #616161;
+  color: #616161;
+  font-size: 45px;
+  width: 46px;
+  height: 46px;
+  line-height: 40px;
+  text-align: center;
+  z-index: 1000;
+  text-decoration: none;
+}
+form .img_upload_box img {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 50px;
+  height: 50px;
+  z-index: 1004;
+}
+
+/*# sourceMappingURL=multiImgUpload.css.map*/

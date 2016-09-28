@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "fcc47be7a1636477b72a"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "7cccefc4f565fc96aaa1"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -260,7 +260,7 @@
 /******/ 			hotSetStatus("prepare");
 /******/ 			hotCallback = callback;
 /******/ 			hotUpdate = {};
-/******/ 			var chunkId = 8;
+/******/ 			var chunkId = 9;
 /******/ 			{ // eslint-disable-line no-lone-blocks
 /******/ 				/*globals chunkId */
 /******/ 				hotEnsureUpdateChunk(chunkId);
@@ -584,7 +584,7 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(63);
+	/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(64);
 	var pageLoad = __webpack_require__(14);
 	var touchSlider = __webpack_require__(28);
 	__webpack_require__(15);
@@ -594,7 +594,7 @@
 	var wx = __webpack_require__(20);
 	var fastClick = __webpack_require__(23);
 	var autoTextArea = __webpack_require__(24);
-	__webpack_require__(65);
+	__webpack_require__(66);
 	var fuc = {
 	    config: {
 	        eventId: Dom.getRequest("eventId"),
@@ -6477,14 +6477,14 @@
 
 /***/ },
 
-/***/ 63:
+/***/ 64:
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
 
-/***/ 65:
+/***/ 66:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {/*!

@@ -260,7 +260,7 @@
 /******/ 			hotSetStatus("prepare");
 /******/ 			hotCallback = callback;
 /******/ 			hotUpdate = {};
-/******/ 			var chunkId = 3;
+/******/ 			var chunkId = 4;
 /******/ 			{ // eslint-disable-line no-lone-blocks
 /******/ 				/*globals chunkId */
 /******/ 				hotEnsureUpdateChunk(chunkId);
@@ -584,264 +584,64 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(35);
-	var pageLoad = __webpack_require__(14);
-	var transCalendar = __webpack_require__(17);
-	var wx = __webpack_require__(20);
+	/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(52);
+	
 	var fuc = {
-	    config: {
-	        today:""
-	    },
 	    init: function() {
-	        pageLoad({backgroundColor: "#12101A"});
-	        this.renderPage();
-	        this.changeBg();
+	        this.boxDom = "";
 	        this.bindEvent();
 	    },
-	    pageLoad: function(options) {
-	        document.addEventListener('touchmove', function (e) {//禁止浏览器上下滑动页面
-	            e.preventDefault();
-	        });
-	
-	        var defaults = {opacity: 1, backgroundColor: "#000", delayTime: 500, zindex: 999, sleep: 500};
-	        var options = $.extend(defaults, options);
-	        var _PageHeight = document.documentElement.clientHeight, _PageWidth = document.documentElement.clientWidth;
-	        var _LLLoadingHtml = '<div id="loadingPage" style="position:fixed;left:0;top:0;_position: absolute;width:100%;height:' + _PageHeight + 'px;background:' + options.backgroundColor + ';opacity:' + options.opacity + ';filter:alpha(opacity=' + options.opacity * 100 + ');z-index:' + options.zindex + ';"><div class="ll_loading_con"><div class="ll-loading"><div class="ll-load-inner"><div class="ll-load-container"><div class="ll-load-scale-multiple la-2x"><div></div><div></div><div></div></div></div></div><div class="ll-load-logo"><span class="ll-logo-1"></span><span class="ll-logo-2"></span><span class="ll-logo-3"></span></div></div></div></div>';
-	        $("body").append(_LLLoadingHtml);
-	        document.onreadystatechange = PageLoaded;
-	        function PageLoaded() {
-	            if (document.readyState == "complete") {
-	                var loadingMask = $('#loadingPage');
-	                setTimeout(function () {
-	                    loadingMask.animate({"opacity": 0}, options.delayTime, function () {
-	                        $(this).remove()
-	                    })
-	                }, options.sleep)
-	            }
-	        }
-	    },
-	    renderPage: function() {
-	        wx.wxConfig(1);
-	        var that = this;
-	        //头部时间显示
-	        var ca = new transCalendar();
-	        var d = new Date();//获得当天日期
-	        var nlArr = ca.getls(d);
-	        var nl = nlArr[0]+"年（"+nlArr[1]+"）"+nlArr[2]+"月"+nlArr[3];
-	        var tf = function (i) {
-	            return (i < 10 ? '0' : '') + i
-	        };
-	        var years = d.getFullYear();
-	        var months = tf(d.getMonth() + 1);
-	        var days = tf(d.getDate());
-	        var weeks = d.getDay();
-	        $('.day').html(days);
-	        $('.month').html(months + "月");
-	        $('.lunarCalendar').html(nl);
-	        var dateTime = years + "-" + months + "-" + days;
-	        that.config.today = years + "-" + months + "-" + days;
-	//        console.log(dateTime);
-	        switch (weeks) {
-	            case 0:
-	                $('.week').html("星期日");
-	                break;
-	            case 1:
-	                $('.week').html("星期一");
-	                break;
-	            case 2:
-	                $('.week').html("星期二");
-	                break;
-	            case 3:
-	                $('.week').html("星期三");
-	                break;
-	            case 4:
-	                $('.week').html("星期四");
-	                break;
-	            case 5:
-	                $('.week').html("星期五");
-	                break;
-	            case 6:
-	                $('.week').html("星期六");
-	                break;
-	        }
-	        //事件数据加载
-	        var template = $('#eventListTemplate').html();
-	        $.ajax({
-	            type: "get",
-	            url: "http://www.li-li.cn/llwx/event/getEventOfDay",
-	            data: {
-	                dateTime: dateTime
-	            },
-	            dateType: "json",
-	            success: function (data) {
-	                if (data.code == 0) {
-	                    var eventList = data.data;
-	                    var html = '',mark = '',joinerNum;
-	                    if (eventList.length > 0) {
-	                        $('.event').css('display', 'block');
-	                        $('.eventBg').css('display', 'none');
-	                        eventList = filterEvent(eventList);
-	                        for (var i = 0; i < eventList.length; i++) {
-	                            if (i < 5) {
-	                                if (eventList[i].isOwner) {
-	                                    mark = "@";
-	                                    if (eventList[i].joiners != null && eventList[i].joiners[0]) {
-	                                        joinerNum = parseInt(eventList[i].joiners.length) + 1;
-	                                        html += template.replace(/{{eventId}}/g, eventList[i].event.eventId).replace(/{{name}}/g, eventList[i].event.name).replace(/{{time}}/g, transHour(eventList[i].event.startTime)).replace(/{{count}}/g, joinerNum + "人").replace(/{{user}}/g, mark + eventList[i].joiners[0].nickName);
-	                                    } else {
-	                                        html += template.replace(/{{eventId}}/g, eventList[i].event.eventId).replace(/{{name}}/g, eventList[i].event.name).replace(/{{time}}/g, transHour(eventList[i].event.startTime)).replace(/{{count}}/g, "").replace(/{{user}}/g, "");
-	                                    }
-	                                } else {
-	                                    mark = "#";
-	                                    joinerNum = parseInt(eventList[i].joiners.length) + 1;
-	                                    html += template.replace(/{{eventId}}/g, eventList[i].event.eventId).replace(/{{name}}/g, eventList[i].event.name).replace(/{{time}}/g, transHour(eventList[i].event.startTime)).replace(/{{count}}/g, joinerNum + "人").replace(/{{user}}/g, mark + eventList[i].owner.nickName);
-	                                }
-	                            } else {
-	                                break;
-	                            }
-	                        }
-	                        $('.scheduleList').append(html);
-	                        $('.list').on('tap', function () {
-	                            var eventId = $(this).attr('id');
-	                            $('body').html("").css("background", "#66cccc");
-	                            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/showEvent.html?eventId=" + eventId);
-	                        });
-	                    } else {
-	                        $('.event').css('display', 'none');
-	                        $('.eventBg').css('display', 'block');
-	                    }
-	                }
-	                function transHour(time) {
-	                    var timeArr = time.split(" ");
-	                    var hourArr = timeArr[1].split(":");
-	                    return hourArr[0] + ":" + hourArr[1];
-	                }
-	                //过滤事件
-	                function filterEvent(eventList) {
-	                    if (eventList.length >= 6) {
-	                        for (var i = 0; i < eventList.length && eventList.length > 5; i++) {
-	                            if (compareDate(eventList[0].event.startTime)) {
-	                                eventList.splice(0, 1);
-	                            }
-	                        }
-	                    }
-	                    return eventList;
-	                }
-	                //比较startTime与当前时间比较,如果小于当前时间返回1(比较时分)
-	                function compareDate(startTime) {
-	                    var hour = d.getHours();
-	                    var mintue = d.getMinutes();
-	                    var timeArr = startTime.split(" ");
-	                    var hourArr = timeArr[1].split(":");
-	                    return hourArr[0] < hour ? 1 : (hourArr[0] == hour && hourArr[1] < mintue ? 1 : 0);
-	                }
-	            }
-	        });
-	        //私人运势显示
-	        $.get("http://www.li-li.cn/llwx/fortune/get", {"dateTime": dateTime + " 08:00:00"}, function (data) {
-	            if (data.code == 0) {
-	                var data = data.data;
-	                if (data.personal) {
-	                    $('.suitMatter').html(" ");
-	                    $('.suitable').css("display", 'block');
-	                    var html = "";
-	                    if (data.personal.type3) {
-	                        var type = data.personal.type3.replace(/\,/g, "&nbsp;&nbsp;");
-	                        html = "<span>" + type + "</span>";
-	                        $('.suitMatter').append(html);
-	                    } else {
-	                        $('.suitMatter').html("诸事不宜");
-	                    }
-	                }
-	            }
-	        });
-	        //天气
-	        $.get(
-	            "http://www.li-li.cn/llwx/weather/get",
-	            {
-	                "date":that.config.today,
-	                "days":1
-	            },
-	            function(data){
-	            if(data.code==0){
-	                if(data.data){
-	                    var weatherList = data.data[0];
-	                    var html = "",weatherCode = weatherList.dCode;
-	                    if(weatherList.qlty){
-	                        html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
-	                    }else{
-	                        html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
-	                    }
-	                    $('.weather').append(html);
-	                    if(that.dayOrnight(weatherList.sunUp,weatherList.sunDown)=="dayTime"){
-	                        if(weatherCode>=101&&weatherCode<=213){//多云
-	                            $(".conShadow").attr("class", "conShadow cloudsDay");
-	                        }else if(weatherCode>=300&&weatherCode<=313){//雨
-	                            $(".conShadow").attr("class", "conShadow rainDay");
-	                        }else if(weatherCode>=400&&weatherCode<=407){//雪
-	                            $(".conShadow").attr("class", "conShadow snowDay");
-	                        }else if(weatherCode>=500&&weatherCode<=501){//雾
-	                            $(".conShadow").attr("class", "conShadow fogDay");
-	                        }else if(weatherCode>=502&&weatherCode<=508){//霾
-	                            $(".conShadow").attr("class", "conShadow hazeDay");
-	                        }else{//晴天
-	                            $(".conShadow").attr("class", "conShadow fairDay");
-	                        }
-	                    }else{
-	                        if(weatherCode>=101&&weatherCode<=213){//多云
-	                            $(".conShadow").attr("class", "conShadow cloudsNight");
-	                        }else if(weatherCode>=300&&weatherCode<=313){//雨
-	                            $(".conShadow").attr("class", "conShadow rainNight");
-	                        }else if(weatherCode>=400&&weatherCode<=407){//雪
-	                            $(".conShadow").attr("class", "conShadow snowNight");
-	                        }else if(weatherCode>=500&&weatherCode<=501){//雾
-	                            $(".conShadow").attr("class", "conShadow fogNight");
-	                        }else if(weatherCode>=502&&weatherCode<=508){//霾
-	                            $(".conShadow").attr("class", "conShadow hazeNight");
-	                        }else{//晴天
-	                            $(".conShadow").attr("class", "conShadow fairNight");
-	                        }
-	                    }
-	                }
-	            }else{
-	
-	            }
-	        })
-	    },
-	    dayOrnight:function(sunUp,sunDown){
-	        var date = new Date();
-	        var hours = date.getHours();
-	        var sunUpArr = sunUp.split(":"),sunDownArr=sunDown.split(":");
-	        var sunUpHour = parseInt(sunUpArr[0]),sunDownHour=parseInt(sunDownArr[0]);
-	        if(hours>sunUpHour&&hours<sunDownHour){
-	            return "dayTime";
-	        }else{
-	            return "nightTime";
-	        }
-	    },
-	    changeBg: function() {
-	        var date = new Date();
-	        var hours = date.getHours();
-	        if (hours > 6 && hours < 19) {
-	            $(".conShadow").addClass("fairDay");
+	    checkBoxNum: function() {
+	        if($(".img_upload_box").length < 9) {
+	            return true;
 	        } else {
-	            $(".conShadow").addClass("fairNight");
+	            return false;
 	        }
 	    },
 	    bindEvent: function() {
-	        //点击、滑动事件
-	        $('.con').on('swipeUp', function (event) {
-	            $('body').html("").css("background", "#12101A");
-	            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/calendar.html");
+	        var that = this;
+	        $("#form").on("change", ".img_upload_btn", function(e) {
+	            that.btnDom = $(e.target);
+	            that.boxDom = $(e.target).parent();
+	            var file = e.target.files[0];
+	            var reader  = new FileReader();
+	            reader.addEventListener("load", function () {
+	                var imgSrc = reader.result;
+	                var html = "<img src='" + imgSrc + "' class='img_upload_result' />";
+	                that.boxDom.append(html).removeClass("new_box").find("a").remove();
+	                if(that.checkBoxNum() && $(".new_box").length < 1) {
+	                    var newUploadBox = '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo"><a href="javascript:;">+</a></div>';
+	                    $(".img_upload_box").last().after(newUploadBox);
+	                }
+	            }, false);
+	            reader.readAsDataURL(file);
 	        });
-	        $('.down').on('tap', function (event) {
-	            $('body').html("").css("background", "#12101A");
-	            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/calendar.html");
+	
+	        $("#form").on("tap", ".img_upload_result", function(e) {
+	            $(e.target).parent().remove();
+	            if(that.checkBoxNum() && $(".new_box").length < 1) {
+	                var newUploadBox = '<div class="img_upload_box"><input type="file" class="img_upload_btn" name="photo_' + (that.btnIndex+1) + '"><a href="javascript:;">+</a></div>';
+	                $(".img_upload_box").last().after(newUploadBox);
+	            }
 	        });
-	        $('.addEvent').on('tap', function () {
-	            $('body').html("").css("background", "#66cccc");
-	            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/addEvent.html");
-	        });
+	
+	        $("#btn").on("tap", function() {
+	            $("#form").find(".new_box").remove();
+	            var data = new FormData($("#form")[0]);
+	            $.ajax({
+	                type: "post",
+	                url: "/multiImgUpload",
+	                type: 'POST',
+	                data: data,
+	                dataType: 'JSON',
+	                cache: false,
+	                processData: false,
+	                contentType: false,
+	                success: function(data) {
+	
+	                }
+	            })
+	        })
 	    }
 	}
 	
@@ -2854,305 +2654,7 @@
 
 /***/ },
 
-/***/ 14:
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {module.exports = function(options) {
-	    var defaults = {opacity: 1, backgroundColor: "#000", delayTime: 500, zindex: 999, sleep: 500};
-	    var options = $.extend(defaults, options);
-	    var _PageHeight = document.documentElement.clientHeight, _PageWidth = document.documentElement.clientWidth;
-	    var _LLLoadingHtml = '<div id="loadingPage" style="position:fixed;left:0;top:0;_position: absolute;width:100%;height:' + _PageHeight + 'px;background:' + options.backgroundColor + ';opacity:' + options.opacity + ';filter:alpha(opacity=' + options.opacity * 100 + ');z-index:' + options.zindex + ';"><div class="ll_loading_con"><div class="ll-loading"><div class="ll-load-inner"><div class="ll-load-container"><div class="ll-load-scale-multiple la-2x"><div></div><div></div><div></div></div></div></div><div class="ll-load-logo"><span class="ll-logo-1"></span><span class="ll-logo-2"></span><span class="ll-logo-3"></span></div></div></div></div>';
-	    $("body").append(_LLLoadingHtml);
-	    document.onreadystatechange = PageLoaded;
-	    function PageLoaded() {
-	        if (document.readyState == "complete") {
-	            var loadingMask = $('#loadingPage');
-	            setTimeout(function () {
-	                loadingMask.animate({"opacity": 0}, options.delayTime, function () {
-	                    $(this).remove()
-	                })
-	            }, options.sleep)
-	        }
-	    };
-	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
-
-/***/ },
-
-/***/ 17:
-/***/ function(module, exports) {
-
-	function tranCalendar() {
-		/* ***
-		
-		该对象用于获取日期对应的节气、节日
-		三个方法如下:
-		.getl(date,lockNum)  返回日期对应的数字或农历表示
-		.getst(date)  获取日期对应的节气,若不是则为空.
-		.getlf(date)  获取阴历节日,若不是则为空.
-		.getls(date)  获取阴历数组表示 结果["阴历年", "属相", "阴历月", "阴历日"] 
-		.getsf(date)  获取阳历节日,若不是则为空.
-		*/
-		var unlockNum = true; //是否开启数字格式值返回 如：2011-12-15返回值为1121 [false则为 冬月廿十一]
-		var solarTerm = new Array("小寒", "大寒", "立春", "雨水", "惊蛰", "春分", "清明", "谷雨", "立夏", "小满", "芒种", "夏至","小暑", "大暑", "立秋", "处暑", "白露", "秋分", "寒露", "霜降", "立冬", "小雪", "大雪", "冬至"); //24节气
-		var DifferenceInMonth = new Array(1272060, 1275495, 1281180, 1289445, 1299225, 1310355, 1321560, 1333035, 1342770, 1350855, 1356420, 1359045,
-		1358580, 1355055, 1348695, 1340040, 1329630, 1318455, 1306935, 1297380, 1286865, 1277730, 1274550, 1271556); //24节气值
-		var SF = { "0101": "元旦", "0214": "情人节", "0305#": "学雷锋纪念日", "0308": "妇女节", "0312#": "植树节", "0315#": "消费者权益日", "0401#": "愚人节", "0501": "劳动节", "0504": "青年节", "0601": "儿童节", "0701": "建党节", "0801": "建军节", "0910": "教师节", "1001": "国庆节", "1224": "平安夜", "1225": "圣诞节" }; //阳历节日
-		var LF = { "0101": "春节", "0115": "元宵节", "0505": "端午节", "0815": "中秋节", "0707": "七夕", "0909": "重阳节", "1010#": "感恩节", "1208#": "腊八节", "0100": "除夕" }; //阴历节日
-		var CalendarData=new Array(100),madd=new Array(12),tgString="甲乙丙丁戊己庚辛壬癸",dzString="子丑寅卯辰巳午未申酉戌亥",numString="一二三四五六七八九十",monString="正二三四五六七八九十冬腊",weekString="日一二三四五六",sx="鼠牛虎兔龙蛇马羊猴鸡狗猪",cYear,cMonth,cDay,TheDate;
-		CalendarData=new Array(0xA4B,0x5164B,0x6A5,0x6D4,0x415B5,0x2B6,0x957,0x2092F,0x497,0x60C96,0xD4A,0xEA5,0x50DA9,0x5AD,0x2B6,0x3126E,0x92E,0x7192D,0xC95,0xD4A,0x61B4A,0xB55,0x56A,0x4155B,0x25D,0x92D,0x2192B,0xA95,0x71695,0x6CA,0xB55,0x50AB5,0x4DA,0xA5B,0x30A57,0x52B,0x8152A,0xE95,0x6AA,0x615AA,0xAB5,0x4B6,0x414AE,0xA57,0x526,0x31D26,0xD95,0x70B55,0x56A,0x96D,0x5095D,0x4AD,0xA4D,0x41A4D,0xD25,0x81AA5,0xB54,0xB6A,0x612DA,0x95B,0x49B,0x41497,0xA4B,0xA164B,0x6A5,0x6D4,0x615B4,0xAB6,0x957,0x5092F,0x497,0x64B,0x30D4A,0xEA5,0x80D65,0x5AC,0xAB6,0x5126D,0x92E,0xC96,0x41A95,0xD4A,0xDA5,0x20B55,0x56A,0x7155B,0x25D,0x92D,0x5192B,0xA95,0xB4A,0x416AA,0xAD5,0x90AB5,0x4BA,0xA5B,0x60A57,0x52B,0xA93,0x40E95);madd[0]=0;madd[1]=31;madd[2]=59;madd[3]=90;madd[4]=120;madd[5]=151;madd[6]=181;madd[7]=212;madd[8]=243;madd[9]=273;madd[10]=304;madd[11]=334;
-		function GetBit(m,n){return(m>>n)&1}
-		function e2c(){
-			TheDate=(arguments.length!=3)?new Date():new Date(arguments[0],arguments[1],arguments[2]);
-			var total,m,n,k;
-			var isEnd=false;
-			var tmp=TheDate.getFullYear();
-			total=(tmp-1921)*365+Math.floor((tmp-1921)/4)+madd[TheDate.getMonth()]+TheDate.getDate()-38;
-			if(TheDate.getYear()%4==0&&TheDate.getMonth()>1){total++}
-			for(m=0;;m++){
-				k=(CalendarData[m]<0xfff)?11:12;
-				for(n=k;n>=0;n--){
-					if(total<=29+GetBit(CalendarData[m],n)){isEnd=true;break}
-					total=total-29-GetBit(CalendarData[m],n)
-				}
-				if(isEnd)break
-			}
-			cYear=1921+m;cMonth=k-n+1;cDay=total;
-			if(k==12){
-				if(cMonth==Math.floor(CalendarData[m]/0x10000)+1){cMonth=1-cMonth}
-				if(cMonth>Math.floor(CalendarData[m]/0x10000)+1){cMonth--}
-			}
-		}
-		function GetcDateString() {
-			var P = [19416, 19168, 42352, 21717, 53856, 55632, 91476, 22176, 39632, 21970, 19168, 42422, 42192, 53840, 119381, 46400, 54944, 44450, 38320, 84343, 18800, 42160, 46261, 27216, 27968, 109396, 11104, 38256, 21234, 18800, 25958, 54432, 59984, 28309, 23248, 11104, 100067, 37600, 116951, 51536, 54432, 120998, 46416, 22176, 107956, 9680, 37584, 53938, 43344, 46423, 27808, 46416, 86869, 19872, 42448, 83315, 21200, 43432, 59728, 27296, 44710, 43856, 19296, 43748, 42352, 21088, 62051, 55632, 23383, 22176, 38608, 19925, 19152, 42192, 54484, 53840, 54616, 46400, 46496, 103846, 38320, 18864, 43380, 42160, 45690, 27216, 27968, 44870, 43872, 38256, 19189, 18800, 25776, 29859, 59984, 27480, 21952, 43872, 38613, 37600, 51552, 55636, 54432, 55888, 30034, 22176, 43959, 9680, 37584, 51893, 43344, 46240, 47780, 44368, 21977, 19360, 42416, 86390, 21168, 43312, 31060, 27296, 44368, 23378, 19296, 42726, 42208, 53856, 60005, 54576, 23200, 30371, 38608, 19415, 19152, 42192, 118966, 53840, 54560, 56645, 46496, 22224, 21938, 18864, 42359, 42160, 43600, 111189, 27936, 44448];
-			var tmp = "";
-			if(unlockNum==false){
-				tmp += tgString.charAt((cYear - 4) % 10);
-				tmp += dzString.charAt((cYear - 4) % 12);
-				tmp += "(";
-				tmp += sx.charAt((cYear - 4) % 12);
-				tmp += ")年";
-			}
-			if (cMonth < 1) {
-				if (unlockNum == false) {
-					tmp += "(闰)";
-					tmp += monString.charAt(-cMonth - 1);
-				} else {
-					//tmp += "(闰)"; //**
-					tmp += cMonth < 10 ? "0" + (cMonth - 2) : (cMonth - 2);  //monString.charAt(-cMonth - 1);//**        
-				}
-			} else {
-				if (unlockNum == false) {
-					tmp += monString.charAt(cMonth - 1);
-				} else {
-					tmp += cMonth < 10 ? "0" + cMonth : cMonth;  //monString.charAt(cMonth - 1);//**
-				}
-			}
-			if (unlockNum == false) {
-				tmp += "月";
-				tmp += (cDay < 11) ? "初" : ((cDay < 20) ? "十" : ((cDay < 30) ? "廿" : "三十"));
-				if (cDay % 10 != 0 || cDay == 10) {
-					tmp += numString.charAt((cDay - 1) % 10);
-				}
-			} else {
-				tmp += (cDay < 10 ? "0" + cDay : cDay);
-				if (cMonth == 12 && cDay == ((P[cYear - 1900] & (65536 >> 12)) ? 30 : 29)) {
-					tmp = "0100";
-				}
-			}
-			return tmp;
-		}
-		//获取阴历	
-		function GetLunarDay(solarYear,solarMonth,solarDay){
-			if(solarYear<1921||solarYear>2020){return""}else{solarMonth=(parseInt(solarMonth)>0)?(solarMonth-1):11;
-			e2c(solarYear,solarMonth,solarDay);
-			return GetcDateString()
-			}
-		}
-	
-	    //获取节气
-	    this.getst = function(date) {
-			var DifferenceInYear = 31556926;
-			var BeginTime = new Date(1901 / 1 / 1);
-			BeginTime.setTime(947120460000);
-			for (; date.getFullYear() < BeginTime.getFullYear(); ) {
-				BeginTime.setTime(BeginTime.getTime() - DifferenceInYear * 1000);
-			}
-			for (; date.getFullYear() > BeginTime.getFullYear(); ) {
-				BeginTime.setTime(BeginTime.getTime() + DifferenceInYear * 1000);
-			}
-			for (var M = 0; date.getMonth() > BeginTime.getMonth(); M++) {
-				BeginTime.setTime(BeginTime.getTime() + DifferenceInMonth[M] * 1000);
-			}
-			if (date.getDate() > BeginTime.getDate()) {
-				BeginTime.setTime(BeginTime.getTime() + DifferenceInMonth[M] * 1000);
-				M++;
-			}
-			if (date.getDate() > BeginTime.getDate()) {
-				BeginTime.setTime(BeginTime.getTime() + DifferenceInMonth[M] * 1000);
-				M == 23 ? M = 0 : M++;
-			}
-			var JQ = "";
-			if (date.getDate() == BeginTime.getDate()) {
-				JQ += solarTerm[M];
-			}
-			return JQ;
-		}
-		//获取阳历节日
-		this.getsf=function(){
-			var m,d;
-			if(arguments.length == 2){
-				m=arguments[0];d=arguments[1];
-			}else{
-				m=arguments[0].getMonth()+1;d=arguments[0].getDate();
-			}
-			m= SF[(m < 10 ? "0" + m : m.toString()) + (d < 10 ? "0" + d : d.toString())];
-			return m?m:'';
-		}
-		//获取阴历 D当前日期 lockNum是否开启数字格式值返回 //var D = new Date();
-		this.getl=function (D,lockNum) {
-			unlockNum = lockNum;
-			if (lockNum == false || lockNum == "false") {
-				numString = "一二三四五六七八九十";
-				monString = "正二三四五六七八九十冬腊";
-			}
-			var yy = D.getFullYear();
-			var mm = D.getMonth() + 1;
-			var dd = D.getDate();
-			var ww = D.getDay();
-			var ss = parseInt(D.getTime() / 1000);
-			if (yy < 100)yy = "19" + yy;
-			return GetLunarDay(yy, mm, dd);
-		}
-		//获取阴历节日
-		this.getlf=function (D) {
-			var dayT = LF[this.getl(D,true)]; return dayT ? dayT : "";
-		}
-		//获取阴历数组
-		this.getls=function(D){
-			var tmp=this.getl(D,false);
-			var t=['','','',''];
-			var s=tmp.indexOf('年');
-			if(s!=-1){
-				t[0]=tmp.substring(0,2);
-				t[1]=tmp.substring(3,4);
-				tmp=tmp.substring(6);
-				s=tmp.indexOf('月');
-				t[2]=tmp.substring(0,s);
-				t[3]=tmp.substring(s+1);
-			}
-			return t;
-		}
-	}
-	
-	module.exports = tranCalendar;
-
-/***/ },
-
-/***/ 20:
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {/**
-	 * Created by admin on 2016/8/17.
-	 * 微信分享
-	 */
-	var wx = __webpack_require__(21);
-	var wxConfig = {
-	
-	    wxConfig: function (type) {
-	        var url = window.location.href;
-	        var urlArr = url.split("#");
-	        var noncestr = "";
-	        var signature = "";
-	        var timestamp = "";
-	        $.ajax({
-	            type: "get",
-	            url: "http://www.li-li.cn/llwx/wx/jsOauth",
-	            data: {
-	                url: urlArr[0]
-	            },
-	            dataType: "json",
-	            async: false,
-	            success: function (data) {
-	                if (data.code == 0) {
-	                    console.log(data);
-	                    var data = data.data;
-	                    noncestr = data.noncestr;
-	                    signature = data.signature;
-	                    timestamp = data.timestamp;
-	                }
-	            }
-	        });
-	        wx.config({
-	            debug: false,
-	            //appId: "wx82c10b61c95e9f30",//正式
-	            appId: "wxd8c1d6ab5eb3c981",//测试
-	            timestamp: timestamp,//时间戳
-	            nonceStr: noncestr,//随机串
-	            signature: signature,//签名
-	            jsApiList: [
-	                'onMenuShareTimeline',
-	                'onMenuShareAppMessage',
-	                'hideAllNonBaseMenuItem',
-	                'showMenuItems',
-	                'getLocation'
-	            ]
-	        });
-	
-	        wx.ready(function () {
-	            //隐藏其他选项
-	            wx.hideAllNonBaseMenuItem();
-	        })
-	    },
-	    wxShare: function (title, desc, link) {
-	        wx.showMenuItems({
-	            menuList: ["menuItem:share:appMessage", "menuItem:share:timeline"] // 要显示的菜单项，所有menu项见附录3
-	        });
-	        //获取"分享给朋友"按钮点击状态及自定义分享内容接口
-	        wx.onMenuShareAppMessage({
-	            title: title,
-	            desc: desc,
-	            link: link,
-	            imgUrl: imageUrl,
-	            type: "link",//分享类型，music、video或link，不填默认为link
-	        });
-	        //获取"分享到朋友圈"按钮点击状态及自定义分享内容接口
-	        wx.onMenuShareTimeline({
-	            title: title,
-	            link: link,
-	            imgUrl: imageUrl
-	        });
-	    },
-	    getWx: function () {
-	        return wx;
-	    },
-	
-	    wxLocation: function () {
-	        wx.getLocation({
-	            success: function (res) {
-	                return res.latitude + "," + res.longitude;
-	            },
-	            cancel: function (res) {
-	                //alert('用户拒绝授权获取地理位置');
-	            }
-	        });
-	    },
-	}
-	
-	module.exports = wxConfig;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
-
-/***/ },
-
-/***/ 21:
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_RESULT__;!function(a,b){ true?!(__WEBPACK_AMD_DEFINE_RESULT__ = function(){return b(a)}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)):b(a,!0);}(window,function(a,b){function c(b,c,d){a.WeixinJSBridge?WeixinJSBridge.invoke(b,e(c),function(a){g(b,a,d)}):j(b,d)}function d(b,c,d){a.WeixinJSBridge?WeixinJSBridge.on(b,function(a){d&&d.trigger&&d.trigger(a),g(b,a,c)}):d?j(b,d):j(b,c)}function e(a){return a=a||{},a.appId=E.appId,a.verifyAppId=E.appId,a.verifySignType="sha1",a.verifyTimestamp=E.timestamp+"",a.verifyNonceStr=E.nonceStr,a.verifySignature=E.signature,a}function f(a){return{timeStamp:a.timestamp+"",nonceStr:a.nonceStr,"package":a.package,paySign:a.paySign,signType:a.signType||"SHA1"}}function g(a,b,c){var d,e,f;switch(delete b.err_code,delete b.err_desc,delete b.err_detail,d=b.errMsg,d||(d=b.err_msg,delete b.err_msg,d=h(a,d),b.errMsg=d),c=c||{},c._complete&&(c._complete(b),delete c._complete),d=b.errMsg||"",E.debug&&!c.isInnerInvoke&&alert(JSON.stringify(b)),e=d.indexOf(":"),f=d.substring(e+1)){case"ok":c.success&&c.success(b);break;case"cancel":c.cancel&&c.cancel(b);break;default:c.fail&&c.fail(b)}c.complete&&c.complete(b)}function h(a,b){var e,f,c=a,d=p[c];return d&&(c=d),e="ok",b&&(f=b.indexOf(":"),e=b.substring(f+1),"confirm"==e&&(e="ok"),"failed"==e&&(e="fail"),-1!=e.indexOf("failed_")&&(e=e.substring(7)),-1!=e.indexOf("fail_")&&(e=e.substring(5)),e=e.replace(/_/g," "),e=e.toLowerCase(),("access denied"==e||"no permission to execute"==e)&&(e="permission denied"),"config"==c&&"function not exist"==e&&(e="ok"),""==e&&(e="fail")),b=c+":"+e}function i(a){var b,c,d,e;if(a){for(b=0,c=a.length;c>b;++b)d=a[b],e=o[d],e&&(a[b]=e);return a}}function j(a,b){if(!(!E.debug||b&&b.isInnerInvoke)){var c=p[a];c&&(a=c),b&&b._complete&&delete b._complete,console.log('"'+a+'",',b||"")}}function k(){0!=D.preVerifyState&&(u||v||E.debug||"6.0.2">z||D.systemType<0||A||(A=!0,D.appId=E.appId,D.initTime=C.initEndTime-C.initStartTime,D.preVerifyTime=C.preVerifyEndTime-C.preVerifyStartTime,H.getNetworkType({isInnerInvoke:!0,success:function(a){var b,c;D.networkType=a.networkType,b="http://open.weixin.qq.com/sdk/report?v="+D.version+"&o="+D.preVerifyState+"&s="+D.systemType+"&c="+D.clientVersion+"&a="+D.appId+"&n="+D.networkType+"&i="+D.initTime+"&p="+D.preVerifyTime+"&u="+D.url,c=new Image,c.src=b}})))}function l(){return(new Date).getTime()}function m(b){w&&(a.WeixinJSBridge?b():q.addEventListener&&q.addEventListener("WeixinJSBridgeReady",b,!1))}function n(){H.invoke||(H.invoke=function(b,c,d){a.WeixinJSBridge&&WeixinJSBridge.invoke(b,e(c),d)},H.on=function(b,c){a.WeixinJSBridge&&WeixinJSBridge.on(b,c)})}var o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H;if(!a.jWeixin)return o={config:"preVerifyJSAPI",onMenuShareTimeline:"menu:share:timeline",onMenuShareAppMessage:"menu:share:appmessage",onMenuShareQQ:"menu:share:qq",onMenuShareWeibo:"menu:share:weiboApp",onMenuShareQZone:"menu:share:QZone",previewImage:"imagePreview",getLocation:"geoLocation",openProductSpecificView:"openProductViewWithPid",addCard:"batchAddCard",openCard:"batchViewCard",chooseWXPay:"getBrandWCPayRequest"},p=function(){var b,a={};for(b in o)a[o[b]]=b;return a}(),q=a.document,r=q.title,s=navigator.userAgent.toLowerCase(),t=navigator.platform.toLowerCase(),u=!(!t.match("mac")&&!t.match("win")),v=-1!=s.indexOf("wxdebugger"),w=-1!=s.indexOf("micromessenger"),x=-1!=s.indexOf("android"),y=-1!=s.indexOf("iphone")||-1!=s.indexOf("ipad"),z=function(){var a=s.match(/micromessenger\/(\d+\.\d+\.\d+)/)||s.match(/micromessenger\/(\d+\.\d+)/);return a?a[1]:""}(),A=!1,B=!1,C={initStartTime:l(),initEndTime:0,preVerifyStartTime:0,preVerifyEndTime:0},D={version:1,appId:"",initTime:0,preVerifyTime:0,networkType:"",preVerifyState:1,systemType:y?1:x?2:-1,clientVersion:z,url:encodeURIComponent(location.href)},E={},F={_completes:[]},G={state:0,data:{}},m(function(){C.initEndTime=l()}),H={config:function(a){E=a,j("config",a);var b=E.check===!1?!1:!0;m(function(){var a,d,e;if(b)c(o.config,{verifyJsApiList:i(E.jsApiList)},function(){F._complete=function(a){C.preVerifyEndTime=l(),G.state=1,G.data=a},F.success=function(){D.preVerifyState=0},F.fail=function(a){F._fail?F._fail(a):G.state=-1};var a=F._completes;return a.push(function(){k()}),F.complete=function(){for(var c=0,d=a.length;d>c;++c)a[c]();F._completes=[]},F}()),C.preVerifyStartTime=l();else{for(G.state=1,a=F._completes,d=0,e=a.length;e>d;++d)a[d]();F._completes=[]}}),E.beta&&n()},ready:function(a){0!=G.state?a():(F._completes.push(a),!w&&E.debug&&a())},error:function(a){"6.0.2">z||B||(B=!0,-1==G.state?a(G.data):F._fail=a)},checkJsApi:function(a){var b=function(a){var c,d,b=a.checkResult;for(c in b)d=p[c],d&&(b[d]=b[c],delete b[c]);return a};c("checkJsApi",{jsApiList:i(a.jsApiList)},function(){return a._complete=function(a){if(x){var c=a.checkResult;c&&(a.checkResult=JSON.parse(c))}a=b(a)},a}())},onMenuShareTimeline:function(a){d(o.onMenuShareTimeline,{complete:function(){c("shareTimeline",{title:a.title||r,desc:a.title||r,img_url:a.imgUrl||"",link:a.link||location.href,type:a.type||"link",data_url:a.dataUrl||""},a)}},a)},onMenuShareAppMessage:function(a){d(o.onMenuShareAppMessage,{complete:function(){c("sendAppMessage",{title:a.title||r,desc:a.desc||"",link:a.link||location.href,img_url:a.imgUrl||"",type:a.type||"link",data_url:a.dataUrl||""},a)}},a)},onMenuShareQQ:function(a){d(o.onMenuShareQQ,{complete:function(){c("shareQQ",{title:a.title||r,desc:a.desc||"",img_url:a.imgUrl||"",link:a.link||location.href},a)}},a)},onMenuShareWeibo:function(a){d(o.onMenuShareWeibo,{complete:function(){c("shareWeiboApp",{title:a.title||r,desc:a.desc||"",img_url:a.imgUrl||"",link:a.link||location.href},a)}},a)},onMenuShareQZone:function(a){d(o.onMenuShareQZone,{complete:function(){c("shareQZone",{title:a.title||r,desc:a.desc||"",img_url:a.imgUrl||"",link:a.link||location.href},a)}},a)},startRecord:function(a){c("startRecord",{},a)},stopRecord:function(a){c("stopRecord",{},a)},onVoiceRecordEnd:function(a){d("onVoiceRecordEnd",a)},playVoice:function(a){c("playVoice",{localId:a.localId},a)},pauseVoice:function(a){c("pauseVoice",{localId:a.localId},a)},stopVoice:function(a){c("stopVoice",{localId:a.localId},a)},onVoicePlayEnd:function(a){d("onVoicePlayEnd",a)},uploadVoice:function(a){c("uploadVoice",{localId:a.localId,isShowProgressTips:0==a.isShowProgressTips?0:1},a)},downloadVoice:function(a){c("downloadVoice",{serverId:a.serverId,isShowProgressTips:0==a.isShowProgressTips?0:1},a)},translateVoice:function(a){c("translateVoice",{localId:a.localId,isShowProgressTips:0==a.isShowProgressTips?0:1},a)},chooseImage:function(a){c("chooseImage",{scene:"1|2",count:a.count||9,sizeType:a.sizeType||["original","compressed"],sourceType:a.sourceType||["album","camera"]},function(){return a._complete=function(a){if(x){var b=a.localIds;b&&(a.localIds=JSON.parse(b))}},a}())},previewImage:function(a){c(o.previewImage,{current:a.current,urls:a.urls},a)},uploadImage:function(a){c("uploadImage",{localId:a.localId,isShowProgressTips:0==a.isShowProgressTips?0:1},a)},downloadImage:function(a){c("downloadImage",{serverId:a.serverId,isShowProgressTips:0==a.isShowProgressTips?0:1},a)},getNetworkType:function(a){var b=function(a){var c,d,e,b=a.errMsg;if(a.errMsg="getNetworkType:ok",c=a.subtype,delete a.subtype,c)a.networkType=c;else switch(d=b.indexOf(":"),e=b.substring(d+1)){case"wifi":case"edge":case"wwan":a.networkType=e;break;default:a.errMsg="getNetworkType:fail"}return a};c("getNetworkType",{},function(){return a._complete=function(a){a=b(a)},a}())},openLocation:function(a){c("openLocation",{latitude:a.latitude,longitude:a.longitude,name:a.name||"",address:a.address||"",scale:a.scale||28,infoUrl:a.infoUrl||""},a)},getLocation:function(a){a=a||{},c(o.getLocation,{type:a.type||"wgs84"},function(){return a._complete=function(a){delete a.type},a}())},hideOptionMenu:function(a){c("hideOptionMenu",{},a)},showOptionMenu:function(a){c("showOptionMenu",{},a)},closeWindow:function(a){a=a||{},c("closeWindow",{},a)},hideMenuItems:function(a){c("hideMenuItems",{menuList:a.menuList},a)},showMenuItems:function(a){c("showMenuItems",{menuList:a.menuList},a)},hideAllNonBaseMenuItem:function(a){c("hideAllNonBaseMenuItem",{},a)},showAllNonBaseMenuItem:function(a){c("showAllNonBaseMenuItem",{},a)},scanQRCode:function(a){a=a||{},c("scanQRCode",{needResult:a.needResult||0,scanType:a.scanType||["qrCode","barCode"]},function(){return a._complete=function(a){var b,c;y&&(b=a.resultStr,b&&(c=JSON.parse(b),a.resultStr=c&&c.scan_code&&c.scan_code.scan_result))},a}())},openProductSpecificView:function(a){c(o.openProductSpecificView,{pid:a.productId,view_type:a.viewType||0,ext_info:a.extInfo},a)},addCard:function(a){var e,f,g,h,b=a.cardList,d=[];for(e=0,f=b.length;f>e;++e)g=b[e],h={card_id:g.cardId,card_ext:g.cardExt},d.push(h);c(o.addCard,{card_list:d},function(){return a._complete=function(a){var c,d,e,b=a.card_list;if(b){for(b=JSON.parse(b),c=0,d=b.length;d>c;++c)e=b[c],e.cardId=e.card_id,e.cardExt=e.card_ext,e.isSuccess=e.is_succ?!0:!1,delete e.card_id,delete e.card_ext,delete e.is_succ;a.cardList=b,delete a.card_list}},a}())},chooseCard:function(a){c("chooseCard",{app_id:E.appId,location_id:a.shopId||"",sign_type:a.signType||"SHA1",card_id:a.cardId||"",card_type:a.cardType||"",card_sign:a.cardSign,time_stamp:a.timestamp+"",nonce_str:a.nonceStr},function(){return a._complete=function(a){a.cardList=a.choose_card_info,delete a.choose_card_info},a}())},openCard:function(a){var e,f,g,h,b=a.cardList,d=[];for(e=0,f=b.length;f>e;++e)g=b[e],h={card_id:g.cardId,code:g.code},d.push(h);c(o.openCard,{card_list:d},a)},chooseWXPay:function(a){c(o.chooseWXPay,f(a),a)}},b&&(a.wx=a.jWeixin=H),H});
-
-
-/***/ },
-
-/***/ 35:
+/***/ 52:
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
@@ -3160,4 +2662,4 @@
 /***/ }
 
 /******/ });
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=multiImgUpload.js.map
