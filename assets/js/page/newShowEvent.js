@@ -31,7 +31,7 @@ var fuc = {
 
     renderPage:function(){
         var that = this;
-        //wx.wxConfig(1);
+        wx.wxConfig(1);
         that.getJoiner();
         that.getData();
 
@@ -100,7 +100,7 @@ var fuc = {
                         that.config.eventType = dataList.event.eventType;
                         $('.eventName').html(dataList.event.name);
                         if (dataList.event.eventType == 0) {//提醒事件
-                            $('.time .itemCon').html(Dom.transStartTime());
+                            $('.time .itemCon').html(Dom.transStartTime(dataList.event.startTime));
                             $('.avtivityCon').css("display", "none");
                             $('.bottom').css("display", "none");
                             Ajax.getWeather(Dom.getDate(dataList.event.startTime));
@@ -166,9 +166,9 @@ var fuc = {
         $('.compile').click(function(){
             console.log(that.config.eventType);
             if(that.config.eventType == 0){//提醒事件
-                window.location.href="http://www.li-li.cn/wx/remind.html?eventId="+that.config.eventId;
+                window.location.href="http://www.li-li.cn/llwx/common/to?url2="+encodeURIComponent("http://www.li-li.cn/wx/view/remind.html?eventId="+that.config.eventId);
             }else if(that.config.eventType == 1){//活动事件
-                window.location.href = "http://www.li-li.cn/wx/activity.html?eventId="+that.config.eventId;
+                window.location.href = "http://www.li-li.cn/llwx/common/to?url2="+encodeURIComponent("http://www.li-li.cn/wx/view/activity.html?eventId="+that.config.eventId);
             }
         });
         /*----------------点击更多---------------------*/

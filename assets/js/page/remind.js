@@ -4,28 +4,29 @@
 require("../../css/page/activity.less");
 var pageLoad = require("../common/pageLoad.js");
 require("../vendor/ImproveMobile/zeptoSlider.js");
-//require("../common/BMap.js");
 var Dom = require("../common/dom.js");
 var mobiScroll = require("../vendor/mobiScroll/mobiScroll.js");
 var wx = require("../vendor/weChat/wxInit.js");
-var Ajax = require("../common/ajax.js");
 var fastClick = require("../vendor/ImproveMobile/fastClick.js");
-var autoTextArea = require("../vendor/ImproveMobile/autoTextArea.js");
+require("../vendor/ImproveMobile/autoTextArea.js");
 
 var fuc = {
     config: {
         eventId: "",
-        nickName: "",
+        eventType:"",
         tagId: "",
         time: "",
         timeArr: "",
         repeatSelect: "",
+        bgColor: "",//背景颜色
+        themeId: ""//背景图id
     },
     init: function () {
         pageLoad({backgroundColor: "#66cccc"});
         this.config.time = this.ifTimeExist(Dom.getRequest("date"));
         this.config.timeArr = this.transTime(this.config.time);
         this.config.eventId = Dom.getRequest("eventId");
+        this.config.eventType = 0;
         this.config.repeatSelect = document.getElementById('select');
         this.rem();
         this.renderPage();
@@ -34,38 +35,8 @@ var fuc = {
     },
     rem: function () {
         fastClick.attach(document.body);
-        (function ($, undefined) {
-            "use strict";
-            var pluginName = 'scojs_message';
-            $[pluginName] = function (message, type) {
-                clearTimeout($[pluginName].timeout);
-                var $selector = $('#' + $[pluginName].options.id);
-                if (!$selector.length) {
-                    $selector = $('<div/>', {id: $[pluginName].options.id}).appendTo($[pluginName].options.appendTo)
-                }
-                $selector.html(message);
-                if (type === undefined || type == $[pluginName].TYPE_ERROR) {
-                    $selector.removeClass($[pluginName].options.okClass).addClass($[pluginName].options.errClass)
-                } else if (type == $[pluginName].TYPE_OK) {
-                    $selector.removeClass($[pluginName].options.errClass).addClass($[pluginName].options.okClass)
-                }
-                $selector.slideDown('fast', function () {
-                    $[pluginName].timeout = setTimeout(function () {
-                        $selector.slideUp('fast')
-                    }, $[pluginName].options.delay)
-                })
-            };
-            $.extend($[pluginName], {
-                options: {
-                    id: 'page_message',
-                    okClass: 'page_mess_ok',
-                    errClass: 'page_mess_error',
-                    delay: 500,
-                    appendTo: 'body'
-                }, TYPE_ERROR: 1, TYPE_OK: 2
-            })
-        })($);
     },
+
     selectTimes: function (obj1, obj2) {
         var that = this;
         var selb = mobiScroll.datetime(obj1, {
@@ -90,11 +61,6 @@ var fuc = {
                 $(obj2).html(selectedDateArr[0] + "年" + (parseInt(selectedDateArr[1]) + 1) + "月" + that.tf(selectedDateArr[2]) + "日" + " " + theWeek + " " + selectedTimeArr[1]);
                 var theId = selectedDateArr[0] + "-" + that.tf(parseInt(selectedDateArr[1]) + 1) + "-" + that.tf(selectedDateArr[2]) + " " + selectedTimeArr[1] + ":00";
                 $(obj2).attr("id", theId);
-                if (obj2 == '.startCon') {//若修改的是开始时间的日期，则指定提醒时间日期等于开始时间，结束时间比开始时间大10分钟
-                    $('.endCon').html(selectedDateArr[0] + "年" + (parseInt(selectedDateArr[1]) + 1) + "月" + that.tf(selectedDateArr[2]) + "日" + " " + theWeek + " " + selectedTimeArr[1]);
-                    $('.endCon').attr("id", theId);
-                    that.selectTimes('#endTime', '.endCon').setVal(new Date(that.setInitTime($('.endCon'))));//重新设置结束时间的初始值
-                }
             },
             onChange: function (event, inst) {
                 var changeDate = inst._tempValue;
@@ -146,10 +112,7 @@ var fuc = {
         var startId = timeArr[0] + "-" + that.tf(parseInt(timeArr[1])) + "-" + timeArr[2] + " " + startHour + ":" + startMinute + ":00";
         //给开始时间，结束时间，提醒时间设置ID，提交数据时只需要提交id内容即可
         $('.startCon').attr("id", startId);
-        $('.endCon').attr("id", startId);
-        var startTime = timeArr[0] + "年" + timeArr[1] + "月" + timeArr[2] + "日" + " " + theWeek + " " + startHour + ":" + startMinute,
-            endTime = timeArr[0] + "年" + timeArr[1] + "月" + timeArr[2] + "日" + " " + theWeek + " " + startHour + ":" + startMinute;
-        return [startTime, endTime];
+        return timeArr[0] + "年" + timeArr[1] + "月" + timeArr[2] + "日" + " " + theWeek + " " + startHour + ":" + startMinute;
     },
     /*---------------------修改开始时间、结束时间、指定提醒时间样式，为其设置时间选择器的初始值---------------------*/
     setInitTime: function (obj) {
@@ -161,7 +124,8 @@ var fuc = {
     },
     /*----------------获取用户选择快捷标签对应的主题-------------------*/
     getTemplate: function (templateId) {
-        if (tamplateId) {
+        var that = this;
+        if (templateId !="null") {
             $.get(
                 "http://www.li-li.cn/llwx/template/detail",
                 {
@@ -170,9 +134,11 @@ var fuc = {
                 function (data) {
                     if (data.code == 0) {
                         var list = data.data;
-                        if (list.color) {
-                            $('.colorShow').css("background", list.color);
-                            $('.colorText').html(that.config.map.list.color);
+                        that.config.repeatSelect.value = list.repeatType;//设置关联的重复类型
+                        if(list.color != null){
+                            that.config.bgColor = list.color;
+                        }else{
+                            that.config.themeId = list.themeId;
                         }
                     }
                 }
@@ -184,8 +150,8 @@ var fuc = {
         $('.tipsCon a').click(function (event) {
             $('.eventName').val($(this).html());
             that.config.tagId = $(this).attr("data-tag");//保存用户选择的标签id
-            that.getTemplate();
-            $('.tips').slideUp();
+            that.getTemplate($(this).attr("data-template"));
+            $('.topTips').slideUp();
             event.preventDefault();
         });
     },
@@ -217,13 +183,11 @@ var fuc = {
         if (that.config.eventId) {
             that.getData();
         } else {
-            /*---------------------开始时间、结束时间、指定提醒时间的时间显示---------------------*/
-            $('.startCon').html(that.config.timeArr[0]);
-            $('.endCon').html(that.config.timeArr[1]);
+            /*---------------------开始时间的时间显示---------------------*/
+            $('.startCon').html(that.config.timeArr);
         }
-        /*---------------------------------开始时间、结束时间、指定提醒时间三个地方的日期选择功能---------------------------------*/
+        /*---------------------------------开始时间的日期选择功能---------------------------------*/
         this.selectTimes('#startTime', '.startCon').setVal(new Date(that.setInitTime($('.startCon'))));
-        this.selectTimes('#endTime', '.endCon').setVal(new Date(that.setInitTime($('.endCon'))));
     },
     /*--------------页面内容初始化------------------*/
     getData: function () {
@@ -240,10 +204,10 @@ var fuc = {
                     if (data.code == 0) {
                         var eventList = data.data;
                         $('.eventName').val(eventList.name);//标题内容
-                        autoTextArea(document.getElementById("eventTitle"));
+                        autoTextarea(document.getElementById("eventTitle"));
                         var theStartTime = Dom.tranDate(eventList.startTime),
                             theEndTime = Dom.tranDate(eventList.endTime),
-                            repeatType = eventList.repeatType
+                            repeatType = eventList.repeatType;
                         $('.startCon').html(theStartTime).attr("id", eventList.startTime);
                         $('.endCon').html(theEndTime).attr("id", eventList.endTime);
                         /*------------设置重复类型----------------*/
@@ -264,25 +228,6 @@ var fuc = {
         $('.eventName').focus(function () {
             $('.topTips').slideUp(800);
         });
-        /*------------点击地图，图标跳动------------*/
-        $('.mapCon').click(function () {
-            $('.imgCon').addClass('active');
-            setTimeout(function () {
-                $('.imgCon').removeClass('active');
-            }, 600);
-        })
-        /*-------------点击开始时间后面的展开按钮---------*/
-        $('.timeIconCon').click(function () {
-            if ($(".timeIcon").attr("class") == "timeIcon active") {
-                $(".timeIcon").removeClass("active");
-                $('.endTime').animate({'height': '0px'}, 300);
-                $('.timeText').animate({"width": "0px"}, 300);
-            } else {
-                $(".timeIcon").addClass("active");
-                $('.endTime').animate({'height': '60px'}, 300);
-                $('.timeText').animate({"width": "33px"}, 300);
-            }
-        })
         /*-----------展开顶部的快捷标签-------------*/
         $('.showAll').click(function () {
             if ($('.showAll span').attr("class") == "active") {
@@ -292,51 +237,108 @@ var fuc = {
                 $('.showAll span').addClass("active");
                 $('.tipsCon').animate({"height": "auto"}, 300);
             }
-        })
-        /*----------点击地图，地图弹层从右侧进入----------*/
-        $('.site').click(function () {
-            $('.mapShadow').animate({"top": "0px"}, 300);
-        })
-        /*------------点击分享--------------*/
-        $('.share').click(function () {
-            that.shareShadow(); //显示分享提示弹出层，点击后隐藏
-            if (that.config.eventId) {
-                //todo 弹出蒙层
-                that.shareShadow(); //显示分享提示弹出层，点击后隐藏
-            }
-        })
-        /*-------点击颜色，显示颜色选择弹层-------*/
-        $('.color').click(function () {
-
-        })
+        });
         /*------------点击保存--------------*/
         $('.saveBtn').click(function () {
-            var that = this;
-            $.post(
-                "http://www.li-li.cn/llwx/event/add",
-                {
-                    //"name":;
-                    //"eventType":
-                },
-                function (data) {
-                    if (data.code == 0) {
-
-                    } else {
-
-                    }
+            $('#loadingToast').fadeIn();//显示loading
+            var name = $('#eventTitle').val().replace(/\s+/, ""),
+                startTime = $('.startCon').attr("id"),
+                repeatType = that.config.repeatSelect.value;
+            if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
+                $('#loadingToast').fadeOut();
+                // todo  提示用户设置名称
+                $('.titleNone').slideDown();
+                setTimeout(function () {
+                    $('.titleNone').slideUp();
+                }, 300);
+            } else {
+                if (that.config.eventId) {//若事件已保存，则调用修改事件
+                    $.post(
+                        "http://www.li-li.cn/llwx/event/modify",
+                        {
+                            "name":name,
+                            "eventType":that.config.eventType,
+                            "tagId":that.config.tagId,
+                            "startTime":startTime,
+                            "repeatType":repeatType,
+                            "bgColor":that.config.bgColor,
+                            "theme.themeId":that.config.themeId
+                        },
+                        function(data){
+                            if (data.code == 0) {//提交成功
+                                $('#loadingToast').fadeOut();
+                                window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId="+that.config.eventId);
+                            }else{//提交失败提醒错误信息
+                                $('#loadingToast').fadeOut();
+                                var error = data.msg;
+                                $('#dialog2 .weui-dialog__bd').html(error);
+                                $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
+                                    $('#dialog2').off('click').hide();
+                                });
+                            }
+                        }
+                    )
+                } else {
+                    $.post(
+                        "http://www.li-li.cn/llwx/event/add",
+                        {
+                            "name":name,
+                            "eventType":that.config.eventType,
+                            "tagId":that.config.tagId,
+                            "startTime":startTime,
+                            "repeatType":repeatType,
+                            "bgColor":that.config.bgColor,
+                            "theme.themeId":that.config.themeId
+                        },
+                        function(data){
+                            if(data.code == 0){
+                                $('#loadingToast').fadeOut();
+                                that.config.eventId = data.data;
+                                window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId="+that.config.eventId);
+                            }else{
+                                $('#loadingToast').fadeOut();
+                                var error = data.msg;
+                                $('#dialog2 .weui-dialog__bd').html(error);
+                                $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
+                                    $('#dialog2').off('click').hide();
+                                });
+                            }
+                        }
+                    )
                 }
-            )
+            }
         })
         /*---------------点击删除---------------*/
         $('.delete').click(function () {
-            var that = this;
-            $.get("http://www.li-li.cn/llwx/event.del", {"eventId": that.config.eventId}, function (data) {
-                if (data.code == 0) {
-
-                } else {
-
-                }
-            })
+            $('#dialog1').fadeIn();
+            $('#confirm').on('tap', function () {//点击确定按钮
+                $('#dialog1').fadeOut();
+                $('#loadingToast').fadeIn();//显示loading
+                $.get("http://www.li-li.cn/llwx/event/del", {"eventId": that.config.eventId}, function (data) {
+                    if (data.code == 0) {//删除成功
+                        $('#loadingToast').fadeOut();//隐藏loading
+                        $('#toast').fadeIn();
+                        setTimeout(function () {
+                            $('#toast').fadeOut();
+                            if (document.referrer == "") {
+                                WeixinJSBridge.call("closeWindow");
+                            } else {
+                                window.location.href = document.referrer;//返回上一个页面
+                            }
+                        }, 1500);
+                    } else {//删除失败弹出提示框
+                        $('#loadingToast').fadeOut();//隐藏loading
+                        var error = data.msg;
+                        $('#dialog2 .weui-dialog__bd').html(error);
+                        $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+                            $('#dialog2').off('click').fadeOut();
+                        });
+                    }
+                })
+            });
+            $('#cancel').on('tap', function () {//点击取消按钮
+                $('#dialog1').fadeOut();
+            });
         })
     }
 }
