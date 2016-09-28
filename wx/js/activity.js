@@ -65,11 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-<<<<<<< HEAD
-/******/ 	var hotCurrentHash = "59046868f18ac8d71e06"; // eslint-disable-line no-unused-vars
-=======
-/******/ 	var hotCurrentHash = "59c4d094b9a9d80b3857"; // eslint-disable-line no-unused-vars
->>>>>>> 7a0ff05759245f8acc7769ce244d5edf24b1563e
+/******/ 	var hotCurrentHash = "695897ba9d78ce7b553f"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -652,6 +648,7 @@
 	            '#795548': '可可棕',
 	            '#616161': '石墨黑'
 	        };
+	        this.boxDom = "";
 	        this.config.bgColor = '#66cccc';
 	        this.rem();
 	        this.renderPage();
@@ -911,6 +908,10 @@
 	                    that.config.remarkText = eventList.remark;
 	                    that.config.remarkImgs = eventList.remarkImgs;
 	                    that.config.nickName = eventList.user;//当前用户昵称
+	                    that.mapConfig.location = location;
+	                    that.mapConfig.latitude = eventList.latitude;
+	                    that.mapConfig.longitude = eventList.longitude;
+	                    that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
 	                    $('.startCon').html(theStartTime).attr("id", eventList.startTime);
 	                    $('.endCon').html(theEndTime).attr("id", eventList.endTime);
 	                    /*------------设置重复类型----------------*/
@@ -968,12 +969,13 @@
 	        var that = this;
 	        obj.click(function () {
 	            if (that.mapConfig.latitude && that.mapConfig.longitude) {//地址存在,直接弹出
+	                that.mapMove();
 	                $('.shadowBg').fadeIn();
 	                shadow.show();
 	                container.animate({"top": "10%"}, 200);
 	            } else {//获取地址
 	                wx.getWx().getLocation({
-	                    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+	                    type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
 	                    success: function (res) {
 	                        console.log("getlocation");
 	                        var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
@@ -982,7 +984,8 @@
 	                        //var accuracy = res.accuracy; // 位置精度
 	                        that.mapConfig.latitude = latitude;
 	                        that.mapConfig.longitude = longitude;
-	                        that.mapConfig.moveendPoint = AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
+	                        that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
+	                        console.log(that.mapConfig.moveendPoint);
 	                        that.mapMove();
 	                        $('.shadowBg').fadeIn();
 	                        shadow.show();
@@ -1181,8 +1184,26 @@
 	            $('.shadowBg').fadeOut();
 	        });
 	        $('.remarkShadow .finished').click(function () {
+	            if ($("#form").length > 0) {
+	                for (var i = 0; i < $("#form").length; i++) {
+	                    var fileData = new FormData($("#form")[i]);
+	                    $.ajax({
+	                        type: "post",
+	                        url: "http://www.li-li.cn/llwx/file/upload",
+	                        data: fileData,
+	                        dataType: "json",
+	                        cache: false,
+	                        processData: false,
+	                        contentType: false,
+	                        async: false,
+	                        success: function (data) {
+	                            that.config.remarkImgs = that.config.remarkImgs + "," + data.data;
+	                        }
+	                    })
+	                }
+	                that.config.remarkImgs = that.config.remarkImgs.substr(1);
+	            }
 	            that.config.remarkText = $('#remarkText').val();
-	            //that.config.remarkImgs = ;
 	            $('.remarkCon .remarkText').removeClass("ccc").html(that.config.remarkText);
 	            $('.remarkShadow .container').animate({"top": "100%"}, 200, function () {
 	                $('.remarkShadow').hide();
@@ -1195,7 +1216,6 @@
 	                startTime = $('.startCon').attr("id"),
 	                endTime = $('.endCon').attr("id"),
 	                repeatType = that.config.repeatSelect.value,
-	                location = $('.siteText').html(),
 	                tipType = that.config.remindSelect.value,
 	                tipTime = "";
 	            if (tipType == 3) {
@@ -1209,7 +1229,7 @@
 	                        $('.titleNone').slideUp();
 	                    }, 300);
 	                } else {
-	                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 'longitude', 'latitude', that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+	                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.location, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
 	                    //todo 弹出蒙层
 	                    that.shareShadow(); //显示分享提示弹出层，点击后隐藏
 	                }
@@ -1223,7 +1243,7 @@
 	                } else {
 	                    $('#dialog1').fadeIn();
 	                    $('#dialog1 .confirm').on("tap", function () {//点击确定
-	                        Ajax.eventAdd2(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 'longitude', 'latitude', that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+	                        Ajax.eventAdd2(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.location, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
 	                        Ajax.getUserInformation2();
 	                        wx.wxConfig(2, that.config.nickName + " 邀请您参加 「" + name + "」", $('.startTime').html(),
 	                            "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + that.config.eventId));
@@ -1264,9 +1284,9 @@
 	                }, 300);
 	            } else {
 	                if (that.config.eventId) {//若事件已保存，则调用修改事件
-	                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 121.25, 23, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+	                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.location, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
 	                } else {
-	                    Ajax.eventAdd(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, location, 121.25, 23, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+	                    Ajax.eventAdd(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.location, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
 	                }
 	            }
 	
@@ -1303,7 +1323,51 @@
 	            $('#cancel').on('tap', function () {//点击取消按钮
 	                $('#dialog1').fadeOut();
 	            });
-	        })
+	        });
+	
+	        /*上传图片*/
+	        $("#form").on("change", ".img_upload_btn", function (e) {
+	            that.btnDom = $(e.target);
+	            that.boxDom = $(e.target).parent();
+	            var file = e.target.files[0];
+	            var reader = new FileReader();
+	            reader.addEventListener("load", function () {
+	                var imgSrc = reader.result;
+	                var html = "<img src='" + imgSrc + "' class='img_upload_result' />";
+	                that.boxDom.append(html).removeClass("new_box").find("a").remove();
+	                if (that.checkBoxNum() && $(".new_box").length < 1) {
+	                    var newUploadBox = '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo"><a href="javascript:;">+</a></div>';
+	                    $(".img_upload_box").last().after(newUploadBox);
+	                }
+	            }, false);
+	            reader.readAsDataURL(file);
+	        });
+	
+	        $("#form").on("tap", ".img_upload_result", function (e) {
+	            $(e.target).parent().remove();
+	            if (that.checkBoxNum() && $(".new_box").length < 1) {
+	                var newUploadBox = '<div class="img_upload_box"><input type="file" class="img_upload_btn" name="photo_' + (that.btnIndex + 1) + '"><a href="javascript:;">+</a></div>';
+	                $(".img_upload_box").last().after(newUploadBox);
+	            }
+	        });
+	
+	        //$("#btn").on("tap", function () {
+	        //    $("#form").find(".new_box").remove();
+	        //    var data = new FormData($("#form")[0]);
+	        //    $.ajax({
+	        //        type: "post",
+	        //        url: "http://www.li-li.cn/llwx/file/upload",
+	        //        type: 'POST',
+	        //        data: data,
+	        //        dataType: 'JSON',
+	        //        cache: false,
+	        //        processData: false,
+	        //        contentType: false,
+	        //        success: function (data) {
+	        //            console.log(data);
+	        //        }
+	        //    })
+	        //});
 	    },
 	
 	    /*----------初始化地图----------------------*/
@@ -1386,11 +1450,12 @@
 	                $('.listCon').append(html);
 	                $('.addressItem').on('tap', function () {
 	                    var jw = $(this).attr('data-jw');
-	                    that.mapConfig.latitude = jw.split(",")[0];
-	                    that.mapConfig.longitude = jw.split(",")[1];
+	                    that.mapConfig.latitude = jw.split(",")[1];
+	                    that.mapConfig.longitude = jw.split(",")[0];
 	                    that.mapConfig.location = $(this).find(".name").html();
+	                    that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
 	                    $(".siteText").removeClass("ccc").html(that.mapConfig.location);
-	                    $(".mapShadow").animate({"top": "100%"}, 200, function () {
+	                    $(".mapShadow .container").animate({"top": "100%"}, 200, function () {
 	                        $(this).parent().hide();
 	                    });
 	                    $('.shadowBg').fadeOut();
@@ -1420,8 +1485,19 @@
 	    mapMove: function () {
 	        console.log("mapMove");
 	        var that = this;
-	        that.mapConfig.map.setCenter(that.mapConfig.moveendPoint);
-	    }
+	        console.log(that.mapConfig.moveendPoint.getLng() + "");
+	        that.mapConfig.map.panTo([that.mapConfig.moveendPoint.getLng(), that.mapConfig.moveendPoint.getLat()]);
+	        that.mapConfig.page = 1;
+	        that.searchNearByResult();
+	    },
+	
+	    checkBoxNum: function () {
+	        if ($(".img_upload_box").length < 9) {
+	            return true;
+	        } else {
+	            return false;
+	        }
+	    },
 	}
 	
 	fuc.init();

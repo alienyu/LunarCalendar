@@ -579,37 +579,37 @@ body {
 }
 /*-------随天气变化的背景图片--------*/
 .cloudsDay {
-  background: url(/wx/./img/0fc0554182d9a759d7f6f212934f3433.jpg) no-repeat center center;
+  background: url(/wx/./img/4673756313ea458e606c6d815b7f15f8.jpg) no-repeat center center;
 }
 .cloudsNight {
   background: url(/wx/./img/b62407a5bed69c8df96dd71338149d3a.jpg) no-repeat center center;
 }
 .fairDay {
-  background: url(/wx/./img/7a446d5f6faf270a8563e0b1dd66e11a.jpg) no-repeat center center;
+  background: url(/wx/./img/bfb294998698b1845f882eb6eefb7127.jpg) no-repeat center center;
 }
 .fairNight {
   background: url(/wx/./img/cbb11d3cb20c387d529d19fa72a8a2f4.jpg) no-repeat center center;
 }
 .fogDay {
-  background: url(/wx/./img/d8f4906d6d40ab0b5c69d58ffe67610b.jpg) no-repeat center center;
+  background: url(/wx/./img/80787c7cc52b68deb640ece89f20a54a.jpg) no-repeat center center;
 }
 .fogNight {
   background: url(/wx/./img/a2ec99de4867e11d81c681e75a4d3dda.jpg) no-repeat center center;
 }
 .hazeDay {
-  background: url(/wx/./img/c4b49383c4aabba73d84fd5157e4221a.jpg) no-repeat center center;
+  background: url(/wx/./img/e0154ae504827b6e7bbb66885813b7ac.jpg) no-repeat center center;
 }
 .hazeNight {
   background: url(/wx/./img/ccee6ac4a31f2ac19dad9a786980ec6c.jpg) no-repeat center center;
 }
 .rainDay {
-  background: url(/wx/./img/dc3d163a78760be8c1e9feb3304f60bb.jpg) no-repeat center center;
+  background: url(/wx/./img/c1d6c48c5950e3469438095143a1df40.jpg) no-repeat center center;
 }
 .rainNight {
   background: url(/wx/./img/dd28de60943e28287c74c3fd3857603c.jpg) no-repeat center center;
 }
 .snowDay {
-  background: url(/wx/./img/9fedf94d59af93cdbf22732ed372eaa8.jpg) no-repeat center center;
+  background: url(/wx/./img/2ebebeb980cc3c0f34a06d4f555a1b83.jpg) no-repeat center center;
 }
 .snowNight {
   background: url(/wx/./img/6cf437113aba1533146b8b6267da9bd8.jpg) no-repeat center center;

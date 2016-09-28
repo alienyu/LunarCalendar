@@ -10,11 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<<<<<<< HEAD
-<link href="/wx/css/newSchedule.css?59046868f18ac8d71e06" rel="stylesheet"></head>
-=======
-<link href="/wx/css/newSchedule.css?59c4d094b9a9d80b3857" rel="stylesheet"></head>
->>>>>>> 7a0ff05759245f8acc7769ce244d5edf24b1563e
+<link href="/wx/css/newSchedule.css?695897ba9d78ce7b553f" rel="stylesheet"></head>
 <body>
     <header>
         <div class="current_month">2016年9月</div>
@@ -25,11 +21,11 @@
     <div id="btnDetail" class="btn_detail">
         <div>
             <span>活动</span>
-            <a href="javascript:;" class="activity"></a>
+            <a href="http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2factivity.html" class="activity"></a>
         </div>
         <div>
             <span>提醒</span>
-            <a href="javascript:;" class="remind"></a>
+            <a href="http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2fremind.html" class="remind"></a>
         </div>
     </div>
     <div class="select_mask"></div>
@@ -97,7 +93,7 @@
                                 </div>
                             <% } %>
                             <!--渲染具体记录-->
-                            <div class="record<%= (j == 0 && dayData.firstEventDayOfMonth && dayData.date.split('-')[1] != today.month) ? ' first_day' + ' headDate_' + parseInt(dayData.date.split('-')[0], 10) + '_' + parseInt(dayData.date.split('-')[1], 10) : '' %><%= (j== timeData.length -1) ? ' day_end' : '' %>" data-date="<%= dayData.date %>">
+                            <div class="record<%= (j == 0 && dayData.firstEventDayOfMonth && dayData.date.split('-')[1] != today.month) ? ' first_day' + ' headDate_' + parseInt(dayData.date.split('-')[0], 10) + '_' + parseInt(dayData.date.split('-')[1], 10) : '' %><%= (j== timeData.length -1) ? ' day_end' : '' %>" data-date="<%= dayData.date %>" data-eventId="<%= timeDetail.eventId %>">
                                 <div class="date<%= j != 0 ? ' invisibile' : '' %>">
                                     <div class="day"><%= dayData.detailDate.day %></div>
                                     <div class="weekday"><%= dayData.detailDate.weekDay %></div>
@@ -105,7 +101,7 @@
                                 <!--定义背景元素-->
                                 <% if(timeDetail.longitude == '') { %>
                                     <% if(timeDetail.theme) { %>
-                                        <div class="content" style="background: url(<%= timeDetail.theme.url %>) center center no-repeat;background-size: cover;">
+                                        <div class="content" style="background: url(<%= timeDetail.theme.themeUrl %>) center center no-repeat;background-size: cover;">
                                     <% } else { %>
                                         <div class="content" style="background-color: <%= timeDetail.bgColor %>">
                                     <% } %>
@@ -118,11 +114,7 @@
                                      <% } %>
                                     <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
-<<<<<<< HEAD
                                         <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= timeDetail.endTime ? '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : ''%></div>
-=======
-                                        <div class="time"><%= timeDetail.startTime.split(' ')[1] %>-<%= timeDetail.endTime.split(' ')[1] %></div>
->>>>>>> 7a0ff05759245f8acc7769ce244d5edf24b1563e
                                         <div class="address"><%= timeDetail.location %></div>
                                     </div>
                                 </div>
@@ -147,7 +139,7 @@
                                 </div>
                             <% } %>
                             <!--渲染具体记录-->
-                            <div class="record<%= (j == 0 && dayData.firstEventDayOfMonth) ? ' first_day' + ' headDate_' + parseInt(dayData.date.split('-')[0], 10) + '_' + parseInt(dayData.date.split('-')[1], 10) : '' %><%= (j== timeData.length -1) ? ' day_end' : '' %><%= i==0 ? ' today_has_date' : '' %>" data-date="<%= dayData.date %>">
+                            <div class="record<%= (j == 0 && dayData.firstEventDayOfMonth) ? ' first_day' + ' headDate_' + parseInt(dayData.date.split('-')[0], 10) + '_' + parseInt(dayData.date.split('-')[1], 10) : '' %><%= (j== timeData.length -1) ? ' day_end' : '' %><%= i==0 ? ' today_has_date' : '' %>" data-date="<%= dayData.date %>" data-eventId="<%= timeDetail.eventId %>">
                                 <div class="date<%= j != 0 ? ' invisibile' : '' %>">
                                     <div class="day"><%= dayData.detailDate.day %></div>
                                     <div class="weekday"><%= dayData.detailDate.weekDay %></div>
@@ -168,11 +160,7 @@
                                 <% } %>
                                     <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
-<<<<<<< HEAD
                                         <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= timeDetail.endTime ?  '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
-=======
-                                        <div class="time"><%= timeDetail.startTime.split(' ')[1] %>-<%= timeDetail.endTime.split(' ')[1] %></div>
->>>>>>> 7a0ff05759245f8acc7769ce244d5edf24b1563e
                                         <div class="address"><%= timeDetail.location %></div>
                                     </div>
                                 </div>
@@ -199,7 +187,7 @@
                         </div>
                     <% } %>
                     <!--渲染具体记录-->
-                    <div class="record<%= (j == 0 && dayData.firstEventDayOfMonth) ? ' first_day' + ' headDate_' + parseInt(dayData.date.split('-')[0], 10) + '_' + parseInt(dayData.date.split('-')[1], 10) : '' %><%= (j== timeData.length -1) ? ' day_end' : '' %>" data-date="<%= dayData.date %>">
+                    <div class="record<%= (j == 0 && dayData.firstEventDayOfMonth) ? ' first_day' + ' headDate_' + parseInt(dayData.date.split('-')[0], 10) + '_' + parseInt(dayData.date.split('-')[1], 10) : '' %><%= (j== timeData.length -1) ? ' day_end' : '' %>" data-date="<%= dayData.date %>" data-eventId="<%= timeDetail.eventId %>">
                         <div class="date<%= j != 0 ? ' invisibile' : '' %><%= dayData.isOutOfDate ? ' out_of_date' : '' %>">
                             <div class="day"><%= dayData.detailDate.day %></div>
                             <div class="weekday"><%= dayData.detailDate.weekDay %></div>
@@ -207,7 +195,7 @@
                         <!--定义背景元素-->
                         <% if(timeDetail.longitude == '') { %>
                             <% if(timeDetail.theme) { %>
-                                <div class="content" style="background: url(<%= timeDetail.theme.url %>) center center no-repeat;background-size: cover;">
+                                <div class="content" style="background: url(<%= timeDetail.theme.themeUrl %>) center center no-repeat;background-size: cover;">
                             <% } else { %>
                                 <div class="content" style="background-color: <%= timeDetail.bgColor %>">
                              <% } %>
@@ -220,11 +208,7 @@
                             <% } %>
                             <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                 <div class="title"><%= timeDetail.name %></div>
-<<<<<<< HEAD
                                 <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= timeDetail.endTime ?  '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
-=======
-                                <div class="time"><%= timeDetail.startTime.split(' ')[1] %>-<%= timeDetail.endTime.split(' ')[1] %></div>
->>>>>>> 7a0ff05759245f8acc7769ce244d5edf24b1563e
                                 <div class="address"><%= timeDetail.location %></div>
                             </div>
                         </div>
@@ -235,8 +219,4 @@
         <% } %>
     </script>
     <script src="http://api.map.baidu.com/api?v=2.0&ak=Nv4xifhhDjKpB1DP6uDwd3cNbHeH2PaV"></script>
-<<<<<<< HEAD
-<script type="text/javascript" src="/wx/js/newSchedule.js?59046868f18ac8d71e06"></script></body></html>
-=======
-<script type="text/javascript" src="/wx/js/newSchedule.js?59c4d094b9a9d80b3857"></script></body></html>
->>>>>>> 7a0ff05759245f8acc7769ce244d5edf24b1563e
+<script type="text/javascript" src="/wx/js/newSchedule.js?695897ba9d78ce7b553f"></script></body></html>
