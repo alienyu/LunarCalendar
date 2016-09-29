@@ -429,9 +429,11 @@ var Lunar = {
                 $('.lucky').animate({'bottom': "-265px"}, 500, function () {
                     //if(!$('.lucky02').is(':animated')){
                         $('.lucky02').animate({'bottom': "0px"}, 500);
+						$('.calendar_add').addClass("c_a_open");
                     //}
                     //if(!$('.close02').is(':animated')){
                         $('.close02').animate({'bottom':'66px'},500);
+						
                     //}
                 });
             }
