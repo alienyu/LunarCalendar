@@ -116,6 +116,7 @@ var fuc = {
         return data;
     },
     renderBMP: function () {
+        var that = this;
         $(".bmap:not(.has_render)").each(function (i, e) {
             var map = new BMap.Map(e.id);
             var point = new BMap.Point(that.bd_encrypt($(e).data('longitude'), $(e).data('latitude')).bd_lon, that.bd_encrypt($(e).data('longitude'), $(e).data('latitude')).bd_lat);
@@ -240,7 +241,7 @@ var fuc = {
 
         //添加活动详情跳转地址
         $("#container").on('tap', '.content', function (e) {
-            var id = $(e.target).parent('.record').data("eventId");
+            var id = $(e.target).parents('.record').data("eventid");
             window.location.href = "http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2fnewShowEvent.html?eventId=" + id;
         });
     },
