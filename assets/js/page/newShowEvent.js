@@ -37,8 +37,10 @@ var fuc = {
     renderPage: function () {
         var that = this;
         wx.wxConfig(1);
-        that.getJoiner();
-        that.getData();
+        setTimeout(function(){
+            that.getJoiner();
+            that.getData();
+        },300);
     },
 
     /*----------获取用户分享的图片------------*/
@@ -110,10 +112,12 @@ var fuc = {
                     that.config.eventType = dataList.event.eventType;
                     $('.eventName').html(dataList.event.name);
                     if (dataList.event.bgColor) {//若用户设置了背景颜色
-                        $('.topCon').css({"height": "100px", "background": dataList.event.bgColor});
+                        $('.topCon').css({"height": "120px", "padding-top":"60px","background": dataList.event.bgColor});
+                        $('.compile').css("background",dataList.event.bgColor);
                     } else if (dataList.event.theme) {//若用户没有设置背景颜色，则从主题中选择
                         $('.topCon').css({
                             "height": "200px",
+                            "padding-top": "100px",
                             "background-image": "url(" + dataList.event.theme.themeUrl + ")"
                         });
                         $('.compile').css("background", dataList.event.theme.themeColor);
