@@ -121,7 +121,6 @@ var fuc = {
             var map = new BMap.Map(e.id);
             var point = new BMap.Point(that.bd_encrypt($(e).data('longitude'), $(e).data('latitude')).bd_lon, that.bd_encrypt($(e).data('longitude'), $(e).data('latitude')).bd_lat);
             map.centerAndZoom(point, 15);
-
             var myIcon = new BMap.Icon("/wx/img/67390b8887afd94b05b8438220488f6d.png", new BMap.Size(20, 27));
             var marker = new BMap.Marker(point, {icon: myIcon});  // 创建标注
             map.addOverlay(marker);              // 将标注添加到地图中
@@ -165,7 +164,7 @@ var fuc = {
         }
         this.renderBMP();
         $(".month_divide").each(function (i, e) {
-            $(e).css("margin-top", "50px");
+            //$(e).css("margin-top", "50px");
         });
         if ($("#container").find("div").first().hasClass("month_divide")) {
             $("#container").find("div").first().css("margin-top", "0px");
@@ -237,7 +236,6 @@ var fuc = {
                 $("#btnDetail").removeClass("move_down").addClass("move_up");
             }
         });
-
 
         //添加活动详情跳转地址
         $("#container").on('tap', '.content', function (e) {
@@ -316,4 +314,3 @@ var fuc = {
 }
 
 fuc.init();
-
