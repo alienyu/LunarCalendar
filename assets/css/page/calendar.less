@@ -2,3 +2,27 @@
 @import "../common/style.less";
 @import "../common/AddBtn.css";
 @import "../common/weui0.4.3.less";
+
+body .select_mask { position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; background:rgba(0,0,0,0.5);z-index:10002; display:none;}
+
+.calendar_add{bottom: 20px}
+.calendar_add.c_a_open{ bottom: 100px}
+
+body .calendar_add.c_a_open .add_btn{ bottom: 80px;}
+
+
+body .calendar_add.c_a_open .move_up { -webkit-animation-name: move_up 0.5s; animation: move_up 0.5s; opacity: 1; bottom:140px; }
+@-webkit-keyframes move_up { from {
+  opacity: 0;
+  bottom: 20px;
+}
+  to { opacity: 0.8; bottom: 140px; }
+}
+@keyframes move_up { from {
+  opacity: 0;
+  bottom: 20px;
+}
+  to { opacity: 0.8; bottom: 140px; }
+}
+
+
