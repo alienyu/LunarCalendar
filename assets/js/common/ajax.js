@@ -228,7 +228,7 @@ var Ajax = {
             },
             function(data) {
                 if(data.code ==0){
-                    if(data.data){
+                    if(data.data&&data.data.length>0){
                         var weatherList = data.data[0];
                         var html = "";
                         if(weatherList.qlty){

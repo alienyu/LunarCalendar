@@ -742,13 +742,11 @@ var fuc = {
                         $('.titleNone').animate({"height":"0px"},300);
                     }, 1000);
                 } else {
-                    $('#dialog1').fadeIn();
-                    $('#dialog1 .confirm').on("tap", function () {//点击确定
+                    $('.bot_Btn_box .share').on("tap", function () {//点击确定
                         that.eventAdd2(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.locaName, that.mapConfig.locaAddress, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
                         that.getUserInformation();
                         wx.wxShare(that.config.nickName + " 邀请您参加 「" + name + "」", $('.startTime').html(),
                             "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + that.config.eventId));
-                        $('#dialog1').fadeOut();
                         //todo 弹出蒙层
                         that.shareShadow(); //显示分享提示弹出层，点击后隐藏
                     });
