@@ -9,7 +9,8 @@ body .btn_detail div span { float: left; background-color: #fff; -webkit-border-
 body .btn_detail div a { float: left; width: 45px; height: 45px; background-color: #52CECE; border-radius: 50%; box-shadow: 0px 1px 10px #888888; }
 body .btn_detail div a.activity { background: url(../../imgs/page/newSchedule/icon/ic_activity.png) no-repeat #66cccc center center; background-size: 50%; }
 body .btn_detail div a.remind { background: url(../../imgs/page/newSchedule/icon/ic_remind.png) no-repeat #66cccc center center; background-size: 50%; }
-body .select_mask { position: fixed; display: none; left: 0px; top: 0px; width: 100%; height: 100%; background-color: #fff; opacity: 0.9; z-index: 10002; }
+body .select_mask { position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; background:rgba(255,255,255,0.5);z-index:10002; display:none;}
+
 @-webkit-keyframes move_up { from {
     opacity: 0;
     bottom: 20px;

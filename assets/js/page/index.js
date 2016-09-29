@@ -9,7 +9,6 @@ var fuc = {
     init: function() {
         pageLoad({backgroundColor: "#12101A"});
         this.renderPage();
-        this.changeBg();
         this.bindEvent();
     },
     renderPage: function() {
@@ -165,8 +164,7 @@ var fuc = {
                         html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
                     }
                     $('.weather').append(html);
-                    if(that.dayOrnight(weatherList.sunUp,weatherList.sunDown)=="dayTime"){
-                        if(weatherCode>=101&&weatherCode<=213){//多云
+                    if(weatherCode>=101&&weatherCode<=213){//多云
                             $(".conShadow").attr("class", "conShadow cloudsDay");
                         }else if(weatherCode>=300&&weatherCode<=313){//雨
                             $(".conShadow").attr("class", "conShadow rainDay");
@@ -179,21 +177,6 @@ var fuc = {
                         }else{//晴天
                             $(".conShadow").attr("class", "conShadow fairDay");
                         }
-                    }else{
-                        if(weatherCode>=101&&weatherCode<=213){//多云
-                            $(".conShadow").attr("class", "conShadow cloudsNight");
-                        }else if(weatherCode>=300&&weatherCode<=313){//雨
-                            $(".conShadow").attr("class", "conShadow rainNight");
-                        }else if(weatherCode>=400&&weatherCode<=407){//雪
-                            $(".conShadow").attr("class", "conShadow snowNight");
-                        }else if(weatherCode>=500&&weatherCode<=501){//雾
-                            $(".conShadow").attr("class", "conShadow fogNight");
-                        }else if(weatherCode>=502&&weatherCode<=508){//霾
-                            $(".conShadow").attr("class", "conShadow hazeNight");
-                        }else{//晴天
-                            $(".conShadow").attr("class", "conShadow fairNight");
-                        }
-                    }
                 }
             }else{
 
@@ -209,15 +192,6 @@ var fuc = {
             return "dayTime";
         }else{
             return "nightTime";
-        }
-    },
-    changeBg: function() {
-        var date = new Date();
-        var hours = date.getHours();
-        if (hours > 6 && hours < 19) {
-            $(".conShadow").addClass("fairDay");
-        } else {
-            $(".conShadow").addClass("fairNight");
         }
     },
     bindEvent: function() {

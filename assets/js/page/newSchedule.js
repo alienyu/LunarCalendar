@@ -228,11 +228,11 @@ var fuc = {
         $("#addActivity").on('tap', function (e) {
             if ($(e.target).hasClass("open")) {
                 $(e.target).removeClass("open");
-                $(".select_mask").hide();
+                $(".select_mask").fadeOut();
                 $("#btnDetail").removeClass("move_up").addClass("move_down");
             } else {
                 $(e.target).addClass("open");
-                $(".select_mask").show();
+                $(".select_mask").fadeIn();
                 $("#btnDetail").removeClass("move_down").addClass("move_up");
             }
         });
