@@ -292,8 +292,9 @@ var Ajax = {
             success: function (data) {
                 //console.log(data);
                 if (data.code == 0) {//提交成功
+
                     $('#loadingToast').fadeOut();
-                    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/calendar.html");
+                    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html");
                 }else{//提交失败提醒错误信息
                     $('#loadingToast').fadeOut();
                     var error = data.msg;

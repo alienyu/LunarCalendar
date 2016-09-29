@@ -34,8 +34,10 @@ var fuc = {
         wx.wxConfig(1);
         that.getJoiner();
         that.getData();
+    },
 
-        /*----------获取用户分享的图片------------*/
+    /*----------获取用户分享的图片------------*/
+    getShareImg:function(){
         $.get(
             "http://www.li-li.cn/llwx/share/genPic",
             {
@@ -49,8 +51,8 @@ var fuc = {
                 }
             }
         )
-
     },
+
     /*-----------------获取事件参与者-------------------*/
     getJoiner:function(){
         var that = this;
@@ -99,13 +101,21 @@ var fuc = {
                         var dataList = data.data;
                         that.config.eventType = dataList.event.eventType;
                         $('.eventName').html(dataList.event.name);
+                        if(dataList.event.bgColor){//若用户设置了背景颜色
+                            $('.topCon').css("height","100px");
+                        }else if(dataList.event.theme){//若用户没有设置背景颜色，则从主题中选择
+                            $('.topCon').css({"height":"200px","background-image":"url("+dataList.event.theme.themeUrl+")"});
+                            $('.compile').css("background",dataList.event.theme.themeColor);
+                        }
                         if (dataList.event.eventType == 0) {//提醒事件
+                            wx.wxConfig(1);
                             $('.time .itemCon').html(Dom.transStartTime(dataList.event.startTime));
                             $('.avtivityCon').css("display", "none");
                             $('.bottom').css("display", "none");
                             Ajax.getWeather(Dom.getDate(dataList.event.startTime));
                             Ajax.getPersonalFortune(Dom.getDate(dataList.event.startTime));
                         } else if(dataList.event.eventType == 1) {//活动事件
+                            that.getShareImg();
                             $('.suitable').css("display", "none");
                             $('.weather').css("display", "none");
                             var times = Dom.compareTimes(dataList.event.startTime, dataList.event.endTime);
@@ -115,12 +125,12 @@ var fuc = {
                             } else {
                                 $('.site').css("display", "none");
                             }
-                            if(dataList.event.bgColor){//若用户设置了背景颜色
-                                $('.topCon').css("height","100px");
-                            }else if(dataList.event.theme){//若用户没有设置背景颜色，则从主题中选择
-                                $('.topCon').css({"height":"200px","background-image":"url("+dataList.event.theme.themeUrl+")"});
-                                $('.compile').css("background",dataList.event.theme.themeColor);
-                            }
+                            //if(dataList.event.bgColor){//若用户设置了背景颜色
+                            //    $('.topCon').css("height","100px");
+                            //}else if(dataList.event.theme){//若用户没有设置背景颜色，则从主题中选择
+                            //    $('.topCon').css({"height":"200px","background-image":"url("+dataList.event.theme.themeUrl+")"});
+                            //    $('.compile').css("background",dataList.event.theme.themeColor);
+                            //}
                             if (dataList.event.remarkImgs !="") {//如果有备注
                                 var imgArr = dataList.event.remarkImgs.split(",");//图片数组
                                 //todo 填充备注中的图片样式
