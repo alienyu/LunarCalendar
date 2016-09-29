@@ -100,20 +100,16 @@
                                     <div class="day"><%= dayData.detailDate.day %></div>
                                     <div class="weekday"><%= dayData.detailDate.weekDay %></div>
                                 </div>
-                                <!--定义背景元素-->
-                                <% if(timeDetail.longitude == '') { %>
-                                    <% if(timeDetail.theme) { %>
-                                        <div class="content<%= timeDetail.theme ? ' contain_img_box' : '' %>" style="background: url(<%= timeDetail.theme.themeUrl %>) center center no-repeat;background-size: cover;">
-                                    <% } else { %>
-                                        <div class="content" style="background-color: <%= timeDetail.bgColor %>">
-                                    <% } %>
-                                <% } else { %>
-                                    <div class="content">
+                                <!--定义背景元素-->								
+								 <% if(timeDetail.theme) { %>
+                                    <div class="content<%= timeDetail.theme ? ' contain_img_box' : '' %>" style="background: url(<%= timeDetail.theme.themeUrl %>) center center no-repeat;background-size: cover;">
+                                <% } else if (timeDetail.longitude != ""){ %>
+									<div class="content">
+									<div id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
+									<div class="map_mask"></div>
+								<% } else { %>								
+                                        <div class="content" style="background-color: <%= timeDetail.bgColor %>">										
                                 <% } %>
-                                    <% if(timeDetail.longitude != "") { %>
-                                        <div id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
-                                        <div class="map_mask"></div>
-                                     <% } %>
                                     <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
                                         <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= (timeDetail.endTime && timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") != timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":")) ? '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : ''%></div>
@@ -148,19 +144,15 @@
                                     <div class="day"><%= dayData.detailDate.day %></div>
                                     <div class="weekday"><%= dayData.detailDate.weekDay %></div>
                                 </div>
-                                <!--定义背景元素-->
-                                <% if(timeDetail.longitude == '') { %>
-                                    <% if(timeDetail.theme) { %>
-                                        <div class="content<%= timeDetail.theme ? ' contain_img_box' : '' %>" style="background: url(<%= timeDetail.theme.themeUrl %>) center center no-repeat;background-size: cover;">
-                                    <% } else { %>
-                                        <div class="content" style="background-color: <%= timeDetail.bgColor %>">
-                                    <% } %>
-                                <% } else { %>
-                                    <div class="content">
-                                <% } %>
-                                <% if(timeDetail.longitude != "") { %>
-                                    <div id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
-                                    <div class="map_mask"></div>
+                                <!--定义背景元素-->								
+								 <% if(timeDetail.theme) { %>
+                                    <div class="content<%= timeDetail.theme ? ' contain_img_box' : '' %>" style="background: url(<%= timeDetail.theme.themeUrl %>) center center no-repeat;background-size: cover;">
+                                <% } else if (timeDetail.longitude != ""){ %>
+									<div class="content">
+									<div id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
+									<div class="map_mask"></div>
+								<% } else { %>								
+                                        <div class="content" style="background-color: <%= timeDetail.bgColor %>">										
                                 <% } %>
                                     <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
@@ -198,20 +190,16 @@
                             <div class="day"><%= dayData.detailDate.day %></div>
                             <div class="weekday"><%= dayData.detailDate.weekDay %></div>
                         </div>
-                        <!--定义背景元素-->
-                        <% if(timeDetail.longitude == '') { %>
-                            <% if(timeDetail.theme) { %>
-                                <div class="content<%= timeDetail.theme ? ' contain_img_box' : '' %>" style="background: url(<%= timeDetail.theme.themeUrl %>) center center no-repeat;background-size: cover;">
-                            <% } else { %>
-                                <div class="content" style="background-color: <%= timeDetail.bgColor %>">
-                             <% } %>
-                        <% } else { %>
-                            <div class="content">
-                        <% } %>
-                            <% if(timeDetail.longitude != "") { %>
-                                <div id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
-                                <div class="map_mask"></div>
-                            <% } %>
+                                <!--定义背景元素-->								
+								 <% if(timeDetail.theme) { %>
+                                    <div class="content<%= timeDetail.theme ? ' contain_img_box' : '' %>" style="background: url(<%= timeDetail.theme.themeUrl %>) center center no-repeat;background-size: cover;">
+                                <% } else if (timeDetail.longitude != ""){ %>
+									<div class="content">
+									<div id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
+									<div class="map_mask"></div>
+								<% } else { %>								
+                                        <div class="content" style="background-color: <%= timeDetail.bgColor %>">										
+                                <% } %>
                             <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                 <div class="title"><%= timeDetail.name %></div>
                                 <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= (timeDetail.endTime && timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") != timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":")) ?  '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
