@@ -292,3 +292,66 @@ body{
   text-align: center;
   padding-bottom: 10px;
 }
+.addressCon{position: relative; height: 300px; overflow: auto}
+/*-------------弹层样式--------------*/
+.shadowBg{
+  width:100%;
+  height:100%;
+  position: absolute;
+  top:0;
+  left:0;
+  background: rgba(0,0,0,0.5);
+  display: none;
+}
+.shadow{
+  width:100%;
+  height:100%;
+  z-index: 999;
+  position: fixed;
+  top:0px;
+  left:0px;
+  overflow: hidden;
+}
+.shadow .shadowClose{
+  width:8%;
+  height:8%;
+  position: absolute;
+  top:0;
+  right:0;
+  background: url("../../imgs/page/activity/ic_close_black.png") no-repeat top right;
+  background-size: contain;
+  -webkit-background-size: contain;
+}
+.shadow .container{
+  width:100%;
+  height:90%;
+  background: #fff;
+  position: absolute;
+  top:100%;
+  left: 0px;
+  overflow: auto;
+}
+/*-------------地图，颜色，备注样式-------------*/
+.mapShadow,.colorShadow,.remarkShadow{
+  display: none;
+}
+.container .mapCon{
+  width:100%;
+  height:100%;
+}
+.container .imgCon{
+  width:20px;
+  height:44px;
+  position: absolute;
+  top:128px;
+  left:50%;
+  margin-left: -20px;
+  background: url("../../imgs/common/ic_place2.png") no-repeat center center;
+  background-size: contain;
+  -webkit-background-size: contain;
+}
+.container .imgCon.active{
+  -webkit-animation: upAndDown 0.5s ease;
+  -o-animation:upAndDown 0.5s ease;
+  animation:upAndDown 0.5s ease;
+}

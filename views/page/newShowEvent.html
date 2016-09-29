@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title></title>
     <meta name="format-detection" content="telephone=no"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="x5-orientation" content="portrait">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -162,6 +163,17 @@
         </div>
     </div>
 </div>
+<!-----------弹层背景---------->
+<div class="shadowBg"></div>
+<!-----------------地图弹层----------------->
+<div class="mapShadow shadow" id="mapShadow">
+    <div class="shadowClose"></div>
+    <div class="container">
+        <div class="mapCon" id="mapCon">
+
+        </div>
+    </div>
+</div>
 <!--数据加载时的loading-->
 <div id="loadingToast" style="display:none;">
     <div class="weui-mask_transparent"></div>
@@ -191,6 +203,10 @@
             <img src="{{imgUrl}}" alt="" class="fl">
             <div class="nickNames fl">{{nickName}}</div>
     </div>
+
 </script>
+<link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+<script src="http://cache.amap.com/lbs/static/es5.min.js"></script>
+<script src="http://webapi.amap.com/maps?v=1.3&key=328b4ed0fd71e2782bf3677b9012a151"></script>
 </body>
 </html>
