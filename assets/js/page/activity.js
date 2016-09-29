@@ -377,6 +377,7 @@ var fuc = {
                     if (that.mapConfig.locaName) {
                         $('.siteName').removeClass('ccc').html(that.mapConfig.locaName);
                         $('.siteAddress').html(that.mapConfig.locaAddress);
+                        $('.deleteAddress').css("display","block");//显示删除地图按钮
                     }
                     if (that.config.remarkText) {
                         $('.remarkCon .remarkText').removeClass('ccc').html(that.config.remarkText);
@@ -598,7 +599,19 @@ var fuc = {
                 $('.showAll span').addClass("active");
                 $('.tipsCon').animate({"height": "auto"}, 300);
             }
-        })
+        });
+
+        /*--------------点击地址后的按钮，删除地址-------------*/
+        $('.deleteAddress').click(function(){
+            $('.siteName').addClass("ccc").html("添加地点");
+            $('.siteAddress').html("");
+            that.mapConfig.locaName = "";
+            that.mapConfig.locaAddress = "";
+            that.mapConfig.latitude = 0;
+            that.mapConfig.longitude = 0;
+            $(this).css("display","none");
+            event.stopPropagation();
+        });
         /*----------弹层----------*/
         that.mapShadow($('.site'), $('.mapShadow'), $('.mapShadow .container'));
         that.shadow($('.colors'), $('.colorShadow'), $('.colorShadow .container'));
@@ -864,6 +877,7 @@ var fuc = {
                     that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
                     $(".siteName").removeClass("ccc").html(that.mapConfig.locaName);
                     $('.siteAddress').html(that.mapConfig.locaAddress);
+                    $('.deleteAddress').css("display","block");//显示删除地址按钮
                     $(".mapShadow .container").animate({"top": "100%"}, 200, function () {
                         $(this).parent().hide();
                     });

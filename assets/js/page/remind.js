@@ -26,6 +26,7 @@ var fuc = {
         this.config.timeArr = this.transTime(this.config.time);
         this.config.eventId = Dom.getRequest("eventId");
         this.config.eventType = 0;
+        this.config.bgColor = "#66cccc";
         this.config.repeatSelect = document.getElementById('select');
         this.rem();
         this.renderPage();
@@ -134,11 +135,12 @@ var fuc = {
                     if (data.code == 0) {
                         var list = data.data;
                         that.config.repeatSelect.value = list.repeatType;//设置关联的重复类型
-                        if (list.bgColor) {
-                            that.config.bgColor = list.bgColor;
-                        } else {
+                        if(list.theme){
+                            that.config.bgColor = "";
                             that.config.themeId = list.theme.themeId;
                             console.log(that.config.themeId);
+                        }else if(list.bgColor){
+                            that.config.bgColor = list.bgColor;
                         }
                     }
                 }
@@ -248,6 +250,7 @@ var fuc = {
         });
         /*------------点击保存--------------*/
         $('.saveBtn').click(function () {
+            //alert(that.config.bgColor);
             $('#loadingToast').fadeIn();//显示loading
             var name = $('#eventTitle').val().replace(/\s+/, ""),
                 startTime = $('.startCon').attr("id"),
