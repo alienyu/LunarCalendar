@@ -51,6 +51,11 @@
 </div>
 <a href="javascript:;" class="saveBtn cff">保存提醒</a>
 <div class="delete fs12">删除此提醒</div>
+<!--事件已不存在，则弹出提示-->
+<div class="eventNone" id="eventNone">
+    <div class="imgCon"></div>
+    <p class="fs14">事件不存在或已被删除</p>
+</div>
 <!--标题标签模板-->
 <script type="text/x-list" id="tagListTemplate">
     <a href="javascript:;" class="c00" data-template="{{templateId}}" data-tag="{{tagId}}">{{tagName}}</a>
@@ -90,8 +95,8 @@
         <div class="weui-dialog__hd">
             <strong class="weui-dialog__title">温馨提示</strong>
         </div>
-        <div class="weui_dialog__bd">确定要删除该事件吗？</div>
-        <div class="weui_dialog__ft">
+        <div class="weui-dialog__bd">确定要删除该事件吗？</div>
+        <div class="weui-dialog__ft">
             <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default default">取消</a>
             <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary confirm">确定</a>
         </div>

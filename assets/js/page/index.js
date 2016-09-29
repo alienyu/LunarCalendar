@@ -9,12 +9,14 @@ var fuc = {
     init: function() {
         pageLoad({backgroundColor: "#12101A"});
         this.renderPage();
-        this.changeBg();
         this.bindEvent();
     },
     renderPage: function() {
         wx.wxConfig(1);
         var that = this;
+        document.addEventListener('touchmove', function (e) {//禁止浏览器上下滑动页面
+            e.preventDefault();
+        });
         //头部时间显示
         var ca = new transCalendar();
         var d = new Date();//获得当天日期
@@ -96,7 +98,7 @@ var fuc = {
                         $('.list').on('tap', function () {
                             var eventId = $(this).attr('id');
                             $('body').html("").css("background", "#66cccc");
-                            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/showEvent.html?eventId=" + eventId);
+                            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + eventId);
                         });
                     } else {
                         $('.event').css('display', 'none');
@@ -165,34 +167,18 @@ var fuc = {
                         html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
                     }
                     $('.weather').append(html);
-                    if(that.dayOrnight(weatherList.sunUp,weatherList.sunDown)=="dayTime"){
-                        if(weatherCode>=101&&weatherCode<=213){//多云
-                            $(".conShadow").attr("class", "conShadow cloudsDay");
-                        }else if(weatherCode>=300&&weatherCode<=313){//雨
-                            $(".conShadow").attr("class", "conShadow rainDay");
-                        }else if(weatherCode>=400&&weatherCode<=407){//雪
-                            $(".conShadow").attr("class", "conShadow snowDay");
-                        }else if(weatherCode>=500&&weatherCode<=501){//雾
-                            $(".conShadow").attr("class", "conShadow fogDay");
-                        }else if(weatherCode>=502&&weatherCode<=508){//霾
-                            $(".conShadow").attr("class", "conShadow hazeDay");
-                        }else{//晴天
-                            $(".conShadow").attr("class", "conShadow fairDay");
-                        }
-                    }else{
-                        if(weatherCode>=101&&weatherCode<=213){//多云
-                            $(".conShadow").attr("class", "conShadow cloudsNight");
-                        }else if(weatherCode>=300&&weatherCode<=313){//雨
-                            $(".conShadow").attr("class", "conShadow rainNight");
-                        }else if(weatherCode>=400&&weatherCode<=407){//雪
-                            $(".conShadow").attr("class", "conShadow snowNight");
-                        }else if(weatherCode>=500&&weatherCode<=501){//雾
-                            $(".conShadow").attr("class", "conShadow fogNight");
-                        }else if(weatherCode>=502&&weatherCode<=508){//霾
-                            $(".conShadow").attr("class", "conShadow hazeNight");
-                        }else{//晴天
-                            $(".conShadow").attr("class", "conShadow fairNight");
-                        }
+                    if(weatherCode>=101&&weatherCode<=213){//多云
+                        $(".conShadow").attr("class", "conShadow cloudsDay");
+                    }else if(weatherCode>=300&&weatherCode<=313){//雨
+                        $(".conShadow").attr("class", "conShadow rainDay");
+                    }else if(weatherCode>=400&&weatherCode<=407){//雪
+                        $(".conShadow").attr("class", "conShadow snowDay");
+                    }else if(weatherCode>=500&&weatherCode<=501){//雾
+                        $(".conShadow").attr("class", "conShadow fogDay");
+                    }else if(weatherCode>=502&&weatherCode<=508){//霾
+                        $(".conShadow").attr("class", "conShadow hazeDay");
+                    }else{//晴天
+                        $(".conShadow").attr("class", "conShadow fairDay");
                     }
                 }
             }else{
@@ -211,16 +197,19 @@ var fuc = {
             return "nightTime";
         }
     },
-    changeBg: function() {
-        var date = new Date();
-        var hours = date.getHours();
-        if (hours > 6 && hours < 19) {
-            $(".conShadow").addClass("fairDay");
-        } else {
-            $(".conShadow").addClass("fairNight");
-        }
-    },
     bindEvent: function() {
+        //添加活动按钮
+        $("#addActivity").on('tap', function (e) {
+            if ($(e.target).hasClass("open")) {
+                $(e.target).removeClass("open");
+                $(".select_mask").hide();
+                $("#btnDetail").removeClass("move_up").addClass("move_down");
+            } else {
+                $(e.target).addClass("open");
+                $(".select_mask").show();
+                $("#btnDetail").removeClass("move_down").addClass("move_up");
+            }
+        });
         //点击、滑动事件
         $('.con').on('swipeUp', function (event) {
             $('body').html("").css("background", "#12101A");

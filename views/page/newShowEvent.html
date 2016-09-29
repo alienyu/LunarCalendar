@@ -14,7 +14,7 @@
 <!--顶部显示背景图片-->
 <div class="eventContainer fs14">
     <div class="topCon">
-        <div class="eventName fs24 cff">跑步</div>
+        <div class="eventName fs24 cff"></div>
         <div class="compile">
             <div>
                 <img src="../../assets/imgs/page/newShowEvent/ic_edit.png" alt="">
@@ -47,7 +47,10 @@
             <div class="icon">
                 <img src="../../assets/imgs/page/activity/ic_place.png" alt="">
             </div>
-            <div class="itemCon"></div>
+            <div class="itemCon">
+                <div class="siteName"></div>
+                <div class="siteAddress ccc f12"></div>
+            </div>
         </div>
         <!--参与人数-->
         <div class="participant item">
@@ -60,8 +63,8 @@
                     <div class="peopleItem fl">
                         <img src="../../assets/imgs/page/showEvent/default_photo.png" alt="" class="fl eventOwner">
                         <div class="ownerNickName fl">
-                            <div class="nickName">Yara</div>
-                            <div class="ccc ownerPosition">组织者</div>
+                            <div class="nickName"></div>
+                            <div class="ccc ownerPosition fs12">组织者</div>
                         </div>
                     </div>
                     <div class="peopleItem fl morePeople">
@@ -79,11 +82,12 @@
             <div class="itemCon">
                 <div class="remarkText"></div>
                 <div class="remarkImgs">
-                    <img src="../../assets/imgs/common/weixin_icon.png" alt="">
+                    <!--<img src="../../assets/imgs/common/weixin_icon.png" alt="">-->
                 </div>
             </div>
         </div>
     </div>
+    <div class="blank"></div>
     <!--事件创建人进入页面时底部显示样式-->
     <div class="bottom bottom1">
         <div class="bottomText ccc fl">是否需要邀请好友？</div>
@@ -91,7 +95,7 @@
     </div>
     <!--未加入事件者进入页面时底部显示样式-->
     <div class="bottom bottom2">
-        <div class="bottomText ccc fl">来自#<span></span>的邀请</div>
+        <div class="bottomText ccc fl">来自#<span class="ownerName"></span>的邀请</div>
         <div class="join c6c fr">接受邀请</div>
     </div>
     <!--已加入事件者进入页面时-->
@@ -100,7 +104,11 @@
         <div class="share c6c fr">邀请微信好友</div>
     </div>
 </div>
-
+<!--事件已不存在，则弹出提示-->
+<div class="eventNone" id="eventNone">
+    <div class="imgCon"></div>
+    <p class="fs14">事件不存在或已被删除</p>
+</div>
 <!--横屏-->
 <div id="orientLayer" class="mod-orient-layer">
     <div class="mod-orient-layer__content"><i class="icon mod-orient-layer__icon-orient"></i>
@@ -184,7 +192,5 @@
             <div class="nickNames fl">{{nickName}}</div>
     </div>
 </script>
-<!--批量查看大图功能-->
-<div class=""></div>
 </body>
 </html>

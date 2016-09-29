@@ -38,6 +38,7 @@ var fuc = {
 
     /*----------获取用户分享的图片------------*/
     getShareImg:function(){
+        var that = this;
         $.get(
             "http://www.li-li.cn/llwx/share/genPic",
             {
@@ -71,14 +72,16 @@ var fuc = {
                     $('.count').html(peopleCount);
                     if(list.list.length == 0){
                         $('.morePeople').css("display","none");
-                    }else if(list.list.length < 10){
-                        $('.morePeople').css("display","none");
                     }else{
                         for(var i=0;i<list.list.length;i++){
                             html += peopleTemplate.replace(/{{imgUrl}}/g,list.list[i].headImgUrl).replace(/{{nickName}}/g,list.list[i].nickName);
                         }
-                        $('.peopleList').prepend(html,$('.morePeople'));
+                        //console.log(html);
+                        $('.morePeople').before(html);
                         var joiner = $('.joinerItem');
+                        if(list.list.length <10){
+                            $('.morePeople').css("display","none");
+                        }
                         if(joiner.size()==list.pagination.totalCount){
                             $('.morePeople').css("display","none");
                         }
@@ -102,7 +105,7 @@ var fuc = {
                         that.config.eventType = dataList.event.eventType;
                         $('.eventName').html(dataList.event.name);
                         if(dataList.event.bgColor){//若用户设置了背景颜色
-                            $('.topCon').css("height","100px");
+                            $('.topCon').css({"height":"100px","background":dataList.event.bgColor});
                         }else if(dataList.event.theme){//若用户没有设置背景颜色，则从主题中选择
                             $('.topCon').css({"height":"200px","background-image":"url("+dataList.event.theme.themeUrl+")"});
                             $('.compile').css("background",dataList.event.theme.themeColor);
@@ -112,7 +115,11 @@ var fuc = {
                             $('.time .itemCon').html(Dom.transStartTime(dataList.event.startTime));
                             $('.avtivityCon').css("display", "none");
                             $('.bottom').css("display", "none");
-                            Ajax.getWeather(Dom.getDate(dataList.event.startTime));
+                            if(!Dom.smallerDate(Dom.getDate(dataList.event.startTime))){
+                                Ajax.getWeather(Dom.getDate(dataList.event.startTime));
+                            }else{
+                                $('.weather').css('display','none');
+                            }
                             Ajax.getPersonalFortune(Dom.getDate(dataList.event.startTime));
                         } else if(dataList.event.eventType == 1) {//活动事件
                             that.getShareImg();
@@ -121,18 +128,18 @@ var fuc = {
                             var times = Dom.compareTimes(dataList.event.startTime, dataList.event.endTime);
                             $('.time .itemCon').html(times);
                             if (dataList.event.location) {//如果有地点
-                                $('.site .itemCon').html(dataList.event.location);
+                                $('.site .itemCon .siteName').html(dataList.event.location);
+                                $('.site .itemCon .siteAddress').html(dataList.event.address);
                             } else {
                                 $('.site').css("display", "none");
                             }
-                            //if(dataList.event.bgColor){//若用户设置了背景颜色
-                            //    $('.topCon').css("height","100px");
-                            //}else if(dataList.event.theme){//若用户没有设置背景颜色，则从主题中选择
-                            //    $('.topCon').css({"height":"200px","background-image":"url("+dataList.event.theme.themeUrl+")"});
-                            //    $('.compile').css("background",dataList.event.theme.themeColor);
-                            //}
-                            if (dataList.event.remarkImgs !="") {//如果有备注
-                                var imgArr = dataList.event.remarkImgs.split(",");//图片数组
+                            if (dataList.event.remarkImgs) {//如果有备注
+                                var imgArr = dataList.event.remarkImgs.split(","),//图片数组
+                                    imgHtml="";
+                                for(var i=0;i<imgArr.length;i++){
+                                    imgHtml += "<a href='weixin://viewimage/"+imgArr[i]+"'><img src="+imgArr[i]+"></a>";
+                                }
+                                $('.remark .remarkImgs').append(imgHtml);
                                 //todo 填充备注中的图片样式
                                 if (dataList.event.remark != "") {
                                     $('.remarkText').html(dataList.event.remark);
@@ -145,14 +152,19 @@ var fuc = {
                                 }
                             }
                             if(dataList.isOwner){//如果是发起者
-                                $('.bottom').css("display","block").animate({"bottom":"0"},200);
+                                $('.bottom1').css("display","block").animate({"bottom":"0"},200);
                             }else{
                                 $('.compile').css("display","none");
-                            }
-                            if(dataList.isJoiner){//如果用户已参与该事件
-                                $('.bottom3').css("display","block").animate({"bottom":"0"},200);
-                            }else{//用户未参与该事件
-                                $('.bottom2').css("display","block").animate({"bottom":"0"},200);
+                                if(dataList.isJoiner){//如果用户已参与该事件
+                                    $('.bottom1').css("display","none").animate({"bottom":"-50px"},200,function(){
+                                        $('.bottom3').css("display","block").animate({"bottom":"0"},200);
+                                    });
+                                }else{//用户未参与该事件
+                                    $('.bottom2 .ownerName').html(dataList.owner.nickName);
+                                    $('.bottom1').css("display","none").animate({"bottom":"-50px"},200,function(){
+                                        $('.bottom2').css("display","block").animate({"bottom":"0"},200);
+                                    });
+                                }
                             }
                             //事件创建者头像及昵称显示
                             $('.eventOwner').attr("src",dataList.owner.headImgUrl);
@@ -165,6 +177,9 @@ var fuc = {
                                 "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + dataList.event.eventId));
                             }
                         }
+                }else if(data.code==112){
+                    //若参加者参加的事件不存在
+                    $('.eventNone').css("display", "block");
                 }
             }
         )
@@ -187,7 +202,6 @@ var fuc = {
         });
         /*---------------点击邀请好友-----------------*/
         $('.share').click(function(){
-            //that.showShareShadow;
             var shareShadow = $('.shareShadow');
             shareShadow.fadeIn();//显示分享提示层
             shareShadow.click(function(){
@@ -210,6 +224,7 @@ var fuc = {
                 function(data){
                     if(data.code == 0){//请求成功
                         $('.shareShadow').fadeOut();
+                        WeixinJSBridge.call("closeWindow");
                     }
                 }
             )
@@ -233,8 +248,8 @@ var fuc = {
                                     setTimeout(function () {
                                         $('#toast').fadeOut();
                                     }, 1500);
-                                    $('.bottom2').css('display','none').animate({'bottom': '-0.72rem'}, 500, function () {
-                                        $('.bottom3').css('display','block').animate({'bottom': '0rem'}, 500);
+                                    $('.bottom2').css('display','none').animate({'bottom': '-50px'}, 500, function () {
+                                        $('.bottom3').css('display','block').animate({'bottom': '0px'}, 500);
                                     });
                                     // todo 修改该方法
                                     that.refreshJoiner();//刷新参与人数量
@@ -280,85 +295,75 @@ var fuc = {
             $('#confirm').click(function(){
                 $('#dialog1').hide();
                 $('#loadingToast').fadeIn();//显示loading
-            });
-            $.post(
-                "http://www.li-li.cn/llwx/event/exit",
-                {
-                    "eventId":that.config.eventId
-                },
-                function(data){
-                    if(data.code==0){
-                        $('#loadingToast').fadeOut();//隐藏loading
-                        $('#toast').fadeIn();
-                        setTimeout(function () {
-                            $('#toast').fadeOut();
-                        }, 1500);
-                        $('.bottom3').css('display','none').animate({'bottom': '-50px'}, 500, function () {
-                            $('.bottom2').css('display','block').animate({'bottom': '0'}, 500);
-                        });
-                        that.refreshJoiner();
-                    }else{
-                        $('#loadingToast').fadeOut();//隐藏loading
-                        var error = data.msg;
-                        $('#dialog2 .weui-dialog__bd').html(error);
-                        $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
-                            $('#dialog2').off('click').fadeOut();
-                        });
+                $.post(
+                    "http://www.li-li.cn/llwx/event/exit",
+                    {
+                        "eventId":that.config.eventId
+                    },
+                    function(data){
+                        if(data.code==0){
+                            $('#loadingToast').fadeOut();//隐藏loading
+                            $('#toast').fadeIn();
+                            setTimeout(function () {
+                                $('#toast').fadeOut();
+                            }, 1500);
+                            $('.bottom3').css('display','none').animate({'bottom': '-50px'}, 500, function () {
+                                $('.bottom2').css('display','block').animate({'bottom': '0'}, 500);
+                            });
+                            that.refreshJoiner();
+                        }else{
+                            $('#loadingToast').fadeOut();//隐藏loading
+                            var error = data.msg;
+                            $('#dialog2 .weui-dialog__bd').html(error);
+                            $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+                                $('#dialog2').off('click').fadeOut();
+                            });
+                        }
                     }
-                }
-            )
+                )
+            });
+
         })
     },
 
     /*-----------------------局部刷新参与人---------------------*/
     refreshJoiner: function() {
         var that = this;
-        $.get("http://www.li-li.cn/llwx/event/detail", {"eventId": that.config.eventId}, function (data) {
-            if (data.code == 0) {
-                var list = data.data;
-                if (list.joiner[0]) {//如果存在参与者
-                    $('.participant').css("display", "block");
-                    if(list.owner.headImgUrl){
-                        var html = that.config.template.replace(/{{dataImg}}/g,list.owner.headImgUrl).replace(/{{img}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{joinerName}}/g, list.owner.nickName);
+        $('.peopleList').children(".joinerItem").remove();
+        var peopleTemplate = $('#peopleListTemplate').html();
+        $.get(
+            "http://www.li-li.cn/llwx/event/joiner/list",
+            {
+                "pageNo":1,
+                "pageSize":10,
+                "eventId":that.config.eventId
+            },
+            function(data){
+                if(data.code == 0){
+                    var list = data.data,html="";
+                    var peopleCount = list.pagination.totalCount +1;
+                    $('.count').html(peopleCount);
+                    if(list.list.length == 0){
+                        $('.morePeople').css("display","none");
                     }else{
-                        var html = that.config.template.replace(/{{dataImg}}/g,"../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{img}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{joinerName}}/g, list.owner.nickName);
-                    }
-                    var joinerCount = list.joiner.length + 1;//获得参与者数组长度即参与人数
-                    $('.joinerCount').html(joinerCount);
-                    if(list.joiner.length> this.config.rowsCount*2){
-                        $('.acceptPeople').css("height","130px");
-                        $('.showAll').css("display","block");
-                    }
-                    for (var m = 0; m < list.joiner.length; m++) {
-                        if (list.joiner[m].headImgUrl) {
-                            html += that.config.template.replace(/{{dataImg}}/g,list.joiner[m].headImgUrl).replace(/{{img}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{joinerName}}/g, list.joiner[m].nickName);
-                        } else {
-                            html += that.config.template.replace(/{{dataImg}}/g,"../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{img}}/g, "../img/b69e19980b6eee6a71cad41fc96bf669.png").replace(/{{joinerName}}/g, list.joiner[m].nickName);
+                        for(var i=0;i<list.list.length;i++){
+                            html += peopleTemplate.replace(/{{imgUrl}}/g,list.list[i].headImgUrl).replace(/{{nickName}}/g,list.list[i].nickName);
+                        }
+                        console.log(html);
+                        $('.morePeople').before(html);
+                        var joiner = $('.joinerItem');
+                        if(list.list.length <10){
+                            $('.morePeople').css("display","none");
+                        }
+                        if(joiner.size()==list.pagination.totalCount){
+                            $('.morePeople').css("display","none");
                         }
                     }
-                    $('.acceptPeople').html("").append(html);
-                    $('.scrollLoading').scrollLoading();
-                } else {
-                    $('.participant').css("display", "none");
                 }
-            } else {//数据获取失败
-
             }
-        });
-    },
-    /*------------------分享提示层---------------------*/
-    showShareShadow: function() {
-        var shareShadow = $('.shareShadow');
-        shareShadow.fadeIn();//显示分享提示层
-        shareShadow.click(function(){
-            $(this).fadeOut();
-            event.stopPropagation();
-        });
-        var share = document.getElementById('shareShadow');
-        share.addEventListener('touchmove', function (e) {
-            e.preventDefault();
-        });
+        )
     }
+
 }
 
 fuc.init();

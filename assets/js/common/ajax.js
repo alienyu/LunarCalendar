@@ -97,7 +97,7 @@ var Ajax = {
                         $('.scheduleCon').append(html);
                         $('.list').on('tap', function () {//点击日程跳转至详情页
                             var eventId = $(this).attr('id');
-                            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/showEvent.html?eventId=" + eventId);
+                            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + eventId);
                         });
                     } else {
                         $('.scheduleBg').css("display", "block");
@@ -266,8 +266,8 @@ var Ajax = {
             }
         });
     },
-    //添加事件页面数据提交
-    eventAdd: function(name,eventType,tagId, startTime, endTime, tipType, tipTime, repeatType, location,longitude,latitude, remark,remarkImgs,bgColor,themeId) {
+    //添加事件页面数据提交  错误
+    eventAdd: function(name,eventType,tagId, startTime, endTime, tipType, tipTime, repeatType, location, address, longitude,latitude, remark,remarkImgs,bgColor,themeId) {
         $.ajax({
             type: "post",
             url: "http://www.li-li.cn/llwx/event/add",
@@ -281,6 +281,7 @@ var Ajax = {
                 "tipTime":tipTime,
                 "repeatType":repeatType,
                 "location":location,
+                "address":address,
                 "longitude":longitude,
                 "latitude":latitude,
                 "remark":remark,
@@ -292,9 +293,7 @@ var Ajax = {
             success: function (data) {
                 //console.log(data);
                 if (data.code == 0) {//提交成功
-
                     $('#loadingToast').fadeOut();
-                    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html");
                 }else{//提交失败提醒错误信息
                     $('#loadingToast').fadeOut();
                     var error = data.msg;
@@ -306,8 +305,8 @@ var Ajax = {
             }
         })
     },
-    //添加事件页面数据提交
-    eventAdd2: function(name,eventType,tagId, startTime, endTime, tipType, tipTime, repeatType, location,longitude,latitude, remark,remarkImgs,bgColor,themeId) {
+    //添加事件页面数据提交  错误
+    eventAdd2: function(name,eventType,tagId, startTime, endTime, tipType, tipTime, repeatType, location,address,longitude,latitude, remark,remarkImgs,bgColor,themeId) {
         $.ajax({
             type: "post",
             url: "http://www.li-li.cn/llwx/event/add",
@@ -321,6 +320,7 @@ var Ajax = {
                 "tipTime":tipTime,
                 "repeatType":repeatType,
                 "location":location,
+                "address":address,
                 "longitude":longitude,
                 "latitude":latitude,
                 "remark":remark,
@@ -332,7 +332,7 @@ var Ajax = {
             async: false,
             success: function (data) {
                 if (data.code == 0) {
-                    that.config.eventId = data.data;
+                    eventId = data.data;
                 }else{//提交失败提醒错误信息
                     var error = data.msg;
                     $('#dialog2 .weui-dialog__bd').html(error);
@@ -344,10 +344,10 @@ var Ajax = {
         })
     },
     //修改事件页面数据提交
-    eventModify: function(eventId,name,tagId, startTime, endTime, tipType, tipTime, repeatType, location,longitude,latitude, remark,remarkImgs,bgColor,themeId) {
+    eventModify: function(eventId,name,tagId, startTime, endTime, tipType, tipTime, repeatType, location,address,longitude,latitude, remark,remarkImgs,bgColor,themeId) {
         $.ajax({
             type: "post",
-            url: "http://www.li-li.cn/llwx/event/add",
+            url: "http://www.li-li.cn/llwx/event/modify",
             data: {
                 "eventId":eventId,
                 "name":name,
@@ -358,6 +358,7 @@ var Ajax = {
                 "tipTime":tipTime,
                 "repeatType":repeatType,
                 "location":location,
+                "address":address,
                 "longitude":longitude,
                 "latitude":latitude,
                 "remark":remark,
@@ -369,7 +370,6 @@ var Ajax = {
             success: function (data) {
                 if (data.code == 0) {
                     $('#loadingToast').fadeOut();
-                    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/calendar.html");
                 } else {//修改失败弹出提示框
                     $('#loadingToast').fadeOut();
                     var error = data.msg;

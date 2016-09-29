@@ -119,6 +119,11 @@
     <a href="javascript:;" class="saveBtn cff">保存活动</a>
     <div class="delete fs12">删除此活动</div>
 </div>
+<!--事件已不存在，则弹出提示-->
+<div class="eventNone" id="eventNone">
+    <div class="imgCon"></div>
+    <p class="fs12">事件不存在或已被删除</p>
+</div>
 <!--标题标签模板-->
 <script type="text/x-list" id="tagListTemplate">
     <a href="javascript:;" class="c00" data-template="{{templateId}}" data-tag="{{tagId}}">{{tagName}}</a>
@@ -235,7 +240,7 @@
         <div class="remarkImg ">
             <form name="form1" id="form" runat="server" enctype="multipart/form-data" method="post" >
                 <div class="img_upload_box">
-                    <input type="file" class="img_upload_btn" name="file">
+                    <input type="file" class="img_upload_btn" name="photo">
                     <a href="javascript:;">+</a>
                 </div>
             </form>

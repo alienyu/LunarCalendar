@@ -1,14 +1,13 @@
 /**
  * Created by admin on 2016/9/22.
  */
-require("../../css/page/activity.less");
+require("../../css/page/remind.less");
 var pageLoad = require("../common/pageLoad.js");
 require("../vendor/ImproveMobile/zeptoSlider.js");
 var Dom = require("../common/dom.js");
 var mobiScroll = require("../vendor/mobiScroll/mobiScroll.js");
 var wx = require("../vendor/weChat/wxInit.js");
 var fastClick = require("../vendor/ImproveMobile/fastClick.js");
-var autoText = require("../vendor/ImproveMobile/autoTextArea.js");
 
 var fuc = {
     config: {
@@ -210,6 +209,8 @@ var fuc = {
                 function (data) {
                     if (data.code == 0) {
                         var eventList = data.data;
+                        that.config.tagId = eventList.event.tagId;
+                        that.config.bgColor = eventList.event.bgColor;
                         $('.eventName').val(eventList.event.name);//标题内容
                         Dom.autoTextarea(document.getElementById("eventTitle"));
                         var theStartTime = Dom.tranDate(eventList.event.startTime),
@@ -217,13 +218,14 @@ var fuc = {
                         $('.startCon').html(theStartTime).attr("id", eventList.event.startTime);
                         /*------------设置重复类型----------------*/
                         var repeatOptions = that.config.repeatSelect.getElementsByTagName("option");
-                        console.log(repeatOptions);
                         for (var j = 0; j < repeatOptions.length; j++) {
-                            repeatOptions[j].setAttribute("selected", false);
+                            if(repeatOptions[j].value == repeatType){
+                                repeatOptions[j].selected = true;
+                            }
                         }
-                        repeatOptions[repeatType].setAttribute("selected", true);
-                    } else {
-
+                    } else if(data.code == 112){
+                        //若参加者参加的事件不存在
+                        $('.eventNone').css("display", "block");
                     }
                 }
             )
@@ -253,15 +255,16 @@ var fuc = {
             if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
                 $('#loadingToast').fadeOut();
                 // todo  提示用户设置名称
-                $('.titleNone').slideDown();
+                $('.titleNone').animate({"height":"36px"},300);
                 setTimeout(function () {
-                    $('.titleNone').slideUp();
-                }, 300);
+                    $('.titleNone').animate({"height":"0px"},300);
+                }, 500);
             } else {
                 if (that.config.eventId) {//若事件已保存，则调用修改事件
                     $.post(
                         "http://www.li-li.cn/llwx/event/modify",
                         {
+                            "eventId":that.config.eventId,
                             "name": name,
                             "eventType": that.config.eventType,
                             "tagId": that.config.tagId,
@@ -317,7 +320,7 @@ var fuc = {
         /*---------------点击删除---------------*/
         $('.delete').click(function () {
             $('#dialog1').fadeIn();
-            $('#confirm').on('tap', function () {//点击确定按钮
+            $('.confirm').on('tap', function () {//点击确定按钮
                 $('#dialog1').fadeOut();
                 $('#loadingToast').fadeIn();//显示loading
                 $.get("http://www.li-li.cn/llwx/event/del", {"eventId": that.config.eventId}, function (data) {
@@ -326,11 +329,7 @@ var fuc = {
                         $('#toast').fadeIn();
                         setTimeout(function () {
                             $('#toast').fadeOut();
-                            if (document.referrer == "") {
-                                WeixinJSBridge.call("closeWindow");
-                            } else {
-                                window.location.href = document.referrer;//返回上一个页面
-                            }
+                            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newSchedule.html");
                         }, 1500);
                     } else {//删除失败弹出提示框
                         $('#loadingToast').fadeOut();//隐藏loading
@@ -342,7 +341,7 @@ var fuc = {
                     }
                 })
             });
-            $('#cancel').on('tap', function () {//点击取消按钮
+            $('.default').on('tap', function () {//点击取消按钮
                 $('#dialog1').fadeOut();
             });
         })

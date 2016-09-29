@@ -91,7 +91,13 @@ body{
 .time{
   margin-top: 20px;
 }
-
+.time .itemCon{
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding-top: 10px;
+  line-height: 40px;
+}
 .avtivityCon{
   width:100%;
   height:auto;
@@ -132,6 +138,23 @@ body{
   height:100%;
   line-height: 50px;
 }
+
+/*-----------site----------------*/
+.site .itemCon{
+  height:60px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding-top: 15px;
+  padding-right: 10px;
+}
+.site .itemCon .siteName{
+  line-height: 22px;
+}
+.site .itemCon .siteAddress{
+  line-height: 16px;
+}
+
 /*-----------remark-----------*/
 .remark .itemCon{
   padding-top: 10px;
@@ -153,6 +176,10 @@ body{
   margin-right: 2%;
   margin-bottom: 2%;
 }
+.blank{
+  width:100%;
+  height:50px;
+}
 /*------------bottom-----------*/
 .bottom{
   width:100%;
@@ -163,23 +190,44 @@ body{
   position: fixed;
   left:0;
   bottom:-50px;
-  opacity:0;
   display: none;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   padding: 0px 10px;
-}
-.bottom1{
-  display: block;
-  opacity:1;
-  bottom: 0;
+  background: rgba(255,255,255,0.9);
 }
 .bottom div{
   width:auto;
   height:100%;
 }
-
+/*参与事件已被删除后的提示*/
+.eventNone{
+  position: fixed;
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
+  display: none;
+  z-index: 999;
+  background: #66cccc;
+}
+.eventNone .imgCon{
+  width:auto;
+  height:80px;
+  margin: 0 auto;
+  margin-top: 20%;
+  background: url("../../imgs/common/icon-NoContent.png") no-repeat center center;
+  -webkit-background-size:contain;
+  background-size:contain;
+}
+.eventNone p{
+  width:100%;
+  height:30px;
+  line-height:30px;
+  color: #fff;
+  text-align: center;
+}
 /*-------------分享遮罩层，事件二维码----------------*/
 .shareShadow,.wxQrcode{
   position: fixed;
@@ -200,14 +248,15 @@ body{
 }
 .shareShadow .shadowImg img{
   position: static;
-  width:60%;
+  width:100%;
   height:auto;
 }
+
 .shareShadow .shareImgClose{
   display: block;
   width:80%;
   height:36px;
-  margin: 10px auto;
+  margin: 20px auto;
   background: #66cccc;
   line-height: 36px;
   text-align: center;
