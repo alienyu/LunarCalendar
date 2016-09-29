@@ -45,7 +45,7 @@ var fuc = {
     },
 
     init: function () {
-        pageLoad({backgroundColor: "#66cccc"});
+        pageLoad({backgroundColor: "#fff"});
         this.config.time = this.ifTimeExist(Dom.getRequest("date"));
         this.config.timeArr = this.transTime(this.config.time);
         this.config.eventId = Dom.getRequest("eventId");
@@ -427,6 +427,8 @@ var fuc = {
                     var imgUrl = data.data;
                     that.config.shareImg = data.data;
                     $('.shadowImg img').attr("src", imgUrl);
+
+
                 }
             }
         )
@@ -615,7 +617,7 @@ var fuc = {
         $('.showAll').click(function () {
             if ($('.showAll span').attr("class") == "active") {
                 $('.showAll span').removeClass("active");
-                $('.tipsCon').animate({"height": "60px"}, 300);
+                $('.tipsCon').animate({"height": "80px"}, 300);
             } else {
                 $('.showAll span').addClass("active");
                 $('.tipsCon').animate({"height": "auto"}, 300);
@@ -687,6 +689,7 @@ var fuc = {
             }
             that.config.remarkText = $('#remarkText').val();
             $('.remarkCon .remarkText').removeClass("ccc").html(that.config.remarkText);
+            $('#remarkText').attr("autofocus");
             $('.remarkShadow .container').animate({"top": "100%"}, 200, function () {
                 $('.remarkShadow').hide();
             });

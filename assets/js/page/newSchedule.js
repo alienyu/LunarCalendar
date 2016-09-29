@@ -23,7 +23,7 @@ var fuc = {
         stopSliderDown: false //阻止下滑,即不加载前面数据
     },
     init: function () {
-        //pageLoad({backgroundColor: "#66cccc"});
+        //pageLoad({backgroundColor: "#fff"});
         this.initHeadDate();
         this.getData("init");
         this.bindEvent();

@@ -9,10 +9,14 @@ textarea{
   width: 100%;
   border: none;
   outline: none;
-  line-height: 40px;
+  line-height: 20px;
   background: transparent;
   resize: none;
 }
+
+textarea#remarkText{font-size: 16px; line-height:120%}
+
+
 .select{
   -webkit-appearance: none;
   border: 0;
@@ -82,7 +86,7 @@ textarea{
 }
 .topTips .tipsCon{
   width:100%;
-  height: 60px;
+  height: 80px;
   overflow: hidden;
   padding: 5px;
   text-align: center;
@@ -91,11 +95,11 @@ textarea{
   display: inline-block;
   height:20px;
   line-height:20px;
-  padding: 0px 5px;
+  padding: 5px 10px;
   margin:  5px;
   border: 1px solid #eee;
-  border-radius: 10px;
-  -webkit-border-radius: 10px;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
   word-break: keep-all;
 }
 .topTips a:active{
@@ -129,7 +133,7 @@ textarea{
   width:100%;
   min-height:50px;
   text-align: center;
-  padding: 5px 20px 0px;
+  padding: 5px 20px 0;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -137,6 +141,7 @@ textarea{
 .eventCon .eventTitle .eventName{
   height:40px;
   font-size: 18px;
+  padding-top: 15px;
 }
 .remarkCon,.site .itemCon .siteText{
   -webkit-box-sizing: border-box;
@@ -151,15 +156,7 @@ textarea{
 .siteText .siteAddress{
   line-height: 16px;
  }
-.saveBtn{
-  display: block;
-  width:90%;
-  height:40px;
-  background: #66cccc;
-  margin: 10px auto 5px;
-  text-align: center;
-  line-height:40px;
-}
+
 .delete{
   width:100%;
   height:50px;
@@ -168,6 +165,18 @@ textarea{
   text-align: center;
   display: none;
 }
+.saveBtn_s{
+  display: block;; margin: 10px;background: #66cccc; padding: 10px; border: 1px solid #66cccc;text-align: center; color: #fff;
+}
+
+
+.bot_Btn_box{display: table;  width: 100%;  table-layout: fixed; margin: 10px 0}
+.bot_Btn_box div{display: table-cell;  width: 100%; text-align: center;}
+.bot_Btn_box a{display: block; background: #66cccc; padding: 10px; border: 1px solid #66cccc; text-align: center; color: #fff; margin-left: 10px; margin-right:10px;}
+.bot_Btn_box a.saveBtn_l{ margin-right: 5px; background: #fff; color: #66cccc}
+.bot_Btn_box a.shareBtn_r{ margin-left: 5px; font-weight: bold}
+
+
 /*参与事件已被删除后的提示*/
 .eventNone{
   position: fixed;

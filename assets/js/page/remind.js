@@ -21,7 +21,7 @@ var fuc = {
         themeId: ""//背景图id
     },
     init: function () {
-        pageLoad({backgroundColor: "#66cccc"});
+        pageLoad({backgroundColor: "#fff"});
         this.config.time = this.ifTimeExist(Dom.getRequest("date"));
         this.config.timeArr = this.transTime(this.config.time);
         this.config.eventId = Dom.getRequest("eventId");
@@ -242,7 +242,7 @@ var fuc = {
         $('.showAll').click(function () {
             if ($('.showAll span').attr("class") == "active") {
                 $('.showAll span').removeClass("active");
-                $('.tipsCon').animate({"height": "60px"}, 300);
+                $('.tipsCon').animate({"height": "80px"}, 300);
             } else {
                 $('.showAll span').addClass("active");
                 $('.tipsCon').animate({"height": "auto"}, 300);

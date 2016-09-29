@@ -24,6 +24,7 @@ var fuc = {
 
     init: function () {
         pageLoad({backgroundColor: "#fff"});
+		
         this.config.eventId = Dom.getRequest("eventId");
         this.rem();
         this.renderPage();
@@ -126,6 +127,8 @@ var fuc = {
                         wx.wxConfig(1);
                         $('.time .itemCon').html(Dom.transStartTime(dataList.event.startTime));
                         $('.avtivityCon').css("display", "none");
+                        $('.remark').css("display", "none");
+                        $('.site').css("display", "none");
                         $('.bottom').css("display", "none");
                         if (!Dom.smallerDate(Dom.getDate(dataList.event.startTime))) {
                             Ajax.getWeather(Dom.getDate(dataList.event.startTime));

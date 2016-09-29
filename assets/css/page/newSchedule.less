@@ -1,4 +1,5 @@
 @import "../common/AddBtn.css";
+@import "../common/pageLoad.less";
 body { box-sizing: border-box; margin: 0px; font-family: 'HanHei SC', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none; -khtml-user-select: none; user-select: none; }
 body header { position: fixed; top: 0px; height: 30px; width: 100%; padding: 3px 0px; background-color: #fff; box-shadow: 0px 5px 10px #999; color: #66cccc; box-sizing: inherit; z-index: 1001; }
 body header .current_month { float: left; margin-left: 16%; color: #ccc; }
@@ -26,7 +27,7 @@ body section .record .date.invisibile { display: none; }
 body section .record .date .day { font-size: 28px; margin-top: -5px; }
 body section .record .date .weekday { font-size: 16px; }
 body section .record .content { float: right; position: relative; width: 81%; margin-right: 3%; border-radius: 5px; }
-body section .record .content .text { font-size: 14px; color: #fff; padding: 5px 10px; text-shadow:1px 1px 1px #555;}
+body section .record .content .text { font-size: 14px; color: #fff; padding: 5px 10px; text-shadow:1px 1px 1px rgba(0,0,0,0.5);}
 body section .record .content .text .title { font-weight: 600 }
 body section .record .content .text .title, body section .record .content .text .address { white-space: nowrap; text-overflow: ellipsis; -o-text-overflow: ellipsis; overflow: hidden; height: 20px; width: 100% }
 body section .record .content .text.contain_img, body section .record .content .text.contain_map { margin-top: 25px; }
@@ -42,8 +43,6 @@ body section .current_time_line { position: relative; margin-left: 15%; margin-r
 body section .current_time_line:before { position: absolute; left: -11px; top: -5px; width: 10px; height: 10px; background-color: #66cccc; border-radius: 50%; content: ""; }
 body section .month_divide { position: relative; width: 100%; height: 160px; margin: 30px 0px; background-size: cover; }
 body section .month_divide .text { position: absolute; left: 15%; top: 20px; color: #000; font-weight: bold; font-size: 20px; }
-
-
 .mask { position: absolute; padding: 0px; top: 0px; left: 0px; background: #000; opacity: 0.6; filter: alpha(opacity=60); z-index: 11000; width: 100%; height: 100%; display: none; }
 .loading { position: fixed; top: 50%; left: 50%; margin-top: -8px; margin-left: -8px; display: none; height: 15px; width: 15px; border-radius: 100%; border: 2px solid #666; border-bottom-color: transparent; vertical-align: middle; -webkit-animation: rotate 0.75s linear infinite; animation: rotate 0.75s linear infinite; }
 @-webkit-keyframes rotate { 0% {
