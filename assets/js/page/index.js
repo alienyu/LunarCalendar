@@ -168,18 +168,18 @@ var fuc = {
                     }
                     $('.weather').append(html);
                     if(weatherCode>=101&&weatherCode<=213){//多云
-                        $(".conShadow").attr("class", "conShadow cloudsDay");
-                    }else if(weatherCode>=300&&weatherCode<=313){//雨
-                        $(".conShadow").attr("class", "conShadow rainDay");
-                    }else if(weatherCode>=400&&weatherCode<=407){//雪
-                        $(".conShadow").attr("class", "conShadow snowDay");
-                    }else if(weatherCode>=500&&weatherCode<=501){//雾
-                        $(".conShadow").attr("class", "conShadow fogDay");
-                    }else if(weatherCode>=502&&weatherCode<=508){//霾
-                        $(".conShadow").attr("class", "conShadow hazeDay");
-                    }else{//晴天
-                        $(".conShadow").attr("class", "conShadow fairDay");
-                    }
+                            $(".conShadow").attr("class", "conShadow cloudsDay");
+                        }else if(weatherCode>=300&&weatherCode<=313){//雨
+                            $(".conShadow").attr("class", "conShadow rainDay");
+                        }else if(weatherCode>=400&&weatherCode<=407){//雪
+                            $(".conShadow").attr("class", "conShadow snowDay");
+                        }else if(weatherCode>=500&&weatherCode<=501){//雾
+                            $(".conShadow").attr("class", "conShadow fogDay");
+                        }else if(weatherCode>=502&&weatherCode<=508){//霾
+                            $(".conShadow").attr("class", "conShadow hazeDay");
+                        }else{//晴天
+                            $(".conShadow").attr("class", "conShadow fairDay");
+                        }
                 }
             }else{
 
