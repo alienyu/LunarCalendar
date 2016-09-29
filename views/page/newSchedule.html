@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>历历-日程</title>
+    <title>日程</title>
     <meta name="format-detection" content="telephone=no" />
     <meta name="full-screen" content="yes">
     <meta name="x5-fullscreen" content="true">
@@ -39,12 +39,9 @@
         <% if(type == "init") { %>
             <!--初始化并且今天之后无数据-->
             <% if(eventArr.length < 1) { %>
-                <!--是否是月首-->
-                <% if(today.day == 1) { %>
-                    <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= parseInt(today.month, 10) %>.jpg) fixed center center;">
-                        <div class="text"><%= today.month %>月</div>
-                    </div>
-                <% } %>
+                <div class="month_divide month_<%= parseInt(today.month, 10) %>">
+                    <div class="text"><%= today.month %>月</div>
+                </div>
                 <div class="record no_record<%= today.day == 1 ? ' first_day' + ' headDate_' + today.year + '_' + today.month : '' %>" data-date="<%= today.year + '-' + today.month + '-' + today.day %>">
                     <div class="date">
                         <div class="day"><%= today.day %></div>
@@ -62,7 +59,7 @@
                 <% if(today.isToday == false) { %>
                     <!--是否是月首-->
                     <% if(today.day == 1) { %>
-                        <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= parseInt(today.month, 10) %>.jpg) fixed center center;">
+                        <div class="month_divide month_<%= parseInt(today.month, 10) %>">
                             <div class="text"><%= today.month %>月</div>
                         </div>
                     <% } %>
@@ -88,7 +85,7 @@
                             <% var timeDetail = timeData[j]; %>
                             <!--是否是月首(今天与第一条数据不再同一月份)-->
                             <% if(j == 0 && dayData.firstEventDayOfMonth && dayData.date.split('-')[1] != today.month) { %>
-                                <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= parseInt(dayData.date.split('-')[1], 10) %>.jpg) fixed center center;">
+                                <div class="month_divide month_<%= parseInt(dayData.date.split('-')[1], 10) %>">
                                     <div class="text"><%= parseInt(dayData.date.split("-")[1], 10) %>月</div>
                                 </div>
                             <% } %>
@@ -109,13 +106,15 @@
                                     <div class="content">
                                 <% } %>
                                     <% if(timeDetail.longitude != "") { %>
-                                        <div id="bmap_<%= timeDetail.eventId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
+                                        <div id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
                                         <div class="map_mask"></div>
                                      <% } %>
                                     <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
-                                        <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %>-<%= timeDetail.endTime ? timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : ''%></div>
+                                        <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= (timeDetail.endTime && timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") != timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":")) ? '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : ''%></div>
+                                        <% if(timeDetail.location) { %>
                                         <div class="address"><%= timeDetail.location %></div>
+                                        <% } %>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -134,7 +133,7 @@
                             <% var timeDetail = timeData[j]; %>
                             <!--是否是月首-->
                             <% if(j == 0 && dayData.firstEventDayOfMonth) { %>
-                                <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= parseInt(dayData.date.split('-')[1], 10) %>.jpg) fixed center center;">
+                                <div class="month_divide month_<%= parseInt(dayData.date.split('-')[1], 10) %>">
                                     <div class="text"><%= parseInt(dayData.date.split("-")[1], 10) %>月</div>
                                 </div>
                             <% } %>
@@ -147,7 +146,7 @@
                                 <!--定义背景元素-->
                                 <% if(timeDetail.longitude == '') { %>
                                     <% if(timeDetail.theme) { %>
-                                        <div class="content" style="background: url(<%= timeDetail.theme %>) center center no-repeat;background-size: cover;">
+                                        <div class="content" style="background: url(<%= timeDetail.theme.themeUrl %>) center center no-repeat;background-size: cover;">
                                     <% } else { %>
                                         <div class="content" style="background-color: <%= timeDetail.bgColor %>">
                                     <% } %>
@@ -155,13 +154,15 @@
                                     <div class="content">
                                 <% } %>
                                 <% if(timeDetail.longitude != "") { %>
-                                    <div id="bmap_<%= timeDetail.eventId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
+                                    <div id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
                                     <div class="map_mask"></div>
                                 <% } %>
                                     <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
-                                        <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %>-<%= timeDetail.endTime ? timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
+                                        <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= (timeDetail.endTime && timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") != timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":")) ?  '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
+                                        <% if(timeDetail.location) { %>
                                         <div class="address"><%= timeDetail.location %></div>
+                                        <% } %>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -182,7 +183,7 @@
                     <% var timeDetail = timeData[j]; %>
                     <!--是否是月首-->
                     <% if(j == 0 && dayData.firstEventDayOfMonth) { %>
-                        <div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/<%= parseInt(dayData.date.split('-')[1], 10) %>.jpg) fixed center center;">
+                        <div class="month_divide month_<%= parseInt(dayData.date.split('-')[1], 10) %>">
                             <div class="text"><%= parseInt(dayData.date.split("-")[1], 10) %>月</div>
                         </div>
                     <% } %>
@@ -203,13 +204,15 @@
                             <div class="content">
                         <% } %>
                             <% if(timeDetail.longitude != "") { %>
-                                <div id="bmap_<%= timeDetail.eventId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
+                                <div id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
                                 <div class="map_mask"></div>
                             <% } %>
                             <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
                                 <div class="title"><%= timeDetail.name %></div>
-                                <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %>-<%= timeDetail.endTime ? timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
+                                <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= (timeDetail.endTime && timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") != timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":")) ?  '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
+                                <% if(timeDetail.location) { %>
                                 <div class="address"><%= timeDetail.location %></div>
+                                <% } %>
                             </div>
                         </div>
                          <div class="clearfix"></div>
