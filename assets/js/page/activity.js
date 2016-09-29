@@ -328,6 +328,7 @@ var fuc = {
             },
             function (data) {
                 if (data.code == 0) {
+                    that.getShareImg();//获取分享事件的图片
                     var eventList = data.data;
                     $('.eventName').val(eventList.event.name);//标题内容
                     Dom.autoTextarea(document.getElementById("eventTitle"));
@@ -337,6 +338,7 @@ var fuc = {
                         repeatType = eventList.event.repeatType;
                     that.config.bgColor = eventList.event.bgColor;
                     that.config.themeId = eventList.event.themeId;
+
                     if(eventList.event.theme){
                         that.config.themeId = eventList.event.theme.themeId;//获取用户设置的背景图id
                     }
@@ -412,6 +414,23 @@ var fuc = {
         )
     },
 
+    /*----------获取用户分享的图片------------*/
+    getShareImg: function () {
+        var that = this;
+        $.get(
+            "http://www.li-li.cn/llwx/share/genPic",
+            {
+                "eventId": that.config.eventId
+            },
+            function (data) {
+                if (data.code == 0) {
+                    var imgUrl = data.data;
+                    that.config.shareImg = data.data;
+                    $('.shadowImg img').attr("src", imgUrl);
+                }
+            }
+        )
+    },
     /*---------------弹层效果------------------*/
     shadow: function (obj, shadow, container) {
         obj.click(function () {
@@ -521,6 +540,7 @@ var fuc = {
         var colorItem = $('.colorCon .colorItem');
         for (var m = 0; m < colorItem.size(); m++) {
             if (colorItem.eq(m).attr("data-colors") == that.config.bgColor) {
+                $('.items').removeClass("active");
                 colorItem.eq(m).addClass("active");
                 colorItem.eq(m).find(".smaller").css("background", that.config.bgColor);
             }
@@ -550,6 +570,7 @@ var fuc = {
             $(this).addClass("active");
             if ($(this).attr("class") == "colorItem items active") {//若点击的是颜色
                 that.config.bgColor = $(this).attr("data-colors");
+                that.config.themeId = "";
                 $(this).find(".smaller").css("background", that.config.bgColor);
                 //设置显示页面的颜色显示
                 $('.colorShow').css("background", that.config.bgColor);
@@ -612,6 +633,25 @@ var fuc = {
             $(this).css("display","none");
             event.stopPropagation();
         });
+
+        /*---------------点击分享弹层中的按钮-----------------*/
+        $('.shareImgClose').click(function () {
+            $('#loadingToast').fadeIn();//显示loading
+            event.preventDefault();
+            $.get(
+                "http://www.li-li.cn/llwx/share/seePic",
+                {
+                    "picUrl": that.config.shareImg
+                },
+                function (data) {
+                    if (data.code == 0) {//请求成功
+                        $('#loadingToast').fadeOut();//显示loading
+                        $('.shareShadow').fadeOut();
+                        WeixinJSBridge.call("closeWindow");
+                    }
+                }
+            )
+        });
         /*----------弹层----------*/
         that.mapShadow($('.site'), $('.mapShadow'), $('.mapShadow .container'));
         that.shadow($('.colors'), $('.colorShadow'), $('.colorShadow .container'));
@@ -665,27 +705,43 @@ var fuc = {
             }
             if (that.config.eventId) {
                 if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
-                    // todo 提醒用户设置名称
+                    // 提醒用户设置名称
+                    $('.titleNone').html("缺少事件名称");
                     $('.titleNone').animate({"height":"36px"},300);
                     setTimeout(function () {
                         $('.titleNone').animate({"height":"0px"},300);
                     }, 500);
-                } else {
-                    Ajax.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType,  that.mapConfig.locaName, that.mapConfig.locaAddress ,that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+                }else if(name.length >=30){
+                    $('#loadingToast').fadeOut();
+                    $('.titleNone').html("事件名称不能超过30个字");
+                    $('.titleNone').animate({"height":"36px"},300);
+                    setTimeout(function () {
+                        $('.titleNone').animate({"height":"0px"},300);
+                    }, 1000);
+                }  else {
+                    that.eventModify2(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType,  that.mapConfig.locaName, that.mapConfig.locaAddress ,that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
                     //todo 弹出蒙层
                     that.shareShadow(); //显示分享提示弹出层，点击后隐藏
                 }
             } else {
                 if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
-                    // todo 提醒用户设置名称
+                    // 醒用户设置名称
+                    $('.titleNone').html("缺少事件名称");
                     $('.titleNone').animate({"height":"36px"},300);
                     setTimeout(function () {
                         $('.titleNone').animate({"height":"0px"},300);
-                    }, 500);
+                    }, 1000);
+                }else if(name.length >=30){
+                    $('#loadingToast').fadeOut();
+                    $('.titleNone').html("事件名称不能超过30个字");
+                    $('.titleNone').animate({"height":"36px"},300);
+                    setTimeout(function () {
+                        $('.titleNone').animate({"height":"0px"},300);
+                    }, 1000);
                 } else {
                     $('#dialog1').fadeIn();
                     $('#dialog1 .confirm').on("tap", function () {//点击确定
-                        that.eventAdd(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.locaName, that.mapConfig.locaAddress, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+                        that.eventAdd2(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.locaName, that.mapConfig.locaAddress, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
                         that.getUserInformation();
                         wx.wxShare(that.config.nickName + " 邀请您参加 「" + name + "」", $('.startTime').html(),
                             "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + that.config.eventId));
@@ -702,6 +758,8 @@ var fuc = {
 
         /*------------点击保存--------------*/
         $('.saveBtn').click(function () {
+            //alert(that.config.bgColor);
+            //alert(that.config.themeId);
             $('#loadingToast').fadeIn();//显示loading
             var name = $('#eventTitle').val().replace(/\s+/, ""),
                 startTime = $('.startCon').attr("id"),
@@ -719,12 +777,20 @@ var fuc = {
             }
             if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
                 $('#loadingToast').fadeOut();
-                // todo  提示用户设置名称
+                // 提示用户设置名称
+                $('.titleNone').html("缺少事件名称");
                 $('.titleNone').animate({"height":"36px"},300);
                 setTimeout(function () {
                     $('.titleNone').animate({"height":"0px"},300);
-                }, 500);
-            } else {
+                }, 1000);
+            } else if (name.length >=30){
+                $('#loadingToast').fadeOut();
+                $('.titleNone').html("事件名称不能超过30个字");
+                $('.titleNone').animate({"height":"36px"},300);
+                setTimeout(function () {
+                    $('.titleNone').animate({"height":"0px"},300);
+                }, 1000);
+            }else {
                 if (that.config.eventId) {//若事件已保存，则调用修改事件
                     that.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.locaName, that.mapConfig.locaAddress, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
                 } else {
@@ -963,7 +1029,47 @@ var fuc = {
             }
         })
     },
-
+    eventAdd2: function (name, eventType, tagId, startTime, endTime, tipType, tipTime, repeatType, location, address, longitude, latitude, remark, remarkImgs, bgColor, themeId) {
+        var that = this;
+        $.ajax({
+            type: "post",
+            url: "http://www.li-li.cn/llwx/event/add",
+            data: {
+                "name": name,
+                "eventType": eventType,
+                "tagId": tagId,
+                "startTime": startTime,
+                "endTime": endTime,
+                "tipType": tipType,
+                "tipTime": tipTime,
+                "repeatType": repeatType,
+                "location": location,
+                "address":address,
+                "longitude": longitude,
+                "latitude": latitude,
+                "remark": remark,
+                "remarkImgs": remarkImgs,
+                "bgColor": bgColor,
+                "theme.themeId": themeId
+            },
+            dataType: "json",
+            success: function (data) {
+                //console.log(data);
+                if (data.code == 0) {//提交成功
+                    that.config.eventId = data.data;
+                    that.getShareImg();
+                    $('#loadingToast').fadeOut();
+                } else {//提交失败提醒错误信息
+                    $('#loadingToast').fadeOut();
+                    var error = data.msg;
+                    $('#dialog2 .weui-dialog__bd').html(error);
+                    $('#dialog2').show().on('click', '.weui-dialog__btn', function () {
+                        $('#dialog2').off('click').hide();
+                    });
+                }
+            }
+        })
+    },
     //修改事件页面数据提交
     eventModify: function(eventId,name,tagId, startTime, endTime, tipType, tipTime, repeatType, location,address,longitude,latitude, remark,remarkImgs,bgColor,themeId) {
         var that = this;
@@ -993,6 +1099,45 @@ var fuc = {
                 if (data.code == 0) {
                     $('#loadingToast').fadeOut();
                     window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId="+that.config.eventId);
+                } else {//修改失败弹出提示框
+                    $('#loadingToast').fadeOut();
+                    var error = data.msg;
+                    $('#dialog2 .weui_dialog_bd').html(error);
+                    $('#dialog2').show().on('click', '.weui-dialog__btn', function () {
+                        $('#dialog2').off('click').hide();
+                    });
+                }
+            }
+        })
+    },
+    eventModify2: function(eventId,name,tagId, startTime, endTime, tipType, tipTime, repeatType, location,address,longitude,latitude, remark,remarkImgs,bgColor,themeId) {
+        var that = this;
+        $.ajax({
+            type: "post",
+            url: "http://www.li-li.cn/llwx/event/modify",
+            data: {
+                "eventId":eventId,
+                "name":name,
+                "tagId":tagId,
+                "startTime":startTime,
+                "endTime":endTime,
+                "tipType":tipType,
+                "tipTime":tipTime,
+                "repeatType":repeatType,
+                "location":location,
+                "address":address,
+                "longitude":longitude,
+                "latitude":latitude,
+                "remark":remark,
+                "remarkImgs":remarkImgs,
+                "bgColor":bgColor,
+                "theme.themeId":themeId
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 0) {
+                    $('#loadingToast').fadeOut();
+                    that.getShareImg();
                 } else {//修改失败弹出提示框
                     $('#loadingToast').fadeOut();
                     var error = data.msg;
