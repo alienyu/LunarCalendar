@@ -23,7 +23,7 @@ var fuc = {
     },
 
     init: function () {
-        pageLoad({backgroundColor: "#66cccc"});
+        pageLoad({backgroundColor: "#fff"});
         this.config.eventId = Dom.getRequest("eventId");
         this.rem();
         this.renderPage();
