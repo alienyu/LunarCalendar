@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title></title>
     <meta name="format-detection" content="telephone=no"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="x5-orientation" content="portrait">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -12,15 +13,27 @@
 </head>
 <body>
 <!--顶部显示背景图片-->
-<div class="eventContainer fs14">
+<div class="eventContainer fs14" style="visibility: hidden;">
     <div class="topCon">
-        <div class="eventName fs24 cff">跑步</div>
+        <div class="eventName fs24 cff"></div>
         <div class="compile">
             <div>
                 <img src="../../assets/imgs/page/newShowEvent/ic_edit.png" alt="">
             </div>
         </div>
     </div>
+        <!--备注-->
+        <div class="remark item">
+            <div class="icon">
+                <img src="../../assets/imgs/page/activity/ic_sort.png" alt="">
+            </div>
+            <div class="itemCon">
+                <div class="remarkText"></div>
+                <div class="remarkImgs" style="display: none">
+                    <!--<img src="../../assets/imgs/common/weixin_icon.png" alt="">-->
+                </div>
+            </div>
+        </div>
     <div class="time item">
         <div class="icon">
             <img src="../../assets/imgs/page/activity/ic_schedule.png" alt="">
@@ -29,78 +42,74 @@
 
         </div>
     </div>
-    <div class="suitable item fs12">
+        <!--地址-->
+        <div class="site item">
+            <div class="icon">
+                <img src="../../assets/imgs/page/activity/ic_place.png" alt="">
+            </div>
+            <div class="itemCon">
+                <div class="siteName"></div>
+                <div class="siteAddress ccc fs12"></div>
+            </div>
+        </div>
+    <div class="suitable item">
         <div class="icon">
             <img src="../../assets/imgs/page/activity/ic_suitable.png" alt="">
         </div>
         <div class="itemCon"></div>
     </div>
-    <div class="weather item fs12">
+    <div class="weather item">
         <div class="icon">
             <img src="../../assets/imgs/page/activity/ic_weather.png" alt="">
         </div>
         <div class="itemCon"></div>
     </div>
     <div class="avtivityCon">
-        <!--地址-->
-        <div class="site item">
-            <div class="icon">
-                <img src="../../assets/imgs/page/activity/ic_place.png" alt="">
-            </div>
-            <div class="itemCon"></div>
-        </div>
         <!--参与人数-->
         <div class="participant item">
             <div class="icon">
                 <img src="../../assets/imgs/page/activity/ic_social.png" alt="">
             </div>
             <div class="itemCon">
-                <div class="peopleCount"><span class="count"></span>位邀请对象</div>
+                <div class="peopleCount"><span class="count"></span>位参与成员</div>
                 <div class="peopleList">
                     <div class="peopleItem fl">
                         <img src="../../assets/imgs/page/showEvent/default_photo.png" alt="" class="fl eventOwner">
                         <div class="ownerNickName fl">
-                            <div class="nickName">Yara</div>
-                            <div class="ccc ownerPosition">组织者</div>
+                            <div class="nickName"></div>
+                            <div class="ccc ownerPosition fs12">组织者</div>
                         </div>
                     </div>
                     <div class="peopleItem fl morePeople">
                         <img src="../../assets/imgs/page/showEvent/default_photo.png" alt="" class="fl">
-                        <div class="c6c nickNames fl">更多对象</div>
+                        <div class="c6c nickNames fl">更多成员</div>
                     </div>
                 </div>
             </div>
         </div>
-        <!--备注-->
-        <div class="remark item">
-            <div class="icon">
-                <img src="../../assets/imgs/page/activity/ic_sort.png" alt="">
-            </div>
-            <div class="itemCon">
-                <div class="remarkText"></div>
-                <div class="remarkImgs">
-                    <img src="../../assets/imgs/common/weixin_icon.png" alt="">
-                </div>
-            </div>
-        </div>
     </div>
+    <div class="blank"></div>
     <!--事件创建人进入页面时底部显示样式-->
     <div class="bottom bottom1">
-        <div class="bottomText ccc fl">是否需要邀请好友？</div>
-        <div class="share c6c fr">邀请微信好友</div>
+        <div class="bottomText ccc fl"></div>
+        <div class="share c6c fr">生成邀请卡</div>
     </div>
     <!--未加入事件者进入页面时底部显示样式-->
     <div class="bottom bottom2">
-        <div class="bottomText ccc fl">来自#<span></span>的邀请</div>
+        <div class="bottomText ccc fl">来自#<span class="ownerName"></span>的邀请</div>
         <div class="join c6c fr">接受邀请</div>
     </div>
     <!--已加入事件者进入页面时-->
     <div class="bottom bottom3">
         <div class="exit fl">已接受</div>
-        <div class="share c6c fr">邀请微信好友</div>
+        <div class="share c6c fr">生成邀请卡</div>
     </div>
 </div>
-
+<!--事件已不存在，则弹出提示-->
+<div class="eventNone" id="eventNone">
+    <div class="imgCon"></div>
+    <p class="fs14">事件不存在或已被删除</p>
+</div>
 <!--横屏-->
 <div id="orientLayer" class="mod-orient-layer">
     <div class="mod-orient-layer__content"><i class="icon mod-orient-layer__icon-orient"></i>
@@ -112,14 +121,14 @@
     <div class="shadowImg">
         <img src="../../assets/imgs/common/icon-NoContent.png" alt="">
     </div>
-    <a href="javascript:;" class="shareImgClose cff fs14">去转发给微信好友</a>
+    <a href="javascript:;" class="shareImgClose cff fs14">保存并分享给好友</a>
 </div>
 <!--弹出二维码-->
 <div class="wxQrcode">
     <span class="wxQrcodeClose"></span>
     <div class="qrcodeImgCon">
         <div class="qrcodeImg"></div>
-        <p>长按二维码关注历历<br/>即可加入日程</p>
+        <p>长按识别二维码<br/>即可参与活动</p>
     </div>
 </div>
 <!--用户退出事件时的弹框提醒-->
@@ -154,6 +163,17 @@
         </div>
     </div>
 </div>
+<!-----------弹层背景---------->
+<div class="shadowBg"></div>
+<!-----------------地图弹层----------------->
+<div class="mapShadow shadow" id="mapShadow">
+    <div class="shadowClose"></div>
+    <div class="container">
+        <div class="mapCon" id="mapCon">
+
+        </div>
+    </div>
+</div>
 <!--数据加载时的loading-->
 <div id="loadingToast" style="display:none;">
     <div class="weui-mask_transparent"></div>
@@ -183,8 +203,10 @@
             <img src="{{imgUrl}}" alt="" class="fl">
             <div class="nickNames fl">{{nickName}}</div>
     </div>
+
 </script>
-<!--批量查看大图功能-->
-<div class=""></div>
+<link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+<script src="http://cache.amap.com/lbs/static/es5.min.js"></script>
+<script src="http://webapi.amap.com/maps?v=1.3&key=328b4ed0fd71e2782bf3677b9012a151"></script>
 </body>
 </html>

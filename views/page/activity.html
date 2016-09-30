@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 </head>
 <body>
-<div class="eventCon fs14">
+<div class="eventCon fs14" style="visibility: hidden">
     <div class="titleNone cff">缺少事件名称</div>
     <div class="topTips">
         <div class="tipsCon"></div>
@@ -22,6 +22,18 @@
     </div>
     <div class="item eventTitle">
         <textarea class="eventName" id="eventTitle" placeholder="输入标题" rows="1"></textarea>
+    </div>
+    <div class="item remark">
+        <div class="icon">
+            <img src="../../assets/imgs/page/activity/ic_sort.png" alt="">
+        </div>
+        <div class="itemCon">
+            <div class="remarkCon">
+                <div class="remarkText ccc">添加备注</div>
+                <div class="remarkImgs"></div>
+            </div>
+            <!--<textarea name="remarks" id="remarks" class="fs26" rows="1" placeholder="添加备注"></textarea>-->
+        </div>
     </div>
     <div class="item time">
         <div class="icon">
@@ -43,6 +55,18 @@
             <input type="text" id="endTime">
         </div>
     </div>
+    <div class="item site">
+        <div class="icon">
+            <img src="../../assets/imgs/page/activity/ic_place.png" alt="">
+        </div>
+        <div class="itemCon">
+            <div class="deleteAddress"></div>
+            <div class="siteText">
+                <div class="siteName ccc">添加地点</div>
+                <div class="siteAddress ccc f12"></div>
+            </div>
+        </div>
+    </div>
     <div class="item repetition">
         <div class="icon">
             <img src="../../assets/imgs/page/activity/ic_refresh@2x.png" alt="">
@@ -59,17 +83,6 @@
         </div>
     </div>
     <div class="activityCon">
-        <div class="item site">
-            <div class="icon">
-                <img src="../../assets/imgs/page/activity/ic_place.png" alt="">
-            </div>
-            <div class="itemCon">
-                <div class="siteText">
-                    <div class="siteName ccc">添加地点</div>
-                    <div class="siteAddress ccc f12"></div>
-                </div>
-            </div>
-        </div>
         <div class="item remind">
             <div class="icon">
                 <img src="../../assets/imgs/page/activity/ic_remind@2x.png" alt="">
@@ -95,19 +108,7 @@
                 <div class="colorText">默认颜色</div>
             </div>
         </div>
-        <div class="item remark">
-            <div class="icon">
-                <img src="../../assets/imgs/page/activity/ic_sort.png" alt="">
-            </div>
-            <div class="itemCon">
-                <div class="remarkCon">
-                    <div class="remarkText ccc">添加备注</div>
-                    <div class="remarkImgs"></div>
-                </div>
-                <!--<textarea name="remarks" id="remarks" class="fs26" rows="1" placeholder="添加备注"></textarea>-->
-            </div>
-        </div>
-        <div class="item share">
+        <div class="item share" style="display: none">
             <div class="icon">
                 <img src="../../assets/imgs/page/activity/ic_social.png" alt="">
             </div>
@@ -116,8 +117,20 @@
             </div>
         </div>
     </div>
-    <a href="javascript:;" class="saveBtn cff">保存活动</a>
-    <div class="delete fs12">删除此活动</div>
+    <div class="bot_Btn_box">
+        <div>
+            <a href="javascript:;" class="saveBtn_l saveBtn">保存活动</a>
+        </div>
+        <div>
+            <a href="javascript:;" class="shareBtn_r share">保存并生成邀请卡</a>
+        </div>
+    </div>
+    <div class="delete fs12 opa2">删除此活动</div>
+</div>
+<!--事件已不存在，则弹出提示-->
+<div class="eventNone" id="eventNone">
+    <div class="imgCon"></div>
+    <p class="fs12">事件不存在或已被删除</p>
 </div>
 <!--标题标签模板-->
 <script type="text/x-list" id="tagListTemplate">
@@ -149,14 +162,9 @@
 <!--提示用户点击右上角实现分享功能-->
 <div class="shareShadow" id="shareShadow">
     <div class="shadowImg">
-        <img src="../../assets/imgs/page/addEvent/share-tips.png" alt="">
+        <img src="" alt="">
     </div>
-    <div class="qrcodeImgBox">
-        <div class="qrcodeImgCon">
-
-        </div>
-        <a href="javascript:;" class=""></a>
-    </div>
+    <a href="javascript:;" class="shareImgClose cff fs14">保存并分享给好友</a>
 </div>
 <!-----------弹层背景---------->
 <div class="shadowBg"></div>
@@ -224,18 +232,18 @@
 <!------------备注弹层--------------->
 <div class="remarkShadow shadow" id="remarkShadow">
     <div class="container">
-        <div class="title fs12">
-            <a href="javascript:;" class="cancel ccc fl">取消</a>
+        <div class="title fs16">
+            <a href="javascript:;" class="cancel c33 fl">取消</a>
             <a href="javascript:;" class="finished c6c fr">完成</a>
         </div>
         <div class="textCon">
-            <textarea name="" id="remarkText" rows="6"></textarea>
+            <textarea name="" id="remarkText" rows="10" placeholder="点击输入备注内容..."></textarea>
         </div>
 
-        <div class="remarkImg ">
+        <div class="remarkImg " style="display: none">
             <form name="form1" id="form" runat="server" enctype="multipart/form-data" method="post" >
                 <div class="img_upload_box">
-                    <input type="file" class="img_upload_btn" name="file">
+                    <input type="file" class="img_upload_btn" name="photo">
                     <a href="javascript:;">+</a>
                 </div>
             </form>
@@ -263,7 +271,7 @@
                 <span class="ll-logo-3"></span>
             </div><!-- end ll-loading -->
         </div><!-- end ll-loading -->
-        <p class="weui-toast__content">数据加载中</p>
+        <!--<p class="weui-toast__content">数据加载中</p>-->
     </div>
 </div>
 <!--横屏-->

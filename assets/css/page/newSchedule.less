@@ -1,289 +1,70 @@
-body {
-    box-sizing: border-box;
-    margin: 0px;
-    header {
-        position: fixed;
-        top: 0px;
-        height: 30px;
-        width: 100%;
-        padding: 3px 0px;
-        background-color: #fff;
-        box-shadow: 0px 5px 10px #888888;
-        color: #70CFCE;
-        box-sizing: inherit;
-        z-index: 1001;
-        .current_month {
-            float: left;
-            margin-left: 20%;
-        }
-        .back_today {
-            margin-right: 5%;
-            float: right;
-        }
+@import "../common/AddBtn.css";
+@import "../common/pageLoad.less";
+body { box-sizing: border-box; margin: 0px; font-family: 'HanHei SC', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none; -khtml-user-select: none; user-select: none; }
+body header { position: fixed; top: 0px; height: 30px; line-height: 30px; width: 100%; background-color: #fff; box-shadow: 0px 5px 10px #999; color: #66cccc; box-sizing: inherit; z-index: 1001; }
+body header .current_month { float: left; margin-left: 16%; color: #ccc; }
+body header .back_today { padding-right: 3%; float: right; }
+body section { margin-top: 30px; padding-top: 10px; }
+body section .month_1 { background: url(../../imgs/page/newSchedule/monthBG/1.jpg) center center; }
+body section .month_2 { background: url(../../imgs/page/newSchedule/monthBG/2.jpg) center center; }
+body section .month_3 { background: url(../../imgs/page/newSchedule/monthBG/3.jpg) center center; }
+body section .month_4 { background: url(../../imgs/page/newSchedule/monthBG/4.jpg) center center; }
+body section .month_5 { background: url(../../imgs/page/newSchedule/monthBG/5.jpg) center center; }
+body section .month_6 { background: url(../../imgs/page/newSchedule/monthBG/6.jpg) center center; }
+body section .month_7 { background: url(../../imgs/page/newSchedule/monthBG/7.jpg) center center; }
+body section .month_8 { background: url(../../imgs/page/newSchedule/monthBG/8.jpg) center center; }
+body section .month_9 { background: url(../../imgs/page/newSchedule/monthBG/9.jpg) center center; }
+body section .month_10 { background: url(../../imgs/page/newSchedule/monthBG/10.jpg) center center; }
+body section .month_11 { background: url(../../imgs/page/newSchedule/monthBG/11.jpg) center center; }
+body section .month_12 { background: url(../../imgs/page/newSchedule/monthBG/12.jpg) center center; }
+body section .record { width: 100%; margin-bottom: 10px; }
+body section .record.day_end { margin-bottom: 50px; }
+body section .record.today_has_date{margin-bottom:10px }
+body section .record .date { float: left; width: 15%; text-align: center; margin-right: -3px; padding: 0; }
+body section .today_has_date .date { color: #66cccc }
+body section .record .date div { padding: 0px }
+body section .record .date.out_of_date { color: #999; }
+body section .record .date.invisibile { display: none; }
+body section .record .date .day { font-size: 28px; margin-top: -5px; }
+body section .record .date .weekday { font-size: 16px; }
+body section .record .content { float: right; position: relative; width: 81%; margin-right: 3%; border-radius: 5px; }
+body section .record .content .text { font-size: 14px; color: #fff; padding: 5px 10px; text-shadow:1px 1px 1px rgba(0,0,0,0.5);}
+body section .record .content .text .title { font-weight: 600 }
+body section .record .content .text .title, body section .record .content .text .address { white-space: nowrap; text-overflow: ellipsis; -o-text-overflow: ellipsis; overflow: hidden; height: 20px; width: 100% }
+body section .record .content .text.contain_img, body section .record .content .text.contain_map { margin-top: 25px; }
+body section .record .content .text.contain_map { position:relative; top: 0; z-index: 102; }
+div.bmap{position:absolute !important}
+body section .record .content .text.contain_map.no_address { bottom: -15px; }
+body section .record .content .text.contain_img.no_address { margin-top: 55px; }
+body section .record .content .bmap { border-radius: 5px; height: 95px; z-index: 100; width: 100%; }
+body section .record .content .map_mask { position: absolute; left: 0px; top: 0px; width: 100%; height: 95px; background-color: #000; opacity: 0.4; z-index: 101; border-radius: 5px; }
+body section .record .content a { text-decoration: none; color: #66cccc; font-size: 14px; height: 50px; line-height: 50px; text-indent: 20px; }
+body section .record .clearfix { clear: both; height: 0; line-height: 0; font-size: 0; }
+body section .current_time_line { position: relative; margin-left: 15%; margin-right: 3%; border: 1px solid #66cccc; margin-top: -5px; margin-bottom: 5px; }
+body section .current_time_line:before { position: absolute; left: -11px; top: -5px; width: 10px; height: 10px; background-color: #66cccc; border-radius: 50%; content: ""; }
+body section .month_divide { position: relative; width: 100%; height: 160px; margin: 30px 0px; background-size: cover; }
+body section .month_divide .text { position: absolute; left: 15%; top: 20px; color: #000; font-weight: bold; font-size: 20px; }
+.mask { position: absolute; padding: 0px; top: 0px; left: 0px; background: #000; opacity: 0.6; filter: alpha(opacity=60); z-index: 11000; width: 100%; height: 100%; display: none; }
+.loading { position: fixed; top: 50%; left: 50%; margin-top: -8px; margin-left: -8px; display: none; height: 15px; width: 15px; border-radius: 100%; border: 2px solid #666; border-bottom-color: transparent; vertical-align: middle; -webkit-animation: rotate 0.75s linear infinite; animation: rotate 0.75s linear infinite; }
+@-webkit-keyframes rotate { 0% {
+    -webkit-transform: rotate(0deg);
+}
+    50% {
+        -webkit-transform: rotate(180deg);
     }
-    section {
-        margin-top: 30px;
-        padding-top: 10px;
-        .month_1 {
-            background: url(../../imgs/page/newSchedule/monthBG/1.jpg) scroll center center;
-        }
-        .month_2 {
-            background: url(../../imgs/page/newSchedule/monthBG/2.jpg) scroll center center;
-        }
-        .month_3 {
-            background: url(../../imgs/page/newSchedule/monthBG/3.jpg) scroll center center;
-        }
-        .month_4 {
-            background: url(../../imgs/page/newSchedule/monthBG/4.jpg) scroll center center;
-        }
-        .month_5 {
-            background: url(../../imgs/page/newSchedule/monthBG/5.jpg) scroll center center;
-        }
-        .month_6 {
-            background: url(../../imgs/page/newSchedule/monthBG/6.jpg) scroll center center;
-        }
-        .month_7 {
-            background: url(../../imgs/page/newSchedule/monthBG/7.jpg) scroll center center;
-        }
-        .month_8 {
-            background: url(../../imgs/page/newSchedule/monthBG/8.jpg) scroll center center;
-        }
-        .month_9 {
-            background: url(../../imgs/page/newSchedule/monthBG/9.jpg) scroll center center;
-        }
-        .month_10 {
-            background: url(../../imgs/page/newSchedule/monthBG/10.jpg) scroll center center;
-        }
-        .month_11 {
-            background: url(../../imgs/page/newSchedule/monthBG/11.jpg) scroll center center;
-        }
-        .month_12 {
-            background: url(../../imgs/page/newSchedule/monthBG/12.jpg) scroll center center;
-        }
-        .record {
-            width: 100%;
-            margin-bottom: 10px;
-            &.day_end {
-                margin-bottom: 30px;
-            }
-            .date {
-                float: left;
-                width: 20%;
-                text-align: center;
-                color: #70CFCE;
-                margin-right: -3px;
-                &.out_of_date {
-                    color: #999;
-                }
-                &.invisibile {
-                    visibility: hidden;
-                }
-                .day {
-                    font-size: 30px;
-                }
-                .weekday {
-                    font-size: 18px;
-                }
-            }
-            .content {
-                //padding: 5px 0px;
-                float: left;
-                position: relative;
-                width: 75%;
-                border-radius: 5px;
-                .text {
-                    &.contain_img, &.contain_map {
-                        margin-top: 25px;
-                        //height: 90px;
-                    }
-                    &.contain_map {
-                        position: absolute;
-                        bottom: 15px;
-                        z-index: 102;
-                        &.no_address {
-                            bottom: -15px;
-                        }
-                    }
-                    &.contain_img {
-                        &.no_address {
-                            margin-top: 55px;
-                        }
-                    }
-                    font-size: 14px;
-                    text-indent: 10px;
-                    color: #fff;
-                    div {
-                        height: 30px;
-                        line-height: 30px;
-                    }
-                }
-                img {
-                    width: 100%;
-                    height: 70px;
-                }
-                .bmap {
-                    border-radius: 5px;
-                    height: 110px;
-                    z-index: 100;
-                }
-                .map_mask {
-                    position: absolute;
-                    left: 0px;
-                    top: 0px;
-                    width: 100%;
-                    height: 100%;
-                    background-color: #000;
-                    opacity: 0.4;
-                    z-index: 101;
-                    border-radius: 5px;
-                }
-                a {
-                    text-decoration: none;
-                    color: #70CFCE;
-                    font-size: 14px;
-                    height: 50px;
-                    line-height: 50px;
-                    text-indent: 20px;
-                }
-            }
-            .clearfix {
-                clear:both;
-                height: 0;
-                line-height: 0;
-                font-size: 0
-            }
-        }
-        .current_time_line {
-            position: relative;
-            width: 75%;
-            margin-left: 18%;
-            border: 1px solid #70CFCE;
-            margin-top: -5px;
-            margin-bottom: 5px;
-            &:before {
-                position: absolute;
-                left: -11px;
-                top: -5px;
-                width: 10px;
-                height: 10px;
-                background-color: #70CFCE;
-                border-radius: 50%;
-                content: "";
-            }
-        }
-        .month_divide {
-            position: relative;
-            width: 100%;
-            height: 200px;
-            margin: 50px 0px;
-            .text {
-                position: absolute;
-                left: 20%;
-                top: 20px;
-                color: #000;
-                font-weight: bold;
-                font-size: 20px;
-            }
-        }
+    100% {
+        -webkit-transform: rotate(360deg);
     }
-    .add_btn {
-        position: fixed;
-        right: 20px;
-        bottom:20px;
-        box-shadow: 0px 1px 10px #888888;
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
-        background-color: #52CECE;
-        text-align: center;
-        line-height: 70px;
-        font-size: 40px;
-        color: #fff;
-        z-index: 10004;
-        transform: rotate(0deg);
-        transition: 0.5s;
-        &.open {
-            transform: rotate(45deg);
-            transition: 0.5s;
-            background-color: #8F8F8F;
-        }
+}
+@keyframes rotate { 0% {
+    transform: rotate(0deg);
+}
+    50% {
+        transform: rotate(180deg);
     }
-    .btn_detail {
-        position: fixed;
-        right: 25px;
-        z-index: 10003;
-        opacity: 0;
-        &.move_up {
-            -webkit-animation-name: move_up 0.5s;
-            animation: move_up 0.5s;
-            opacity: 1;
-            bottom: 90px;
-        }
-        &.move_down {
-            -webkit-animation-name: move_down 0.5s;
-            animation: move_down 0.5s;
-            opacity: 0;
-            bottom: 20px;
-        }
-        div {
-            margin-bottom: 20px;
-            height: 60px;
-            span {
-                float: left;
-                border: 1px solid #e4e4e4;
-                background-color: #fff;
-                -webkit-border-radius:5px;
-                -moz-border-radius:5px;
-                border-radius:5px;
-                padding: 0px 3px;
-                box-shadow: 0px 1px 10px #888888;
-                margin-right: 30px;
-                margin-top: 18px;
-            }
-            a {
-                float: left;
-                width: 60px;
-                height: 60px;
-                background-color: #52CECE;
-                border-radius: 50%;
-                box-shadow: 0px 1px 10px #888888;
-                &.activity {
-                    background: url("../../imgs/page/newSchedule/icon/ic_activity.png") no-repeat #52CECE 13px 13px;
-                    background-size: 55%;
-                }
-                &.remind {
-                    background: url("../../imgs/page/newSchedule/icon/ic_remind.png") no-repeat #52CECE 13px 13px;
-                    background-size: 55%;
-                }
-            }
-        }
-    }
-    .select_mask {
-        position: fixed;
-        display: none;
-        left: 0px;
-        top: 0px;
-        width: 100%;
-        height: 100%;
-        background-color: #fff;
-        opacity: 0.9;
-        z-index: 10002;
+    100% {
+        transform: rotate(360deg);
     }
 }
 
-@-webkit-keyframes move_up {
-　　from {opacity: 0;bottom:20px;}
-　　to {opacity: 1;bottom:90px;}
-}
-@keyframes move_up {
-    　　from {opacity: 0;bottom:20px}
-    　　to {opacity: 1;bottom:90px}
-}
-@-webkit-keyframes move_down {
-    　　from {opacity: 1;bottom: 90px;}
-    　　to {opacity: 0;bottom: 20px;}
-}
-@keyframes move_down {
-    　　from {opacity: 1;bottom:90px;}
-    　　to {opacity: 0;bottom: 20px;}
-}
+/*# sourceMappingURL=newSchedule.css.map*/

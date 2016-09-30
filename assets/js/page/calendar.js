@@ -76,7 +76,7 @@ var fuc = {
             onSet: function (event, inst) {
                 if(that.config.isGoodDay){//跳转吉日
                     that.config.isGoodDay=false;
-                    $('.lucky').animate({'bottom': '0px'}, 500);
+                    $('.lucky').animate({'bottom': '0px'}, 500);					
                 }
                 $('#loadingToast').show();//显示loading
                 var selectedDate = inst.getVal();//获取选择时间的标准形式
@@ -103,13 +103,25 @@ var fuc = {
     },
     bindEvent: function() {
         var that = this;
-        /*------------------------------------点击添加事件按钮，跳转至添加事件页面------------------------------------*/
-        $('.addEvent').on('tap', function (event) {
-            var dateCurrent = $('.date_current').attr('id');
-            $('body').html("").css("background", "#66cccc");
-            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/addEvent.html?date=" + dateCurrent);
-            event.preventDefault();
+        //添加活动按钮
+        $("#addActivity").on('tap', function (e) {
+            if ($(e.target).hasClass("open")) {
+                $(e.target).removeClass("open");
+                $(".select_mask").fadeOut();
+                $("#btnDetail").removeClass("move_up").addClass("move_down");
+            } else {
+                $(e.target).addClass("open");
+                $(".select_mask").fadeIn();
+                $("#btnDetail").removeClass("move_down").addClass("move_up");
+            }
         });
+        /*------------------------------------点击添加事件按钮，跳转至添加事件页面------------------------------------*/
+        //$('.addEvent').on('tap', function (event) {
+        //    var dateCurrent = $('.date_current').attr('id');
+        //    $('body').html("").css("background", "#66cccc");
+        //    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/addEvent.html?date=" + dateCurrent);
+        //    event.preventDefault();
+        //});
 
         /*--------------点击/滑动的tab切换效果，容器高度随显示内容变化--------------------------*/
         $('.scheduleCon').css("min-height",this.otherHeight+"px");
@@ -143,6 +155,9 @@ var fuc = {
                     $(this).removeClass("active");
                 });
                 $('.lucky').animate({'bottom': '0px'}, 500);
+				$('.lucky02').animate({'bottom': "-64px"}, 500);
+				$('.close02').animate({'bottom':'-30px'},500);
+				$('.calendar_add').removeClass("c_a_open");
             } else {
                 $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
                     $('#dialog2').hide();
@@ -198,7 +213,7 @@ var fuc = {
             Lunar.selectWord = "";
             var dateItem = Dom.getDateList();
             var wordItem = $('.luckyWord .word_item span');
-            $('.lucky').animate({'bottom': "-265px"}, 500);
+            $('.lucky').animate({'bottom': "-265px"}, 500);	
             for (var i = 0; i < dateItem.size(); i++) {
                 dateItem.eq(i).removeClass("Not-lucky");
             }
@@ -211,6 +226,7 @@ var fuc = {
             var dateItem = Dom.getDateList();
             var wordItem = $('.lucky02 .word_item span');
             $('.lucky02').animate({'bottom': "-64px"}, 500);
+			$('.calendar_add').removeClass("c_a_open");
             $('.close02').animate({'bottom':'-30px'},500);
             for (var i = 0; i < dateItem.size(); i++) {
                 dateItem.eq(i).removeClass("Not-lucky");

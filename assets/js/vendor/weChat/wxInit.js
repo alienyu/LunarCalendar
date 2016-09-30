@@ -27,29 +27,32 @@ var wxConfig = {
                     noncestr = data.noncestr;
                     signature = data.signature;
                     timestamp = data.timestamp;
+
+
+                    wx.config({
+                        debug: false,
+                        //appId: "wx82c10b61c95e9f30",//正式
+                        appId: "wxd8c1d6ab5eb3c981",//测试
+                        timestamp: timestamp,//时间戳
+                        nonceStr: noncestr,//随机串
+                        signature: signature,//签名
+                        jsApiList: [
+                            'onMenuShareTimeline',
+                            'onMenuShareAppMessage',
+                            'hideAllNonBaseMenuItem',
+                            'showMenuItems',
+                            'getLocation'
+                        ]
+                    });
+
+                    wx.ready(function () {
+                        //隐藏其他选项
+                        wx.hideAllNonBaseMenuItem();
+                    })
                 }
             }
         });
-        wx.config({
-            debug: false,
-            //appId: "wx82c10b61c95e9f30",//正式
-            appId: "wxd8c1d6ab5eb3c981",//测试
-            timestamp: timestamp,//时间戳
-            nonceStr: noncestr,//随机串
-            signature: signature,//签名
-            jsApiList: [
-                'onMenuShareTimeline',
-                'onMenuShareAppMessage',
-                'hideAllNonBaseMenuItem',
-                'showMenuItems',
-                'getLocation'
-            ]
-        });
 
-        wx.ready(function () {
-            //隐藏其他选项
-            wx.hideAllNonBaseMenuItem();
-        })
     },
     wxShare: function (title, desc, link) {
         wx.showMenuItems({

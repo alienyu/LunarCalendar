@@ -7,36 +7,16 @@ var fuc = {
         today:""
     },
     init: function() {
-        pageLoad({backgroundColor: "#12101A"});
+        pageLoad({backgroundColor: "#fff"});
         this.renderPage();
-        this.changeBg();
         this.bindEvent();
-    },
-    pageLoad: function(options) {
-        document.addEventListener('touchmove', function (e) {//禁止浏览器上下滑动页面
-            e.preventDefault();
-        });
-
-        var defaults = {opacity: 1, backgroundColor: "#000", delayTime: 500, zindex: 999, sleep: 500};
-        var options = $.extend(defaults, options);
-        var _PageHeight = document.documentElement.clientHeight, _PageWidth = document.documentElement.clientWidth;
-        var _LLLoadingHtml = '<div id="loadingPage" style="position:fixed;left:0;top:0;_position: absolute;width:100%;height:' + _PageHeight + 'px;background:' + options.backgroundColor + ';opacity:' + options.opacity + ';filter:alpha(opacity=' + options.opacity * 100 + ');z-index:' + options.zindex + ';"><div class="ll_loading_con"><div class="ll-loading"><div class="ll-load-inner"><div class="ll-load-container"><div class="ll-load-scale-multiple la-2x"><div></div><div></div><div></div></div></div></div><div class="ll-load-logo"><span class="ll-logo-1"></span><span class="ll-logo-2"></span><span class="ll-logo-3"></span></div></div></div></div>';
-        $("body").append(_LLLoadingHtml);
-        document.onreadystatechange = PageLoaded;
-        function PageLoaded() {
-            if (document.readyState == "complete") {
-                var loadingMask = $('#loadingPage');
-                setTimeout(function () {
-                    loadingMask.animate({"opacity": 0}, options.delayTime, function () {
-                        $(this).remove()
-                    })
-                }, options.sleep)
-            }
-        }
     },
     renderPage: function() {
         wx.wxConfig(1);
         var that = this;
+        document.addEventListener('touchmove', function (e) {//禁止浏览器上下滑动页面
+            e.preventDefault();
+        });
         //头部时间显示
         var ca = new transCalendar();
         var d = new Date();//获得当天日期
@@ -118,7 +98,7 @@ var fuc = {
                         $('.list').on('tap', function () {
                             var eventId = $(this).attr('id');
                             $('body').html("").css("background", "#66cccc");
-                            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/showEvent.html?eventId=" + eventId);
+                            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + eventId);
                         });
                     } else {
                         $('.event').css('display', 'none');
@@ -187,8 +167,7 @@ var fuc = {
                         html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
                     }
                     $('.weather').append(html);
-                    if(that.dayOrnight(weatherList.sunUp,weatherList.sunDown)=="dayTime"){
-                        if(weatherCode>=101&&weatherCode<=213){//多云
+                    if(weatherCode>=101&&weatherCode<=213){//多云
                             $(".conShadow").attr("class", "conShadow cloudsDay");
                         }else if(weatherCode>=300&&weatherCode<=313){//雨
                             $(".conShadow").attr("class", "conShadow rainDay");
@@ -201,21 +180,6 @@ var fuc = {
                         }else{//晴天
                             $(".conShadow").attr("class", "conShadow fairDay");
                         }
-                    }else{
-                        if(weatherCode>=101&&weatherCode<=213){//多云
-                            $(".conShadow").attr("class", "conShadow cloudsNight");
-                        }else if(weatherCode>=300&&weatherCode<=313){//雨
-                            $(".conShadow").attr("class", "conShadow rainNight");
-                        }else if(weatherCode>=400&&weatherCode<=407){//雪
-                            $(".conShadow").attr("class", "conShadow snowNight");
-                        }else if(weatherCode>=500&&weatherCode<=501){//雾
-                            $(".conShadow").attr("class", "conShadow fogNight");
-                        }else if(weatherCode>=502&&weatherCode<=508){//霾
-                            $(".conShadow").attr("class", "conShadow hazeNight");
-                        }else{//晴天
-                            $(".conShadow").attr("class", "conShadow fairNight");
-                        }
-                    }
                 }
             }else{
 
@@ -233,16 +197,19 @@ var fuc = {
             return "nightTime";
         }
     },
-    changeBg: function() {
-        var date = new Date();
-        var hours = date.getHours();
-        if (hours > 6 && hours < 19) {
-            $(".conShadow").addClass("fairDay");
-        } else {
-            $(".conShadow").addClass("fairNight");
-        }
-    },
     bindEvent: function() {
+        //添加活动按钮
+        $("#addActivity").on('tap', function (e) {
+            if ($(e.target).hasClass("open")) {
+                $(e.target).removeClass("open");
+                $(".select_mask").fadeOut();
+                $("#btnDetail").removeClass("move_up").addClass("move_down");
+            } else {
+                $(e.target).addClass("open");
+                $(".select_mask").fadeIn();
+                $("#btnDetail").removeClass("move_down").addClass("move_up");
+            }
+        });
         //点击、滑动事件
         $('.con').on('swipeUp', function (event) {
             $('body').html("").css("background", "#12101A");

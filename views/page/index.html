@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>历历</title>
+    <title>日历</title>
     <meta name="format-detection" content="telephone=no"/>
     <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,8 +11,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 </head>
 <body>
-<div class="conShadow fairDay"></div>
-<div class="con cff08">
+<div class="conShadow"></div>
+<div class="con">
     <div class="top">
         <p class="day"></p>
         <div class="monthAndWeek">
@@ -25,15 +25,16 @@
     <div class="bottom">
         <div class="bottom-event">
             <div class="event" style="display: none;">
-                <h1 class="title">
-                    <a href="javascript:;" class="addEvent c6c">+添加事件</a>
-                </h1>
+                <!--<h1 class="title">-->
+                    <!--<a href="javascript:;" class="addEvent c6c">+添加事件</a>-->
+                <!--</h1>-->
                 <div class="scheduleList"></div><!--显示事件列表-->
             </div>
             <div class="eventBg" style="display: block;">
                 <div class="bg opa5"></div>
                 <div class="text">
-                    <a href="javascript:;" class="addEvent c6c">立即添加事件</a>
+                    <!--<a href="javascript:;" class="addEvent c6c">立即添加事件</a>-->
+                    <p>立即添加事件</p>
                     <p>做一个井井有条的人</p>
                 </div>
             </div>
@@ -49,6 +50,20 @@
         </div>
     </div>
 </div>
+<!--全局添加按钮 开始-->
+<div id="addActivity" class="add_btn">+</div>
+<div id="btnDetail" class="btn_detail">
+    <div>
+        <span>活动</span>
+        <a href="http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2factivity.html" class="activity"></a>
+    </div>
+    <div>
+        <span>提醒</span>
+        <a href="http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2fremind.html" class="remind"></a>
+    </div>
+</div>
+<div class="select_mask"></div>
+<!--全局添加按钮  结束-->
 <!--横屏-->
 <div id="orientLayer" class="mod-orient-layer">
     <div class="mod-orient-layer__content"><i class="icon mod-orient-layer__icon-orient"></i>

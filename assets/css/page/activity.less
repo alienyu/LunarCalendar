@@ -61,7 +61,7 @@
   display: none;
 }
 .time .timeIconCon{
-  width:30px;
+  width:40px;
   height:60px;
   position: absolute;
   top:0px;
@@ -99,6 +99,19 @@
   bottom:0px;
   display: none;
 }
+/*----------地址栏的删除按钮----------*/
+.deleteAddress{
+  position: absolute;
+  top:50%;
+  right:10px;
+  width:20px;
+  height:20px;
+  margin-top: -10px;
+  background: url("../../imgs/page/activity/ic_close@2x.png") no-repeat center center;
+  background-size: contain;
+  -webkit-background-size: contain;
+  display: none;
+}
 .colorShow{
   display: block;
   width:20px;
@@ -120,9 +133,32 @@
 }
 .remarkCon .remarkText{
   min-height: 30px;
-  line-height: 30px;
+  line-height: 150%;
+}
+/*------------分享事件弹层------------*/
+.shareShadow .shadowImg{
+  height:auto;
+  width:80%;
+  margin: 0 auto;
+  //background: #fff;
+  margin-top: 20%;
+  text-align: center;
+}
+.shareShadow .shadowImg img{
+  position: static;
+  width:100%;
+  height:auto;
 }
 
+.shareShadow .shareImgClose{
+  display: block;
+  width:80%;
+  height:36px;
+  margin: 20px auto;
+  background: #66cccc;
+  line-height: 36px;
+  text-align: center;
+}
 /*-------------弹层样式--------------*/
 .shadowBg{
   width:100%;
@@ -233,7 +269,7 @@
 .items:active{
   background: rgba(0,0,0,0.1);
 }
-.items .colorCircle{
+.items .colorCircle,.partition .colorCircle{
   height:100%;
   width:50px;
   box-sizing: border-box;
@@ -311,13 +347,14 @@
 /*------------备注弹层---------------*/
 .remarkShadow .title{
   width:100%;
-  height:30px;
-  border-bottom: 2px solid #ccc;
-  line-height:30px;
+  height:40px;
+  border-bottom: 1px solid #ccc;
+  line-height:40px;
 }
 .remarkShadow .title a{
-  display: block;
-  width:50px;
+  display: inline-block;
+  padding-left: 20px;
+  padding-right: 20px;
   height:100%;
   text-align: center;
 }
@@ -335,6 +372,19 @@
   outline: 0;
   -webkit-user-select: text;
   line-height:1.5;
+}
+.remark .itemCon .remarkImg{
+  width:100%;
+  height:auto;
+  overflow: hidden;
+}
+.remarkImg img{
+  display: block;
+  float: left;
+  width:30%;
+  height:auto;
+  margin-right: 2%;
+  margin-bottom: 2%;
 }
 .listCon{ min-height: 100%}
 

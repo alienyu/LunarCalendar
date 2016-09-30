@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>历历</title>
+    <title>吉运</title>
     <meta name="format-detection" content="telephone=no"/>
     <meta name="viewport"
           content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no"/>
@@ -43,7 +43,7 @@
     <h1 class="cff opa5"></h1>
     <span class="luckyDay c6c border6c">查询吉日</span>
     <span class="today c6c border6c" style="display: none">今</span>
-    <div class="action"><a href="javascript:;" class="addEvent c6c">+添加事件</a></div>
+    <!--<div class="action"><a href="javascript:;" class="addEvent c6c">+添加事件</a></div>-->
 </header>
 <div class="wrapper" id="wrapper">
     <div class="date_row date_week">
@@ -71,7 +71,8 @@
             <div class="scheduleBg" style="display: block;"><!--未添加事项背景-->
                 <div class="bg opa3"></div>
                 <div class="text">
-                    <a href="javascript:;" class="addEvent c6c">立即添加事件</a>
+                    <!--<a href="javascript:;" class="addEvent c6c">立即添加事件</a>                    -->
+                    <p>立即添加事件</p>
                     <p>做一个井井有条的人</p>
                 </div>
             </div>
@@ -171,6 +172,27 @@
         </div>
     </div>
 </div>
+
+
+<!--全局添加按钮 开始-->
+<div class="calendar_add">
+    <div id="addActivity" class="add_btn">+</div>
+    <div id="btnDetail" class="btn_detail">
+        <div>
+            <span>活动</span>
+            <a href="http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2factivity.html" class="activity"></a>
+        </div>
+        <div>
+            <span>提醒</span>
+            <a href="http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2fremind.html" class="remind"></a>
+        </div>
+    </div>
+    <div class="select_mask"></div>
+</div>
+<!--全局添加按钮  结束-->
+
+
+
 <!--事件列表模板-->
 <script type="text/x-event" id="eventListTemplate">
         <p class="list" id="{{eventId}}">
