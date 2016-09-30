@@ -184,7 +184,8 @@ var fuc = {
                                 });
                             } else {//用户未参与该事件
                                 $('.bottom2 .ownerName').html(dataList.owner.nickName);
-                                //来自#<span class="ownerName"></span>的邀请
+                                //   <span class="ownerName">来自#的邀请</span>
+
                                 $('.bottom1').css("display", "none").animate({"bottom": "-50px"}, 200, function () {
                                     $('.bottom2').css("display", "block").animate({"bottom": "0"}, 200);
                                 });
