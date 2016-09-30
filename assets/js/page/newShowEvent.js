@@ -15,7 +15,7 @@ var fuc = {
         nickName: "",
         eventType: "",
         shareImg: "",
-        pageNo:""
+        pageNo:"",
     },
     mapConfig: {
         map: "",
@@ -116,6 +116,7 @@ var fuc = {
                     console.log(data);
                     var dataList = data.data;
                     that.config.eventType = dataList.event.eventType;
+                    that.config.nickName = dataList.owner.nickName;
                     $('.eventName').html(dataList.event.name);
                     if (dataList.event.bgColor) {//若用户设置了背景颜色
                         $('.topCon').css({"height": "120px", "padding-top":"60px","background": dataList.event.bgColor});
@@ -184,8 +185,6 @@ var fuc = {
                                 });
                             } else {//用户未参与该事件
                                 $('.bottom2 .ownerName').html(dataList.owner.nickName);
-                                //   <span class="ownerName">来自#的邀请</span>
-
                                 $('.bottom1').css("display", "none").animate({"bottom": "-50px"}, 200, function () {
                                     $('.bottom2').css("display", "block").animate({"bottom": "0"}, 200);
                                 });
@@ -334,6 +333,7 @@ var fuc = {
                         setTimeout(function () {
                             $('#toast').fadeOut();
                         }, 1500);
+                        $('.bottom2 .ownerName').html(that.config.nickName);
                         $('.bottom3').css('display', 'none').animate({'bottom': '-50px'}, 500, function () {
                             $('.bottom2').css('display', 'block').animate({'bottom': '0'}, 500);
                         });
@@ -368,7 +368,7 @@ var fuc = {
             },
             function (data) {
                 if (data.code == 0) {
-                    console.log(that.config.pageNo);
+                    //console.log(that.config.pageNo);
                     that.config.pageNo ++;
                     var list = data.data, html = "";
                     var peopleCount = list.pagination.totalCount + 1;
