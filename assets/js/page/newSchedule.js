@@ -151,7 +151,7 @@ var fuc = {
                     var year = firstDate.split('-')[0];
                     var month = firstDate.split('-')[1];
                     var dateClass = "headDate_" + year + "_" + month;
-                    var monthDom = '<div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/' + month + '.jpg) fixed center center;"><div class="text">' + month + '月</div></div>';
+                    var monthDom = '<div class="am month_divide month_' + month + '" ><div class="text">' + month + '月</div></div>';
                     $("#container").find("div").first().before(monthDom);
                     dom.addClass("first_day").addClass(dateClass);
                 }
