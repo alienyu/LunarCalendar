@@ -273,6 +273,7 @@ var fuc = {
                     var error = data.msg;
                     $('#dialog2 .weui_dialog_bd').html(error);
                     $('#dialog2').fadeIn().on('click', '.weui_btn_dialog', function () {
+                        event.stopPropagation();
                         $('#dialog2').off('click').fadeOut();
                     });
                 }
@@ -742,7 +743,14 @@ var fuc = {
                     setTimeout(function () {
                         $('.titleNone').animate({"height":"0px"},300);
                     }, 1000);
-                } else {
+                } else if(that.config.remarkText.length >=1000) {//备注内容不能超过1000字
+                    $('#loadingToast').fadeOut();
+                    $('.titleNone').html("备注内容不能超过1000个字");
+                    $('.titleNone').animate({"height":"36px"},300);
+                    setTimeout(function () {
+                        $('.titleNone').animate({"height":"0px"},300);
+                    }, 1000);
+                }else {
                     $('.bot_Btn_box .share').on("tap", function () {//点击确定
                         that.eventAdd2(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.locaName, that.mapConfig.locaAddress, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
                         that.getUserInformation();
@@ -753,6 +761,7 @@ var fuc = {
                     });
                     $('.default').on("tap", function () {
                         $('#dialog1').fadeOut();
+                        event.stopPropagation();
                     });
                 }
             }
@@ -792,7 +801,14 @@ var fuc = {
                 setTimeout(function () {
                     $('.titleNone').animate({"height":"0px"},300);
                 }, 1000);
-            }else {
+            } else if(that.config.remarkText.length >=1000) {
+                $('#loadingToast').fadeOut();
+                $('.titleNone').html("备注内容不能超过1000个字");
+                $('.titleNone').animate({"height":"36px"},300);
+                setTimeout(function () {
+                    $('.titleNone').animate({"height":"0px"},300);
+                }, 1000);
+            } else {
                 if (that.config.eventId) {//若事件已保存，则调用修改事件
                     that.eventModify(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.locaName, that.mapConfig.locaAddress, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
                 } else {
@@ -806,6 +822,7 @@ var fuc = {
             $('#dialog1 .weui-dialog__bd').html("确定要删除该事件吗？");
             $('#dialog1').fadeIn();
             $('.confirm').on('tap', function () {//点击确定按钮
+                event.stopPropagation();
                 $('#dialog1').fadeOut();
                 $('#loadingToast').fadeIn();//显示loading
                 $.get("http://www.li-li.cn/llwx/event/del", {"eventId": that.config.eventId}, function (data) {
@@ -827,35 +844,36 @@ var fuc = {
                 })
             });
             $('.default').on('tap', function () {//点击取消按钮
+                event.stopPropagation();
                 $('#dialog1').fadeOut();
             });
         });
 
         /*上传图片*/
-        $("#form").on("change", ".img_upload_btn", function (e) {
-            that.btnDom = $(e.target);
-            that.boxDom = $(e.target).parent();
-            var file = e.target.files[0];
-            var reader = new FileReader();
-            reader.addEventListener("load", function () {
-                var imgSrc = reader.result;
-                var html = "<img src='" + imgSrc + "' class='img_upload_result' />";
-                that.boxDom.append(html).removeClass("new_box").find("a").remove();
-                if (that.checkBoxNum() && $(".new_box").length < 1) {
-                    var newUploadBox = '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo"><a href="javascript:;">+</a></div>';
-                    $(".img_upload_box").last().after(newUploadBox);
-                }
-            }, false);
-            reader.readAsDataURL(file);
-        });
-
-        $("#form").on("tap", ".img_upload_result", function (e) {
-            $(e.target).parent().remove();
-            if (that.checkBoxNum() && $(".new_box").length < 1) {
-                var newUploadBox = '<div class="img_upload_box"><input type="file" class="img_upload_btn" name="photo_' + (that.btnIndex + 1) + '"><a href="javascript:;">+</a></div>';
-                $(".img_upload_box").last().after(newUploadBox);
-            }
-        });
+        //$("#form").on("change", ".img_upload_btn", function (e) {
+        //    that.btnDom = $(e.target);
+        //    that.boxDom = $(e.target).parent();
+        //    var file = e.target.files[0];
+        //    var reader = new FileReader();
+        //    reader.addEventListener("load", function () {
+        //        var imgSrc = reader.result;
+        //        var html = "<img src='" + imgSrc + "' class='img_upload_result' />";
+        //        that.boxDom.append(html).removeClass("new_box").find("a").remove();
+        //        if (that.checkBoxNum() && $(".new_box").length < 1) {
+        //            var newUploadBox = '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo"><a href="javascript:;">+</a></div>';
+        //            $(".img_upload_box").last().after(newUploadBox);
+        //        }
+        //    }, false);
+        //    reader.readAsDataURL(file);
+        //});
+        //
+        //$("#form").on("tap", ".img_upload_result", function (e) {
+        //    $(e.target).parent().remove();
+        //    if (that.checkBoxNum() && $(".new_box").length < 1) {
+        //        var newUploadBox = '<div class="img_upload_box"><input type="file" class="img_upload_btn" name="photo_' + (that.btnIndex + 1) + '"><a href="javascript:;">+</a></div>';
+        //        $(".img_upload_box").last().after(newUploadBox);
+        //    }
+        //});
     },
 
     /*----------初始化地图----------------------*/
@@ -1024,8 +1042,9 @@ var fuc = {
                     $('#loadingToast').fadeOut();
                     var error = data.msg;
                     $('#dialog2 .weui-dialog__bd').html(error);
-                    $('#dialog2').show().on('click', '.weui-dialog__btn', function () {
-                        $('#dialog2').off('click').hide();
+                    $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+                        event.stopPropagation();
+                        $('#dialog2').off('click').fadeOut();
                     });
                 }
             }
@@ -1065,8 +1084,9 @@ var fuc = {
                     $('#loadingToast').fadeOut();
                     var error = data.msg;
                     $('#dialog2 .weui-dialog__bd').html(error);
-                    $('#dialog2').show().on('click', '.weui-dialog__btn', function () {
-                        $('#dialog2').off('click').hide();
+                    $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+                        event.stopPropagation();
+                        $('#dialog2').off('click').fadeOut();
                     });
                 }
             }
@@ -1105,8 +1125,9 @@ var fuc = {
                     $('#loadingToast').fadeOut();
                     var error = data.msg;
                     $('#dialog2 .weui_dialog_bd').html(error);
-                    $('#dialog2').show().on('click', '.weui-dialog__btn', function () {
-                        $('#dialog2').off('click').hide();
+                    $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+                        event.stopPropagation();
+                        $('#dialog2').off('click').fadeOut();
                     });
                 }
             }
@@ -1144,8 +1165,9 @@ var fuc = {
                     $('#loadingToast').fadeOut();
                     var error = data.msg;
                     $('#dialog2 .weui_dialog_bd').html(error);
-                    $('#dialog2').show().on('click', '.weui-dialog__btn', function () {
-                        $('#dialog2').off('click').hide();
+                    $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+                        event.stopPropagation();
+                        $('#dialog2').off('click').fadeOut();
                     });
                 }
             }

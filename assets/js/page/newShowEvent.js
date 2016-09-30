@@ -14,7 +14,8 @@ var fuc = {
         eventId: "",
         nickName: "",
         eventType: "",
-        shareImg: ""
+        shareImg: "",
+        pageNo:""
     },
     mapConfig: {
         map: "",
@@ -24,7 +25,7 @@ var fuc = {
 
     init: function () {
         pageLoad({backgroundColor: "#fff"});
-		
+		this.config.pageNo = 1;
         this.config.eventId = Dom.getRequest("eventId");
         this.rem();
         this.renderPage();
@@ -70,12 +71,14 @@ var fuc = {
         $.get(
             "http://www.li-li.cn/llwx/event/joiner/list",
             {
-                "pageNo": 1,
+                "pageNo": that.config.pageNo,
                 "pageSize": 10,
                 "eventId": that.config.eventId
             },
             function (data) {
                 if (data.code == 0) {
+                    console.log(that.config.pageNo);
+                    that.config.pageNo ++;
                     var list = data.data, html = "";
                     var peopleCount = list.pagination.totalCount + 1;
                     $('.count').html(peopleCount);
@@ -90,9 +93,10 @@ var fuc = {
                         var joiner = $('.joinerItem');
                         if (list.list.length < 10) {
                             $('.morePeople').css("display", "none");
-                        }
-                        if (joiner.size() == list.pagination.totalCount) {
+                        }else if (joiner.size() == list.pagination.totalCount) {
                             $('.morePeople').css("display", "none");
+                        }else{
+                            $('.morePeople').css("display", "block");
                         }
                     }
                 }
@@ -311,37 +315,37 @@ var fuc = {
             $('#cancel').click(function () {
                 $('#dialog1').fadeOut();
             });
-            $('#confirm').click(function () {
-                $('#dialog1').hide();
-                $('#loadingToast').fadeIn();//显示loading
-                $.post(
-                    "http://www.li-li.cn/llwx/event/exit",
-                    {
-                        "eventId": that.config.eventId
-                    },
-                    function (data) {
-                        if (data.code == 0) {
-                            $('#loadingToast').fadeOut();//隐藏loading
-                            $('#toast').fadeIn();
-                            setTimeout(function () {
-                                $('#toast').fadeOut();
-                            }, 1500);
-                            $('.bottom3').css('display', 'none').animate({'bottom': '-50px'}, 500, function () {
-                                $('.bottom2').css('display', 'block').animate({'bottom': '0'}, 500);
-                            });
-                            that.refreshJoiner();
-                        } else {
-                            $('#loadingToast').fadeOut();//隐藏loading
-                            var error = data.msg;
-                            $('#dialog2 .weui-dialog__bd').html(error);
-                            $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
-                                $('#dialog2').off('click').fadeOut();
-                            });
-                        }
+        });
+        /*-------------確定退出----------*/
+        $('#confirm').click(function () {
+            $('#dialog1').fadeOut();
+            $('#loadingToast').fadeIn();//显示loading
+            $.post(
+                "http://www.li-li.cn/llwx/event/exit",
+                {
+                    "eventId": that.config.eventId
+                },
+                function (data) {
+                    if (data.code == 0) {
+                        $('#loadingToast').fadeOut();//隐藏loading
+                        $('#toast').fadeIn();
+                        setTimeout(function () {
+                            $('#toast').fadeOut();
+                        }, 1500);
+                        $('.bottom3').css('display', 'none').animate({'bottom': '-50px'}, 500, function () {
+                            $('.bottom2').css('display', 'block').animate({'bottom': '0'}, 500);
+                        });
+                        that.refreshJoiner();
+                    } else {
+                        $('#loadingToast').fadeOut();//隐藏loading
+                        var error = data.msg;
+                        $('#dialog2 .weui-dialog__bd').html(error);
+                        $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+                            $('#dialog2').off('click').fadeOut();
+                        });
                     }
-                )
-            });
-
+                }
+            )
         });
         /*----------地图弹层----------*/
         that.mapShadow($('.site'), $('.mapShadow'), $('.mapShadow .container'));
@@ -350,17 +354,20 @@ var fuc = {
     /*-----------------------局部刷新参与人---------------------*/
     refreshJoiner: function () {
         var that = this;
+        that.config.pageNo = 1;
         $('.peopleList').children(".joinerItem").remove();
         var peopleTemplate = $('#peopleListTemplate').html();
         $.get(
             "http://www.li-li.cn/llwx/event/joiner/list",
             {
-                "pageNo": 1,
+                "pageNo": that.config.pageNo,
                 "pageSize": 10,
                 "eventId": that.config.eventId
             },
             function (data) {
                 if (data.code == 0) {
+                    console.log(that.config.pageNo);
+                    that.config.pageNo ++;
                     var list = data.data, html = "";
                     var peopleCount = list.pagination.totalCount + 1;
                     $('.count').html(peopleCount);
@@ -370,14 +377,15 @@ var fuc = {
                         for (var i = 0; i < list.list.length; i++) {
                             html += peopleTemplate.replace(/{{imgUrl}}/g, list.list[i].headImgUrl).replace(/{{nickName}}/g, list.list[i].nickName);
                         }
-                        console.log(html);
+                        //console.log(html);
                         $('.morePeople').before(html);
                         var joiner = $('.joinerItem');
                         if (list.list.length < 10) {
                             $('.morePeople').css("display", "none");
-                        }
-                        if (joiner.size() == list.pagination.totalCount) {
+                        }else if (joiner.size() == list.pagination.totalCount) {
                             $('.morePeople').css("display", "none");
+                        }else{
+                            $('.morePeople').css("display", "block");
                         }
                     }
                 }

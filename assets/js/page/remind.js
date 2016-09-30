@@ -18,6 +18,7 @@ var fuc = {
         time: "",
         timeArr: "",
         repeatSelect: "",
+        tipType:"",
         bgColor: "",//背景颜色
         themeId: ""//背景图id
     },
@@ -27,6 +28,7 @@ var fuc = {
         this.config.timeArr = this.transTime(this.config.time);
         this.config.eventId = Dom.getRequest("eventId");
         this.config.eventType = 0;
+        this.config.tipType = 1;
         this.config.bgColor = "#66cccc";
         this.config.repeatSelect = document.getElementById('select');
         this.rem();
@@ -184,8 +186,9 @@ var fuc = {
                 } else {//数据加载失败显示错误提示框
                     var error = data.msg;
                     $('#dialog2 .weui_dialog_bd').html(error);
-                    $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
-                        $('#dialog2').off('click').hide();
+                    $('#dialog2').fadeIn().on('click', '.weui_btn_dialog', function () {
+                        event.stopPropagation();
+                        $('#dialog2').off('click').fadeOut();
                     });
                 }
             }
@@ -281,11 +284,19 @@ var fuc = {
                 repeatType = that.config.repeatSelect.value;
             if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
                 $('#loadingToast').fadeOut();
-                // todo  提示用户设置名称
+                // 提示用户设置名称
+                $('.titleNone').html("缺少事件名称");
                 $('.titleNone').animate({"height":"36px"},300);
                 setTimeout(function () {
                     $('.titleNone').animate({"height":"0px"},300);
-                }, 500);
+                }, 1000);
+            } else if (name.length >=30){
+                $('#loadingToast').fadeOut();
+                $('.titleNone').html("事件名称不能超过30个字");
+                $('.titleNone').animate({"height":"36px"},300);
+                setTimeout(function () {
+                    $('.titleNone').animate({"height":"0px"},300);
+                }, 1000);
             } else {
                 if (that.config.eventId) {//若事件已保存，则调用修改事件
                     $.post(
@@ -297,6 +308,7 @@ var fuc = {
                             "tagId": that.config.tagId,
                             "startTime": startTime,
                             "repeatType": repeatType,
+                            "tipType":that.config.tipType,
                             "bgColor": that.config.bgColor,
                             "theme.themeId": that.config.themeId
                         },
@@ -308,8 +320,9 @@ var fuc = {
                                 $('#loadingToast').fadeOut();
                                 var error = data.msg;
                                 $('#dialog2 .weui-dialog__bd').html(error);
-                                $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
-                                    $('#dialog2').off('click').hide();
+                                $('#dialog2').fadeIn().on('click', '.weui_btn_dialog', function () {
+                                    event.stopPropagation();
+                                    $('#dialog2').off('click').fadeOut();
                                 });
                             }
                         }
@@ -323,6 +336,7 @@ var fuc = {
                             "tagId": that.config.tagId,
                             "startTime": startTime,
                             "repeatType": repeatType,
+                            "tipType":that.config.tipType,
                             "bgColor": that.config.bgColor,
                             "theme.themeId": that.config.themeId
                         },
@@ -335,8 +349,9 @@ var fuc = {
                                 $('#loadingToast').fadeOut();
                                 var error = data.msg;
                                 $('#dialog2 .weui-dialog__bd').html(error);
-                                $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
-                                    $('#dialog2').off('click').hide();
+                                $('#dialog2').fadeIn().on('click', '.weui_btn_dialog', function () {
+                                    event.stopPropagation();
+                                    $('#dialog2').off('click').fadeOut();
                                 });
                             }
                         }
