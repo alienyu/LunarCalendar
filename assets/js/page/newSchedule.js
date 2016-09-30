@@ -24,6 +24,7 @@ var fuc = {
     },
     init: function () {
         //pageLoad({backgroundColor: "#fff"});
+        $('#main_box').css("visibility","visible");
         this.initHeadDate();
         this.getData("init");
         this.bindEvent();
