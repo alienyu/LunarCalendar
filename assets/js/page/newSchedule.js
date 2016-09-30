@@ -238,11 +238,14 @@ var fuc = {
             }
         });
 
+
+
         //添加活动详情跳转地址
         $("#container").on('tap', '.content', function (e) {
             var id = $(e.target).parents('.record').data("eventid");
             window.location.href = "http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2fnewShowEvent.html?eventId=" + id;
         });
+
     },
     renderOtherData: function (direct) {
         var that = this;
