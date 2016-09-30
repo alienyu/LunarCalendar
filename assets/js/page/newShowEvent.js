@@ -38,6 +38,7 @@ var fuc = {
     renderPage: function () {
         var that = this;
         wx.wxConfig(1);
+        $('.eventContainer').css("visibility","visible");
         setTimeout(function(){
             that.getJoiner();
             that.getData();

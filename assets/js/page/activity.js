@@ -282,6 +282,7 @@ var fuc = {
 
     renderPage: function () {
         wx.wxConfig(1);
+        $('.eventCon').css("visibility","visible");
         var that = this;
         this.getTags();
         this.colorInit();

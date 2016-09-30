@@ -228,7 +228,7 @@ var Ajax = {
             },
             function(data) {
                 if(data.code ==0){
-                    if(data.data){
+                    if(data.data && data.data.length>0){
                         var weatherList = data.data[0];
                         var html = "";
                         if(weatherList.qlty){
@@ -236,7 +236,7 @@ var Ajax = {
                         }else{
                             html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
                         }
-                        $('.weather .itemCon').append(html);
+                        $('.weather .itemCon').html("").append(html);
                     }else{
                         $('.weather').css("display","none");
                     }
@@ -256,7 +256,7 @@ var Ajax = {
                     if (list.personal.type3) {
                         var type = list.personal.type3.replace(/\,/g, "&nbsp;");
                         html = "<span>" + type + "</span>";
-                        $('.suitable .itemCon').append(html);
+                        $('.suitable .itemCon').html("").append(html);
                     } else {
                         $('.suitable .itemCon').html("诸事不宜");
                     }

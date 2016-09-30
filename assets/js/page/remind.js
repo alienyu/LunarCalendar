@@ -5,6 +5,7 @@ require("../../css/page/remind.less");
 var pageLoad = require("../common/pageLoad.js");
 require("../vendor/ImproveMobile/zeptoSlider.js");
 var Dom = require("../common/dom.js");
+var Ajax = require("../common/ajax.js");
 var mobiScroll = require("../vendor/mobiScroll/mobiScroll.js");
 var wx = require("../vendor/weChat/wxInit.js");
 var fastClick = require("../vendor/ImproveMobile/fastClick.js");
@@ -61,6 +62,13 @@ var fuc = {
                 $(obj2).html(selectedDateArr[0] + "年" + (parseInt(selectedDateArr[1]) + 1) + "月" + that.tf(selectedDateArr[2]) + "日" + " " + theWeek + " " + selectedTimeArr[1]);
                 var theId = selectedDateArr[0] + "-" + that.tf(parseInt(selectedDateArr[1]) + 1) + "-" + that.tf(selectedDateArr[2]) + " " + selectedTimeArr[1] + ":00";
                 $(obj2).attr("id", theId);
+                Ajax.getPersonalFortune(selectedTimeArr[0]);
+                if(!Dom.smallerDate(selectedTimeArr[0])){
+                    $('.weather').css("display","-webkit-box");
+                    Ajax.getWeather(selectedTimeArr[0]);
+                }else{
+                    $('.weather').css("display","none");
+                }
             },
             onChange: function (event, inst) {
                 var changeDate = inst._tempValue;
@@ -187,12 +195,20 @@ var fuc = {
     renderPage: function () {
         var that = this;
         wx.wxConfig(1);
+        $('.eventCon').css("visibility","visible");
         Dom.autoTextarea(document.getElementById("eventTitle"));
         if (that.config.eventId) {
             that.getData();
         } else {
             /*---------------------开始时间的时间显示---------------------*/
             $('.startCon').html(that.config.timeArr);
+            Ajax.getPersonalFortune(Dom.getDate(that.config.time));
+            if(!Dom.smallerDate(that.config.time)){
+                $('.weather').css("display","-webkit-box");
+                Ajax.getWeather(Dom.getDate(that.config.time));
+            }else{
+                $('.weather').css("display","none");
+            }
         }
         /*---------------------------------开始时间的日期选择功能---------------------------------*/
         this.selectTimes('#startTime', '.startCon').setVal(new Date(that.setInitTime($('.startCon'))));
@@ -218,6 +234,14 @@ var fuc = {
                         var theStartTime = Dom.tranDate(eventList.event.startTime),
                             repeatType = eventList.event.repeatType;
                         $('.startCon').html(theStartTime).attr("id", eventList.event.startTime);
+                        that.selectTimes('#startTime', '.startCon').setVal(new Date(that.setInitTime($('.startCon'))));
+                        Ajax.getPersonalFortune(Dom.getDate(eventList.event.startTime));
+                        if(!Dom.smallerDate(Dom.getDate(eventList.event.startTime))){
+                            $('.weather').css("display","-webkit-box");
+                            Ajax.getWeather(Dom.getDate(eventList.event.startTime));
+                        }else{
+                            $('.weather').css("display","none");
+                        }
                         /*------------设置重复类型----------------*/
                         var repeatOptions = that.config.repeatSelect.getElementsByTagName("option");
                         for (var j = 0; j < repeatOptions.length; j++) {
