@@ -151,7 +151,7 @@ var fuc = {
                     var year = firstDate.split('-')[0];
                     var month = firstDate.split('-')[1];
                     var dateClass = "headDate_" + year + "_" + month;
-                    var monthDom = '<div class="month_divide" style="background: url(../../assets/imgs/page/newSchedule/monthBG/' + month + '.jpg) fixed center center;"><div class="text">' + month + '月</div></div>';
+                    var monthDom = '<div class="am month_divide month_' + month + '" ><div class="text">' + month + '月</div></div>';
                     $("#container").find("div").first().before(monthDom);
                     dom.addClass("first_day").addClass(dateClass);
                 }
@@ -242,6 +242,11 @@ var fuc = {
         $("#container").on('tap', '.content', function (e) {
             var id = $(e.target).parents('.record').data("eventid");
             window.location.href = "http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2fnewShowEvent.html?eventId=" + id;
+        });
+        //添加活动详情跳转地址
+        $("#container").on('tap', '.content', function (e) {
+            var date = $(e.target).parents('.no_record').data("date");
+            window.location.href = "http://wx.li-li.cn/api/common/to?url2=http%3a%2f%2fwx.li-li.cn%2fwx%2fview%2factivity.html?date=" + date;
         });
     },
     renderOtherData: function (direct) {

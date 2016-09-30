@@ -28,7 +28,7 @@ var fuc = {
         this.config.timeArr = this.transTime(this.config.time);
         this.config.eventId = Dom.getRequest("eventId");
         this.config.eventType = 0;
-        this.config.tipType = 1;
+        this.config.tipType = 2;
         this.config.bgColor = "#66cccc";
         this.config.repeatSelect = document.getElementById('select');
         this.rem();
@@ -151,6 +151,7 @@ var fuc = {
                             console.log(that.config.themeId);
                         }else if(list.bgColor){
                             that.config.bgColor = list.bgColor;
+                            that.config.themeId = "";
                         }
                     }
                 }
@@ -232,6 +233,9 @@ var fuc = {
                         var eventList = data.data;
                         that.config.tagId = eventList.event.tagId;
                         that.config.bgColor = eventList.event.bgColor;
+                        if(eventList.event.theme){
+                            that.config.themeId = eventList.event.theme.themeId;
+                        }
                         $('.eventName').val(eventList.event.name);//标题内容
                         Dom.autoTextarea(document.getElementById("eventTitle"));
                         var theStartTime = Dom.tranDate(eventList.event.startTime),

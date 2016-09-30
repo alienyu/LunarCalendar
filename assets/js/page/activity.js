@@ -668,27 +668,27 @@ var fuc = {
             $('.shadowBg').fadeOut();
         });
         $('.remarkShadow .finished').click(function () {
-            $("#form").find(".new_box").remove();
-            var forms=document.getElementById("form");
-            if (forms.length > 0) {
-                for (var i = 0; i <forms.length; i++) {
-                    var fileData = new FormData(forms[i]);
-                    $.ajax({
-                        type: "post",
-                        url: "http://www.li-li.cn/llwx/file/upload",
-                        data: fileData,
-                        dataType: "json",
-                        cache: false,
-                        processData: false,
-                        contentType: false,
-                        async: false,
-                        success: function (data) {
-                            that.config.remarkImgs = that.config.remarkImgs + "," + data.data;
-                        }
-                    })
-                }
-                that.config.remarkImgs = that.config.remarkImgs.substr(1);
-            }
+            //$("#form").find(".new_box").remove();
+            //var forms=document.getElementById("form");
+            //if (forms.length > 0) {
+            //    for (var i = 0; i <forms.length; i++) {
+            //        var fileData = new FormData(forms[i]);
+            //        $.ajax({
+            //            type: "post",
+            //            url: "http://www.li-li.cn/llwx/file/upload",
+            //            data: fileData,
+            //            dataType: "json",
+            //            cache: false,
+            //            processData: false,
+            //            contentType: false,
+            //            async: false,
+            //            success: function (data) {
+            //                that.config.remarkImgs = that.config.remarkImgs + "," + data.data;
+            //            }
+            //        })
+            //    }
+            //    that.config.remarkImgs = that.config.remarkImgs.substr(1);
+            //}
             that.config.remarkText = $('#remarkText').val();
             $('.remarkCon .remarkText').removeClass("ccc").html(that.config.remarkText);
             $('#remarkText').attr("autofocus");
