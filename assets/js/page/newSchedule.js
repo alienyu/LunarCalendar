@@ -49,7 +49,7 @@ var fuc = {
             this.config.isLoading = true;
             $.ajax({
                 type: "get",
-                url: "http://www.li-li.cn/llwx/event/getSchedule",
+                url: "/event/getSchedule",
                 data: param,
                 async: true,
                 success: function (data) {
@@ -119,18 +119,25 @@ var fuc = {
     renderBMP: function () {
         var that = this;
         $(".bmap:not(.has_render)").each(function (i, e) {
-            var map = new BMap.Map(e.id);
-            var point = new BMap.Point(that.bd_encrypt($(e).data('longitude'), $(e).data('latitude')).bd_lon, that.bd_encrypt($(e).data('longitude'), $(e).data('latitude')).bd_lat);
-            map.centerAndZoom(point, 15);
-            var myIcon = new BMap.Icon("/wx/img/67390b8887afd94b05b8438220488f6d.png", new BMap.Size(20, 27));
-            var marker = new BMap.Marker(point, {icon: myIcon});  // 创建标注
-            map.addOverlay(marker);              // 将标注添加到地图中
-            map.addEventListener("tilesloaded", function () {
-                $(e).find(".anchorBL").remove();
-                $(e).find(".BMap_cpyCtrl").remove();
-                $(e).addClass("has_render");
-            });
+            var bd_lon = that.bd_encrypt($(e).data('longitude'), $(e).data('latitude')).bd_lon,
+                bd_lat = that.bd_encrypt($(e).data('longitude'), $(e).data('latitude')).bd_lat;
+            var width = parseInt($(e).css("width"), 10),
+                height = parseInt($(e).css('height'), 10);
+            var src = "http://api.map.baidu.com/staticimage?center=" + bd_lon + ',' + bd_lat + "&width=" + width + "&height=" + height + "zoom=17&markers=" + bd_lon + ',' + bd_lat + "&copyright=0";
+                $(e).attr("src", src).addClass("has_render");
         })
+        //    var map = new BMap.Map(e.id);
+        //    var point = new BMap.Point(that.bd_encrypt($(e).data('longitude'), $(e).data('latitude')).bd_lon, that.bd_encrypt($(e).data('longitude'), $(e).data('latitude')).bd_lat);
+        //    map.centerAndZoom(point, 15);
+        //    var myIcon = new BMap.Icon("/wx/img/67390b8887afd94b05b8438220488f6d.png", new BMap.Size(20, 27));
+        //    var marker = new BMap.Marker(point, {icon: myIcon});  // 创建标注
+        //    map.addOverlay(marker);              // 将标注添加到地图中
+        //    map.addEventListener("tilesloaded", function () {
+        //        $(e).find(".anchorBL").remove();
+        //        $(e).find(".BMap_cpyCtrl").remove();
+        //        $(e).addClass("has_render");
+        //    });
+        //})
     },
     renderPage: function (data) {
         var tmp = $("#dateListTpl").html();
