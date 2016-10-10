@@ -150,7 +150,7 @@
                                     <div class="content<%= timeDetail.theme ? ' contain_img_box' : '' %>" style="background: url(<%= timeDetail.theme.themeUrl %>) center center no-repeat;background-size: cover;">
                                 <% } else if (timeDetail.longitude != ""){ %>
 									<div class="content">
-									<div id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>"></div>
+									<img id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>">
 									<div class="map_mask"></div>
 								<% } else { %>								
                                         <div class="content" style="background-color: <%= timeDetail.bgColor %>">										
