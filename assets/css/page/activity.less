@@ -23,6 +23,10 @@
 }
 .time .startTime{
   height:60px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 15px 0px;
   overflow: hidden;
   position: relative;
 }
@@ -32,15 +36,15 @@
 }
 .time .timeText{
   width:0px;
-  line-height: 60px;
+  line-height: 30px;
   color: #999;
   float: left;
   overflow: hidden;
 }
 .time .timeCon{
   display: block;
-  height:60px;
-  line-height:60px;
+  height:30px;
+  line-height:30px;
   color: #000;
   float: left;
 }
@@ -51,6 +55,9 @@
   left:0px;
   opacity: 0;
   overflow: hidden;
+}
+.time #endTime{
+  height:45px;
 }
 #startTime{
   top:0px;
@@ -128,12 +135,11 @@
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  padding-top: 15px;
-  padding-right: 10px;
+  padding: 15px 10px 15px 0px;
 }
 .remarkCon .remarkText{
   min-height: 30px;
-  line-height: 150%;
+  line-height: 30px;
 }
 /*------------分享事件弹层------------*/
 .shareShadow .shadowImg{

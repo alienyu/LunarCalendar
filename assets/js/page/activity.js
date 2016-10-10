@@ -605,12 +605,12 @@ var fuc = {
         $('.timeIconCon').click(function () {
             if ($(".timeIcon").attr("class") == "timeIcon active") {
                 $(".timeIcon").removeClass("active");
-                $('.endTime').animate({'height': '0px'}, 300);
+                $('.endTime').animate({'height': '0px','padding-bottom':'0px'}, 300);
                 $('.timeText').animate({"width": "0px"}, 300);
                 $('#endTime').css("display", "none");
             } else {
                 $(".timeIcon").addClass("active");
-                $('.endTime').animate({'height': '60px'}, 300);
+                $('.endTime').animate({'height': '30px','padding-bottom':'15px'}, 300);
                 $('.timeText').animate({"width": "33px"}, 300);
                 $('#endTime').css("display", "block");
             }

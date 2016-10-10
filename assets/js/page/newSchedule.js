@@ -244,10 +244,10 @@ var fuc = {
             window.location.href = "http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2fnewShowEvent.html?eventId=" + id;
         });
         //添加活动详情跳转地址
-        $("#container").on('tap', '.content', function (e) {
-            var date = $(e.target).parents('.no_record').data("date");
-            window.location.href = "http://wx.li-li.cn/api/common/to?url2=http%3a%2f%2fwx.li-li.cn%2fwx%2fview%2factivity.html?date=" + date;
-        });
+        //$("#container").on('tap', '.content', function (e) {
+        //    var date = $(e.target).parents('.no_record').data("date");
+        //    window.location.href = "http://wx.li-li.cn/api/common/to?url2=http%3a%2f%2fwx.li-li.cn%2fwx%2fview%2factivity.html?date=" + date;
+        //});
     },
     renderOtherData: function (direct) {
         var that = this;

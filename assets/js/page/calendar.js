@@ -115,13 +115,14 @@ var fuc = {
                 $("#btnDetail").removeClass("move_down").addClass("move_up");
             }
         });
-        /*------------------------------------点击添加事件按钮，跳转至添加事件页面------------------------------------*/
-        //$('.addEvent').on('tap', function (event) {
-        //    var dateCurrent = $('.date_current').attr('id');
-        //    $('body').html("").css("background", "#66cccc");
-        //    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/addEvent.html?date=" + dateCurrent);
-        //    event.preventDefault();
-        //});
+        $('.activity').on('tap',function(){
+            var dateCurrent = $('.date_current').attr('id');
+            window.location.href= "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/activity.html?date="+dateCurrent);
+        });
+        $('.remind').on('tap',function(){
+            var dateCurrent = $('.date_current').attr('id');
+            window.location.href= "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/remind.html?date="+dateCurrent);
+        });
 
         /*--------------点击/滑动的tab切换效果，容器高度随显示内容变化--------------------------*/
         $('.scheduleCon').css("min-height",this.otherHeight+"px");
