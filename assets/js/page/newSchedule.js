@@ -1,5 +1,4 @@
 require("../../css/page/newSchedule.less");
-var pageLoad = require("../common/pageLoad.js");
 var wx = require("../vendor/weChat/wxInit.js");
 var Dom = require("../common/dom.js");
 var mask = require("../plugins/mask/mask.js");
@@ -23,7 +22,6 @@ var fuc = {
         stopSliderDown: false //阻止下滑,即不加载前面数据
     },
     init: function () {
-        //pageLoad({backgroundColor: "#fff"});
         $('#main_box').css("visibility","visible");
         this.initHeadDate();
         this.getData("init");
@@ -78,7 +76,7 @@ var fuc = {
                             } else {
                                 $.extend(newData, {type: type, today: today});
                                 if (that.config.direction == "down") {
-                                    that.config.bottomDate = data.data[0].date;
+                                    that.config.bottomDate = $(data.data).last().get(0).date;
                                 }
                                 that.renderPage(newData);
                             }
@@ -145,7 +143,7 @@ var fuc = {
         if (data.type == "init") {
             $("#container").append(html({data: data}));
             $(".today_has_date").length > 0 && this.renderCurrentTimeLine();
-            $(document.body).scrollTop(0);
+            $(document.body).scrollTop($("#today").prev().offset().top - 30);
         } else {
             if (this.config.direction == "up") {
                 $("#container").append(html({data: data}));
@@ -158,11 +156,11 @@ var fuc = {
                     var year = firstDate.split('-')[0];
                     var month = firstDate.split('-')[1];
                     var dateClass = "headDate_" + year + "_" + month;
-                    var monthDom = '<div class="am month_divide month_' + month + '" ><div class="text">' + month + '月</div></div>';
+                    var monthDom = '<div class="month_divide month_' + month + '" ><div class="text">' + month + '月</div></div>';
                     $("#container").find("div").first().before(monthDom);
                     dom.addClass("first_day").addClass(dateClass);
                 }
-                if ($(".record").first().hasClass(".no_record") && $(".record").first().data("date").split("-")[2] != 1) {
+                if ($(".record").first().hasClass("no_record") && $(".record").first().data("date").split("-")[2] != 1) {
                     $(".record").first().prev().remove();
                 }
                 $("#container").find("div").first().before(html({data: data}));
@@ -245,12 +243,14 @@ var fuc = {
             }
         });
 
-
-
         //添加活动详情跳转地址
         $("#container").on('tap', '.content', function (e) {
-            var id = $(e.target).parents('.record').data("eventid");
-            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2fnewShowEvent.html?eventId=" + id;
+            if($(e.target).parent(".record").hasClass("no_record")) {
+                window.location.href = "http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2factivity.html";
+            } else {
+                var id = $(e.target).parents('.record').data("eventid");
+                window.location.href = "http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2fnewShowEvent.html?eventId=" + id;
+            }
         });
 
     },
@@ -258,7 +258,7 @@ var fuc = {
         var that = this;
         var top = $(document.body).scrollTop();
         //判断滚动到底部
-        if (direct == "up" && (top + $(window).height() >= $(document.body).height())) {
+        if (direct == "up" && (top + $(window).height() >= $(document.body).height() - 100)) {
             //判断是否还有后续数据
             if (!that.config.stopSliderUp) {
                 that.config.direction = "up";
@@ -279,7 +279,7 @@ var fuc = {
     },
     getSideDomDate: function () {
         return {
-            topDate: $(".record:not(.no_record)").first().data("date"),
+            topDate: $(".record").first().data("date"),
             bottomDate: $(".record").last().data("date")
         }
     },

@@ -63,12 +63,9 @@
             <!--初始化今天之后有数据-->
                 <!--今天无数据-->
                 <% if(today.isToday == false) { %>
-                    <!--是否是月首-->
-                    <% if(today.day == 1) { %>
-                        <div class="month_divide month_<%= parseInt(today.month, 10) %>">
-                            <div class="text"><%= today.month %>月</div>
-                        </div>
-                    <% } %>
+                    <div class="month_divide month_<%= parseInt(today.month, 10) %>">
+                        <div class="text"><%= today.month %>月</div>
+                    </div>
                     <div class="record no_record<%= today.day == 1 ? ' first_day' + ' headDate_' + today.year + '_' + today.month : '' %>" data-date="<%= today.year + '-' + today.month + '-' + today.day %>">
                         <div class="date">
                             <div class="day"><%= today.day %></div>
