@@ -74,7 +74,7 @@ var fuc = {
                     if (eventList.length > 0) {
                         $('.event').css('display', 'block');
                         $('.eventBg').css('display', 'none');
-                        eventList = filterEvent(eventList);
+                        eventList = that.filterEvent(eventList);
                         for (var i = 0; i < eventList.length; i++) {
                             if (i < 5) {
                                 if (eventList[i].isOwner) {
@@ -109,25 +109,6 @@ var fuc = {
                     var timeArr = time.split(" ");
                     var hourArr = timeArr[1].split(":");
                     return hourArr[0] + ":" + hourArr[1];
-                }
-                //过滤事件
-                function filterEvent(eventList) {
-                    if (eventList.length >= 6) {
-                        for (var i = 0; i < eventList.length && eventList.length > 5; i++) {
-                            if (compareDate(eventList[0].event.startTime)) {
-                                eventList.splice(0, 1);
-                            }
-                        }
-                    }
-                    return eventList;
-                }
-                //比较startTime与当前时间比较,如果小于当前时间返回1(比较时分)
-                function compareDate(startTime) {
-                    var hour = d.getHours();
-                    var mintue = d.getMinutes();
-                    var timeArr = startTime.split(" ");
-                    var hourArr = timeArr[1].split(":");
-                    return hourArr[0] < hour ? 1 : (hourArr[0] == hour && hourArr[1] < mintue ? 1 : 0);
                 }
             }
         });
@@ -185,6 +166,27 @@ var fuc = {
 
             }
         })
+    },
+    //过滤事件
+    filterEvent:function (eventList) {
+        var that = this;
+        if (eventList.length >= 6) {
+            for (var i = 0; i < eventList.length && eventList.length > 5; i++) {
+                if (that.compareDate(eventList[0].event.startTime)) {
+                    eventList.splice(0, 1);
+                }
+            }
+        }
+        return eventList;
+    },
+    //比较startTime与当前时间比较,如果小于当前时间返回1(比较时分)
+    compareDate:function (startTime) {
+        var d = new Date();
+        var hour = d.getHours();
+        var minute = d.getMinutes();
+        var timeArr = startTime.split(" ");
+        var hourArr = timeArr[1].split(":");
+        return hourArr[0] < hour ? 1 : (hourArr[0] == hour && hourArr[1] < minute ? 1 : 0);
     },
     dayOrnight:function(sunUp,sunDown){
         var date = new Date();

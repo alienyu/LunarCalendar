@@ -143,14 +143,20 @@ var Dom = {
 
     /*-------------------转换时间格式，只获取月日，星期和时分-----------------------*/
     transStartTime:function(date){
-        var that = this;
-        var time = date.split(" ");
+        var that = this,
+            current = new Date();
+        var time = date.split(" "),
+            currentYear = current.getFullYear();
         var dateArr = time[0].split("-");
         var timeStr = time[0].replace(/\-/g, "/");
         var hourArr = time[1].split(":");//将时分秒分割为数组
         var theDate = new Date(timeStr);//将日期转换成标准格式
         var theWeek = that.transWeek(theDate);//获取当前时间对应的星期
-        return  dateArr[1] + "月" + dateArr[2] + "日" + " " + theWeek + " " + hourArr[0] + ":" + hourArr[1];
+        if(dateArr[0] != currentYear){//若不是当年，则显示年份
+            return dateArr[0] + "年"+dateArr[1] + "月" + dateArr[2] + "日" + " " + theWeek + " " + hourArr[0] + ":" + hourArr[1];
+        }else{
+            return  dateArr[1] + "月" + dateArr[2] + "日" + " " + theWeek + " " + hourArr[0] + ":" + hourArr[1];
+        }
     },
 
     /*-------------------------转换获取的开始时间、结束时间、提醒时间格式---------------*/

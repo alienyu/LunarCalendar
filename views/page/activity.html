@@ -21,7 +21,7 @@
         </div>
     </div>
     <div class="item eventTitle">
-        <textarea class="eventName" id="eventTitle" placeholder="输入标题" rows="1"></textarea>
+        <textarea class="eventName" id="eventTitle" placeholder="输入标题" rows="1" ></textarea>
     </div>
     <div class="item remark">
         <div class="icon">
@@ -30,9 +30,8 @@
         <div class="itemCon">
             <div class="remarkCon">
                 <div class="remarkText ccc">添加备注</div>
-                <div class="remarkImgs"></div>
+                <div class="remarkImgs" style="display: none; overflow: hidden"></div>
             </div>
-            <!--<textarea name="remarks" id="remarks" class="fs26" rows="1" placeholder="添加备注"></textarea>-->
         </div>
     </div>
     <div class="item time">
@@ -66,6 +65,12 @@
                 <div class="siteAddress ccc f12"></div>
             </div>
         </div>
+    </div>
+    <div class="weather item" style="display: none">
+        <div class="icon">
+            <img src="../../assets/imgs/page/activity/ic_weather.png" alt="">
+        </div>
+        <div class="itemCon"></div>
     </div>
     <div class="item repetition">
         <div class="icon">
@@ -122,7 +127,7 @@
             <a href="javascript:;" class="saveBtn_l saveBtn">保存活动</a>
         </div>
         <div>
-            <a href="javascript:;" class="shareBtn_r share">保存并生成邀请卡</a>
+            <a href="javascript:;" class="shareBtn_r share">生成邀请卡</a>
         </div>
     </div>
     <div class="delete fs12 opa2">删除此活动</div>
@@ -162,7 +167,7 @@
 <!--提示用户点击右上角实现分享功能-->
 <div class="shareShadow" id="shareShadow">
     <div class="shadowImg">
-        <img src="" alt="">
+        <img src="../../assets/imgs/common/opacity_img.png" alt="">
     </div>
     <a href="javascript:;" class="shareImgClose cff fs14">保存并分享给好友</a>
 </div>
@@ -240,7 +245,7 @@
             <textarea name="" id="remarkText" rows="10" placeholder="点击输入备注内容..."></textarea>
         </div>
 
-        <div class="remarkImg " style="display: none">
+        <div class="remarkImg" style="display: none">
             <form name="form1" id="form" runat="server" enctype="multipart/form-data" method="post" >
                 <div class="img_upload_box">
                     <input type="file" class="img_upload_btn" name="photo">
@@ -272,6 +277,14 @@
             </div><!-- end ll-loading -->
         </div><!-- end ll-loading -->
         <!--<p class="weui-toast__content">数据加载中</p>-->
+    </div>
+</div>
+<!--数据删除成功后弹框-->
+<div id="toast" style="opacity: 0;display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+        <p class="weui-toast__content">已完成</p>
     </div>
 </div>
 <!--横屏-->

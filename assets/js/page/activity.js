@@ -5,15 +5,12 @@
 require("../../css/page/activity.less");
 var pageLoad = require("../common/pageLoad.js");
 require("../vendor/ImproveMobile/zeptoSlider.js");
-//require("../common/BMap.js");
 var Dom = require("../common/dom.js");
 var mobiScroll = require("../vendor/mobiScroll/mobiScroll.js");
 var wx = require("../vendor/weChat/wxInit.js");
 var Ajax = require("../common/ajax.js");
-var fastClick = require("../vendor/ImproveMobile/fastClick.js");
-//var autoTextArea = require("../vendor/ImproveMobile/autoTextArea.js");
 require("../vendor/ImproveMobile/autoTextArea.js");
-require("../vendor/dropLoad/dropLoad.js")
+require("../vendor/dropLoad/dropLoad.js");
 
 var fuc = {
     config: {
@@ -68,17 +65,11 @@ var fuc = {
         };
         this.boxDom = "";
         this.config.bgColor = '#66cccc';
-        this.rem();
         this.renderPage();
         this.bindEvent();
         this.initMap();
         this.searchNearByResult();
         this.initDropLoad();
-    },
-
-    rem: function () {
-        fastClick.attach(document.body);
-        //(function($,undefined){"use strict";var pluginName='scojs_message';$[pluginName]=function(message,type){clearTimeout($[pluginName].timeout);var $selector=$('#'+$[pluginName].options.id);if(!$selector.length){$selector=$('<div/>',{id:$[pluginName].options.id}).appendTo($[pluginName].options.appendTo)}$selector.html(message);if(type===undefined||type==$[pluginName].TYPE_ERROR){$selector.removeClass($[pluginName].options.okClass).addClass($[pluginName].options.errClass)}else if(type==$[pluginName].TYPE_OK){$selector.removeClass($[pluginName].options.errClass).addClass($[pluginName].options.okClass)}$selector.slideDown('fast',function(){$[pluginName].timeout=setTimeout(function(){$selector.slideUp('fast')},$[pluginName].options.delay)})};$.extend($[pluginName],{options:{id:'page_message',okClass:'page_mess_ok',errClass:'page_mess_error',delay:500,appendTo:'body'},TYPE_ERROR:1,TYPE_OK:2})})($);
     },
 
     selectTimes: function (obj1, obj2) {
@@ -112,6 +103,12 @@ var fuc = {
                     $('.endCon').attr("id", theId);
                     that.selectTimes('#endTime', '.endCon').setVal(new Date(that.setInitTime($('.endCon'))));//重新设置结束时间的初始值
                     that.selectTimes('#remindTime', '.remindTime').setVal(new Date(that.setInitTime($('.remindTime'))));//重新设置提醒时间的初始值
+                    if(!Dom.smallerDate(selectedTimeArr[0])&&that.mapConfig.longitude){
+                        $('.weather').css("display","-webkit-box");
+                        Ajax.getLocalWeather(selectedTimeArr[0],that.mapConfig.latitude,that.mapConfig.longitude);
+                    }else{
+                        $('.weather').css("display","none");
+                    }
                 }
             },
             onChange: function (event, inst) {
@@ -126,11 +123,7 @@ var fuc = {
         var shareShadow = $('.shareShadow');
         shareShadow.fadeIn();//显示分享提示层
         var qrcodeImg = $('.qrcodeImgBox');
-        qrcodeImg.click(function () {
-            $(this).addClass("q-big");
-            event.stopPropagation();
-        });//放大二维码
-        shareShadow.click(function () {
+        shareShadow.on("tap",function (event) {
             $(this).fadeOut();
             event.stopPropagation();
         });
@@ -244,12 +237,13 @@ var fuc = {
 
     hideTags: function () {
         var that = this;
-        $('.tipsCon a').click(function (event) {
+        $('.tipsCon a').on("touchend",function (event) {
             $('.eventName').val($(this).html());
             that.config.tagId = $(this).attr("data-tag");//保存用户选择的标签id
             that.getTemplate($(this).attr("data-template"));
             $('.topTips').slideUp();
             event.preventDefault();
+            event.stopPropagation();
         });
     },
 
@@ -382,10 +376,17 @@ var fuc = {
                         $('.siteName').removeClass('ccc').html(that.mapConfig.locaName);
                         $('.siteAddress').html(that.mapConfig.locaAddress);
                         $('.deleteAddress').css("display","block");//显示删除地图按钮
+
+                        if(!Dom.smallerDate(eventList.event.startTime)){//显示天气
+                            $('.weather').css("display","-webkit-box");
+                            Ajax.getLocalWeather(Dom.getDate(eventList.event.startTime),eventList.event.latitude,eventList.event.longitude);
+                        }else{
+                            $('.weather').css("display","none");
+                        }
                     }
                     if (that.config.remarkText) {
                         $('.remarkCon .remarkText').removeClass('ccc').html(that.config.remarkText);
-                        $('#remarkText').val(that.config.remarkText);
+                        $('#remarkText').val(that.config.remarkText.replace(/<br>/g,"\n"));
                     }
                     if(that.config.remarkImgs){//设置备注图片显示
                            var imgArr = that.config.remarkImgs.split(","),
@@ -437,14 +438,14 @@ var fuc = {
     },
     /*---------------弹层效果------------------*/
     shadow: function (obj, shadow, container) {
-        obj.click(function () {
+        obj.on("tap",function () {
             $('.shadowBg').fadeIn();
             shadow.show();
             container.animate({"top": "10%"}, 200);
         });
-        $('.shadowClose').click(function () {
+        $(".colorShadow .shadowClose").on("tap",function () {
             container.animate({"top": "100%"}, 200, function () {
-                $(this).parent().hide();
+                shadow.hide();
             });
             $('.shadowBg').fadeOut();
         });
@@ -453,7 +454,7 @@ var fuc = {
     /*---------------地图弹层效果------------------*/
     mapShadow: function (obj, shadow, container) {
         var that = this;
-        obj.click(function () {
+        obj.on("tap",function () {
             if (that.mapConfig.latitude && that.mapConfig.longitude) {//地址存在,直接弹出
                 that.mapMove();
                 $('.shadowBg').fadeIn();
@@ -483,11 +484,13 @@ var fuc = {
                 });
             }
         });
-        $('.shadowClose').click(function () {
+        $('.mapShadow .shadowClose').on("touchend",function (event) {
             container.animate({"top": "100%"}, 200, function () {
                 $(this).parent().hide();
             });
             $('.shadowBg').fadeOut();
+            event.preventDefault();
+            event.stopPropagation();
         });
     },
 
@@ -564,7 +567,7 @@ var fuc = {
         var that = this;
         var items = $('.colorShadow  .items'),
             smaller = $('.bigger .smaller');
-        items.click(function () {
+        items.on("tap",function (event) {
             for (var i = 0; i < items.size(); i++) {
                 items.eq(i).removeClass("active");
             }
@@ -588,11 +591,15 @@ var fuc = {
                 $('.colorShow').css("background", that.config.themeColor);
                 $('.colorText').html(that.config.themeName);
             }
-            $(".colorShadow .container").animate({"top": "100%"}, 200, function () {
-                $(this).parent().hide();
-            });
-            $('.shadowBg').fadeOut();
-        })
+            event.preventDefault();
+            event.stopPropagation();
+            setTimeout(function(){
+                $(".colorShadow .container").animate({"top": "100%"}, 200, function () {
+                    $(this).parent().hide();
+                });
+                $('.shadowBg').fadeOut();
+            },200);
+        });
     },
 
     bindEvent: function () {
@@ -602,21 +609,21 @@ var fuc = {
         });
 
         /*-------------点击开始时间后面的展开按钮---------*/
-        $('.timeIconCon').click(function () {
+        $('.timeIconCon').on("tap",function () {
             if ($(".timeIcon").attr("class") == "timeIcon active") {
                 $(".timeIcon").removeClass("active");
-                $('.endTime').animate({'height': '0px'}, 300);
+                $('.endTime').animate({'height': '0px','padding-bottom':'0px'}, 300);
                 $('.timeText').animate({"width": "0px"}, 300);
                 $('#endTime').css("display", "none");
             } else {
                 $(".timeIcon").addClass("active");
-                $('.endTime').animate({'height': '60px'}, 300);
+                $('.endTime').animate({'height': '30px','padding-bottom':'15px'}, 300);
                 $('.timeText').animate({"width": "33px"}, 300);
                 $('#endTime').css("display", "block");
             }
         })
         /*-----------展开顶部的快捷标签-------------*/
-        $('.showAll').click(function () {
+        $('.showAll').on("tap",function () {
             if ($('.showAll span').attr("class") == "active") {
                 $('.showAll span').removeClass("active");
                 $('.tipsCon').animate({"height": "80px"}, 300);
@@ -627,7 +634,7 @@ var fuc = {
         });
 
         /*--------------点击地址后的按钮，删除地址-------------*/
-        $('.deleteAddress').click(function(){
+        $('.deleteAddress').on("tap",function(event){
             $('.siteName').addClass("ccc").html("添加地点");
             $('.siteAddress').html("");
             that.mapConfig.locaName = "";
@@ -636,10 +643,11 @@ var fuc = {
             that.mapConfig.longitude = 0;
             $(this).css("display","none");
             event.stopPropagation();
+            $('.weather').css("display","none");
         });
 
         /*---------------点击分享弹层中的按钮-----------------*/
-        $('.shareImgClose').click(function () {
+        $('.shareImgClose').on("touchend",function (event) {
             $('#loadingToast').fadeIn();//显示loading
             event.preventDefault();
             $.get(
@@ -661,44 +669,52 @@ var fuc = {
         that.shadow($('.colors'), $('.colorShadow'), $('.colorShadow .container'));
         that.shadow($('.remark'), $('.remarkShadow'), $('.remarkShadow .container'));
         /*----------备注弹层中的点击事件-------------*/
-        $('.remarkShadow .cancel').click(function () {
+        $('.remarkShadow .cancel').on("touchend",function (event) {
             $('.remarkShadow .container').animate({"top": "100%"}, 200, function () {
                 $('.remarkShadow').hide();
             });
-            $('.shadowBg').fadeOut();
-        });
-        $('.remarkShadow .finished').click(function () {
-            $("#form").find(".new_box").remove();
-            var forms=document.getElementById("form");
-            if (forms.length > 0) {
-                for (var i = 0; i <forms.length; i++) {
-                    var fileData = new FormData(forms[i]);
-                    $.ajax({
-                        type: "post",
-                        url: "http://www.li-li.cn/llwx/file/upload",
-                        data: fileData,
-                        dataType: "json",
-                        cache: false,
-                        processData: false,
-                        contentType: false,
-                        async: false,
-                        success: function (data) {
-                            that.config.remarkImgs = that.config.remarkImgs + "," + data.data;
-                        }
-                    })
-                }
-                that.config.remarkImgs = that.config.remarkImgs.substr(1);
+            var remarkTexts = $('.remarkCon .remarkText').html();//若用户已设置备注，点击取消，则备注内容恢复成原内容
+            if(remarkTexts != "添加备注"){
+                $('.remarkShadow .textCon #remarkText').val(remarkTexts.replace(/<br>/g,"\n"));
             }
-            that.config.remarkText = $('#remarkText').val();
+            $('.shadowBg').fadeOut();
+            event.preventDefault();
+        });
+        $('.remarkShadow .finished').on("touchend",function (event) {
+            //$("#form").find(".new_box").remove();
+            //var forms=document.getElementById("form");
+            //if (forms.length > 0) {
+            //    for (var i = 0; i <forms.length; i++) {
+            //        var fileData = new FormData(forms[i]);
+            //        $.ajax({
+            //            type: "post",
+            //            url: "http://www.li-li.cn/llwx/file/upload",
+            //            data: fileData,
+            //            dataType: "json",
+            //            cache: false,
+            //            processData: false,
+            //            contentType: false,
+            //            async: false,
+            //            success: function (data) {
+            //                that.config.remarkImgs = that.config.remarkImgs + "," + data.data;
+            //            }
+            //        })
+            //    }
+            //    that.config.remarkImgs = that.config.remarkImgs.substr(1);
+            //}
+            that.config.remarkText = $('#remarkText').val().replace(/\n/g,"<br>");
+            //console.log(that.config.remarkText);
             $('.remarkCon .remarkText').removeClass("ccc").html(that.config.remarkText);
             $('#remarkText').attr("autofocus");
             $('.remarkShadow .container').animate({"top": "100%"}, 200, function () {
                 $('.remarkShadow').hide();
             });
             $('.shadowBg').fadeOut();
+            event.preventDefault();
         });
         /*------------点击分享--------------*/
-        $('.share').click(function () {
+        $('.share').on("tap",function (event) {
+            $('#loadingToast').fadeIn();//显示loading
             var name = $('#eventTitle').val().replace(/\s+/, ""),
                 startTime = $('.startCon').attr("id"),
                 endTime = $('.endCon').attr("id"),
@@ -710,6 +726,7 @@ var fuc = {
             }
             if (that.config.eventId) {
                 if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
+                    $('#loadingToast').fadeOut();//隐藏loading
                     // 提醒用户设置名称
                     $('.titleNone').html("缺少事件名称");
                     $('.titleNone').animate({"height":"36px"},300);
@@ -723,13 +740,19 @@ var fuc = {
                     setTimeout(function () {
                         $('.titleNone').animate({"height":"0px"},300);
                     }, 1000);
-                }  else {
+                }  else if(that.config.remarkText.length >=1000) {//备注内容不能超过1000字
+                    $('#loadingToast').fadeOut();
+                    $('.titleNone').html("备注内容不能超过1000个字");
+                    $('.titleNone').animate({"height":"36px"},300);
+                    setTimeout(function () {
+                        $('.titleNone').animate({"height":"0px"},300);
+                    }, 1000);
+                }else  {
                     that.eventModify2(that.config.eventId, name, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType,  that.mapConfig.locaName, that.mapConfig.locaAddress ,that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
-                    //todo 弹出蒙层
-                    that.shareShadow(); //显示分享提示弹出层，点击后隐藏
                 }
             } else {
                 if (name == "") {//如果没有填写事件名称，不提交事件，提醒用户填写名称
+                    $('#loadingToast').fadeOut();//隐藏loading
                     // 醒用户设置名称
                     $('.titleNone').html("缺少事件名称");
                     $('.titleNone').animate({"height":"36px"},300);
@@ -751,24 +774,16 @@ var fuc = {
                         $('.titleNone').animate({"height":"0px"},300);
                     }, 1000);
                 }else {
-                    $('.bot_Btn_box .share').on("tap", function () {//点击确定
-                        that.eventAdd2(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.locaName, that.mapConfig.locaAddress, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
-                        that.getUserInformation();
-                        wx.wxShare(that.config.nickName + " 邀请您参加 「" + name + "」", $('.startTime').html(),
-                            "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + that.config.eventId));
-                        //todo 弹出蒙层
-                        that.shareShadow(); //显示分享提示弹出层，点击后隐藏
-                    });
-                    $('.default').on("tap", function () {
-                        $('#dialog1').fadeOut();
-                        event.stopPropagation();
-                    });
+                    that.eventAdd2(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.locaName, that.mapConfig.locaAddress, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
+                    that.getUserInformation();
+                    wx.wxShare(that.config.nickName + " 邀请您参加 「" + name + "」", $('.startTime').html(),
+                        "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + that.config.eventId));
                 }
             }
         });
 
         /*------------点击保存--------------*/
-        $('.saveBtn').click(function () {
+        $('.saveBtn').on("tap",function () {
             //alert(that.config.bgColor);
             //alert(that.config.themeId);
             $('#loadingToast').fadeIn();//显示loading
@@ -818,10 +833,11 @@ var fuc = {
 
         });
         /*---------------点击删除---------------*/
-        $('.delete').click(function () {
+        $('.delete').on("tap",function () {
             $('#dialog1 .weui-dialog__bd').html("确定要删除该事件吗？");
             $('#dialog1').fadeIn();
-            $('.confirm').on('tap', function () {//点击确定按钮
+            $('.confirm').on('touchend', function (event) {//点击确定按钮
+                event.preventDefault();
                 event.stopPropagation();
                 $('#dialog1').fadeOut();
                 $('#loadingToast').fadeIn();//显示loading
@@ -843,7 +859,8 @@ var fuc = {
                     }
                 })
             });
-            $('.default').on('tap', function () {//点击取消按钮
+            $('.default').on('touchend', function (event) {//点击取消按钮
+                event.preventDefault();
                 event.stopPropagation();
                 $('#dialog1').fadeOut();
             });
@@ -954,7 +971,7 @@ var fuc = {
                     html += that.mapConfig.template.replace(/{{name}}/g, that.mapConfig.pois[i].name).replace(/{{address}}/g, that.mapConfig.pois[i].address).replace(/{{jw}}/g, that.mapConfig.pois[i].location);
                 }
                 $('.listCon').append(html);
-                $('.addressItem').on('tap', function () {
+                $('.addressItem').on('tap', function (event) {
                     var jw = $(this).attr('data-jw');
                     that.mapConfig.latitude = jw.split(",")[1];
                     that.mapConfig.longitude = jw.split(",")[0];
@@ -964,10 +981,22 @@ var fuc = {
                     $(".siteName").removeClass("ccc").html(that.mapConfig.locaName);
                     $('.siteAddress').html(that.mapConfig.locaAddress);
                     $('.deleteAddress').css("display","block");//显示删除地址按钮
-                    $(".mapShadow .container").animate({"top": "100%"}, 200, function () {
-                        $(this).parent().hide();
-                    });
-                    $('.shadowBg').fadeOut();
+                    //todo 显示选择地点的天气
+                    var startTime = $('.startCon').attr("id");
+                    if(!Dom.smallerDate(startTime)){
+                        $('.weather').css("display","-webkit-box");
+                        Ajax.getLocalWeather(Dom.getDate(startTime),that.mapConfig.latitude,that.mapConfig.longitude);
+                    }else{
+                        $('.weather').css("display","none");
+                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+                    setTimeout(function(){
+                        $(".mapShadow .container").animate({"top": "100%"}, 200, function () {
+                            $(this).parent().hide();
+                        });
+                        $('.shadowBg').fadeOut();
+                    },500);
                 });
                 if (me) {
                     console.log("me");
@@ -1033,19 +1062,24 @@ var fuc = {
             },
             dataType: "json",
             success: function (data) {
-                //console.log(data);
-                if (data.code == 0) {//提交成功
-                    that.config.eventId = data.data;
+                try{
+                    //alert(data);
+                    if (data.code == 0) {//提交成功
+                        that.config.eventId = data.data;
+                        $('#loadingToast').fadeOut();
+                        window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + that.config.eventId);
+                    } else {//提交失败提醒错误信息
+                        $('#loadingToast').fadeOut();
+                        var error = data.msg;
+                        $('#dialog2 .weui-dialog__bd').html(error);
+                        $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+                            event.stopPropagation();
+                            $('#dialog2').off('click').fadeOut();
+                        });
+                    }
+                }catch(e){
                     $('#loadingToast').fadeOut();
-                    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + that.config.eventId);
-                } else {//提交失败提醒错误信息
-                    $('#loadingToast').fadeOut();
-                    var error = data.msg;
-                    $('#dialog2 .weui-dialog__bd').html(error);
-                    $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
-                        event.stopPropagation();
-                        $('#dialog2').off('click').fadeOut();
-                    });
+                    alert("提交失败，请稍后重试"+e);
                 }
             }
         })
@@ -1075,20 +1109,28 @@ var fuc = {
             },
             dataType: "json",
             success: function (data) {
-                //console.log(data);
-                if (data.code == 0) {//提交成功
-                    that.config.eventId = data.data;
-                    that.getShareImg();
+                try{
+                    //console.log(data);
+                    if (data.code == 0) {//提交成功
+                        that.config.eventId = data.data;
+                        that.getShareImg();
+                        $('#loadingToast').fadeOut();
+                        //todo 弹出蒙层
+                        that.shareShadow(); //显示分享提示弹出层，点击后隐藏
+                    } else {//提交失败提醒错误信息
+                        $('#loadingToast').fadeOut();
+                        var error = data.msg;
+                        $('#dialog2 .weui-dialog__bd').html(error);
+                        $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+                            event.stopPropagation();
+                            $('#dialog2').off('click').fadeOut();
+                        });
+                    }
+                }catch (e){
                     $('#loadingToast').fadeOut();
-                } else {//提交失败提醒错误信息
-                    $('#loadingToast').fadeOut();
-                    var error = data.msg;
-                    $('#dialog2 .weui-dialog__bd').html(error);
-                    $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
-                        event.stopPropagation();
-                        $('#dialog2').off('click').fadeOut();
-                    });
+                    alert("提交失败，请稍后重试"+e);
                 }
+
             }
         })
     },
@@ -1118,17 +1160,22 @@ var fuc = {
             },
             dataType: "json",
             success: function (data) {
-                if (data.code == 0) {
+                try{
+                    if (data.code == 0) {
+                        $('#loadingToast').fadeOut();
+                        window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId="+that.config.eventId);
+                    } else {//修改失败弹出提示框
+                        $('#loadingToast').fadeOut();
+                        var error = data.msg;
+                        $('#dialog2 .weui_dialog_bd').html(error);
+                        $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+                            event.stopPropagation();
+                            $('#dialog2').off('click').fadeOut();
+                        });
+                    }
+                }catch(e){
                     $('#loadingToast').fadeOut();
-                    window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId="+that.config.eventId);
-                } else {//修改失败弹出提示框
-                    $('#loadingToast').fadeOut();
-                    var error = data.msg;
-                    $('#dialog2 .weui_dialog_bd').html(error);
-                    $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
-                        event.stopPropagation();
-                        $('#dialog2').off('click').fadeOut();
-                    });
+                    alert("提交失败，请稍后重试"+e);
                 }
             }
         })
@@ -1158,17 +1205,23 @@ var fuc = {
             },
             dataType: "json",
             success: function (data) {
-                if (data.code == 0) {
+                try{
+                    if (data.code == 0) {
+                        $('#loadingToast').fadeOut();
+                        that.shareShadow(); //显示分享提示弹出层，点击后隐藏
+                        that.getShareImg();
+                    } else {//修改失败弹出提示框
+                        $('#loadingToast').fadeOut();
+                        var error = data.msg;
+                        $('#dialog2 .weui_dialog_bd').html(error);
+                        $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+                            event.stopPropagation();
+                            $('#dialog2').off('click').fadeOut();
+                        });
+                    }
+                }catch(e){
                     $('#loadingToast').fadeOut();
-                    that.getShareImg();
-                } else {//修改失败弹出提示框
-                    $('#loadingToast').fadeOut();
-                    var error = data.msg;
-                    $('#dialog2 .weui_dialog_bd').html(error);
-                    $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
-                        event.stopPropagation();
-                        $('#dialog2').off('click').fadeOut();
-                    });
+                    alert("提交失败，请稍后重试"+e);
                 }
             }
         })

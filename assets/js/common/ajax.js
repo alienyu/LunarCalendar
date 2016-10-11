@@ -246,6 +246,35 @@ var Ajax = {
             }
         )
     },
+    //获取用户选择地点的天气
+    getLocalWeather:function(date,latitude,longitude){
+        $.get(
+            "http://www.li-li.cn/llwx/weather/getByCoordinates",
+            {
+                "longitude":longitude,
+                "latitude":latitude,
+                "date":date
+            },
+            function(data){
+                if(data.code ==0){
+                    if(data.data){
+                        var weatherList = data.data;
+                        var html = "";
+                        if(weatherList.qlty){
+                            html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
+                        }else{
+                            html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                        }
+                        $('.weather .itemCon').html("").append(html);
+                    }else{
+                        $('.weather').css("display","none");
+                    }
+                }else{
+                    $('.weather').css("display","none");
+                }
+            }
+        )
+    },
     //获取私人运势
     getPersonalFortune:function(dateTime){
         $.get("http://www.li-li.cn/llwx/fortune/get", {"dateTime": dateTime + " 08:00:00"}, function (data) {
@@ -262,6 +291,7 @@ var Ajax = {
                     }
                 }else{
                     $('.eventContainer .suitable').css("display","none");
+                    $('.eventCon .suitable').css('display','none');
                 }
             }
         });
