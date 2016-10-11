@@ -8,7 +8,6 @@ var Dom = require("../common/dom.js");
 var Ajax = require("../common/ajax.js");
 var mobiScroll = require("../vendor/mobiScroll/mobiScroll.js");
 var wx = require("../vendor/weChat/wxInit.js");
-var fastClick = require("../vendor/ImproveMobile/fastClick.js");
 
 var fuc = {
     config: {
@@ -31,13 +30,9 @@ var fuc = {
         this.config.tipType = 2;
         this.config.bgColor = "#66cccc";
         this.config.repeatSelect = document.getElementById('select');
-        this.rem();
         this.renderPage();
         this.getTags();
         this.bindEvent();
-    },
-    rem: function () {
-        fastClick.attach(document.body);
     },
 
     selectTimes: function (obj1, obj2) {
@@ -160,7 +155,7 @@ var fuc = {
     },
     hideTags: function () {
         var that = this;
-        $('.tipsCon a').click(function (event) {
+        $('.tipsCon a').on("touchend",function (event) {
             $('.eventName').val($(this).html());
             that.config.tagId = $(this).attr("data-tag");//保存用户选择的标签id
             that.getTemplate($(this).attr("data-template"));
@@ -270,7 +265,7 @@ var fuc = {
             $('.topTips').slideUp(800);
         });
         /*-----------展开顶部的快捷标签-------------*/
-        $('.showAll').click(function () {
+        $('.showAll').on("tap",function () {
             if ($('.showAll span').attr("class") == "active") {
                 $('.showAll span').removeClass("active");
                 $('.tipsCon').animate({"height": "80px"}, 300);
@@ -280,7 +275,7 @@ var fuc = {
             }
         });
         /*------------点击保存--------------*/
-        $('.saveBtn').click(function () {
+        $('.saveBtn').on("tap",function () {
             //alert(that.config.bgColor);
             $('#loadingToast').fadeIn();//显示loading
             var name = $('#eventTitle').val().replace(/\s+/, ""),
@@ -364,9 +359,9 @@ var fuc = {
             }
         })
         /*---------------点击删除---------------*/
-        $('.delete').click(function () {
+        $('.delete').on("tap",function () {
             $('#dialog1').fadeIn();
-            $('.confirm').on('tap', function () {//点击确定按钮
+            $('.confirm').on('touchend', function (event) {//点击确定按钮
                 $('#dialog1').fadeOut();
                 $('#loadingToast').fadeIn();//显示loading
                 $.get("http://www.li-li.cn/llwx/event/del", {"eventId": that.config.eventId}, function (data) {
@@ -386,9 +381,11 @@ var fuc = {
                         });
                     }
                 })
+                event.preventDefault();
             });
-            $('.default').on('tap', function () {//点击取消按钮
+            $('.default').on('touchend', function (event) {//点击取消按钮
                 $('#dialog1').fadeOut();
+                event.preventDefault();
             });
         })
     }

@@ -154,6 +154,12 @@ var fuc = {
                             that.mapConfig.latitude = dataList.event.latitude;
                             that.mapConfig.longitude = dataList.event.longitude;
                             that.initMap();
+                            if(!Dom.smallerDate(dataList.event.startTime)){//显示天气
+                                $('.weather').css("display","-webkit-box");
+                                Ajax.getLocalWeather(Dom.getDate(dataList.event.startTime),dataList.event.latitude,dataList.event.longitude);
+                            }else{
+                                $('.weather').css("display","none");
+                            }
                         } else {
                             $('.site').css("display", "none");
                         }
