@@ -2,6 +2,7 @@ require("../../css/page/index.less");
 var pageLoad = require("../common/pageLoad.js");
 var transCalendar = require("../vendor/LunarCalendar/transCalendar.js");
 var wx = require("../vendor/weChat/wxInit.js");
+var Dom = require("../common/dom.js");
 var fuc = {
     config: {
         today:""
@@ -141,26 +142,39 @@ var fuc = {
             if(data.code==0){
                 if(data.data){
                     var weatherList = data.data[0];
-                    var html = "",weatherCode = weatherList.dCode;
-                    if(weatherList.qlty){
-                        html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
-                    }else{
-                        html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                    var html = "",weatherCode = "",
+                        sunUp = weatherList.sunUp,
+                        sunDown = weatherList.sunDown;
+                    var dayOrNight = Dom.dayOrnight(sunUp,sunDown);
+                    if(dayOrNight == "dayTime"){//白天
+                        weatherCode = weatherList.dCode;
+                        if(weatherList.qlty){
+                            html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
+                        }else{
+                            html = weatherList.city+"&nbsp;&nbsp;"+weatherList.dTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                        }
+                    }else if(dayOrNight == "nightTime"){//黑夜
+                        weatherCode = weatherList.nCode;
+                        if(weatherList.qlty){
+                            html = weatherList.city+"&nbsp;&nbsp;"+weatherList.nTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
+                        }else{
+                            html = weatherList.city+"&nbsp;&nbsp;"+weatherList.nTxt+"&nbsp;&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                        }
                     }
                     $('.weather').append(html);
                     if(weatherCode>=101&&weatherCode<=213){//多云
-                            $(".conShadow").attr("class", "conShadow cloudsDay");
-                        }else if(weatherCode>=300&&weatherCode<=313){//雨
-                            $(".conShadow").attr("class", "conShadow rainDay");
-                        }else if(weatherCode>=400&&weatherCode<=407){//雪
-                            $(".conShadow").attr("class", "conShadow snowDay");
-                        }else if(weatherCode>=500&&weatherCode<=501){//雾
-                            $(".conShadow").attr("class", "conShadow fogDay");
-                        }else if(weatherCode>=502&&weatherCode<=508){//霾
-                            $(".conShadow").attr("class", "conShadow hazeDay");
-                        }else{//晴天
-                            $(".conShadow").attr("class", "conShadow fairDay");
-                        }
+                        $(".conShadow").attr("class", "conShadow cloudsDay");
+                    }else if(weatherCode>=300&&weatherCode<=313){//雨
+                        $(".conShadow").attr("class", "conShadow rainDay");
+                    }else if(weatherCode>=400&&weatherCode<=407){//雪
+                        $(".conShadow").attr("class", "conShadow snowDay");
+                    }else if(weatherCode>=500&&weatherCode<=501){//雾
+                        $(".conShadow").attr("class", "conShadow fogDay");
+                    }else if(weatherCode>=502&&weatherCode<=508){//霾
+                        $(".conShadow").attr("class", "conShadow hazeDay");
+                    }else{//晴天
+                        $(".conShadow").attr("class", "conShadow fairDay");
+                    }
                 }
             }else{
 
@@ -187,17 +201,6 @@ var fuc = {
         var timeArr = startTime.split(" ");
         var hourArr = timeArr[1].split(":");
         return hourArr[0] < hour ? 1 : (hourArr[0] == hour && hourArr[1] < minute ? 1 : 0);
-    },
-    dayOrnight:function(sunUp,sunDown){
-        var date = new Date();
-        var hours = date.getHours();
-        var sunUpArr = sunUp.split(":"),sunDownArr=sunDown.split(":");
-        var sunUpHour = parseInt(sunUpArr[0]),sunDownHour=parseInt(sunDownArr[0]);
-        if(hours>sunUpHour&&hours<sunDownHour){
-            return "dayTime";
-        }else{
-            return "nightTime";
-        }
     },
     bindEvent: function() {
         //添加活动按钮

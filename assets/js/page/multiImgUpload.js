@@ -41,25 +41,20 @@ var fuc = {
 
         $("#btn").on("tap", function() {
             $("#form").find(".new_box").remove();
-            console.log($("#form").length);
-            for(var i=0;i<$("#form").length;i++){
-                console.log(i);
-                var data = new FormData($("#form")[i]);
-                $.ajax({
-                    type: "post",
-                    url: "http://www.li-li.cn/llwx/file/upload",
-                    type: 'POST',
-                    data: data,
-                    dataType: 'JSON',
-                    cache: false,
-                    processData: false,
-                    contentType: false,
-                    success: function(data) {
-                        console.log(data);
-                    }
-                })
-            }
-
+            var data = new FormData($("#form")[0]);
+            $.ajax({
+                type: "post",
+                url: "http://www.li-li.cn/llwx/file/upload",
+                type: 'POST',
+                data: data,
+                dataType: 'JSON',
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    console.log(data);
+                }
+            })
         })
     }
 }
