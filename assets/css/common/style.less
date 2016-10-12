@@ -1,595 +1,111 @@
-body{
-    background:#12101A;
+body { background: #fff; }
+.toolbar { overflow: hidden; width: 100%; position: relative; left: 0px; top: 0px; z-index: 999; height: 46px; }
+.toolbar h1 { float: left; margin: 5px 0 0 10px; height: 36px; line-height: 36px; font-size: 16px; color: #333 }
+.toolbar .icon_calendar { margin: 5px 0 0 10px; }
+.toolbar .luckyDay, .toolbar .today { display: inline-block; padding: 0 5px; float: left; height: 24px; line-height: 24px; text-align: center; margin: 10px 5px 0px 10px; font-size: 16px; border-radius: 5px; background: #fff; }
+.toolbar .luckyDay { margin-left: 20px; -webkit-animation-name: bluePulse; -webkit-animation-duration: 4s; -webkit-animation-iteration-count: infinite; }
+@-webkit-keyframes bluePulse { from {
+-webkit-box-shadow: 0 0 0 #12101A;
 }
-.toolbar{
-    overflow:hidden;
-    width:100%;
-    position:relative;
-    left:0px;
-    top:0px;
-    z-index:999;
-    height: 46px;
+ 50% {
+-webkit-box-shadow: 0 0 6px #66cccc;
 }
-.toolbar h1{
-    float: left;
-    margin:5px 0 0 10px;
-    height:36px;
-    line-height:36px;
-    font-size:16px;
-    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+to { -webkit-box-shadow: 0 0 0 #12101A; }
 }
-.toolbar .icon_calendar{
-    margin:5px 0 0 10px;
-}
-.toolbar .luckyDay,.toolbar .today{
-    display:inline-block;
-    padding:0 5px;
-    float: left;
-    height: 24px;
-    line-height: 24px;
-    text-align: center;
-    margin: 10px 5px 0px 10px;
-    font-size: 16px;
-    border-radius: 5px;
-}
-.toolbar .luckyDay{
-    margin-left: 20px;
-    -webkit-animation-name: bluePulse;
-    -webkit-animation-duration: 4s;
-    -webkit-animation-iteration-count: infinite;
-}
-@-webkit-keyframes bluePulse {
-    from { -webkit-box-shadow: 0 0 0 #12101A; }
-    50% { -webkit-box-shadow: 0 0 6px #66cccc; }
-    to {  -webkit-box-shadow: 0 0 0 #12101A; }
-}
-.toolbar .action{
-    display:block;
-    position: absolute;
-    top:5px;
-    right:10px;
-    height:36px;
-    line-height:36px;
-    font-size:16px;
-    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
-    color:#f00;
-    text-align:right;
-}
-.wrapper{
-    width:100%;
-    padding-bottom: 10px;
-}
-.slide_wrap{
-    width:100%;
-    /*height:320px;*/
-    overflow:hidden;
-}
-.date_slide{
-    position:relative;
-    left:0px;
-    top:0px;
-    width: 100%;
-    transform-origin:0 0;
-    -webkit-transform-origin:0 0;
-    /*-webkit-animation-timing-function: ease-in-out;
-    -webkit-transition-duration: 300ms;*/
-}
-.date_list{
-    /*font-family: "Courier New", "Helvetica Neue", Helvetica, STHeiTi, sans-serif;*/
-    position:absolute;
-    top:0px;
-    left:0px;
-    -webkit-transform-origin:0 0;
-}
-.date_row{
-    display: -webkit-box;
-    display: box;
-    width:100%;
-}
-.date_row .date_item{
-    -webkit-box-flex: 1;
-    box-flex: 1;
-    /*border-color:#cecece;*/
-    /*border-style:solid;*/
+.toolbar .action { display: block; position: absolute; top: 5px; right: 10px; height: 36px; line-height: 36px; font-size: 16px; text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3); color: #f00; text-align: right; }
+.wrapper { width: 100%; padding-bottom: 10px; }
+.toolbar, .wrapper { background: rgba(0,0,0,0.02) }
+.slide_wrap { width: 100%; /*height:320px;*/
+overflow: hidden; }
+.date_slide { position: relative; left: 0px; top: 0px; width: 100%; transform-origin: 0 0; -webkit-transform-origin: 0 0;/*-webkit-animation-timing-function: ease-in-out;
+    -webkit-transition-duration: 300ms;*/ }
+.date_list { /*font-family: "Courier New", "Helvetica Neue", Helvetica, STHeiTi, sans-serif;*/ position: absolute; top: 0px; left: 0px; -webkit-transform-origin: 0 0; }
+.date_row { display: -webkit-box; display: box; width: 100%; }
+.date_row .date_item { -webkit-box-flex: 1; box-flex: 1; /*border-color:#cecece;*/ /*border-style:solid;*/
     /*border-width:0 1px 1px 0;*/
-    color:rgba(255,255,255,0.8);
-    position:relative;
-    text-align:center;
-    overflow:hidden;
-    width: 0%;
-    padding:6px 5px;
-    height:34px;
-}
-.date_item:last-child{
-    border-right:none;
-}
-.date_item .date_day{
-    height:16px;
-    font-size:14px;
-    display:block;
-}
-.date_item .date_lunar{
-    height:16px;
-    line-height:16px;
-    font-size:8px;
-    color:rgba(255,255,255,0.8);
-    display:block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    word-wrap: normal;
-}
-.date_item .lunar_fetv{
-    color:#14a700;
-}
-.date_item .solar_fetv{
-    color:#d43111;
-}
-.date_item .date_icon{
-    position:absolute;
-    left:50%;
-    top:0px;
-    margin-left: -23px;
-    padding:0px 2px;
-    color:rgba(255,255,255,0.8);
-    font-size:8px;
-    display:none;
-    border-radius: 100%;
-    -webkit-border-radius: 100%;
-    z-index: 999;
-}
-.date_item .date-dot{
-    display: block;
-    position: absolute;
-    bottom: 3px;
-    left: 50%;
-    height: 4px;
-    width: 4px;
-    border-radius: 100%;
-    margin-left: -2px;
-}
-.date_row .date_current .date-dot{
-    background:#fff;
-}
-.date_item .holiday{
-    background-color:#339999;
-    /*border:1px solid #a82220;*/
-    display:block;
-    color:rgba(255,255,255,0.7);
-}
-.date_item .worktime{
-    background-color:#660000;
-    /*border:1px solid #87c7e2;*/
-    display:block;
-
-}
-.date_row .date_today{
-    background-color:#b8bdbf;
-    color:#FFF;
-}
-.date_row .date_today .date_lunar{
-    color:#FFF;
-}
-.date_row .date_current{
-    background-color:#c82713;
-    color:#FFF;
-}
-.date_row .date_current .date_lunar{
-    color:#FFF;
-}
-.date_row .date_other{
-    opacity:0.4;
-}
-.date_week .date_item{
-    line-height:30px;
-    height:30px;
-    border-right:none;
-    text-align:center;
-    font-size:14px;
-    padding:0px;
-}
-
+color: rgba(0,0,0,0.8); position: relative; text-align: center; overflow: hidden; width: 0%; padding: 6px 5px; height: 34px; }
+.date_item:last-child { border-right: none; }
+.date_item .date_day { height: 16px; font-size: 14px; display: block; }
+.date_item .date_lunar { height: 16px; line-height: 16px; font-size: 8px; color: rgba(0,0,0,0.5); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; word-wrap: normal; }
+.date_item .lunar_fetv { color: #14a700; }
+.date_item .solar_fetv { color: #d43111; }
+.date_item .date_icon { position: absolute; left: 50%; top: 0px; margin-left: -23px; padding: 0px 2px; color: rgba(255,255,255,0.8); font-size: 8px; display: none; border-radius: 100%; -webkit-border-radius: 100%; z-index: 999; }
+.date_item .date-dot { display: block; position: absolute; bottom: 3px; left: 50%; height: 4px; width: 4px; border-radius: 100%; margin-left: -2px; }
+.date_row .date_current .date-dot { background: #fff; }
+.date_item .holiday { background-color: #339999; /*border:1px solid #a82220;*/ display: block; color: rgba(255,255,255,0.7); }
+.date_item .worktime { background-color: #660000; /*border:1px solid #87c7e2;*/ display: block; }
+.date_row .date_today { background-color: #b8bdbf; }
+.date_row .date_current { background-color: #c82713; }
+.date_row .date_other { opacity: 0.4; }
+.date_week .date_item { line-height: 30px; height: 30px; border-right: none; text-align: center; font-size: 14px; padding: 0px; }
 /*指定日期详情*/
-.date_info{
-    padding:10px;
-}
-.date_lunar_info{
-    color:#d96b6b;
-    font-size:24px;
-    line-height:38px;
-    text-align:center;
-}
-.date_fetv{
-    color:#666666;
-    line-height:22px;
-    font-size:16px;
-    margin-bottom:5px;
-}
-.date_gan_zhi{
-    line-height:30px;
-    background-color:#e68383;
-    text-align:center;
-    color:#FFF;
-    font-size:16px;
-}
-.date_hl{
-    display:none;
-}
-.date_hl_item{
-    margin-top:5px;
-    line-height:24px;
-}
-.circle {
-    width: 24px;
-    height: 24px;
-    background-color: transparent;
-    border: 1px #14a700 solid;
-    -webkit-border-radius: 13px;
-    text-align:center;
-    line-height:26px;
-    font-size:16px;
-    display:inline-block;
-    margin-right:5px;
-}
-.hl_y{
-    color:#14a700;
-}
-.hl_j{
-    color:#d43111;
-    border: 1px #d43111 solid;
-}
-.hl_y_content{
-    color:#14a700;
-}
-.hl_j_content{
-    color:#d43111;
-}
+.date_info { padding: 10px; }
+.date_lunar_info { color: #d96b6b; font-size: 24px; line-height: 38px; text-align: center; }
+.date_fetv { color: #666666; line-height: 22px; font-size: 16px; margin-bottom: 5px; }
+.date_gan_zhi { line-height: 30px; background-color: #e68383; text-align: center; color: #FFF; font-size: 16px; }
+.date_hl { display: none; }
+.date_hl_item { margin-top: 5px; line-height: 24px; }
+.circle { width: 24px; height: 24px; background-color: transparent; border: 1px #14a700 solid; -webkit-border-radius: 13px; text-align: center; line-height: 26px; font-size: 16px; display: inline-block; margin-right: 5px; }
+.hl_y { color: #14a700; }
+.hl_j { color: #d43111; border: 1px #d43111 solid; }
+.hl_y_content { color: #14a700; }
+.hl_j_content { color: #d43111; }
 /*日程·黄历*/
-.schedule{
-    width: 100%;
-    height: auto;
-    overflow: hidden;
-}
-.schedule h1{
-  height: 41px;
-  line-height: 41px;
-  font-size: 16px;
-  display: -webkit-box;
-  display: box;
-}
-.schedule h1 span{
-    opacity: 0.5;
-    display: block;
-    border-top: 1px solid rgba(255,255,255,0.5);
-    -webkit-box-flex: 1;
-    box-flex: 1;
-    text-align: center;
-}
-.schedule h1 span.active{
-    opacity: 1;
-    border-top: 1px solid #66cccc;
-    color: #66cccc;
-}
-.schedule .scheduleContainer{
-    width: 100%;
-    /*height: 200px;*/
-    position: relative;
-}
-.schedule .scheduleContainer .scheduleList,.schedule .scheduleContainer .almanac{
-    width: 100%;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-}
-.schedule .scheduleContainer .scheduleBg{/*没有设置日程背景*/
-    width: 100%;
-    height: 200px;
-    box-sizing: border-box;
-    padding-top: 5%;
-}
-.schedule .scheduleContainer .scheduleBg .bg{
-    width:100%;
-    height:68px;
-    background: url('../../imgs/common/icon-NoContent.png') no-repeat center center;
-    background-size: contain;
-}
-.schedule .scheduleContainer .scheduleBg .text a{
-    display: block;
-    text-align: center;
-    height:36px;
-    line-height:36px;
-    font-size: 16px;
-}
-.schedule .scheduleContainer .scheduleBg .text p{
-    text-align: center;
-}
-.schedule .scheduleList{
-    background-color: #12101A;
-}
-.schedule .scheduleList p{/*日程内容*/
-    padding:5px 3% 5px 1%;
-    height: 20px;
-    line-height: 20px;
-}
-.schedule .scheduleContainer .scheduleList p .time{
-    display: block;
-    width: 13%;
-    height: 100%;
-    float: left;
-    text-align: right;
-    margin-right: 3%;
-}
-.schedule .scheduleContainer .scheduleList p .matter{
-    display: block;
-    float: left;
-    width: 50%;
-    white-space: nowrap;
-    overflow:hidden;
-    text-overflow: ellipsis;
-}
-.schedule .scheduleContainer .scheduleList p .partner{
-    float: right;
-    width: 19%;
-    text-align: right;
-    white-space: nowrap;
-    overflow:hidden;
-    text-overflow: ellipsis;
-    margin-right: 2px;
-}
-.schedule .scheduleContainer .scheduleList p .num{
-    float: right;
-    text-align: right;
-}
-.schedule .scheduleContainer .almanac{
-    width: 100%;
-    position: absolute;
-    top:0px;
-    left:100%;
-    background-color: #12101A;
-}
-.schedule .scheduleContainer .almanac .privateAlmanac{
-    height:auto;
-    width: 100%;
-    margin-bottom: 10px;
-}
-.schedule .scheduleContainer .almanac .title{
-    height: 26px;
-    padding-left: 2%;
-    line-height: 26px;
-    color: #ccc;
-    margin-bottom: 4px;
-    position: relative;
-}
-.schedule .scheduleContainer .almanac .title .alterBirthday{
-    display: block;
-    height:100%;
-    width: auto;
-    text-align: center;;
-    float: right;
-    margin-right: 2%;
-}
-.schedule .scheduleContainer .almanac .title #alterBirthday{
-    height:100%;
-    width:70px;
-    position: absolute;
-    top:0px;
-    right:2%;
-    opacity:0;
-}
-.schedule  .almanac  .alCon{
-    width: 100%;
-    height: auto;
-    position: relative;
-    overflow: hidden;
-}
-.schedule  .almanac .privateAlmanac .alCon .alConBg,.schedule  .almanac .privateAlmanac .alCon .content{
-    width: 100%;
-    height: auto;
-    text-align: center;
-    overflow: hidden;
-}
-.schedule  .almanac .privateAlmanac .alCon{
-    font-size: 14px;
-    height:auto;
-}
-.schedule  .almanac .privateAlmanac .alCon .prevate{
-    line-height: 70px;
-}
-.schedule .almanac .alConBg #birthday{
-    position: absolute;
-    top:20px;
-    left:0px;
-    width:100%;
-    height:50px;
-    opacity: 0;
-}
-.schedule  .almanac .alCon .conLeft{
-    float: left;
-    width: 10%;
-    padding-left: 2%;
-    height: 100%;
-    text-align: left;
-}
-.schedule  .almanac .alCon .conLeft p{
-    height: 35px;
-    line-height: 35px;
-    color: #00CC00;
-}
-.schedule  .almanac .alCon .conRight{
-    width:86%;
-    min-height: 70px;
-    line-height: 35px;
-    text-align: left;
-    float: left;
-}
-.schedule  .almanac .alCon .conRight span{
-    padding-right: 10px;
-}
+.schedule { width: 100%; height: auto; overflow: hidden; }
+.schedule h1 { height: 41px; line-height: 41px; font-size: 16px; display: -webkit-box; display: box; }
+.schedule h1 span { opacity: 0.5; display: block; border-top: 1px solid rgba(0,0,0,0.5); -webkit-box-flex: 1; box-flex: 1; text-align: center; color: #999 }
+.schedule h1 span.active { opacity: 1; border-top: 1px solid #66cccc; color: #66cccc; }
+.schedule .scheduleContainer { width: 100%; /*height: 200px;*/ position: relative; }
+.schedule .scheduleContainer .scheduleList, .schedule .scheduleContainer .almanac { width: 100%; position: absolute; top: 0px; left: 0px; }
+.schedule .scheduleContainer .scheduleBg {/*没有设置日程背景*/ width: 100%; height: 200px; box-sizing: border-box; padding-top: 5%; }
+.schedule .scheduleContainer .scheduleBg .bg { width: 100%; height: 68px; background: url('../../imgs/common/icon-NoContent.png') no-repeat center center; background-size: contain; }
+.schedule .scheduleContainer .scheduleBg .text a { display: block; text-align: center; height: 36px; line-height: 36px; font-size: 16px; }
+.schedule .scheduleContainer .scheduleBg .text p { text-align: center; }
+.schedule .scheduleList p {/*日程内容*/ padding: 5px 3% 5px 1%; height: 20px; line-height: 20px; }
+.schedule .scheduleContainer .scheduleList p .time { display: block; width: 13%; height: 100%; float: left; text-align: right; margin-right: 3%; }
+.schedule .scheduleContainer .scheduleList p .matter { display: block; float: left; width: 50%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.schedule .scheduleContainer .scheduleList p .partner { float: right; width: 19%; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 2px; }
+.schedule .scheduleContainer .scheduleList p .num { float: right; text-align: right; }
+.schedule .scheduleContainer .almanac { width: 100%; position: absolute; top: 0px; left: 100%; }
+.schedule .scheduleContainer .almanac .privateAlmanac { height: auto; width: 100%; margin-bottom: 10px; }
+.schedule .scheduleContainer .almanac .title { height: 26px; padding-left: 2%; line-height: 26px; color: #ccc; margin-bottom: 4px; position: relative; }
+.schedule .scheduleContainer .almanac .title .alterBirthday { display: block; height: 100%; width: auto; text-align: center; ; float: right; margin-right: 2%; }
+.schedule .scheduleContainer .almanac .title #alterBirthday { height: 100%; width: 70px; position: absolute; top: 0px; right: 2%; opacity: 0; }
+.schedule .almanac .alCon { width: 100%; height: auto; position: relative; overflow: hidden; }
+.schedule .almanac .privateAlmanac .alCon .alConBg, .schedule .almanac .privateAlmanac .alCon .content { width: 100%; height: auto; text-align: center; overflow: hidden; }
+.schedule .almanac .privateAlmanac .alCon { font-size: 14px; height: auto; }
+.schedule .almanac .privateAlmanac .alCon .prevate { line-height: 70px; }
+.schedule .almanac .alConBg #birthday { position: absolute; top: 20px; left: 0px; width: 100%; height: 50px; opacity: 0; }
+.schedule .almanac .alCon .conLeft { float: left; width: 10%; padding-left: 2%; height: 100%; text-align: left; }
+.schedule .almanac .alCon .conLeft p { height: 35px; line-height: 35px; color: #00CC00; }
+.schedule .almanac .alCon .conRight { width: 86%; min-height: 70px; line-height: 35px; text-align: left; float: left; }
+.schedule .almanac .alCon .conRight span { padding-right: 10px; }
 /*公众黄历*/
-.schedule .publicAlmanac .alCon .suitable,.schedule .publicAlmanac .alCon .taboo{
-    width:100%;
-    height:auto;
-    line-height: 35px;
-    overflow: hidden;
-}
-.schedule .publicAlmanac .alCon .suitableText,.schedule .publicAlmanac .alCon .tabooText{
-    width:10%;
-    padding-left: 2%;
-    height:100%;
-    text-align: left;
-    float: left;
-}
-.schedule .publicAlmanac .alCon .pubSuitMatter,.schedule .publicAlmanac .alCon .tabooMatter{
-    min-height: 35px;
-    width:86%;
-    float: left;
-}
-.suitableText{
-    color: #00CC00;
-}
-.tabooText{
-    color: #f00;
-}
+.schedule .publicAlmanac .alCon .suitable, .schedule .publicAlmanac .alCon .taboo { width: 100%; height: auto; line-height: 35px; overflow: hidden; }
+.schedule .publicAlmanac .alCon .suitableText, .schedule .publicAlmanac .alCon .tabooText { width: 10%; padding-left: 2%; height: 100%; text-align: left; float: left; }
+.schedule .publicAlmanac .alCon .pubSuitMatter, .schedule .publicAlmanac .alCon .tabooMatter { min-height: 35px; width: 86%; float: left; }
+.suitableText { color: #00CC00; }
+.tabooText { color: #f00; }
 /*吉日查询*/
-.lucky{
-    position: fixed;
-    left:0px;
-    bottom: -265px;
-    width:100%;
-    background:rgba(18,16,26,0.95);
-    z-index: 999999989;
-}
-.lucky .title{
-    height:30px;
-    line-height:30px;
-    text-align: center;
-    font-size: 16px;
-}
-.lucky .luckyWord{
-    width:100%;
-    height:auto;
-    -webkit-box-sizing:border-box;
-    box-sizing:border-box;
-    font-size: 12px;
-}
-.lucky .luckyWord .word_row{
-    display: -webkit-box;
-    display: box;
-}
-.lucky .luckyWord .word_row .word_item{
-    -webkit-box-flex:1;
-    box-flex:1;
-    padding: 5px;
-}
-.word_item span{
-    display: block;
-    width:40px;
-    height:40px;
-    line-height:40px;
-    background:rgba(255,255,255,0.2);
-    border-radius: 100%;
-    -webkit-border-radius: 100%;
-    margin: 0 auto;
-    text-align: center;
-}
-.word_item span.active{
-    background:rgba(102,204,204,0.9);
-}
-.lucky .close{
-    height:30px;
-    width:30px;
-    margin: 0 auto;
-    background: url("../../imgs/common/close.png") no-repeat center center;
-    background-size: cover;
-    margin-bottom: 5px;
-    overflow: hidden;
-}
-.lucky02{
-    width: 100%;
-    position: fixed;
-    left:0px;
-    bottom: -64px;
-    z-index: 10000;
-}
-.lucky02 .frame{
-    width: 100%;
-    height: 64px;
-    background-color: #333333;
-    position: relative;
-    overflow: hidden;
-}
-.frame .inFrame{
-    height: 100%;
-    position: absolute;
-    top:0px;
-    display: -webkit-box;
-    display: box;
-}
-.frame .inFrame .word_item{
-    -webkit-box-flex:1;
-    box-flex:1;
-    font-size: 12px;
-    padding-top: 12px;
-}
-.lucky02 .close02{
-    height:30px;
-    width:30px;
-    background: url("../../imgs/common/close.png") no-repeat center center;
-    background-size: cover;
-    position: fixed;
-    left: 5px;
-    bottom:-30px;
-    overflow: hidden;
-}
-.date_row .date_current, .date_row .date_today {
-    background: none
-}
-.date_item{
-    transiton: all 0.4s;
-    -moz-transition: all 0.4s;
-    -webkit-transition: all 0.4s;
-    -ms-transition: all 0.4s;
-}
-.date_item .date_day {
-    font-size: 16px;
-}
-.date_item .date_lunar {
-    margin-top: 3px;
-}
-.date_row .date_item:after, .date_row .date_item:before {
-    display: block;
-    opacity: 0;
-    content: "";
-    position: absolute;
-    width: 42px;
-    height: 42px;
-    left: 50%;
-    margin-left: -23px;
-    top: 0;
-    border: 2px solid #12101A;
-    border-radius: 100%;
-    transiton: all 0.4s;
-    -moz-transition: all 0.4s;
-    -webkit-transition: all 0.4s;
-    -ms-transition: all 0.4s;
-}
-.date_row .date_current:before {
-    border: 2px solid #fff;
-    z-index: 1;
-    opacity: 1
-}
-.date_row .date_today:after {
-    border: 2px solid #bbb;
-    opacity: 0.3
-}
-.Not-lucky {
-    opacity: 0.3;
-    transiton: all 0.4s;
-    -moz-transition: all 0.4s;
-    -webkit-transition: all 0.4s;
-    -ms-transition: all 0.4s;
-}
-.Not-lucky:before {
-    border: 2px solid #12101A !important;
-    opacity: 0 !important
-}
+.lucky { position: fixed; left: 0px; bottom: -265px; width: 100%; background: rgba(18,16,26,0.95); z-index: 999999989; }
+.lucky .title { height: 30px; line-height: 30px; text-align: center; font-size: 16px; }
+.lucky .luckyWord { width: 100%; height: auto; -webkit-box-sizing: border-box; box-sizing: border-box; font-size: 12px; }
+.lucky .luckyWord .word_row { display: -webkit-box; display: box; }
+.lucky .luckyWord .word_row .word_item { -webkit-box-flex: 1; box-flex: 1; padding: 5px; }
+.word_item span { display: block; width: 40px; height: 40px; line-height: 40px; background: rgba(255,255,255,0.2); border-radius: 100%; -webkit-border-radius: 100%; margin: 0 auto; text-align: center; }
+.word_item span.active { background: rgba(102,204,204,0.9); }
+.lucky .close { height: 30px; width: 30px; margin: 0 auto; background: url("../../imgs/common/close.png") no-repeat center center; background-size: cover; margin-bottom: 5px; overflow: hidden; }
+.lucky02 { width: 100%; position: fixed; left: 0px; bottom: -64px; z-index: 10000; }
+.lucky02 .frame { width: 100%; height: 64px; background-color: #333333; position: relative; overflow: hidden; }
+.frame .inFrame { height: 100%; position: absolute; top: 0px; display: -webkit-box; display: box; }
+.frame .inFrame .word_item { -webkit-box-flex: 1; box-flex: 1; font-size: 12px; padding-top: 12px; }
+.lucky02 .close02 { height: 30px; width: 30px; background: url("../../imgs/common/close.png") no-repeat center center; background-size: cover; position: fixed; left: 5px; bottom: -30px; overflow: hidden; }
+.date_row .date_current, .date_row .date_today { background: none }
+.date_item { transiton: all 0.4s; -moz-transition: all 0.4s; -webkit-transition: all 0.4s; -ms-transition: all 0.4s; }
+.date_item .date_day { font-size: 16px; }
+.date_item .date_lunar { margin-top: 3px; }
+.date_row .date_item:after, .date_row .date_item:before { display: block; opacity: 0; content: ""; position: absolute; width: 42px; height: 42px; left: 50%; margin-left: -23px; top: 0; border: 2px solid rgba(0,0,0,0); border-radius: 100%; transiton: all 0.4s; -moz-transition: all 0.4s; -webkit-transition: all 0.4s; -ms-transition: all 0.4s; }
+.date_row .date_current:before { border: 2px solid #66cccc; z-index: 1; opacity: 1 }
+.date_row .date_today:after { border: 2px solid #bbb; opacity: 0.3 }
+.Not-lucky { opacity: 0.3; transiton: all 0.4s; -moz-transition: all 0.4s; -webkit-transition: all 0.4s; -ms-transition: all 0.4s; }
+.Not-lucky:before { border: 2px solid #12101A !important; opacity: 0 !important }

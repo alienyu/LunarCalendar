@@ -13,7 +13,7 @@ var fuc = {
         screenWidth :$(document.body).width()//获取屏幕宽度
     },
     init: function() {
-        pageLoad({backgroundColor: "#12101A"});
+        pageLoad({backgroundColor: "#fff"});
         this.renderPage();
         this.bindEvent();
     },
