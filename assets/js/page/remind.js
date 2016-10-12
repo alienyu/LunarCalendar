@@ -33,6 +33,7 @@ var fuc = {
         this.renderPage();
         this.getTags();
         this.bindEvent();
+        Dom.fixedTextareaBlur();
     },
 
     selectTimes: function (obj1, obj2) {
@@ -362,7 +363,9 @@ var fuc = {
         $('.delete').on("tap",function () {
             $('#dialog1').fadeIn();
             $('.confirm').on('touchend', function (event) {//点击确定按钮
-                $('#dialog1').fadeOut();
+                setTimeout(function(){
+                    $('#dialog1').fadeOut();
+                },300);
                 $('#loadingToast').fadeIn();//显示loading
                 $.get("http://www.li-li.cn/llwx/event/del", {"eventId": that.config.eventId}, function (data) {
                     if (data.code == 0) {//删除成功
@@ -384,7 +387,9 @@ var fuc = {
                 event.preventDefault();
             });
             $('.default').on('touchend', function (event) {//点击取消按钮
-                $('#dialog1').fadeOut();
+                setTimeout(function(){
+                    $('#dialog1').fadeOut();
+                },300);
                 event.preventDefault();
             });
         })

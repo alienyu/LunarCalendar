@@ -230,11 +230,22 @@ var Ajax = {
                 if(data.code ==0){
                     if(data.data && data.data.length>0){
                         var weatherList = data.data[0];
-                        var html = "";
-                        if(weatherList.qlty){
-                            html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
-                        }else{
-                            html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                        var html = "",
+                            sunUp = weatherList.sunUp,
+                            sunDown = weatherList.sunDown;
+                        var dayOrNight = Dom.dayOrnight(sunUp,sunDown);
+                        if(dayOrNight == "dayTime") {//白天
+                            if(weatherList.qlty){
+                                html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
+                            }else{
+                                html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                            }
+                        }else if(dayOrNight == "nightTime"){//黑夜
+                            if(weatherList.qlty){
+                                html = weatherList.city+"&nbsp;"+weatherList.nTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
+                            }else{
+                                html = weatherList.city+"&nbsp;"+weatherList.nTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                            }
                         }
                         $('.weather .itemCon').html("").append(html);
                     }else{
@@ -259,11 +270,22 @@ var Ajax = {
                 if(data.code ==0){
                     if(data.data){
                         var weatherList = data.data;
-                        var html = "";
-                        if(weatherList.qlty){
-                            html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
-                        }else{
-                            html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                        var html = "",
+                            sunUp = weatherList.sunUp,
+                            sunDown = weatherList.sunDown;
+                        var dayOrNight = Dom.dayOrnight(sunUp,sunDown);
+                        if(dayOrNight == "dayTime"){
+                            if(weatherList.qlty){
+                                html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
+                            }else{
+                                html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                            }
+                        }else if(dayOrNight == "nightTime"){
+                            if(weatherList.qlty){
+                                html = weatherList.city+"&nbsp;"+weatherList.nTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
+                            }else{
+                                html = weatherList.city+"&nbsp;"+weatherList.nTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                            }
                         }
                         $('.weather .itemCon').html("").append(html);
                     }else{
