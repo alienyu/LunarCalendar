@@ -217,11 +217,11 @@ var fuc = {
         });
         //点击、滑动事件
         $('.con').on('swipeUp', function (event) {
-            $('body').html("").css("background", "#12101A");
+            $('body').html("").css("background", "#fff");
             window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/calendar.html");
         });
         $('.down').on('tap', function (event) {
-            $('body').html("").css("background", "#12101A");
+            $('body').html("").css("background", "#fff");
             window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/calendar.html");
         });
         $('.addEvent').on('tap', function () {

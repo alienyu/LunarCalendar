@@ -127,7 +127,7 @@ var Lunar = {
 
         /*----------------------------------点击吉日列表中的选项---------------------------*/
         this.btns.on('tap', function (event) {
-            $('#loadingToast').show();//显示loading效果
+            $('#loadingToast').fadeIn();//显示loading效果
             //var dateItem = getDateList();
             that.btns.each(function () {
                 $(this).removeClass("active");
@@ -152,7 +152,7 @@ var Lunar = {
 
         /*--------------------点击一行吉日列表中的吉日选项，合适的日期-------------------------*/
         this.btnsB.on("tap", function (event) {
-            $('#loadingToast').show();//显示loading效果
+            $('#loadingToast').fadeIn();//显示loading效果
             that.btnsB.each(function () {
                 $(this).removeClass("active");
             });
@@ -338,7 +338,7 @@ var Lunar = {
         }
         /*------------若选择了吉日，则查找对应的日期。点击日期，吉日列表显示成一行---------------*/
         if (that.selectWord != null && that.selectWord != "") {
-            $('#loadingToast').show();//隐藏loading
+            $('#loadingToast').fadeIn();//隐藏loading
             this.showLuckyDay(that.selectWord);
             this.luckyWordConDown();
         }
