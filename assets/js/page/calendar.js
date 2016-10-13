@@ -78,7 +78,7 @@ var fuc = {
                     that.config.isGoodDay=false;
                     $('.lucky').animate({'bottom': '0px'}, 500);					
                 }
-                $('#loadingToast').show();//显示loading
+                $('#loadingToast').fadeIn();//显示loading
                 var selectedDate = inst.getVal();//获取选择时间的标准形式
                 var selectedTime = inst._tempValue;//获取选择时间 yyyy-mm-dd
                 $('.alConBg').css("display", "none");
@@ -160,8 +160,8 @@ var fuc = {
 				$('.close02').animate({'bottom':'-30px'},500);
 				$('.calendar_add').removeClass("c_a_open");
             } else {
-                $('#dialog2').show().on('click', '.weui_btn_dialog', function () {
-                    $('#dialog2').hide();
+                $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+                    $('#dialog2').fadeOut();
                     that.config.isGoodDay = true;
                     that.selectBirthday.show();
                 });
