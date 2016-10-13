@@ -230,11 +230,22 @@ var Ajax = {
                 if(data.code ==0){
                     if(data.data && data.data.length>0){
                         var weatherList = data.data[0];
-                        var html = "";
-                        if(weatherList.qlty){
-                            html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
-                        }else{
-                            html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                        var html = "",
+                            sunUp = weatherList.sunUp,
+                            sunDown = weatherList.sunDown;
+                        var dayOrNight = Dom.dayOrnight(sunUp,sunDown);
+                        if(dayOrNight == "dayTime") {//白天
+                            if(weatherList.qlty){
+                                html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
+                            }else{
+                                html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                            }
+                        }else if(dayOrNight == "nightTime"){//黑夜
+                            if(weatherList.qlty){
+                                html = weatherList.city+"&nbsp;"+weatherList.nTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
+                            }else{
+                                html = weatherList.city+"&nbsp;"+weatherList.nTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                            }
                         }
                         $('.weather .itemCon').html("").append(html);
                     }else{
@@ -259,11 +270,22 @@ var Ajax = {
                 if(data.code ==0){
                     if(data.data){
                         var weatherList = data.data;
-                        var html = "";
-                        if(weatherList.qlty){
-                            html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
-                        }else{
-                            html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                        var html = "",
+                            sunUp = weatherList.sunUp,
+                            sunDown = weatherList.sunDown;
+                        var dayOrNight = Dom.dayOrnight(sunUp,sunDown);
+                        if(dayOrNight == "dayTime"){
+                            if(weatherList.qlty){
+                                html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
+                            }else{
+                                html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                            }
+                        }else if(dayOrNight == "nightTime"){
+                            if(weatherList.qlty){
+                                html = weatherList.city+"&nbsp;"+weatherList.nTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
+                            }else{
+                                html = weatherList.city+"&nbsp;"+weatherList.nTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃";
+                            }
                         }
                         $('.weather .itemCon').html("").append(html);
                     }else{
@@ -295,121 +317,6 @@ var Ajax = {
                 }
             }
         });
-    },
-    //添加事件页面数据提交  错误
-    eventAdd: function(name,eventType,tagId, startTime, endTime, tipType, tipTime, repeatType, location, address, longitude,latitude, remark,remarkImgs,bgColor,themeId) {
-        $.ajax({
-            type: "post",
-            url: "http://www.li-li.cn/llwx/event/add",
-            data: {
-                "name":name,
-                "eventType":eventType,
-                "tagId":tagId,
-                "startTime":startTime,
-                "endTime":endTime,
-                "tipType":tipType,
-                "tipTime":tipTime,
-                "repeatType":repeatType,
-                "location":location,
-                "address":address,
-                "longitude":longitude,
-                "latitude":latitude,
-                "remark":remark,
-                "remarkImgs":remarkImgs,
-                "bgColor":bgColor,
-                "theme.themeId":themeId
-            },
-            dataType: "json",
-            success: function (data) {
-                //console.log(data);
-                if (data.code == 0) {//提交成功
-                    $('#loadingToast').fadeOut();
-                }else{//提交失败提醒错误信息
-                    $('#loadingToast').fadeOut();
-                    var error = data.msg;
-                    $('#dialog2 .weui-dialog__bd').html(error);
-                    $('#dialog2').show().on('click', '.weui-dialog__btn', function () {
-                        $('#dialog2').off('click').hide();
-                    });
-                }
-            }
-        })
-    },
-    //添加事件页面数据提交  错误
-    eventAdd2: function(name,eventType,tagId, startTime, endTime, tipType, tipTime, repeatType, location,address,longitude,latitude, remark,remarkImgs,bgColor,themeId) {
-        $.ajax({
-            type: "post",
-            url: "http://www.li-li.cn/llwx/event/add",
-            data: {
-                "name":name,
-                "eventType":eventType,
-                "tagId":tagId,
-                "startTime":startTime,
-                "endTime":endTime,
-                "tipType":tipType,
-                "tipTime":tipTime,
-                "repeatType":repeatType,
-                "location":location,
-                "address":address,
-                "longitude":longitude,
-                "latitude":latitude,
-                "remark":remark,
-                "remarkImgs":remarkImgs,
-                "bgColor":bgColor,
-                "theme.themeId":themeId
-            },
-            dataType: "json",
-            async: false,
-            success: function (data) {
-                if (data.code == 0) {
-                    eventId = data.data;
-                }else{//提交失败提醒错误信息
-                    var error = data.msg;
-                    $('#dialog2 .weui-dialog__bd').html(error);
-                    $('#dialog2').show().on('click', '.weui-dialog__btn', function () {
-                        $('#dialog2').off('click').hide();
-                    });
-                }
-            }
-        })
-    },
-    //修改事件页面数据提交
-    eventModify: function(eventId,name,tagId, startTime, endTime, tipType, tipTime, repeatType, location,address,longitude,latitude, remark,remarkImgs,bgColor,themeId) {
-        $.ajax({
-            type: "post",
-            url: "http://www.li-li.cn/llwx/event/modify",
-            data: {
-                "eventId":eventId,
-                "name":name,
-                "tagId":tagId,
-                "startTime":startTime,
-                "endTime":endTime,
-                "tipType":tipType,
-                "tipTime":tipTime,
-                "repeatType":repeatType,
-                "location":location,
-                "address":address,
-                "longitude":longitude,
-                "latitude":latitude,
-                "remark":remark,
-                "remarkImgs":remarkImgs,
-                "bgColor":bgColor,
-                "theme.themeId":themeId
-            },
-            dataType: "json",
-            success: function (data) {
-                if (data.code == 0) {
-                    $('#loadingToast').fadeOut();
-                } else {//修改失败弹出提示框
-                    $('#loadingToast').fadeOut();
-                    var error = data.msg;
-                    $('#dialog2 .weui_dialog_bd').html(error);
-                    $('#dialog2').show().on('click', '.weui-dialog__btn', function () {
-                        $('#dialog2').off('click').hide();
-                    });
-                }
-            }
-        })
     }
 }
 

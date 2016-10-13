@@ -70,6 +70,7 @@ var fuc = {
         this.initMap();
         this.searchNearByResult();
         this.initDropLoad();
+        Dom.fixedTextareaBlur();
     },
 
     selectTimes: function (obj1, obj2) {
@@ -681,27 +682,24 @@ var fuc = {
             event.preventDefault();
         });
         $('.remarkShadow .finished').on("touchend",function (event) {
-            //$("#form").find(".new_box").remove();
-            //var forms=document.getElementById("form");
-            //if (forms.length > 0) {
-            //    for (var i = 0; i <forms.length; i++) {
-            //        var fileData = new FormData(forms[i]);
-            //        $.ajax({
-            //            type: "post",
-            //            url: "http://www.li-li.cn/llwx/file/upload",
-            //            data: fileData,
-            //            dataType: "json",
-            //            cache: false,
-            //            processData: false,
-            //            contentType: false,
-            //            async: false,
-            //            success: function (data) {
-            //                that.config.remarkImgs = that.config.remarkImgs + "," + data.data;
-            //            }
-            //        })
+            $("#form").find(".new_box").remove();
+            var fileData = new FormData($("#form")[0]);
+            console.log(fileData);
+            //$.ajax({
+            //    type: "post",
+            //    url: "http://www.li-li.cn/llwx/file/upload",
+            //    data: fileData,
+            //    dataType: "json",
+            //    cache: false,
+            //    processData: false,
+            //    contentType: false,
+            //    async: false,
+            //    success: function (data) {
+            //        console.log(data);
+            //        that.config.remarkImgs = that.config.remarkImgs + "," + data.data;
             //    }
-            //    that.config.remarkImgs = that.config.remarkImgs.substr(1);
-            //}
+            //});
+            that.config.remarkImgs = that.config.remarkImgs.substr(1);
             that.config.remarkText = $('#remarkText').val().replace(/\n/g,"<br>");
             //console.log(that.config.remarkText);
             $('.remarkCon .remarkText').removeClass("ccc").html(that.config.remarkText);
@@ -839,7 +837,9 @@ var fuc = {
             $('.confirm').on('touchend', function (event) {//点击确定按钮
                 event.preventDefault();
                 event.stopPropagation();
-                $('#dialog1').fadeOut();
+                setTimeout(function(){
+                    $('#dialog1').fadeOut();
+                },300);
                 $('#loadingToast').fadeIn();//显示loading
                 $.get("http://www.li-li.cn/llwx/event/del", {"eventId": that.config.eventId}, function (data) {
                     if (data.code == 0) {//删除成功
@@ -862,35 +862,37 @@ var fuc = {
             $('.default').on('touchend', function (event) {//点击取消按钮
                 event.preventDefault();
                 event.stopPropagation();
-                $('#dialog1').fadeOut();
+                setTimeout(function(){
+                    $('#dialog1').fadeOut();
+                },300);
             });
         });
 
         /*上传图片*/
-        //$("#form").on("change", ".img_upload_btn", function (e) {
-        //    that.btnDom = $(e.target);
-        //    that.boxDom = $(e.target).parent();
-        //    var file = e.target.files[0];
-        //    var reader = new FileReader();
-        //    reader.addEventListener("load", function () {
-        //        var imgSrc = reader.result;
-        //        var html = "<img src='" + imgSrc + "' class='img_upload_result' />";
-        //        that.boxDom.append(html).removeClass("new_box").find("a").remove();
-        //        if (that.checkBoxNum() && $(".new_box").length < 1) {
-        //            var newUploadBox = '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo"><a href="javascript:;">+</a></div>';
-        //            $(".img_upload_box").last().after(newUploadBox);
-        //        }
-        //    }, false);
-        //    reader.readAsDataURL(file);
-        //});
-        //
-        //$("#form").on("tap", ".img_upload_result", function (e) {
-        //    $(e.target).parent().remove();
-        //    if (that.checkBoxNum() && $(".new_box").length < 1) {
-        //        var newUploadBox = '<div class="img_upload_box"><input type="file" class="img_upload_btn" name="photo_' + (that.btnIndex + 1) + '"><a href="javascript:;">+</a></div>';
-        //        $(".img_upload_box").last().after(newUploadBox);
-        //    }
-        //});
+        $("#form").on("change", ".img_upload_btn", function (e) {
+            that.btnDom = $(e.target);
+            that.boxDom = $(e.target).parent();
+            var file = e.target.files[0];
+            var reader = new FileReader();
+            reader.addEventListener("load", function () {
+                var imgSrc = reader.result;
+                var html = "<img src='" + imgSrc + "' class='img_upload_result' />";
+                that.boxDom.append(html).removeClass("new_box").find("a").remove();
+                if (that.checkBoxNum() && $(".new_box").length < 1) {
+                    var newUploadBox = '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo"><a href="javascript:;">+</a></div>';
+                    $(".img_upload_box").last().after(newUploadBox);
+                }
+            }, false);
+            reader.readAsDataURL(file);
+        });
+
+        $("#form").on("tap", ".img_upload_result", function (e) {
+            $(e.target).parent().remove();
+            if (that.checkBoxNum() && $(".new_box").length < 1) {
+                var newUploadBox = '<div class="img_upload_box"><input type="file" class="img_upload_btn" name="photo_' + (that.btnIndex + 1) + '"><a href="javascript:;">+</a></div>';
+                $(".img_upload_box").last().after(newUploadBox);
+            }
+        });
     },
 
     /*----------初始化地图----------------------*/

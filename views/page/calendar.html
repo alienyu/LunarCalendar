@@ -9,41 +9,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <!--<link rel="stylesheet" type="text/css" href="css/mobiscroll.custom-3.0.0-beta4.min.css">-->
-    <!--<link rel="stylesheet" type="text/css" href="css/common.css">-->
-    <!--<link rel="stylesheet" type="text/css" href="css/style.css">-->
-    <!--<link rel="stylesheet" type="text/css" href="css/weui.min.css">-->
-    <!--<script src="js/jquery-1.9.1.min.js"></script>-->
 </head>
 <body>
 <header class="toolbar" id="toolbar">
-    <!--<script>-->
-        <!--jQuery.LLloadingCommon = {-->
-            <!--PageLoading: function (options) {-->
-                <!--var defaults = {opacity: 1, backgroundColor: "#000", delayTime: 500, zindex: 999, sleep: 500};-->
-                <!--var options = $.extend(defaults, options);-->
-                <!--var _PageHeight = document.documentElement.clientHeight, _PageWidth = document.documentElement.clientWidth;-->
-                <!--var _LLLoadingHtml = '<div id="loadingPage" style="position:fixed;left:0;top:0;_position: absolute;width:100%;height:' + _PageHeight + 'px;background:' + options.backgroundColor + ';opacity:' + options.opacity + ';filter:alpha(opacity=' + options.opacity * 100 + ');z-index:' + options.zindex + ';"><div class="ll_loading_con"><div class="ll-loading"><div class="ll-load-inner"><div class="ll-load-container"><div class="ll-load-scale-multiple la-2x"><div></div><div></div><div></div></div></div></div><div class="ll-load-logo"><span class="ll-logo-1"></span><span class="ll-logo-2"></span><span class="ll-logo-3"></span></div></div></div></div>';-->
-                <!--$("body").append(_LLLoadingHtml);-->
-                <!--document.onreadystatechange = PageLoaded;-->
-                <!--function PageLoaded() {-->
-                    <!--if (document.readyState == "complete") {-->
-                        <!--var loadingMask = $('#loadingPage');-->
-                        <!--setTimeout(function () {-->
-                            <!--loadingMask.animate({"opacity": 0}, options.delayTime, function () {-->
-                                <!--$(this).remove()-->
-                            <!--})-->
-                        <!--}, options.sleep)-->
-                    <!--}-->
-                <!--};-->
-            <!--}-->
-        <!--}-->
-        <!--$.LLloadingCommon.PageLoading({backgroundColor: "#12101A"});-->
-    <!--</script>-->
-    <h1 class="cff opa5"></h1>
+    <h1 class="opa5"></h1>
     <span class="luckyDay c6c border6c">查询吉日</span>
     <span class="today c6c border6c" style="display: none">今</span>
-    <!--<div class="action"><a href="javascript:;" class="addEvent c6c">+添加事件</a></div>-->
 </header>
 <div class="wrapper" id="wrapper">
     <div class="date_row date_week">
@@ -64,7 +35,7 @@
         </div>
     </div>
 </div>
-<div class="schedule cff08">
+<div class="schedule">
     <h1><span class="scheBtn active">日程事件</span><span class="almaBtn">老黄历</span></h1>
     <div class="scheduleContainer">
         <div class="scheduleList"><!--日程-->
@@ -180,12 +151,10 @@
     <div id="btnDetail" class="btn_detail">
         <div>
             <span>活动</span>
-            <!--<a href="http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2factivity.html" class="activity"></a>-->
             <a href="javascript:;" class="activity"></a>
         </div>
         <div>
             <span>提醒</span>
-            <!--<a href="http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2fremind.html" class="remind"></a>-->
             <a href="javascript:;" class="remind"></a>
         </div>
     </div>
@@ -205,21 +174,20 @@
         </p>
 </script>
 <!--点击吉日，若用户未设置生日，则弹出提示框-->
-<div class="weui_dialog_alert" id="dialog2" style="display: none;">
-    <div class="weui_mask"></div>
-    <div class="weui_dialog">
-        <div class="weui_dialog_hd"><strong class="weui_dialog_title">温馨提示</strong></div>
-        <div class="weui_dialog_bd">填写您的生日后才可查看吉日</div>
-        <div class="weui_dialog_ft">
-            <a href="javascript:;" class="weui_btn_dialog primary">确定</a>
+<div id="dialog2" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__bd">填写您的生日后才可查看吉日</div>
+        <div class="weui-dialog__ft">
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
         </div>
     </div>
 </div>
 <!--数据加载时的loading-->
-<div id="loadingToast" class="weui_loading_toast" style="display:none;">
-    <div class="weui_mask_transparent"></div>
-    <div class="weui_toast">
-        <div class="ll-loading" style="top:40%;">
+<div id="loadingToast" style="opacity:0;display:none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <div class="ll-loading">
             <div class="ll-load-inner">
                 <div class="ll-load-container">
                     <div class="ll-load-scale-multiple la-2x">
@@ -235,7 +203,7 @@
                 <span class="ll-logo-3"></span>
             </div><!-- end ll-loading -->
         </div><!-- end ll-loading -->
-        <p class="weui_toast_content">数据加载中</p>
+        <!--<p class="weui-toast__content">数据加载中</p>-->
     </div>
 </div>
 <!--横屏-->
@@ -244,15 +212,5 @@
         <div class="mod-orient-layer__desc">为了更好的体验，请使用竖屏浏览</div>
     </div>
 </div>
-<!--<script src="../../assets/js/common/mobiscroll.custom-3.0.0-beta4.min.js"></script>-->
-<!--<script type="text/javascript" src="js/zepto.min.js"></script>-->
-<!--<script src="../../assets/js/common/transCalendar.js"></script>-->
-<!--<script src="../../assets/js/common/ajax.js"></script>-->
-<!--<script type="text/javascript" src="../../assets/js/common/hammer.min.js"></script>-->
-<!--<script type="text/javascript" src="../../assets/js/common/jquery.hammer.min.js"></script>-->
-<!--<script type="text/javascript" src="../../assets/js/common/LunarCalendar.js"></script>-->
-<!--<script type="text/javascript" src="../../assets/js/common/calendar.js"></script>-->
-<!--<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>-->
-<!--<script src="../../assets/js/common/wenxinInit.js"></script>-->
 </body>
 </html>

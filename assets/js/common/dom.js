@@ -297,6 +297,18 @@ var Dom = {
             isToday: isToday
         }
     },
+    //调用天气接口时，判断当前是白天还是黑夜
+    dayOrnight:function(sunUp,sunDown){
+        var date = new Date();
+        var hours = date.getHours();
+        var sunUpArr = sunUp.split(":"),sunDownArr=sunDown.split(":");
+        var sunUpHour = parseInt(sunUpArr[0]),sunDownHour=parseInt(sunDownArr[0]);
+        if(hours>sunUpHour&&hours<sunDownHour){
+            return "dayTime";
+        }else{
+            return "nightTime";
+        }
+    },
     /*--------------textarea高度自适应---------------*/
     autoTextarea: function (elem, extra, maxHeight) {
         extra = extra || 0;
@@ -354,6 +366,21 @@ var Dom = {
         addEvent('input', change);
         addEvent('focus', change);
         change();
+    },
+    //点击textarea以外的位置时，textarea失去焦点，软键盘消失
+    fixedTextareaBlur:function(){
+        var beforelpt = null;
+        $('textarea').on("focus",function(e){
+            beforelpt = this;
+        });
+        $(document).on("tap",function(e){
+            if(e.target.nodeName.toLocaleLowerCase()!="textarea"){
+                if(beforelpt){
+                    beforelpt.blur();
+                    beforelpt = null;
+                }
+            }
+        })
     }
 }
 
