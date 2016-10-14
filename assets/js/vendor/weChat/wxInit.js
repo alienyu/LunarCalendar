@@ -27,8 +27,6 @@ var wxConfig = {
                     noncestr = data.noncestr;
                     signature = data.signature;
                     timestamp = data.timestamp;
-
-
                     wx.config({
                         debug: false,
                         //appId: "wx82c10b61c95e9f30",//正式

@@ -63,7 +63,7 @@ var fuc = {
                 Ajax.getPersonalFortune(selectedTimeArr[0]);
                 if(!Dom.smallerDate(selectedTimeArr[0])){
                     $('.weather').css("display","-webkit-box");
-                    Ajax.getWeather(selectedTimeArr[0]);
+                    Ajax.getWeather(selectedTimeArr[0],selectedTimeArr[1]);
                 }else{
                     $('.weather').css("display","none");
                 }
@@ -197,21 +197,22 @@ var fuc = {
         wx.wxConfig(1);
         $('.eventCon').css("visibility","visible");
         Dom.autoTextarea(document.getElementById("eventTitle"));
+        /*---------------------------------开始时间的日期选择功能---------------------------------*/
+        this.selectTimes('#startTime', '.startCon').setVal(new Date(that.setInitTime($('.startCon'))));
         if (that.config.eventId) {
             that.getData();
         } else {
             /*---------------------开始时间的时间显示---------------------*/
             $('.startCon').html(that.config.timeArr);
             Ajax.getPersonalFortune(Dom.getDate(that.config.time));
+            var dates = $('.startCon').attr("id");
             if(!Dom.smallerDate(that.config.time)){
                 $('.weather').css("display","-webkit-box");
-                Ajax.getWeather(Dom.getDate(that.config.time));
+                Ajax.getWeather(Dom.getDate(dates),Dom.getHourMinute(dates));
             }else{
                 $('.weather').css("display","none");
             }
         }
-        /*---------------------------------开始时间的日期选择功能---------------------------------*/
-        this.selectTimes('#startTime', '.startCon').setVal(new Date(that.setInitTime($('.startCon'))));
     },
     /*--------------页面内容初始化------------------*/
     getData: function () {
@@ -241,7 +242,7 @@ var fuc = {
                         Ajax.getPersonalFortune(Dom.getDate(eventList.event.startTime));
                         if(!Dom.smallerDate(Dom.getDate(eventList.event.startTime))){
                             $('.weather').css("display","-webkit-box");
-                            Ajax.getWeather(Dom.getDate(eventList.event.startTime));
+                            Ajax.getWeather(Dom.getDate(eventList.event.startTime),Dom.getHourMinute(eventList.event.startTime));
                         }else{
                             $('.weather').css("display","none");
                         }
@@ -269,7 +270,7 @@ var fuc = {
         $('.showAll').on("tap",function () {
             if ($('.showAll span').attr("class") == "active") {
                 $('.showAll span').removeClass("active");
-                $('.tipsCon').animate({"height": "80px"}, 300);
+                $('.tipsCon').animate({"height": "94px"}, 300);
             } else {
                 $('.showAll span').addClass("active");
                 $('.tipsCon').animate({"height": "auto"}, 300);

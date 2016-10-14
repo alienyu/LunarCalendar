@@ -298,12 +298,11 @@ var Dom = {
         }
     },
     //调用天气接口时，判断当前是白天还是黑夜
-    dayOrnight:function(sunUp,sunDown){
-        var date = new Date();
-        var hours = date.getHours();
+    dayOrnight:function(time,sunUp,sunDown){
+        var hour = parseInt(time.split(":")[0],10);
         var sunUpArr = sunUp.split(":"),sunDownArr=sunDown.split(":");
-        var sunUpHour = parseInt(sunUpArr[0]),sunDownHour=parseInt(sunDownArr[0]);
-        if(hours>sunUpHour&&hours<sunDownHour){
+        var sunUpHour = parseInt(sunUpArr[0],10),sunDownHour=parseInt(sunDownArr[0],10);
+        if(hour>sunUpHour&&hour<sunDownHour){
             return "dayTime";
         }else{
             return "nightTime";

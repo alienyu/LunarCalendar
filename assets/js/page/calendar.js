@@ -53,7 +53,7 @@ var fuc = {
                         var birthdayStr = birthdayArr[0].replace(/\-/g, "/"),
                             birthdayDateArr = birthdayArr[0].split("-");
                         that.selectBirthdayDate('#alterBirthday').setVal(new Date(birthdayStr));
-                        $('.birthday').html("（"+birthdayDateArr[1]+"-"+birthdayDateArr[2]+"）");
+                        $('.birthday').html("（"+birthdayDateArr[1]+"月"+birthdayDateArr[2]+"日）");
                     }
                 }
             }

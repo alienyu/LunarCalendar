@@ -137,7 +137,7 @@ var fuc = {
                         $('.site').css("display", "none");
                         $('.bottom').css("display", "none");
                         if (!Dom.smallerDate(Dom.getDate(dataList.event.startTime))) {
-                            Ajax.getWeather(Dom.getDate(dataList.event.startTime));
+                            Ajax.getWeather(Dom.getDate(dataList.event.startTime),Dom.getHourMinute(dataList.event.startTime));
                         } else {
                             $('.weather').css('display', 'none');
                         }
@@ -154,14 +154,18 @@ var fuc = {
                             that.mapConfig.latitude = dataList.event.latitude;
                             that.mapConfig.longitude = dataList.event.longitude;
                             that.initMap();
-                            if(!Dom.smallerDate(dataList.event.startTime)){//显示天气
-                                $('.weather').css("display","-webkit-box");
-                                Ajax.getLocalWeather(Dom.getDate(dataList.event.startTime),dataList.event.latitude,dataList.event.longitude);
-                            }else{
-                                $('.weather').css("display","none");
-                            }
                         } else {
                             $('.site').css("display", "none");
+                        }
+                        if(!Dom.smallerDate(dataList.event.startTime)){//显示天气
+                            $('.weather').css("display","-webkit-box");
+                            if(dataList.event.location){
+                                Ajax.getLocalWeather(Dom.getDate(dataList.event.startTime),Dom.getHourMinute(dataList.event.startTime),dataList.event.latitude,dataList.event.longitude);
+                            }else{
+                                Ajax.getWeather(Dom.getDate(dataList.event.startTime),Dom.getHourMinute(dataList.event.startTime));
+                            }
+                        }else{
+                            $('.weather').css("display","none");
                         }
                         if (dataList.event.remarkImgs) {//如果有备注
                             var imgArr = dataList.event.remarkImgs.split(","),//图片数组
@@ -190,7 +194,6 @@ var fuc = {
                                     $('.bottom3').css("display", "block").animate({"bottom": "0"}, 200);
                                 });
                             } else {//用户未参与该事件
-                                $('.bottom2 .ownerName').html(dataList.owner.nickName);
                                 $('.bottom1').css("display", "none").animate({"bottom": "-50px"}, 200, function () {
                                     $('.bottom2').css("display", "block").animate({"bottom": "0"}, 200);
                                 });
@@ -312,10 +315,27 @@ var fuc = {
                 }
             });
         });
+        /*----------点击我要发布--------------*/
+        $('.postEvent').click(function(){
+                $('#loadingToast').fadeIn();//显示loading
+                $.get("http://www.li-li.cn/llwx/wx/isSubscribe", function (data) {
+                    if(data.code ==0){
+                        if(data.data){//已经关注我们，跳转至添加活动页面
+                            window.location.href ="http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/activity.html");
+                        }else{//没有关注我们，弹出历历微信号二维码
+                            $('#loadingToast').fadeOut();//隐藏loading
+                            $('.liLi').css("display","block");
+                        }
+                    }
+                });
+        })
         /*--------------------关闭二维码弹层----------------------*/
         $('.wxQrcodeClose').click(function () {
             $('.wxQrcode').css("display", "none");
         });
+        $('.liLi_close').click(function(){
+            $('.liLi').css("display","none");
+        })
         /*------------------点击退出（已加入）-----------------*/
         $('.exit').click(function () {
             $('#dialog1').fadeIn();
