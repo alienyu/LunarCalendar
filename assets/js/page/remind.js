@@ -172,11 +172,15 @@ var fuc = {
             "http://www.li-li.cn/llwx/tag/list",
             {"type": 1, "all": true},
             function (data) {
-                //                console.log(data);
+                                console.log(data);
                 if (data.code == 0) {
                     var list = data.data;
                     for (var i = 0; i < list.length; i++) {//显示标签对应的内容及模板ID
-                        html += template.replace(/{{templateId}}/g, list[i].templateId).replace(/{{tagId}}/g, list[i].tagId).replace(/{{tagName}}/g, list[i].tagName);
+                        if(list[i].template&&list[i].template.templateId){
+                            html += template.replace(/{{templateId}}/g, list[i].template.templateId).replace(/{{tagId}}/g, list[i].tagId).replace(/{{tagName}}/g, list[i].tagName);
+                        }else{
+                            html += template.replace(/{{templateId}}/g, "null").replace(/{{tagId}}/g, list[i].tagId).replace(/{{tagName}}/g, list[i].tagName);
+                        }
                     }
                     $('.tipsCon').html("").append(html);
                     that.hideTags();
