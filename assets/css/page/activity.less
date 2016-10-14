@@ -205,6 +205,47 @@
   overflow: auto;
 }
 /*-------------地图，颜色，备注样式-------------*/
+.tipinput{
+    position: absolute;
+    top: 0;
+    z-index: 10;
+    width: 96%;
+    margin: 1% 2%;
+    border-radius: 5px;
+    line-height: 40px;
+    font-size: 16px;
+    text-indent: 15px;
+    color: #6cc;
+}
+.tipinput.onfocus{
+  border-radius:0px;
+  margin: 0px;
+  width:100%;
+}
+.tipfinished{
+    z-index: 11;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #6cc;
+    padding: 5px 10px;
+}
+.item:first-child{
+  border-top: 1px solid #eee;
+}
+/*
+.mapCon{
+  display:none;
+}
+.imgCon{
+  display:none;
+}
+.addressCon{
+  top:40px;
+}
+*/
 .mapShadow,.colorShadow,.remarkShadow{
   display: none;
 }

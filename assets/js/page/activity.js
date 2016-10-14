@@ -452,6 +452,83 @@ var fuc = {
         });
     },
 
+    mapinput:function(obj, shadow, container){
+        var that = this;
+        $(".tipinput").on("tap", function(){
+            $('.tipinput').addClass("onfocus");
+            $('.mapCon').addClass("hide");
+            $('.imgCon').addClass("hide");
+            $('.tipfinished').removeClass("hide");
+            var listHeight = parseInt($(document.body).height() * 0.9 - 40) + "px";
+            $(".addressCon").css("height", listHeight);
+            $(".addressCon").css("top", "40px");
+        });
+        $(".tipinput").on("input", function(){
+            console.log(this.value);
+            var placeSearch = new AMap.PlaceSearch({
+                //map: map
+            });  //构造地点查询类
+            AMap.event.addListener(placeSearch, "complete", function(data){
+                var poiArr = data.poiList.pois;
+                var lngX = poiArr[0].location.getLng();
+                var latY = poiArr[0].location.getLat();
+                that.mapConfig.map.setCenter(new AMap.LngLat(lngX, latY));
+            });//返回地点查询结果        
+            placeSearch.search(this.value); //关键字查询
+        });
+        $(".tipfinished").on("tap", function(){
+            if($('.tipinput').val() == ""){
+                $('.tipinput').removeClass("onfocus");
+                $('.mapCon').removeClass("hide");
+                $('.imgCon').removeClass("hide");
+                $('.tipfinished').addClass("hide");
+                var listHeight = parseInt($(document.body).height() * 0.9 - 300) + "px";
+                $(".addressCon").css("height", listHeight);
+                $(".addressCon").css("top", "0px");
+                $('.tipinput').val("");
+                return;
+            }
+
+            var jw = $('.addressItem').first().attr('data-jw');
+            that.mapConfig.latitude = jw.split(",")[1];
+            that.mapConfig.longitude = jw.split(",")[0];
+            that.mapConfig.locaName = $('.tipinput').val();
+            that.mapConfig.locaAddress = '';
+            that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
+            $(".siteName").removeClass("ccc").html(that.mapConfig.locaName);
+            $('.siteAddress').html(that.mapConfig.locaAddress);
+            $('.deleteAddress').css("display","block");//显示删除地址按钮
+            //todo 显示选择地点的天气
+            var startTime = $('.startCon').attr("id");
+            if(!Dom.smallerDate(startTime)){
+                $('.weather').css("display","-webkit-box");
+                Ajax.getLocalWeather(Dom.getDate(startTime),that.mapConfig.latitude,that.mapConfig.longitude);
+            }else{
+                $('.weather').css("display","none");
+            }
+            event.preventDefault();
+            event.stopPropagation();
+
+
+            $('.tipinput').removeClass("onfocus");
+            $('.mapCon').removeClass("hide");
+            $('.imgCon').removeClass("hide");
+            $('.tipfinished').addClass("hide");
+            var listHeight = parseInt($(document.body).height() * 0.9 - 300) + "px";
+            $(".addressCon").css("height", listHeight);
+            $(".addressCon").css("top", "0px");
+            $('.tipinput').val("");
+
+            setTimeout(function(){
+                $(".mapShadow .container").animate({"top": "100%"}, 200, function () {
+                    $(this).parent().hide();
+                });
+                $('.shadowBg').fadeOut();
+            },500);
+
+        });
+    },
+
     /*---------------地图弹层效果------------------*/
     mapShadow: function (obj, shadow, container) {
         var that = this;
@@ -665,7 +742,10 @@ var fuc = {
                 }
             )
         });
+
+
         /*----------弹层----------*/
+        that.mapinput($('.site'), $('.mapShadow'), $('.mapShadow .container'));
         that.mapShadow($('.site'), $('.mapShadow'), $('.mapShadow .container'));
         that.shadow($('.colors'), $('.colorShadow'), $('.colorShadow .container'));
         that.shadow($('.remark'), $('.remarkShadow'), $('.remarkShadow .container'));
@@ -683,22 +763,36 @@ var fuc = {
         });
         $('.remarkShadow .finished').on("touchend",function (event) {
             $("#form").find(".new_box").remove();
-            var fileData = new FormData($("#form")[0]);
-            console.log(fileData);
-            //$.ajax({
-            //    type: "post",
-            //    url: "http://www.li-li.cn/llwx/file/upload",
-            //    data: fileData,
-            //    dataType: "json",
-            //    cache: false,
-            //    processData: false,
-            //    contentType: false,
-            //    async: false,
-            //    success: function (data) {
-            //        console.log(data);
-            //        that.config.remarkImgs = that.config.remarkImgs + "," + data.data;
-            //    }
-            //});
+            $('.remarkImgs').empty();
+            that.config.remarkImgs = "";
+            for(var i=0;i<$("#form").children().length;i++){
+                if($($("#form").children()[0]).has('img').length != 0){
+                    var fileData = new FormData();
+                    fileData.append("photo",$('.img_upload_btn').eq(i).prop('files')[0]);
+                    console.log("this is a filedata");
+                    console.log(fileData);
+                    if($('.img_upload_result').eq(i).attr("src") != undefined){
+                        var str = '<img src="'+$('.img_upload_result').eq(i).attr("src")+'" width="50" height="50">';
+                        $('.remarkImgs').append(str);
+                    }
+                    $.ajax({
+                       type: "post",
+                       url: "http://www.li-li.cn/llwx/file/upload",
+                       data: fileData,
+                       dataType: "json",
+                       cache: false,
+                       processData: false,
+                       contentType: false,
+                       async: false,
+                       success: function (data) {
+                           console.log(data);
+                           that.config.remarkImgs = that.config.remarkImgs + "," + data.data;
+                       }
+                    });
+                }
+                
+            }
+
             that.config.remarkImgs = that.config.remarkImgs.substr(1);
             that.config.remarkText = $('#remarkText').val().replace(/\n/g,"<br>");
             //console.log(that.config.remarkText);
@@ -889,7 +983,7 @@ var fuc = {
         $("#form").on("tap", ".img_upload_result", function (e) {
             $(e.target).parent().remove();
             if (that.checkBoxNum() && $(".new_box").length < 1) {
-                var newUploadBox = '<div class="img_upload_box"><input type="file" class="img_upload_btn" name="photo_' + (that.btnIndex + 1) + '"><a href="javascript:;">+</a></div>';
+                var newUploadBox = '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo_' + (that.btnIndex + 1) + '"><a href="javascript:;">+</a></div>';
                 $(".img_upload_box").last().after(newUploadBox);
             }
         });
@@ -993,6 +1087,15 @@ var fuc = {
                     }
                     event.preventDefault();
                     event.stopPropagation();
+
+                    $('.tipinput').removeClass("onfocus");
+                    $('.mapCon').removeClass("hide");
+                    $('.imgCon').removeClass("hide");
+                    $('.tipfinished').addClass("hide");
+                    var listHeight = parseInt($(document.body).height() * 0.9 - 300) + "px";
+                    $(".addressCon").css("height", listHeight);
+                    $(".addressCon").css("top", "0px");
+
                     setTimeout(function(){
                         $(".mapShadow .container").animate({"top": "100%"}, 200, function () {
                             $(this).parent().hide();
