@@ -784,7 +784,7 @@ var fuc = {
             event.preventDefault();
         });
         $('.remarkShadow .finished').on("touchend",function (event) {
-            $("#form").find(".new_box").remove();
+            //$("#form").find(".new_box").remove();
 
             $('.remarkImgs').empty();
             that.config.remarkImgs = "";
@@ -795,7 +795,7 @@ var fuc = {
                     console.log("this is a filedata");
                     console.log(fileData);
                     if($('.img_upload_result').eq(i).attr("src") != undefined){
-                        var str = '<img src="'+$('.img_upload_result').eq(i).attr("src")+'" width="50" height="50">';
+                        var str = '<img src="'+$('.img_upload_result').eq(i).attr("src")+'" width="50px" height="50px">';
                         $('.remarkImgs').append(str);
                     }
                     $.ajax({
