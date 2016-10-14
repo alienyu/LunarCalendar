@@ -484,10 +484,13 @@ var fuc = {
                 //map: map
             });  //构造地点查询类
             AMap.event.addListener(placeSearch, "complete", function(data){
+               // console.log(data);
                 var poiArr = data.poiList.pois;
-                var lngX = poiArr[0].location.getLng();
-                var latY = poiArr[0].location.getLat();
-                that.mapConfig.map.setCenter(new AMap.LngLat(lngX, latY));
+                if(poiArr.length!=0){
+                    var lngX = poiArr[0].location.getLng();
+                    var latY = poiArr[0].location.getLat();
+                    that.mapConfig.map.setCenter(new AMap.LngLat(lngX, latY));
+                }
             });//返回地点查询结果        
             placeSearch.search(this.value); //关键字查询
         });
