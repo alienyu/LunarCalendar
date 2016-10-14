@@ -467,19 +467,34 @@ var fuc = {
         });
     },
 
+    mapinputshow:function(){
+        $('.tipinput').addClass("onfocus");
+        $('.mapCon').addClass("hide");
+        $('.imgCon').addClass("hide");
+        $('.tipfinished').removeClass("hide");
+        var listHeight = parseInt($(document.body).height() * 0.9 - 40) + "px";
+        $(".addressCon").css("height", listHeight);
+        $(".addressCon").css("top", "40px");
+    },
+
+    mapinputhide:function(){
+        $('.tipinput').removeClass("onfocus");
+        $('.mapCon').removeClass("hide");
+        $('.imgCon').removeClass("hide");
+        $('.tipfinished').addClass("hide");
+        var listHeight = parseInt($(document.body).height() * 0.9 - 300) + "px";
+        $(".addressCon").css("height", listHeight);
+        $(".addressCon").css("top", "0px");
+        $('.tipinput').val("");
+    },
+
     mapinput:function(obj, shadow, container){
         var that = this;
         $(".tipinput").on("tap", function(){
-            $('.tipinput').addClass("onfocus");
-            $('.mapCon').addClass("hide");
-            $('.imgCon').addClass("hide");
-            $('.tipfinished').removeClass("hide");
-            var listHeight = parseInt($(document.body).height() * 0.9 - 40) + "px";
-            $(".addressCon").css("height", listHeight);
-            $(".addressCon").css("top", "40px");
+            that.mapinputshow();
         });
         $(".tipinput").on("input", function(){
-            console.log(this.value);
+            // console.log(this.value);
             var placeSearch = new AMap.PlaceSearch({
                 //map: map
             });  //构造地点查询类
@@ -490,26 +505,28 @@ var fuc = {
                     var lngX = poiArr[0].location.getLng();
                     var latY = poiArr[0].location.getLat();
                     that.mapConfig.map.setCenter(new AMap.LngLat(lngX, latY));
+                }else{
+                    $('.listCon').empty();
                 }
             });//返回地点查询结果        
             placeSearch.search(this.value); //关键字查询
         });
         $(".tipfinished").on("tap", function(){
             if($('.tipinput').val() == ""){
-                $('.tipinput').removeClass("onfocus");
-                $('.mapCon').removeClass("hide");
-                $('.imgCon').removeClass("hide");
-                $('.tipfinished').addClass("hide");
-                var listHeight = parseInt($(document.body).height() * 0.9 - 300) + "px";
-                $(".addressCon").css("height", listHeight);
-                $(".addressCon").css("top", "0px");
-                $('.tipinput').val("");
+                that.mapinputhide();
                 return;
             }
 
             var jw = $('.addressItem').first().attr('data-jw');
-            that.mapConfig.latitude = jw.split(",")[1];
-            that.mapConfig.longitude = jw.split(",")[0];
+            if(jw == undefined){
+                that.mapConfig.latitude = 0;
+                that.mapConfig.longitude = 0;
+
+            }else{
+                console.log(jw);
+                that.mapConfig.latitude = jw.split(",")[1];
+                that.mapConfig.longitude = jw.split(",")[0];
+            }   
             that.mapConfig.locaName = $('.tipinput').val();
             that.mapConfig.locaAddress = '';
             that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
@@ -520,7 +537,7 @@ var fuc = {
             var startTime = $('.startCon').attr("id");
             if(!Dom.smallerDate(startTime)){
                 $('.weather').css("display","-webkit-box");
-                Ajax.getLocalWeather(Dom.getDate(startTime),that.mapConfig.latitude,that.mapConfig.longitude);
+                Ajax.getLocalWeather(Dom.getDate(startTime),Dom.getHourMinute(startTime),that.mapConfig.latitude,that.mapConfig.longitude);
             }else{
                 $('.weather').css("display","none");
             }
@@ -528,20 +545,14 @@ var fuc = {
             event.stopPropagation();
 
 
-            $('.tipinput').removeClass("onfocus");
-            $('.mapCon').removeClass("hide");
-            $('.imgCon').removeClass("hide");
-            $('.tipfinished').addClass("hide");
-            var listHeight = parseInt($(document.body).height() * 0.9 - 300) + "px";
-            $(".addressCon").css("height", listHeight);
-            $(".addressCon").css("top", "0px");
-            $('.tipinput').val("");
+            
 
             setTimeout(function(){
                 $(".mapShadow .container").animate({"top": "100%"}, 200, function () {
                     $(this).parent().hide();
                 });
                 $('.shadowBg').fadeOut();
+                that.mapinputhide();
             },500);
 
         });
@@ -556,7 +567,29 @@ var fuc = {
                 $('.shadowBg').fadeIn();
                 shadow.show();
                 container.animate({"top": "10%"}, 200);
-            } else {//获取地址
+                if($(".siteAddress").html()=="" && $(".siteName").html() != "" && $(".siteName").html() != "添加地点" ){
+                    // that.mapinputhsow();
+                    $('.tipinput').addClass("onfocus");
+                    $('.tipinput').val($(".siteName").html());
+                    //console.log('11111111111111')
+                }
+            } else if($(".siteAddress").html()=="" && $(".siteName").html() != "" && $(".siteName").html() != "添加地点" ){
+                // that.mapinputhsow();
+                $('.tipinput').addClass("onfocus");
+                $('.mapCon').addClass("hide");
+                $('.imgCon').addClass("hide");
+                $('.tipfinished').removeClass("hide");
+                var listHeight = parseInt($(document.body).height() * 0.9 - 40) + "px";
+                $(".addressCon").css("height", listHeight);
+                $(".addressCon").css("top", "40px");
+                $('.tipinput').val($(".siteName").html());
+
+                $('.shadowBg').fadeIn();
+                shadow.show();
+                container.animate({"top": "10%"}, 200);
+
+                // console.log('2222222222')
+            }else {//获取地址
                 wx.getWx().getLocation({
                     type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
                     success: function (res) {
@@ -585,6 +618,10 @@ var fuc = {
                 $(this).parent().hide();
             });
             $('.shadowBg').fadeOut();
+
+            that.mapinputhide();
+
+
             event.preventDefault();
             event.stopPropagation();
         });
@@ -1106,13 +1143,8 @@ var fuc = {
                     event.preventDefault();
                     event.stopPropagation();
 
-                    $('.tipinput').removeClass("onfocus");
-                    $('.mapCon').removeClass("hide");
-                    $('.imgCon').removeClass("hide");
-                    $('.tipfinished').addClass("hide");
-                    var listHeight = parseInt($(document.body).height() * 0.9 - 300) + "px";
-                    $(".addressCon").css("height", listHeight);
-                    $(".addressCon").css("top", "0px");
+                    that.mapinputhide();
+
 
                     setTimeout(function(){
                         $(".mapShadow .container").animate({"top": "100%"}, 200, function () {
