@@ -91,18 +91,18 @@
     <div class="blank"></div>
     <!--事件创建人进入页面时底部显示样式-->
     <div class="bottom bottom1">
-        <div class="bottomText ccc fl"></div>
-        <div class="share c6c fr">生成邀请卡</div>
+        <div class="share cff fr">生成邀请卡</div>
     </div>
     <!--未加入事件者进入页面时底部显示样式-->
     <div class="bottom bottom2">
-        <div class="bottomText ccc fl">来自#<span class="ownerName"></span>的邀请</div>
-        <div class="join c6c fr">接受邀请</div>
+        <div class="postEvent fl c6c">我要发布</div>
+        <div class="join cff fr">接受邀请</div>
     </div>
     <!--已加入事件者进入页面时-->
     <div class="bottom bottom3">
-        <div class="exit fl">已接受</div>
-        <div class="share c6c fr">生成邀请卡</div>
+        <div class="postEvent fl c6c">我要发布</div>
+        <div class="share cff fr">生成邀请卡</div>
+        <div class="exit fr opa5 c6c">已接受</div>
     </div>
 </div>
 <!--事件已不存在，则弹出提示-->
@@ -129,6 +129,16 @@
     <div class="qrcodeImgCon">
         <div class="qrcodeImg"></div>
         <p>长按识别二维码<br/>即可参与活动</p>
+    </div>
+</div>
+<!--弹出历历公众号二维码-->
+<div class="liLi">
+    <span class="liLi_close"></span>
+    <div class="liLi_qrcodeImgCon">
+        <div class="liLi_qrcodeImg">
+            <img src="../../assets/imgs/page/newShowEvent/liLy.jpg" alt="">
+        </div>
+        <p>长按识别二维码<br />关注历历LilyCalendar</p>
     </div>
 </div>
 <!--用户退出事件时的弹框提醒-->
@@ -178,7 +188,7 @@
 <div id="loadingToast" style="display:none;">
     <div class="weui-mask_transparent"></div>
     <div class="weui-toast">
-        <div class="ll-loading" style="top:40%;">
+        <div class="ll-loading">
             <div class="ll-load-inner">
                 <div class="ll-load-container">
                     <div class="ll-load-scale-multiple la-2x">
@@ -194,7 +204,7 @@
                 <span class="ll-logo-3"></span>
             </div><!-- end ll-loading -->
         </div><!-- end ll-loading -->
-        <p class="weui-toast__content">数据加载中</p>
+        <!--<p class="weui-toast__content">数据加载中</p>-->
     </div>
 </div>
 <!--邀请对象样式模板-->

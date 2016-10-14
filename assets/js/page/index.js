@@ -26,10 +26,11 @@ var fuc = {
         var tf = function (i) {
             return (i < 10 ? '0' : '') + i
         };
-        var years = d.getFullYear();
-        var months = tf(d.getMonth() + 1);
-        var days = tf(d.getDate());
-        var weeks = d.getDay();
+        var years = d.getFullYear(),
+             months = tf(d.getMonth() + 1),
+            days = tf(d.getDate()),
+            weeks = d.getDay(),
+            hourAndMinute = d.getHours()+":"+ d.getMinutes();
         $('.day').html(days);
         $('.month').html(months + "月");
         $('.lunarCalendar').html(nl);
@@ -145,7 +146,7 @@ var fuc = {
                     var html = "",weatherCode = "",
                         sunUp = weatherList.sunUp,
                         sunDown = weatherList.sunDown;
-                    var dayOrNight = Dom.dayOrnight(sunUp,sunDown);
+                    var dayOrNight = Dom.dayOrnight(hourAndMinute,sunUp,sunDown);
                     if(dayOrNight == "dayTime"){//白天
                         weatherCode = weatherList.dCode;
                         if(weatherList.qlty){

@@ -104,9 +104,13 @@ var fuc = {
                     $('.endCon').attr("id", theId);
                     that.selectTimes('#endTime', '.endCon').setVal(new Date(that.setInitTime($('.endCon'))));//重新设置结束时间的初始值
                     that.selectTimes('#remindTime', '.remindTime').setVal(new Date(that.setInitTime($('.remindTime'))));//重新设置提醒时间的初始值
-                    if(!Dom.smallerDate(selectedTimeArr[0])&&that.mapConfig.longitude){
+                    if(!Dom.smallerDate(selectedTimeArr[0])){
                         $('.weather').css("display","-webkit-box");
-                        Ajax.getLocalWeather(selectedTimeArr[0],that.mapConfig.latitude,that.mapConfig.longitude);
+                        if(that.mapConfig.longitude){
+                            Ajax.getLocalWeather(selectedTimeArr[0],selectedTimeArr[1],that.mapConfig.latitude,that.mapConfig.longitude);
+                        }else{
+                            Ajax.getWeather(selectedTimeArr[0],selectedTimeArr[1]);
+                        }
                     }else{
                         $('.weather').css("display","none");
                     }
@@ -123,7 +127,6 @@ var fuc = {
     shareShadow: function () {
         var shareShadow = $('.shareShadow');
         shareShadow.fadeIn();//显示分享提示层
-        var qrcodeImg = $('.qrcodeImgBox');
         shareShadow.on("tap",function (event) {
             $(this).fadeOut();
             event.stopPropagation();
@@ -283,6 +286,12 @@ var fuc = {
         this.getTags();
         this.colorInit();
         Dom.autoTextarea(document.getElementById("eventTitle"));
+
+        /*---------------------------------开始时间、结束时间、指定提醒时间三个地方的日期选择功能---------------------------------*/
+        this.selectTimes('#startTime', '.startCon').setVal(new Date(that.setInitTime($('.startCon'))));
+        this.selectTimes('#endTime', '.endCon').setVal(new Date(that.setInitTime($('.endCon'))));
+        this.selectTimes('#remindTime', '.remindTime').setVal(new Date(that.setInitTime($('.remindTime'))));
+
         if (that.config.eventId) {//若用户是通过编辑按钮进入 页面，则拉取事件ID对应的信息
             that.getData();
             that.setInitTheme();
@@ -295,6 +304,10 @@ var fuc = {
             $('.startCon').html(that.config.timeArr[0]);
             $('.endCon').html(that.config.timeArr[1]);
             $('.remindTime').html(that.config.timeArr[0]);
+            //进入页面时，显示当时当地的天气
+            var startDate = $('.startCon').attr("id");
+            $('.weather').css("display","-webkit-box");
+            Ajax.getWeather(Dom.getDate(startDate),Dom.getHourMinute(startDate));
         }
         /*---------提醒类型选择的监听事件---------*/
         var select = document.getElementById('select1');
@@ -307,10 +320,6 @@ var fuc = {
                 $('#remindTime').css("display", "none");
             }
         }
-        /*---------------------------------开始时间、结束时间、指定提醒时间三个地方的日期选择功能---------------------------------*/
-        this.selectTimes('#startTime', '.startCon').setVal(new Date(that.setInitTime($('.startCon'))));
-        this.selectTimes('#endTime', '.endCon').setVal(new Date(that.setInitTime($('.endCon'))));
-        this.selectTimes('#remindTime', '.remindTime').setVal(new Date(that.setInitTime($('.remindTime'))));
     },
 
     /*--------------通过eventID拉去页面数据------------------*/
@@ -349,6 +358,13 @@ var fuc = {
                     that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
                     $('.startCon').html(theStartTime).attr("id", eventList.event.startTime);
                     $('.endCon').html(theEndTime).attr("id", eventList.event.endTime);
+                    /*------------若开始时间和结束时间不相等，则显示结束时间-------------*/
+                    if(eventList.event.startTime != eventList.event.endTime){
+                        $(".timeIcon").addClass("active");
+                        $('.endTime').animate({'height': '30px','padding-bottom':'15px'}, 300);
+                        $('.timeText').animate({"width": "33px"}, 300);
+                        $('#endTime').css("display", "block");
+                    }
                     /*------------设置重复类型----------------*/
                     var repeatOptions = that.config.repeatSelect.getElementsByTagName("option");
                     for (var j = 0; j < repeatOptions.length; j++) {
@@ -377,13 +393,12 @@ var fuc = {
                         $('.siteName').removeClass('ccc').html(that.mapConfig.locaName);
                         $('.siteAddress').html(that.mapConfig.locaAddress);
                         $('.deleteAddress').css("display","block");//显示删除地图按钮
-
-                        if(!Dom.smallerDate(eventList.event.startTime)){//显示天气
-                            $('.weather').css("display","-webkit-box");
-                            Ajax.getLocalWeather(Dom.getDate(eventList.event.startTime),eventList.event.latitude,eventList.event.longitude);
-                        }else{
-                            $('.weather').css("display","none");
-                        }
+                    }
+                    if(!Dom.smallerDate(eventList.event.startTime)){//显示天气
+                        $('.weather').css("display","-webkit-box");
+                        Ajax.getLocalWeather(Dom.getDate(eventList.event.startTime),Dom.getHourMinute(eventList.event.startTime),eventList.event.latitude,eventList.event.longitude);
+                    }else{
+                        $('.weather').css("display","none");
                     }
                     if (that.config.remarkText) {
                         $('.remarkCon .remarkText').removeClass('ccc').html(that.config.remarkText);
@@ -627,7 +642,7 @@ var fuc = {
         $('.showAll').on("tap",function () {
             if ($('.showAll span').attr("class") == "active") {
                 $('.showAll span').removeClass("active");
-                $('.tipsCon').animate({"height": "80px"}, 300);
+                $('.tipsCon').animate({"height": "94px"}, 300);
             } else {
                 $('.showAll span').addClass("active");
                 $('.tipsCon').animate({"height": "auto"}, 300);
@@ -644,7 +659,11 @@ var fuc = {
             that.mapConfig.longitude = 0;
             $(this).css("display","none");
             event.stopPropagation();
-            $('.weather').css("display","none");
+            //$('.weather').css("display","none");
+            //删除地图后，显示当时当地的天气
+            $('.weather').css("display","-webkit-box");
+            var startDate = $('.startCon').attr("id");
+            Ajax.getWeather(Dom.getDate(startDate),Dom.getHourMinute(startDate));
         });
 
         /*---------------点击分享弹层中的按钮-----------------*/
@@ -699,7 +718,7 @@ var fuc = {
             //        that.config.remarkImgs = that.config.remarkImgs + "," + data.data;
             //    }
             //});
-            that.config.remarkImgs = that.config.remarkImgs.substr(1);
+            //that.config.remarkImgs = that.config.remarkImgs.substr(1);
             that.config.remarkText = $('#remarkText').val().replace(/\n/g,"<br>");
             //console.log(that.config.remarkText);
             $('.remarkCon .remarkText').removeClass("ccc").html(that.config.remarkText);
@@ -791,11 +810,6 @@ var fuc = {
                 repeatType = that.config.repeatSelect.value,
                 tipType = that.config.remindSelect.value,
                 tipTime = "";
-            //if($('.siteName').html() !="添加地点"){
-            //    location = $('.siteName').html()+","+$('.siteAddress').html();
-            //    that.config.location = location;
-            //}
-            //alert(that.config.eventId+","+name+","+that.config.tagId+","+startTime+","+endTime+","+tipType+","+tipTime+","+repeatType+","+that.mapConfig.locaName+","+that.mapConfig.locaAddress+","+that.mapConfig.longitude+","+that.mapConfig.latitude+","+that.config.remarkText+","+that.config.remarkImgs+","+that.config.bgColor+","+that.config.themeId);
             if (tipType == 3) {
                 tipTime = $('.remindTime').attr("id");
             }
@@ -987,7 +1001,7 @@ var fuc = {
                     var startTime = $('.startCon').attr("id");
                     if(!Dom.smallerDate(startTime)){
                         $('.weather').css("display","-webkit-box");
-                        Ajax.getLocalWeather(Dom.getDate(startTime),that.mapConfig.latitude,that.mapConfig.longitude);
+                        Ajax.getLocalWeather(Dom.getDate(startTime),Dom.getHourMinute(startTime),that.mapConfig.latitude,that.mapConfig.longitude);
                     }else{
                         $('.weather').css("display","none");
                     }

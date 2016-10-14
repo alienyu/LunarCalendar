@@ -218,8 +218,8 @@ var Ajax = {
             }
         })
     },
-    //获取天气
-    getWeather:function(date){
+    //获取天气  日期格式2016-10-13
+    getWeather:function(date,time){
         $.get(
             "http://www.li-li.cn/llwx/weather/get",
             {
@@ -233,7 +233,7 @@ var Ajax = {
                         var html = "",
                             sunUp = weatherList.sunUp,
                             sunDown = weatherList.sunDown;
-                        var dayOrNight = Dom.dayOrnight(sunUp,sunDown);
+                        var dayOrNight = Dom.dayOrnight(time,sunUp,sunDown);
                         if(dayOrNight == "dayTime") {//白天
                             if(weatherList.qlty){
                                 html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
@@ -258,7 +258,7 @@ var Ajax = {
         )
     },
     //获取用户选择地点的天气
-    getLocalWeather:function(date,latitude,longitude){
+    getLocalWeather:function(date,time,latitude,longitude){
         $.get(
             "http://www.li-li.cn/llwx/weather/getByCoordinates",
             {
@@ -273,7 +273,7 @@ var Ajax = {
                         var html = "",
                             sunUp = weatherList.sunUp,
                             sunDown = weatherList.sunDown;
-                        var dayOrNight = Dom.dayOrnight(sunUp,sunDown);
+                        var dayOrNight = Dom.dayOrnight(time,sunUp,sunDown);
                         if(dayOrNight == "dayTime"){
                             if(weatherList.qlty){
                                 html = weatherList.city+"&nbsp;"+weatherList.dTxt+"&nbsp;"+weatherList.minTmp+"℃~"+weatherList.maxTmp+"℃&nbsp;"+"空气"+weatherList.qlty;
