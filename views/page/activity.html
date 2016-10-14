@@ -30,7 +30,7 @@
         <div class="itemCon">
             <div class="remarkCon">
                 <div class="remarkText ccc">添加备注</div>
-                <div class="remarkImgs" style="display: none; overflow: hidden"></div>
+                <div class="remarkImgs" style="overflow: hidden"></div>
             </div>
         </div>
     </div>
@@ -173,10 +173,12 @@
 </div>
 <!-----------弹层背景---------->
 <div class="shadowBg"></div>
-<!-----------------地图弹层----------------->
+<!-- ---------------地图弹层--------------- -->
 <div class="mapShadow shadow" id="mapShadow">
     <div class="shadowClose"></div>
-    <div class="container">
+    <div class="container" style="top: 10%;">
+        <input id="tipinput" class="tipinput" placeholder="手动输入详细地址">
+        <a href="javascript:;" class="tipfinished hide">完成</a>
         <div class="mapCon" id="mapCon">
 
         </div>
@@ -198,7 +200,7 @@
         <!--</div>-->
     </div>
 </div>
-<!-----------------选择颜色弹层----------------->
+<!-- ---------------选择颜色弹层--------------- -->
 <div class="colorShadow shadow" id="colorShadow">
     <div class="shadowClose"></div>
     <div class="container">
@@ -234,7 +236,7 @@
 
 
 </script>
-<!------------备注弹层--------------->
+<!-- ----------备注弹层------------ -->
 <div class="remarkShadow shadow" id="remarkShadow">
     <div class="container">
         <div class="title fs16">
@@ -245,7 +247,7 @@
             <textarea name="" id="remarkText" rows="10" placeholder="点击输入备注内容..."></textarea>
         </div>
 
-        <div class="remarkImg" style="display: none;">
+        <div class="remarkImg hide" >
             <form name="form1" id="form" runat="server" enctype="multipart/form-data" method="post" >
                 <div class="img_upload_box">
                     <input type="file" class="img_upload_btn" name="photo">
@@ -308,7 +310,7 @@
 </script>
 <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
 <script src="http://cache.amap.com/lbs/static/es5.min.js"></script>
-<script src="http://webapi.amap.com/maps?v=1.3&key=328b4ed0fd71e2782bf3677b9012a151"></script>
+<script src="http://webapi.amap.com/maps?v=1.3&key=328b4ed0fd71e2782bf3677b9012a151&plugin=AMap.Autocomplete,AMap.PlaceSearch"></script>
 
 </body>
 </html>
