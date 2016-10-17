@@ -406,10 +406,13 @@ var fuc = {
                     }
                     if(that.config.remarkImgs){//设置备注图片显示
                            var imgArr = that.config.remarkImgs.split(","),
-                               imgHtml = "";
+                               imgHtml = "",
+                               inputImg = "";
                             for(var i=0;i<imgArr.length;i++){
                                 imgHtml += "<img src="+imgArr[i]+" >";
+                                inputImg += '<div class="img_upload_box"><input type="file" class="img_upload_btn" name="photo"><img src="'+imgArr[i]+'" class="img_upload_result"></div>';
                             }
+                            $('#form').prepend(inputImg);
                             $('.remark .remarkImgs').append(imgHtml);
                     }
                     if (that.config.bgColor) {
@@ -783,7 +786,6 @@ var fuc = {
             )
         });
 
-
         /*----------弹层----------*/
         that.mapinput();
         that.mapShadow($('.site'), $('.mapShadow'), $('.mapShadow .container'));
@@ -799,37 +801,58 @@ var fuc = {
                 $('.remarkShadow .textCon #remarkText').val(remarkTexts.replace(/<br>/g,"\n"));
             }
             $('.shadowBg').fadeOut();
+            if (that.config.eventId) {
+                $('#form').empty();
+                var inputImg = "";
+                for(var i=0;i<$('.remarkImgs img').length;i++){
+                     inputImg += '<div class="img_upload_box"><input type="file" class="img_upload_btn" name="photo"><img src="'+$('.remarkImgs img').eq(i).attr('src')+'" class="img_upload_result"></div>';
+                }
+                inputImg += '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo"><a href="javascript:;">+</a></div>';
+                $('#form').prepend(inputImg);
+            }
             event.preventDefault();
         });
         $('.remarkShadow .finished').on("touchend",function (event) {
             //$("#form").find(".new_box").remove();
-
             $('.remarkImgs').empty();
             that.config.remarkImgs = "";
             for(var i=0;i<$("#form").children().length;i++){
                 if($($("#form").children()[0]).has('img').length != 0){
                     var fileData = new FormData();
                     fileData.append("photo",$('.img_upload_btn').eq(i).prop('files')[0]);
-                    console.log("this is a filedata");
-                    console.log(fileData);
-                    if($('.img_upload_result').eq(i).attr("src") != undefined){
-                        var str = '<img src="'+$('.img_upload_result').eq(i).attr("src")+'" width="50px" height="50px">';
+                    // console.log("this is a filedata");
+                    // console.log(fileData);
+                    var imgurl = $('.img_upload_result').eq(i).attr("src");
+                    if(imgurl != undefined){
+                        var str = '<img src="'+$('.img_upload_result').eq(i).attr("src")+'">';
                         $('.remarkImgs').append(str);
                     }
-                    $.ajax({
-                       type: "post",
-                       url: "http://www.li-li.cn/llwx/file/upload",
-                       data: fileData,
-                       dataType: "json",
-                       cache: false,
-                       processData: false,
-                       contentType: false,
-                       async: false,
-                       success: function (data) {
-                           console.log(data);
-                           that.config.remarkImgs = that.config.remarkImgs + "," + data.data;
-                       }
-                    });
+                    if(imgurl != undefined && imgurl.indexOf('base64,') == -1 ){
+                        that.config.remarkImgs = that.config.remarkImgs + "," + $('.img_upload_result').eq(i).attr("src");
+                    }else if(imgurl != undefined && imgurl.indexOf('base64,') > -1 ){
+                        $('#loadingToast').fadeIn();
+                        $.ajax({
+                           type: "post",
+                           url: "http://www.li-li.cn/llwx/file/upload",
+                           data: fileData,
+                           dataType: "json",
+                           cache: false,
+                           processData: false,
+                           contentType: false,
+                           //async: false,
+                           success: function (data) {
+                               console.log(data);
+                               $('.img_upload_result').eq(i).attr("src", data.data);
+                               if(that.config.remarkImgs == ""){
+                                    that.config.remarkImgs = data.data;
+                               }else{
+                                    that.config.remarkImgs = that.config.remarkImgs + "," + data.data;
+                               }
+                               $('#loadingToast').fadeOut();
+                           }
+                        });
+                    }
+                    
                 }
                 
             }

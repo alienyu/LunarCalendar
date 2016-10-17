@@ -179,13 +179,25 @@ body{
   height:auto;
   overflow: hidden;
 }
+ .remarkMore, .remarkRetract{
+  color: #6cc;
+  line-height: 30px;
+  display: none;
+}
+.textMore{
+  max-height: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+}
 .remarkImgs img{
   display: block;
   float: left;
-  width:30%;
-  height:auto;
-  margin-right: 2%;
-  margin-bottom: 2%;
+  width: calc(~"29vw - 20px");
+  height: calc(~"29vw - 20px");
+  padding: 1%;
 }
 .blank{
   width:100%;
