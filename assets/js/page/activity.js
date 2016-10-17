@@ -488,7 +488,7 @@ var fuc = {
         $('.tipinput').val("");
     },
 
-    mapinput:function(obj, shadow, container){
+    mapinput:function(){
         var that = this;
         $(".tipinput").on("tap", function(){
             that.mapinputshow();
@@ -548,7 +548,6 @@ var fuc = {
                     $(this).parent().hide();
                 });
                 $('.shadowBg').fadeOut();
-                that.mapinputhide();
             },500);
 
         });
@@ -559,32 +558,21 @@ var fuc = {
         var that = this;
         obj.on("tap",function () {
             if (that.mapConfig.latitude && that.mapConfig.longitude) {//地址存在,直接弹出
+                that.mapinputhide();
                 that.mapMove();
                 $('.shadowBg').fadeIn();
                 shadow.show();
                 container.animate({"top": "10%"}, 200);
                 if($(".siteAddress").html()=="" && $(".siteName").html() != "" && $(".siteName").html() != "添加地点" ){
-                    // that.mapinputhsow();
                     $('.tipinput').addClass("onfocus");
                     $('.tipinput').val($(".siteName").html());
-                    //console.log('11111111111111')
                 }
             } else if($(".siteAddress").html()=="" && $(".siteName").html() != "" && $(".siteName").html() != "添加地点" ){
-                // that.mapinputhsow();
-                $('.tipinput').addClass("onfocus");
-                $('.mapCon').addClass("hide");
-                $('.imgCon').addClass("hide");
-                $('.tipfinished').removeClass("hide");
-                var listHeight = parseInt($(document.body).height() * 0.9 - 40) + "px";
-                $(".addressCon").css("height", listHeight);
-                $(".addressCon").css("top", "40px");
+                that.mapinputshow();
                 $('.tipinput').val($(".siteName").html());
-
                 $('.shadowBg').fadeIn();
                 shadow.show();
                 container.animate({"top": "10%"}, 200);
-
-                // console.log('2222222222')
             }else {//获取地址
                 wx.getWx().getLocation({
                     type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
@@ -598,6 +586,7 @@ var fuc = {
                         that.mapConfig.longitude = longitude;
                         that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
                         console.log(that.mapConfig.moveendPoint);
+                        that.mapinputhide();
                         that.mapMove();
                         $('.shadowBg').fadeIn();
                         shadow.show();
@@ -614,10 +603,6 @@ var fuc = {
                 $(this).parent().hide();
             });
             $('.shadowBg').fadeOut();
-
-            that.mapinputhide();
-
-
             event.preventDefault();
             event.stopPropagation();
         });
@@ -800,7 +785,7 @@ var fuc = {
 
 
         /*----------弹层----------*/
-        that.mapinput($('.site'), $('.mapShadow'), $('.mapShadow .container'));
+        that.mapinput();
         that.mapShadow($('.site'), $('.mapShadow'), $('.mapShadow .container'));
         that.shadow($('.colors'), $('.colorShadow'), $('.colorShadow .container'));
         that.shadow($('.remark'), $('.remarkShadow'), $('.remarkShadow .container'));
@@ -1138,10 +1123,6 @@ var fuc = {
                     }
                     event.preventDefault();
                     event.stopPropagation();
-
-                    that.mapinputhide();
-
-
                     setTimeout(function(){
                         $(".mapShadow .container").animate({"top": "100%"}, 200, function () {
                             $(this).parent().hide();
