@@ -40,6 +40,9 @@ var fuc = {
         latitude: "",//纬度
         longitude: ""//经度
     },
+    imgConfig: {
+        count: 0
+    },
 
     init: function () {
         pageLoad({backgroundColor: "#fff"});
@@ -816,6 +819,8 @@ var fuc = {
             //$("#form").find(".new_box").remove();
             $('.remarkImgs').empty();
             that.config.remarkImgs = "";
+            that.imgConfig.count = 0;
+            var imgcount = 0;
             for(var i=0;i<$("#form").children().length;i++){
                 if($($("#form").children()[0]).has('img').length != 0){
                     var fileData = new FormData();
@@ -831,6 +836,7 @@ var fuc = {
                         that.config.remarkImgs = that.config.remarkImgs + "," + $('.img_upload_result').eq(i).attr("src");
                     }else if(imgurl != undefined && imgurl.indexOf('base64,') > -1 ){
                         $('#loadingToast').fadeIn();
+                        that.imgConfig.count ++;
                         $.ajax({
                            type: "post",
                            url: "http://www.li-li.cn/llwx/file/upload",
@@ -848,8 +854,16 @@ var fuc = {
                                }else{
                                     that.config.remarkImgs = that.config.remarkImgs + "," + data.data;
                                }
-                               $('#loadingToast').fadeOut();
-                           }
+                               imgcount++;
+                               if(imgcount == that.imgConfig.count){
+                                    $('#loadingToast').fadeOut();
+                               }
+                               
+                           },
+                            error: function() {
+                                $('#loadingToast').fadeOut();
+                                alert("有未上传完成的图片，请检查网络环境~");
+                            }
                         });
                     }
                     
