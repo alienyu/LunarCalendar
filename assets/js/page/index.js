@@ -99,7 +99,7 @@ var fuc = {
                         $('.scheduleList').append(html);
                         $('.list').on('tap', function () {
                             var eventId = $(this).attr('id');
-                            $('body').html("").css("background", "#66cccc");
+                            $('body').html("").css("background", "#fff");
                             window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + eventId);
                         });
                     } else {

@@ -143,7 +143,11 @@ var fuc = {
         if (data.type == "init") {
             $("#container").append(html({data: data}));
             $(".today_has_date").length > 0 && this.renderCurrentTimeLine();
-            $(document.body).scrollTop($("#today").prev().offset().top - 30);
+            if($("#today").prev().offset()){
+                $(document.body).scrollTop($("#today").prev().offset().top - 30);
+            }else{
+                $(document.body).scrollTop(30);
+            }
         } else {
             if (this.config.direction == "up") {
                 $("#container").append(html({data: data}));
@@ -156,7 +160,7 @@ var fuc = {
                     var year = firstDate.split('-')[0];
                     var month = firstDate.split('-')[1];
                     var dateClass = "headDate_" + year + "_" + month;
-                    var monthDom = '<div class="month_divide month_' + month + '" ><div class="text">' + month + '月</div></div>';
+                    var monthDom = '<div class="month_divide month_' + month + '" ><div class="text">'+ month + '月</div></div>';
                     $("#container").find("div").first().before(monthDom);
                     dom.addClass("first_day").addClass(dateClass);
                 }
@@ -258,7 +262,7 @@ var fuc = {
         var that = this;
         var top = $(document.body).scrollTop();
         //判断滚动到底部
-        if (direct == "up" && (top + $(window).height() >= $(document.body).height() - 100)) {
+        if (direct == "up" && (top + $(window).height() >= $(document.body).height() - 1000)) {
             //判断是否还有后续数据
             if (!that.config.stopSliderUp) {
                 that.config.direction = "up";

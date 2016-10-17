@@ -790,7 +790,7 @@ var fuc = {
                 },
                 function (data) {
                     if (data.code == 0) {//请求成功
-                        $('#loadingToast').fadeOut();//显示loading
+                        $('#loadingToast').fadeOut();//隐藏loading
                         $('.shareShadow').fadeOut();
                         WeixinJSBridge.call("closeWindow");
                     }
