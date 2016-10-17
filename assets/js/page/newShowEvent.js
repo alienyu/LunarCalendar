@@ -185,6 +185,11 @@ var fuc = {
                                 $('.remark').css("display", "none");
                             }
                         }
+                        if($('.remarkText').height()>180){
+                            $('.remarkMore').show();
+                            $('.remarkRetract').hide();
+                            $('.remarkText').addClass('textMore');
+                        }//是否显示全文按钮
                         if (dataList.isOwner) {//如果是发起者
                             $('.bottom1').css("display", "block").animate({"bottom": "0"}, 200);
                         } else {
@@ -228,6 +233,17 @@ var fuc = {
             } else if (that.config.eventType == 1) {//活动事件
                 window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/activity.html?eventId=" + that.config.eventId);
             }
+        });
+        /*----------全文 收起----------*/
+        $('.remarkMore').on("tap",function () {
+           $('.remarkRetract').show();
+           $('.remarkMore').hide();
+           $('.remarkText').removeClass('textMore');
+        });
+        $('.remarkRetract').on("tap",function () {
+           $('.remarkMore').show();
+           $('.remarkRetract').hide();
+           $('.remarkText').addClass('textMore');
         });
         /*----------------点击更多---------------------*/
         $('.morePeople').click(function () {
@@ -426,10 +442,12 @@ var fuc = {
     mapShadow: function (obj, shadow, container) {
         var that = this;
         obj.click(function () {
-            that.mapMove();
-            $('.shadowBg').fadeIn();
-            shadow.show();
-            container.animate({"top": "10%"}, 200);
+            if(that.mapConfig.longitude != 0 && that.mapConfig.latitude != 0){
+                that.mapMove();
+                $('.shadowBg').fadeIn();
+                shadow.show();
+                container.animate({"top": "10%"}, 200);
+            }
         });
         $('.shadowClose').click(function () {
             container.animate({"top": "100%"}, 200, function () {

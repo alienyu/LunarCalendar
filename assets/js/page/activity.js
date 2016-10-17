@@ -40,6 +40,9 @@ var fuc = {
         latitude: "",//纬度
         longitude: ""//经度
     },
+    imgConfig: {
+        count: 0
+    },
 
     init: function () {
         pageLoad({backgroundColor: "#fff"});
@@ -406,10 +409,13 @@ var fuc = {
                     }
                     if(that.config.remarkImgs){//设置备注图片显示
                            var imgArr = that.config.remarkImgs.split(","),
-                               imgHtml = "";
+                               imgHtml = "",
+                               inputImg = "";
                             for(var i=0;i<imgArr.length;i++){
                                 imgHtml += "<img src="+imgArr[i]+" >";
+                                inputImg += '<div class="img_upload_box"><input type="file" class="img_upload_btn" name="photo"><img src="'+imgArr[i]+'" class="img_upload_result"></div>';
                             }
+                            $('#form').prepend(inputImg);
                             $('.remark .remarkImgs').append(imgHtml);
                     }
                     if (that.config.bgColor) {
@@ -488,7 +494,7 @@ var fuc = {
         $('.tipinput').val("");
     },
 
-    mapinput:function(obj, shadow, container){
+    mapinput:function(){
         var that = this;
         $(".tipinput").on("tap", function(){
             that.mapinputshow();
@@ -548,7 +554,6 @@ var fuc = {
                     $(this).parent().hide();
                 });
                 $('.shadowBg').fadeOut();
-                that.mapinputhide();
             },500);
 
         });
@@ -559,32 +564,21 @@ var fuc = {
         var that = this;
         obj.on("tap",function () {
             if (that.mapConfig.latitude && that.mapConfig.longitude) {//地址存在,直接弹出
+                that.mapinputhide();
                 that.mapMove();
                 $('.shadowBg').fadeIn();
                 shadow.show();
                 container.animate({"top": "10%"}, 200);
                 if($(".siteAddress").html()=="" && $(".siteName").html() != "" && $(".siteName").html() != "添加地点" ){
-                    // that.mapinputhsow();
                     $('.tipinput').addClass("onfocus");
                     $('.tipinput').val($(".siteName").html());
-                    //console.log('11111111111111')
                 }
             } else if($(".siteAddress").html()=="" && $(".siteName").html() != "" && $(".siteName").html() != "添加地点" ){
-                // that.mapinputhsow();
-                $('.tipinput').addClass("onfocus");
-                $('.mapCon').addClass("hide");
-                $('.imgCon').addClass("hide");
-                $('.tipfinished').removeClass("hide");
-                var listHeight = parseInt($(document.body).height() * 0.9 - 40) + "px";
-                $(".addressCon").css("height", listHeight);
-                $(".addressCon").css("top", "40px");
+                that.mapinputshow();
                 $('.tipinput').val($(".siteName").html());
-
                 $('.shadowBg').fadeIn();
                 shadow.show();
                 container.animate({"top": "10%"}, 200);
-
-                // console.log('2222222222')
             }else {//获取地址
                 wx.getWx().getLocation({
                     type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
@@ -598,6 +592,7 @@ var fuc = {
                         that.mapConfig.longitude = longitude;
                         that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
                         console.log(that.mapConfig.moveendPoint);
+                        that.mapinputhide();
                         that.mapMove();
                         $('.shadowBg').fadeIn();
                         shadow.show();
@@ -614,10 +609,6 @@ var fuc = {
                 $(this).parent().hide();
             });
             $('.shadowBg').fadeOut();
-
-            that.mapinputhide();
-
-
             event.preventDefault();
             event.stopPropagation();
         });
@@ -798,9 +789,8 @@ var fuc = {
             )
         });
 
-
         /*----------弹层----------*/
-        that.mapinput($('.site'), $('.mapShadow'), $('.mapShadow .container'));
+        that.mapinput();
         that.mapShadow($('.site'), $('.mapShadow'), $('.mapShadow .container'));
         that.shadow($('.colors'), $('.colorShadow'), $('.colorShadow .container'));
         that.shadow($('.remark'), $('.remarkShadow'), $('.remarkShadow .container'));
@@ -814,37 +804,69 @@ var fuc = {
                 $('.remarkShadow .textCon #remarkText').val(remarkTexts.replace(/<br>/g,"\n"));
             }
             $('.shadowBg').fadeOut();
+            if (that.config.eventId) {
+                $('#form').empty();
+                var inputImg = "";
+                for(var i=0;i<$('.remarkImgs img').length;i++){
+                     inputImg += '<div class="img_upload_box"><input type="file" class="img_upload_btn" name="photo"><img src="'+$('.remarkImgs img').eq(i).attr('src')+'" class="img_upload_result"></div>';
+                }
+                inputImg += '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo"><a href="javascript:;">+</a></div>';
+                $('#form').prepend(inputImg);
+            }
             event.preventDefault();
         });
         $('.remarkShadow .finished').on("touchend",function (event) {
             //$("#form").find(".new_box").remove();
-
             $('.remarkImgs').empty();
             that.config.remarkImgs = "";
+            that.imgConfig.count = 0;
+            var imgcount = 0;
             for(var i=0;i<$("#form").children().length;i++){
                 if($($("#form").children()[0]).has('img').length != 0){
                     var fileData = new FormData();
                     fileData.append("photo",$('.img_upload_btn').eq(i).prop('files')[0]);
-                    console.log("this is a filedata");
-                    console.log(fileData);
-                    if($('.img_upload_result').eq(i).attr("src") != undefined){
-                        var str = '<img src="'+$('.img_upload_result').eq(i).attr("src")+'" width="50px" height="50px">';
+                    // console.log("this is a filedata");
+                    // console.log(fileData);
+                    var imgurl = $('.img_upload_result').eq(i).attr("src");
+                    if(imgurl != undefined){
+                        var str = '<img src="'+$('.img_upload_result').eq(i).attr("src")+'">';
                         $('.remarkImgs').append(str);
                     }
-                    $.ajax({
-                       type: "post",
-                       url: "http://www.li-li.cn/llwx/file/upload",
-                       data: fileData,
-                       dataType: "json",
-                       cache: false,
-                       processData: false,
-                       contentType: false,
-                       async: false,
-                       success: function (data) {
-                           console.log(data);
-                           that.config.remarkImgs = that.config.remarkImgs + "," + data.data;
-                       }
-                    });
+                    if(imgurl != undefined && imgurl.indexOf('base64,') == -1 ){
+                        that.config.remarkImgs = that.config.remarkImgs + "," + $('.img_upload_result').eq(i).attr("src");
+                    }else if(imgurl != undefined && imgurl.indexOf('base64,') > -1 ){
+                        $('#loadingToast').fadeIn();
+                        that.imgConfig.count ++;
+                        $.ajax({
+                           type: "post",
+                           url: "http://www.li-li.cn/llwx/file/upload",
+                           data: fileData,
+                           dataType: "json",
+                           cache: false,
+                           processData: false,
+                           contentType: false,
+                           //async: false,
+                           success: function (data) {
+                               console.log(data);
+                               $('.img_upload_result').eq(i).attr("src", data.data);
+                               if(that.config.remarkImgs == ""){
+                                    that.config.remarkImgs = data.data;
+                               }else{
+                                    that.config.remarkImgs = that.config.remarkImgs + "," + data.data;
+                               }
+                               imgcount++;
+                               if(imgcount == that.imgConfig.count){
+                                    $('#loadingToast').fadeOut();
+                               }
+                               
+                           },
+                            error: function() {
+                                $('#loadingToast').fadeOut();
+                                alert("有未上传完成的图片，请检查网络环境~");
+                            }
+                        });
+                    }
+                    
                 }
                 
             }
@@ -1138,10 +1160,6 @@ var fuc = {
                     }
                     event.preventDefault();
                     event.stopPropagation();
-
-                    that.mapinputhide();
-
-
                     setTimeout(function(){
                         $(".mapShadow .container").animate({"top": "100%"}, 200, function () {
                             $(this).parent().hide();
