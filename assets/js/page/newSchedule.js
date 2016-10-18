@@ -145,12 +145,14 @@ var fuc = {
                 dom.attr("id", "current");
                 var firstDate = dom.data("date");
                 if ((this.config.bottomDate.split("-")[0] != firstDate.split("-")[0]) || (this.config.bottomDate.split("-")[1] != firstDate.split("-")[1])) {
-                    var year = firstDate.split('-')[0];
-                    var month = firstDate.split('-')[1];
-                    var dateClass = "headDate_" + year + "_" + month;
-                    var monthDom = '<div class="month_divide month_' + month + '" ><div class="text">'+ year + '年' + month + '月</div></div>';
-                    $("#container").find("div").first().before(monthDom);
-                    dom.addClass("first_day").addClass(dateClass);
+                    if(!$("#container").find("div").first().hasClass("month_divide")) {
+                        var year = firstDate.split('-')[0];
+                        var month = firstDate.split('-')[1];
+                        var dateClass = "headDate_" + year + "_" + month;
+                        var monthDom = '<div class="month_divide month_' + month + '" ><div class="text">'+ year + '年' + month + '月</div></div>';
+                        $("#container").find("div").first().before(monthDom);
+                        dom.addClass("first_day").addClass(dateClass);
+                    }
                 }
                 if ($(".record").first().hasClass("no_record") && $(".record").first().data("date").split("-")[2] != 1) {
                     $(".record").first().prev().remove();
