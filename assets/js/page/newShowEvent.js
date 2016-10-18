@@ -176,9 +176,17 @@ var fuc = {
                             var imgArr = dataList.event.remarkImgs.split(","),//图片数组
                                 imgHtml = "";
                             for (var i = 0; i < imgArr.length; i++) {
-                                imgHtml += "<a href='weixin://viewimage/" + imgArr[i] + "'><img src=" + imgArr[i] + "></a>";
+                                imgHtml += "<img src=" + imgArr[i] + ">";
                             }
                             $('.remark .remarkImgs').append(imgHtml);
+                            /* ---------------图片预览---------------  */
+                            $('.remarkImgs img').on("tap",function () {
+                                console.log('--------'+this.src);
+                                wx.getWx().previewImage({
+                                    current: this.src, // 当前显示图片的http链接
+                                    urls: imgArr // 需要预览的图片http链接列表
+                                });
+                            });
                             //todo 填充备注中的图片样式
                             if (dataList.event.remark != "") {
                                 $('.remarkText').html(dataList.event.remark);
