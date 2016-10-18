@@ -16,6 +16,7 @@ var fuc = {
         eventType: "",
         shareImg: "",
         pageNo:"",
+        lastId:""
     },
     mapConfig: {
         map: "",
@@ -27,6 +28,7 @@ var fuc = {
         pageLoad({backgroundColor: "#fff"});
 		this.config.pageNo = 1;
         this.config.eventId = Dom.getRequest("eventId");
+        this.config.lastId = "";
         this.rem();
         this.renderPage();
         this.bindEvent();
@@ -72,8 +74,9 @@ var fuc = {
             "http://www.li-li.cn/llwx/event/joiner/list",
             {
                 "pageNo": that.config.pageNo,
-                "pageSize": 10,
-                "eventId": that.config.eventId
+                "pageSize": 20,
+                "eventId": that.config.eventId,
+                "lastId":that.config.lastId
             },
             function (data) {
                 if (data.code == 0) {
@@ -88,6 +91,8 @@ var fuc = {
                         for (var i = 0; i < list.list.length; i++) {
                             html += peopleTemplate.replace(/{{imgUrl}}/g, list.list[i].headImgUrl).replace(/{{nickName}}/g, list.list[i].nickName);
                         }
+                        that.config.lastId = list.list[list.list.length-1].openId;
+                        console.log(that.config.lastId);
                         //console.log(html);
                         $('.morePeople').before(html);
                         var joiner = $('.joinerItem');

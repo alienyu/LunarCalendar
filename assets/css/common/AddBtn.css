@@ -1,7 +1,7 @@
 /*全局添加按钮 开始*/
 body .add_btn { box-shadow: 0px 3px 3px rgba(0,0,0,.4); overflow:hidden; text-indent:-9999px; position: fixed; right: 20px; bottom: 20px; width: 60px; height: 60px; line-height: 53px; border-radius: 100%; text-align: center; font-size: 40px; color: #fff; z-index: 999999988; transform: rotate(0deg); transition: 0.5s; display: block; background:#4cafaf url(../../imgs/common/icon_com_add.png) no-repeat center; background-size: 50%}
 body .add_btn.open { transform: rotate(135deg); transition: 0.5s; background-color: #8F8F8F; box-shadow: 0px 0px 5px rgba(0,0,0,.4); }
-body .btn_detail { position: fixed; right: 28px; z-index: 999999977; opacity: 0; }
+body .btn_detail { position: fixed; right: 28px; z-index: 999999977; opacity: 0;}
 body .btn_detail.move_up { -webkit-animation-name: move_up 0.5s; animation: move_up 0.5s; opacity: 1; bottom: 80px; }
 body .btn_detail.move_down { -webkit-animation-name: move_down 0.5s; animation: move_down 0.5s; opacity: 0; bottom: 20px; }
 body .btn_detail div { margin-bottom: 10px; height: 50px; }

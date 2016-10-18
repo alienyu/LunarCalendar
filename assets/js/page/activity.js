@@ -858,11 +858,13 @@ var fuc = {
                                if(imgcount == that.imgConfig.count){
                                     $('#loadingToast').fadeOut();
                                }
-                               
                            },
                             error: function() {
                                 $('#loadingToast').fadeOut();
-                                alert("有未上传完成的图片，请检查网络环境~");
+                                $('#dialog2 .weui-dialog__bd').html("有未上传完成的图片，请检查网络环境~");
+                                $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+                                    $('#dialog2').fadeOut();
+                                });
                             }
                         });
                     }
