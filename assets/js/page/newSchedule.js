@@ -47,7 +47,7 @@ var fuc = {
             this.config.isLoading = true;
             $.ajax({
                 type: "get",
-                url: "http://www.li-li.cn/llwx/event/getSchedule",
+                url: "/event/getSchedule",
                 data: param,
                 async: true,
                 success: function (data) {
@@ -124,18 +124,6 @@ var fuc = {
             var src = "http://api.map.baidu.com/staticimage?center=" + bd_lon + ',' + bd_lat + "&width=" + width + "&height=" + height + "zoom=17&markers=" + bd_lon + ',' + bd_lat + "&copyright=0";
                 $(e).attr("src", src).addClass("has_render");
         })
-        //    var map = new BMap.Map(e.id);
-        //    var point = new BMap.Point(that.bd_encrypt($(e).data('longitude'), $(e).data('latitude')).bd_lon, that.bd_encrypt($(e).data('longitude'), $(e).data('latitude')).bd_lat);
-        //    map.centerAndZoom(point, 15);
-        //    var myIcon = new BMap.Icon("/wx/img/67390b8887afd94b05b8438220488f6d.png", new BMap.Size(20, 27));
-        //    var marker = new BMap.Marker(point, {icon: myIcon});  // 创建标注
-        //    map.addOverlay(marker);              // 将标注添加到地图中
-        //    map.addEventListener("tilesloaded", function () {
-        //        $(e).find(".anchorBL").remove();
-        //        $(e).find(".BMap_cpyCtrl").remove();
-        //        $(e).addClass("has_render");
-        //    });
-        //})
     },
     renderPage: function (data) {
         var tmp = $("#dateListTpl").html();
@@ -144,9 +132,9 @@ var fuc = {
             $("#container").append(html({data: data}));
             $(".today_has_date").length > 0 && this.renderCurrentTimeLine();
             if($("#today").prev().offset()){
-                $(document.body).scrollTop($("#today").prev().offset().top - 30);
+                $(document.body).scrollTop($("#today").prev().offset().top - 60);
             }else{
-                $(document.body).scrollTop(30);
+                $(document.body).scrollTop(200);
             }
         } else {
             if (this.config.direction == "up") {
@@ -160,7 +148,7 @@ var fuc = {
                     var year = firstDate.split('-')[0];
                     var month = firstDate.split('-')[1];
                     var dateClass = "headDate_" + year + "_" + month;
-                    var monthDom = '<div class="month_divide month_' + month + '" ><div class="text">'+ month + '月</div></div>';
+                    var monthDom = '<div class="month_divide month_' + month + '" ><div class="text">'+ year + '年' + month + '月</div></div>';
                     $("#container").find("div").first().before(monthDom);
                     dom.addClass("first_day").addClass(dateClass);
                 }
@@ -173,9 +161,6 @@ var fuc = {
             }
         }
         this.renderBMP();
-        $(".month_divide").each(function (i, e) {
-            //$(e).css("margin-top", "50px");
-        });
         if ($("#container").find("div").first().hasClass("month_divide")) {
             $("#container").find("div").first().css("margin-top", "0px");
         }
