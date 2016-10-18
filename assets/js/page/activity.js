@@ -411,9 +411,13 @@ var fuc = {
                            var imgArr = that.config.remarkImgs.split(","),
                                imgHtml = "",
                                inputImg = "";
+                            $('#form').empty();
                             for(var i=0;i<imgArr.length;i++){
                                 imgHtml += "<img src="+imgArr[i]+" >";
                                 inputImg += '<div class="img_upload_box"><input type="file" class="img_upload_btn" name="photo"><img src="'+imgArr[i]+'" class="img_upload_result"></div>';
+                            }
+                            if(imgArr.length < 9){
+                                inputImg += '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo"><a href="javascript:;">+</a></div>';
                             }
                             $('#form').prepend(inputImg);
                             $('.remark .remarkImgs').append(imgHtml);
@@ -810,7 +814,9 @@ var fuc = {
                 for(var i=0;i<$('.remarkImgs img').length;i++){
                      inputImg += '<div class="img_upload_box"><input type="file" class="img_upload_btn" name="photo"><img src="'+$('.remarkImgs img').eq(i).attr('src')+'" class="img_upload_result"></div>';
                 }
-                inputImg += '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo"><a href="javascript:;">+</a></div>';
+                if($('.remarkImgs img').length < 9){
+                    inputImg += '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo"><a href="javascript:;">+</a></div>';
+                }
                 $('#form').prepend(inputImg);
             }
             event.preventDefault();
