@@ -416,7 +416,7 @@ var fuc = {
                                 imgHtml += "<img src="+imgArr[i]+" >";
                                 inputImg += '<div class="img_upload_box">'+
                                             '<input type="file" class="img_upload_btn" name="photo" accept="image/*"><img src="'+imgArr[i]+'" class="img_upload_result">'+
-                                            '<img class="delUpImg" src="../../assets/imgs/page/activity/ic_delete.png" alt="删除图片">'+
+                                            $('.delUpImgSrc').html()+
                                             '</div>';
                             }
                             if(imgArr.length < 9){
@@ -817,7 +817,7 @@ var fuc = {
                 for(var i=0;i<$('.remarkImgs img').length;i++){
                      inputImg += '<div class="img_upload_box">'+
                                 '<input type="file" class="img_upload_btn" name="photo" accept="image/*"><img src="'+$('.remarkImgs img').eq(i).attr('src')+'" class="img_upload_result">'+
-                                '<img class="delUpImg" src="../../assets/imgs/page/activity/ic_delete.png" alt="删除图片">'+
+                                $('.delUpImgSrc').html()+
                                 '</div>';
                 }
                 if($('.remarkImgs img').length < 9){
@@ -1070,7 +1070,7 @@ var fuc = {
             reader.addEventListener("load", function () {
                 var imgSrc = reader.result;
                 var html = "<img src='" + imgSrc + "' class='img_upload_result' />";
-                html += '<img class="delUpImg" src="../../assets/imgs/page/activity/ic_delete.png" alt="删除图片">';
+                html += $('.delUpImgSrc').html();
                 that.boxDom.append(html).removeClass("new_box").find("a").remove();
                 $(e.target).attr("disabled", "true"); 
                 if (that.checkBoxNum() && $(".new_box").length < 1) {
