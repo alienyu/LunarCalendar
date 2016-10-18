@@ -19,9 +19,11 @@ var fuc = {
         bottomDate: "", //拉取以前的数据中最后一条的日期
         monthPos: {},
         stopSliderUp: false, //阻止上滑,即不加载后面数据
-        stopSliderDown: false //阻止下滑,即不加载前面数据
+        stopSliderDown: false, //阻止下滑,即不加载前面数据
+        urlArr:""//接口域名配置
     },
     init: function () {
+        this.config.urlArr = Dom.configuration();
         $('#main_box').css("visibility","visible");
         this.initHeadDate();
         this.getData("init");
@@ -47,7 +49,7 @@ var fuc = {
             this.config.isLoading = true;
             $.ajax({
                 type: "get",
-                url: "/event/getSchedule",
+                url: that.config.urlArr[0]+"/event/getSchedule",
                 data: param,
                 async: true,
                 success: function (data) {
@@ -235,10 +237,11 @@ var fuc = {
         //添加活动详情跳转地址
         $("#container").on('tap', '.content', function (e) {
             if($(e.target).parents(".record").hasClass("no_record")) {
-                window.location.href = "http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2factivity.html";
+                window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/activity.html");
             } else {
                 var id = $(e.target).parents('.record').data("eventid");
-                window.location.href = "http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2fnewShowEvent.html?eventId=" + id;
+                window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId="+id);
+                //window.location.href = "http://www.li-li.cn/llwx/common/to?url2=http%3a%2f%2fwww.li-li.cn%2fwx%2fview%2fnewShowEvent.html?eventId=" + id;
             }
         });
 

@@ -5,10 +5,12 @@ var wx = require("../vendor/weChat/wxInit.js");
 var Dom = require("../common/dom.js");
 var fuc = {
     config: {
-        today:""
+        today:"",
+        urlArr:""
     },
     init: function() {
         pageLoad({backgroundColor: "#fff"});
+        this.config.urlArr = Dom.configuration();
         this.renderPage();
         this.bindEvent();
     },
@@ -64,7 +66,7 @@ var fuc = {
         var template = $('#eventListTemplate').html();
         $.ajax({
             type: "get",
-            url: "http://www.li-li.cn/llwx/event/getEventOfDay",
+            url: that.config.urlArr[0]+"/event/getEventOfDay",
             data: {
                 dateTime: dateTime
             },
@@ -100,7 +102,7 @@ var fuc = {
                         $('.list').on('tap', function () {
                             var eventId = $(this).attr('id');
                             $('body').html("").css("background", "#fff");
-                            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + eventId);
+                            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + eventId);
                         });
                     } else {
                         $('.event').css('display', 'none');
@@ -115,7 +117,7 @@ var fuc = {
             }
         });
         //私人运势显示
-        $.get("http://www.li-li.cn/llwx/fortune/get", {"dateTime": dateTime + " 08:00:00"}, function (data) {
+        $.get(that.config.urlArr[0]+"/fortune/get", {"dateTime": dateTime + " 08:00:00"}, function (data) {
             if (data.code == 0) {
                 var data = data.data;
                 if (data.personal) {
@@ -134,7 +136,7 @@ var fuc = {
         });
         //天气
         $.get(
-            "http://www.li-li.cn/llwx/weather/get",
+            that.config.urlArr[0]+"/weather/get",
             {
                 "date":that.config.today,
                 "days":1
@@ -204,6 +206,7 @@ var fuc = {
         return hourArr[0] < hour ? 1 : (hourArr[0] == hour && hourArr[1] < minute ? 1 : 0);
     },
     bindEvent: function() {
+        var that = this;
         //添加活动按钮
         $("#addActivity").on('tap', function (e) {
             if ($(e.target).hasClass("open")) {
@@ -217,18 +220,22 @@ var fuc = {
             }
         });
         //点击、滑动事件
-        $('.con').on('swipeUp', function (event) {
+        $('.con').on('swipeUp', function () {
             $('body').html("").css("background", "#fff");
-            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/calendar.html");
+            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/calendar.html");
         });
-        $('.down').on('tap', function (event) {
+        $('.down').on('tap', function () {
             $('body').html("").css("background", "#fff");
-            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/calendar.html");
+            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/calendar.html");
         });
-        $('.addEvent').on('tap', function () {
-            $('body').html("").css("background", "#66cccc");
-            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/addEvent.html");
+        $('.activity').on("tap",function(){
+            $('body').html("").css("background", "#fff");
+            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/activity.html");
         });
+        $('.remind').on("tap",function(){
+            $('body').html("").css("background", "#fff");
+            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/remind.html");
+        })
     }
 }
 

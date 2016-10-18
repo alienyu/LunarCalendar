@@ -15,6 +15,15 @@ var Dom = {
         }
         return theRequest[name];
     },
+    /*-------------获取域名，修改接口配置------------------*/
+    configuration:function(){
+        var host = window.location.host;
+        if(host == "wx.li-li.cn"){
+            return ["http://wx.li-li.cn/api","http://wx.li-li.cn"];
+        }else{
+            return ["http://www.li-li.cn/llwx","http://www.li-li.cn"];
+        }
+    },
     /*---------------获取时间中的年月日部分--------------------*/
     getDate: function(date) {
         var dateArr = date.split(" ");

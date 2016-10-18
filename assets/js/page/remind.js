@@ -16,6 +16,7 @@ var fuc = {
         tagId: "",
         time: "",
         timeArr: "",
+        urlArr:"",
         repeatSelect: "",
         tipType:"",
         bgColor: "",//背景颜色
@@ -25,6 +26,7 @@ var fuc = {
         pageLoad({backgroundColor: "#fff"});
         this.config.time = this.ifTimeExist(Dom.getRequest("date"));
         this.config.timeArr = this.transTime(this.config.time);
+        this.config.urlArr = Dom.configuration();
         this.config.eventId = Dom.getRequest("eventId");
         this.config.eventType = 0;
         this.config.tipType = 2;
@@ -133,7 +135,7 @@ var fuc = {
         var that = this;
         if (templateId != "null") {
             $.get(
-                "http://www.li-li.cn/llwx/template/detail",
+                that.config.urlArr[0]+"/template/detail",
                 {
                     'tid': templateId
                 },
@@ -169,7 +171,7 @@ var fuc = {
         var template = $('#tagListTemplate').html();
         var html = "";
         $.get(
-            "http://www.li-li.cn/llwx/tag/list",
+            that.config.urlArr[0]+"/tag/list",
             {"type": 1, "all": true},
             function (data) {
                                 console.log(data);
@@ -225,7 +227,7 @@ var fuc = {
             $('.delete').css("display", "block");//用户可删除事件
             $(".topTips").css("display", "none");//隐藏头部的快捷标签
             $.get(
-                "http://www.li-li.cn/llwx/event/detail",
+                that.config.urlArr[0]+"/event/detail",
                 {
                     "eventId": that.config.eventId
                 },
@@ -305,7 +307,7 @@ var fuc = {
             } else {
                 if (that.config.eventId) {//若事件已保存，则调用修改事件
                     $.post(
-                        "http://www.li-li.cn/llwx/event/modify",
+                        that.config.urlArr[0]+"/event/modify",
                         {
                             "eventId":that.config.eventId,
                             "name": name,
@@ -320,7 +322,7 @@ var fuc = {
                         function (data) {
                             if (data.code == 0) {//提交成功
                                 $('#loadingToast').fadeOut();
-                                window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + that.config.eventId);
+                                window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + that.config.eventId);
                             } else {//提交失败提醒错误信息
                                 $('#loadingToast').fadeOut();
                                 var error = data.msg;
@@ -334,7 +336,7 @@ var fuc = {
                     )
                 } else {
                     $.post(
-                        "http://www.li-li.cn/llwx/event/add",
+                        that.config.urlArr[0]+"/event/add",
                         {
                             "name": name,
                             "eventType": that.config.eventType,
@@ -349,7 +351,7 @@ var fuc = {
                             if (data.code == 0) {
                                 $('#loadingToast').fadeOut();
                                 that.config.eventId = data.data;
-                                window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + that.config.eventId);
+                                window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + that.config.eventId);
                             } else {
                                 $('#loadingToast').fadeOut();
                                 var error = data.msg;
@@ -372,13 +374,13 @@ var fuc = {
                     $('#dialog1').fadeOut();
                 },300);
                 $('#loadingToast').fadeIn();//显示loading
-                $.get("http://www.li-li.cn/llwx/event/del", {"eventId": that.config.eventId}, function (data) {
+                $.get(that.config.urlArr[0]+"/event/del", {"eventId": that.config.eventId}, function (data) {
                     if (data.code == 0) {//删除成功
                         $('#loadingToast').fadeOut();//隐藏loading
                         $('#toast').fadeIn();
                         setTimeout(function () {
                             $('#toast').fadeOut();
-                            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newSchedule.html");
+                            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newSchedule.html");
                         }, 1500);
                     } else {//删除失败弹出提示框
                         $('#loadingToast').fadeOut();//隐藏loading

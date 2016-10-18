@@ -393,10 +393,11 @@ var Lunar = {
     //吉日查询函数
     showLuckyDay: function(selectWord) {
         //选择的吉日，日期数组
-        var dateItem = Dom.getDateList();
+        var dateItem = Dom.getDateList(),
+            urlArr = Dom.configuration();
         var startTime = dateItem.eq(0).attr("id"),
             endTime = dateItem.eq(dateItem.size() - 1).attr("id");
-        $.get("http://www.li-li.cn/llwx/fortune/getLuckDay", {
+        $.get(urlArr[0]+"/fortune/getLuckDay", {
             "startTime": startTime + " 08:00:00",
             "endTime": endTime + " 08:00:00",
             "luckDaytag": selectWord,

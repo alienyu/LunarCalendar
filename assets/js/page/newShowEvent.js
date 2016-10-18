@@ -80,7 +80,8 @@ var fuc = {
             },
             function (data) {
                 if (data.code == 0) {
-                    console.log(that.config.pageNo);
+                    //console.log(that.config.pageNo);
+                    $('#loadingToast').fadeOut();
                     that.config.pageNo ++;
                     var list = data.data, html = "";
                     var peopleCount = list.pagination.totalCount + 1;
@@ -92,7 +93,7 @@ var fuc = {
                             html += peopleTemplate.replace(/{{imgUrl}}/g, list.list[i].headImgUrl).replace(/{{nickName}}/g, list.list[i].nickName);
                         }
                         that.config.lastId = list.list[list.list.length-1].openId;
-                        console.log(that.config.lastId);
+                        //console.log(that.config.lastId);
                         //console.log(html);
                         $('.morePeople').before(html);
                         var joiner = $('.joinerItem');
@@ -232,7 +233,7 @@ var fuc = {
         var that = this;
         /*------------点击编辑按钮，跳转至事件添加页--------------*/
         $('.compile').click(function () {
-            console.log(that.config.eventType);
+            //console.log(that.config.eventType);
             if (that.config.eventType == 0) {//提醒事件
                 window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/remind.html?eventId=" + that.config.eventId);
             } else if (that.config.eventType == 1) {//活动事件
@@ -252,6 +253,7 @@ var fuc = {
         });
         /*----------------点击更多---------------------*/
         $('.morePeople').click(function () {
+            $('#loadingToast').fadeIn();
             that.getJoiner();
         });
         /*---------------点击邀请好友-----------------*/
@@ -404,14 +406,16 @@ var fuc = {
     refreshJoiner: function () {
         var that = this;
         that.config.pageNo = 1;
+        that.config.lastId = "";
         $('.peopleList').children(".joinerItem").remove();
         var peopleTemplate = $('#peopleListTemplate').html();
         $.get(
             "http://www.li-li.cn/llwx/event/joiner/list",
             {
                 "pageNo": that.config.pageNo,
-                "pageSize": 10,
-                "eventId": that.config.eventId
+                "pageSize": 20,
+                "eventId": that.config.eventId,
+                "lastId":that.config.lastId
             },
             function (data) {
                 if (data.code == 0) {
@@ -426,6 +430,7 @@ var fuc = {
                         for (var i = 0; i < list.list.length; i++) {
                             html += peopleTemplate.replace(/{{imgUrl}}/g, list.list[i].headImgUrl).replace(/{{nickName}}/g, list.list[i].nickName);
                         }
+                        that.config.lastId = list.list[list.list.length-1].openId;
                         //console.log(html);
                         $('.morePeople').before(html);
                         var joiner = $('.joinerItem');

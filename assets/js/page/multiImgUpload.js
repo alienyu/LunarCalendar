@@ -44,7 +44,7 @@ var fuc = {
             var data = new FormData($("#form")[0]);
             $.ajax({
                 type: "post",
-                url: "http://www.li-li.cn/llwx/file/upload",
+                url: "/file/upload",
                 type: 'POST',
                 data: data,
                 dataType: 'JSON',

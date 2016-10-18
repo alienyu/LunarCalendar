@@ -9,11 +9,13 @@ var wx = require("../vendor/weChat/wxInit.js");
 var fuc = {
     config: {
         birthday: "",
+        urlArr:"",
         isGoodDay: false,
         screenWidth :$(document.body).width()//获取屏幕宽度
     },
     init: function() {
         pageLoad({backgroundColor: "#fff"});
+        this.config.urlArr = Dom.configuration();
         this.renderPage();
         this.bindEvent();
     },
@@ -41,9 +43,10 @@ var fuc = {
     },
     getUserInformation: function() {
         var that=this;
+        console.log(that.config.urlArr[0]+"/user/detail");
         $.ajax({
             type: "get",
-            url: "http://www.li-li.cn/llwx/user/detail",
+            url: that.config.urlArr[0]+"/user/detail",
             dataType: "json",
             success: function (data) {
                 if (data.code == 0) {
@@ -117,11 +120,11 @@ var fuc = {
         });
         $('.activity').on('tap',function(){
             var dateCurrent = $('.date_current').attr('id');
-            window.location.href= "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/activity.html?date="+dateCurrent);
+            window.location.href= that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/activity.html?date="+dateCurrent);
         });
         $('.remind').on('tap',function(){
             var dateCurrent = $('.date_current').attr('id');
-            window.location.href= "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/remind.html?date="+dateCurrent);
+            window.location.href= that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/remind.html?date="+dateCurrent);
         });
 
         /*--------------点击/滑动的tab切换效果，容器高度随显示内容变化--------------------------*/

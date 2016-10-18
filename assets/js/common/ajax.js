@@ -1,17 +1,22 @@
 var Dom = require("./dom.js");
 var Ajax = {
+    config:{
+        urlArr:""
+    },
     init: function() {
+        this.config.urlArr = Dom.configuration();
         setInterval(function () {
-            $.get("http://www.li-li.cn/llwx/common/heartbeat", function (data) {
+            $.get(this.config.urlArr[0]+"/common/heartbeat", function (data) {
                 //alert(data);
             });
         }, 20 * 60 * 1000);
     },
     //首页获取用户信息
     getUserInformation2: function() {
+        var that = this;
         $.ajax({
             type: "get",
-            url: "http://www.li-li.cn/llwx/user/detail",
+            url: that.config.urlArr[0]+"/user/detail",
             dataType: "json",
             async: false,
             success: function (data) {
@@ -24,6 +29,7 @@ var Ajax = {
     //月历页面的数据加载
     //判断当前页面时间范围内的事件，并在有时间的日期下方加点
     getEventOfMonth: function() {
+        var that = this;
         var dateItem = Dom.getDateList();
         //console.log(dateItem);
         var startTime = dateItem.eq(0).attr('id'),
@@ -31,7 +37,7 @@ var Ajax = {
         var html = "<span class='date-dot back6c opa7'></span>";
         $.ajax({
             type: "get",
-            url: "http://www.li-li.cn/llwx/event/hasornot",
+            url: that.config.urlArr[0]+"/event/hasornot",
             data: {
                 startTime: startTime,
                 endTime: endTime
@@ -61,10 +67,11 @@ var Ajax = {
     },
     //获取一天的事件
     getEventOfDay: function(dateTime) {
+        var that = this;
         var template = $('#eventListTemplate').html();
         $.ajax({
             type: "get",
-            url: "http://www.li-li.cn/llwx/event/getEventOfDay",
+            url: that.config.urlArr[0]+"/event/getEventOfDay",
             data: {
                 dateTime: dateTime,
             },
@@ -97,7 +104,7 @@ var Ajax = {
                         $('.scheduleCon').append(html);
                         $('.list').on('tap', function () {//点击日程跳转至详情页
                             var eventId = $(this).attr('id');
-                            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + eventId);
+                            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + eventId);
                         });
                     } else {
                         $('.scheduleBg').css("display", "block");
@@ -122,10 +129,11 @@ var Ajax = {
     },
     //获得黄历
     getFortune: function(dateTime) {
+        var that = this;
         var dateTime = dateTime + " 08:00:00";
         $.ajax({
             type: "get",
-            url: "http://www.li-li.cn/llwx/fortune/get",
+            url: that.config.urlArr[0]+"/fortune/get",
             data: {
                 dateTime: dateTime,
             },
@@ -170,6 +178,7 @@ var Ajax = {
     },
     //设置生日获取私人黄历
     setBirthday: function(birthdayTime) {
+        var that = this;
         var date = new Date();
         var years = date.getFullYear(),
             months = date.getMonth() + 1,
@@ -177,7 +186,7 @@ var Ajax = {
         var dateTime = years + "-" + months + "-" + days + " 08:00:00";
         $.ajax({
             type: "post",
-            url: "http://www.li-li.cn/llwx/user/setBirthday",
+            url: that.config.urlArr[0]+"/user/setBirthday",
             data: {
                 dateTime: dateTime,
                 birthday: birthdayTime
@@ -220,8 +229,9 @@ var Ajax = {
     },
     //获取天气  日期格式2016-10-13
     getWeather:function(date,time){
+        var that = this;
         $.get(
-            "http://www.li-li.cn/llwx/weather/get",
+            that.config.urlArr[0]+"/weather/get",
             {
                 "date":date,
                 "days":1
@@ -259,8 +269,9 @@ var Ajax = {
     },
     //获取用户选择地点的天气
     getLocalWeather:function(date,time,latitude,longitude){
+        var that = this;
         $.get(
-            "http://www.li-li.cn/llwx/weather/getByCoordinates",
+            that.config.urlArr[0]+"/weather/getByCoordinates",
             {
                 "longitude":longitude,
                 "latitude":latitude,
@@ -299,7 +310,8 @@ var Ajax = {
     },
     //获取私人运势
     getPersonalFortune:function(dateTime){
-        $.get("http://www.li-li.cn/llwx/fortune/get", {"dateTime": dateTime + " 08:00:00"}, function (data) {
+        var that = this;
+        $.get(that.config.urlArr[0]+"/fortune/get", {"dateTime": dateTime + " 08:00:00"}, function (data) {
             if (data.code == 0) {
                 var list = data.data;
                 if (list.personal) {
