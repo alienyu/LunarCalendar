@@ -845,7 +845,12 @@ var fuc = {
                         $('.remarkImgs').append(str);
                     }
                     if(imgurl != undefined && imgurl.indexOf('base64,') == -1 ){
-                        that.config.remarkImgs = that.config.remarkImgs + "," + $('.img_upload_result').eq(i).attr("src");
+                        if(that.config.remarkImgs == ""){
+                            that.config.remarkImgs = $('.img_upload_result').eq(i).attr("src");
+                       }else{
+                            that.config.remarkImgs = that.config.remarkImgs + "," + $('.img_upload_result').eq(i).attr("src");
+                       }
+                        
                     }else if(imgurl != undefined && imgurl.indexOf('base64,') > -1 ){
                         $('#loadingToast').fadeIn();
                         that.imgConfig.count ++;
@@ -870,7 +875,7 @@ var fuc = {
                                if(imgcount == that.imgConfig.count){
                                     $('#loadingToast').fadeOut();
                                     //上传未成功则停留在本页面。
-                                    that.config.remarkImgs = that.config.remarkImgs.substr(1);
+                                    // console.log('上传完毕'+that.config.remarkImgs);
                                     that.config.remarkText = $('#remarkText').val().replace(/\n/g,"<br>");
                                     $('.remarkCon .remarkText').removeClass("ccc").html(that.config.remarkText);
                                     $('#remarkText').attr("autofocus");
@@ -895,7 +900,7 @@ var fuc = {
             }
 
             if(that.imgConfig.count ==0){
-                that.config.remarkImgs = that.config.remarkImgs.substr(1);
+                // console.log('未上传'+that.config.remarkImgs);
                 that.config.remarkText = $('#remarkText').val().replace(/\n/g,"<br>");
                 //console.log(that.config.remarkText);
                 $('.remarkCon .remarkText').removeClass("ccc").html(that.config.remarkText);
@@ -1081,12 +1086,23 @@ var fuc = {
             reader.readAsDataURL(file);
         });
 
-        $("#form").on("tap", ".img_upload_result", function (e) {
+        $("#form").on("tap", ".delUpImg", function (e) {
             $(e.target).parent().remove();
             if (that.checkBoxNum() && $(".new_box").length < 1) {
                 var newUploadBox = '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" accept="image/*" name="photo_' + (that.btnIndex + 1) + '"><a href="javascript:;">+</a></div>';
                 $(".img_upload_box").last().after(newUploadBox);
             }
+        });
+
+        $("#form").on("tap", ".img_upload_result", function (e) {
+            var imgArr = [];
+            for(var i=0;i<$(".img_upload_result").length;i++){
+                imgArr.push($('.img_upload_result').eq(i).attr("src"));
+            }
+            wx.getWx().previewImage({
+                current: this.src, // 当前显示图片的http链接
+                urls: imgArr // 需要预览的图片http链接列表
+            });
         });
     },
 
