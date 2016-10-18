@@ -414,10 +414,13 @@ var fuc = {
                             $('#form').empty();
                             for(var i=0;i<imgArr.length;i++){
                                 imgHtml += "<img src="+imgArr[i]+" >";
-                                inputImg += '<div class="img_upload_box"><input type="file" class="img_upload_btn" name="photo"><img src="'+imgArr[i]+'" class="img_upload_result"></div>';
+                                inputImg += '<div class="img_upload_box">'+
+                                            '<input type="file" class="img_upload_btn" name="photo" accept="image/*"><img src="'+imgArr[i]+'" class="img_upload_result">'+
+                                            $('.delUpImgSrc').html()+
+                                            '</div>';
                             }
                             if(imgArr.length < 9){
-                                inputImg += '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo"><a href="javascript:;">+</a></div>';
+                                inputImg += '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo" accept="image/*"><a href="javascript:;">+</a></div>';
                             }
                             $('#form').prepend(inputImg);
                             $('.remark .remarkImgs').append(imgHtml);
@@ -812,10 +815,13 @@ var fuc = {
                 $('#form').empty();
                 var inputImg = "";
                 for(var i=0;i<$('.remarkImgs img').length;i++){
-                     inputImg += '<div class="img_upload_box"><input type="file" class="img_upload_btn" name="photo"><img src="'+$('.remarkImgs img').eq(i).attr('src')+'" class="img_upload_result"></div>';
+                     inputImg += '<div class="img_upload_box">'+
+                                '<input type="file" class="img_upload_btn" name="photo" accept="image/*"><img src="'+$('.remarkImgs img').eq(i).attr('src')+'" class="img_upload_result">'+
+                                $('.delUpImgSrc').html()+
+                                '</div>';
                 }
                 if($('.remarkImgs img').length < 9){
-                    inputImg += '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo"><a href="javascript:;">+</a></div>';
+                    inputImg += '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo" accept="image/*"><a href="javascript:;">+</a></div>';
                 }
                 $('#form').prepend(inputImg);
             }
@@ -839,7 +845,12 @@ var fuc = {
                         $('.remarkImgs').append(str);
                     }
                     if(imgurl != undefined && imgurl.indexOf('base64,') == -1 ){
-                        that.config.remarkImgs = that.config.remarkImgs + "," + $('.img_upload_result').eq(i).attr("src");
+                        if(that.config.remarkImgs == ""){
+                            that.config.remarkImgs = $('.img_upload_result').eq(i).attr("src");
+                       }else{
+                            that.config.remarkImgs = that.config.remarkImgs + "," + $('.img_upload_result').eq(i).attr("src");
+                       }
+                        
                     }else if(imgurl != undefined && imgurl.indexOf('base64,') > -1 ){
                         $('#loadingToast').fadeIn();
                         that.imgConfig.count ++;
@@ -863,6 +874,15 @@ var fuc = {
                                imgcount++;
                                if(imgcount == that.imgConfig.count){
                                     $('#loadingToast').fadeOut();
+                                    //上传未成功则停留在本页面。
+                                    // console.log('上传完毕'+that.config.remarkImgs);
+                                    that.config.remarkText = $('#remarkText').val().replace(/\n/g,"<br>");
+                                    $('.remarkCon .remarkText').removeClass("ccc").html(that.config.remarkText);
+                                    $('#remarkText').attr("autofocus");
+                                    $('.remarkShadow .container').animate({"top": "100%"}, 200, function () {
+                                        $('.remarkShadow').hide();
+                                    });
+                                    $('.shadowBg').fadeOut();
                                }
                            },
                             error: function() {
@@ -879,15 +899,18 @@ var fuc = {
                 
             }
 
-            that.config.remarkImgs = that.config.remarkImgs.substr(1);
-            that.config.remarkText = $('#remarkText').val().replace(/\n/g,"<br>");
-            //console.log(that.config.remarkText);
-            $('.remarkCon .remarkText').removeClass("ccc").html(that.config.remarkText);
-            $('#remarkText').attr("autofocus");
-            $('.remarkShadow .container').animate({"top": "100%"}, 200, function () {
-                $('.remarkShadow').hide();
-            });
-            $('.shadowBg').fadeOut();
+            if(that.imgConfig.count ==0){
+                // console.log('未上传'+that.config.remarkImgs);
+                that.config.remarkText = $('#remarkText').val().replace(/\n/g,"<br>");
+                //console.log(that.config.remarkText);
+                $('.remarkCon .remarkText').removeClass("ccc").html(that.config.remarkText);
+                $('#remarkText').attr("autofocus");
+                $('.remarkShadow .container').animate({"top": "100%"}, 200, function () {
+                    $('.remarkShadow').hide();
+                });
+                $('.shadowBg').fadeOut();
+            }
+            
             event.preventDefault();
         });
         /*------------点击分享--------------*/
@@ -1052,21 +1075,34 @@ var fuc = {
             reader.addEventListener("load", function () {
                 var imgSrc = reader.result;
                 var html = "<img src='" + imgSrc + "' class='img_upload_result' />";
+                html += $('.delUpImgSrc').html();
                 that.boxDom.append(html).removeClass("new_box").find("a").remove();
+                $(e.target).attr("disabled", "true"); 
                 if (that.checkBoxNum() && $(".new_box").length < 1) {
-                    var newUploadBox = '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo"><a href="javascript:;">+</a></div>';
+                    var newUploadBox = '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo" accept="image/*"><a href="javascript:;">+</a></div>';
                     $(".img_upload_box").last().after(newUploadBox);
                 }
             }, false);
             reader.readAsDataURL(file);
         });
 
-        $("#form").on("tap", ".img_upload_result", function (e) {
+        $("#form").on("tap", ".delUpImg", function (e) {
             $(e.target).parent().remove();
             if (that.checkBoxNum() && $(".new_box").length < 1) {
-                var newUploadBox = '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo_' + (that.btnIndex + 1) + '"><a href="javascript:;">+</a></div>';
+                var newUploadBox = '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" accept="image/*" name="photo_' + (that.btnIndex + 1) + '"><a href="javascript:;">+</a></div>';
                 $(".img_upload_box").last().after(newUploadBox);
             }
+        });
+
+        $("#form").on("tap", ".img_upload_result", function (e) {
+            var imgArr = [];
+            for(var i=0;i<$(".img_upload_result").length;i++){
+                imgArr.push($('.img_upload_result').eq(i).attr("src"));
+            }
+            wx.getWx().previewImage({
+                current: this.src, // 当前显示图片的http链接
+                urls: imgArr // 需要预览的图片http链接列表
+            });
         });
     },
 
