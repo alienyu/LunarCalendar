@@ -3,9 +3,17 @@
  * 微信分享
  */
 var wx = require("./jweixin.js");
-var imageUrl = "http://www.li-li.cn/app/icon.png";
+var configArr = urlConfiguration();
+var imageUrl = configArr[1]+"/app/icon.png";
+function urlConfiguration(){
+    var host = window.location.host;
+    if(host == "wx.li-li.cn"){
+        return ["http://wx.li-li.cn/api","http://wx.li-li.cn","wx82c10b61c95e9f30"];
+    }else{
+        return ["http://www.li-li.cn/llwx","http://www.li-li.cn","wxd8c1d6ab5eb3c981"];
+    }
+}
 var wxConfig = {
-
     wxConfig: function (type) {
         var url = window.location.href;
         var urlArr = url.split("#");
@@ -14,13 +22,14 @@ var wxConfig = {
         var timestamp = "";
         $.ajax({
             type: "get",
-            url: "http://www.li-li.cn/llwx/wx/jsOauth",
+            url: configArr[0]+"/wx/jsOauth",
             data: {
                 url: urlArr[0]
             },
             dataType: "json",
             async: false,
             success: function (data) {
+                console.log(configArr[0]);
                 if (data.code == 0) {
                     console.log(data);
                     var data = data.data;
@@ -30,7 +39,8 @@ var wxConfig = {
                     wx.config({
                         debug: false,
                         //appId: "wx82c10b61c95e9f30",//正式
-                        appId: "wxd8c1d6ab5eb3c981",//测试
+                        //appId: "wxd8c1d6ab5eb3c981",//测试
+                        appId:configArr[2],
                         timestamp: timestamp,//时间戳
                         nonceStr: noncestr,//随机串
                         signature: signature,//签名
@@ -84,7 +94,8 @@ var wxConfig = {
                 //alert('用户拒绝授权获取地理位置');
             }
         });
-    },
+    }
+
 }
 
 module.exports = wxConfig;

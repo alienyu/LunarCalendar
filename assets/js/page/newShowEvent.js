@@ -16,7 +16,8 @@ var fuc = {
         eventType: "",
         shareImg: "",
         pageNo:"",
-        lastId:""
+        lastId:"",
+        urlArr:""
     },
     mapConfig: {
         map: "",
@@ -29,6 +30,7 @@ var fuc = {
 		this.config.pageNo = 1;
         this.config.eventId = Dom.getRequest("eventId");
         this.config.lastId = "";
+        this.config.urlArr = Dom.configuration();
         this.rem();
         this.renderPage();
         this.bindEvent();
@@ -52,7 +54,7 @@ var fuc = {
     getShareImg: function () {
         var that = this;
         $.get(
-            "http://www.li-li.cn/llwx/share/genPic",
+            that.config.urlArr[0]+"/share/genPic",
             {
                 "eventId": that.config.eventId
             },
@@ -71,7 +73,7 @@ var fuc = {
         var that = this;
         var peopleTemplate = $('#peopleListTemplate').html();
         $.get(
-            "http://www.li-li.cn/llwx/event/joiner/list",
+            that.config.urlArr[0]+"/event/joiner/list",
             {
                 "pageNo": that.config.pageNo,
                 "pageSize": 20,
@@ -115,7 +117,7 @@ var fuc = {
         var that = this;
         //console.log(that.config.eventId);
         $.get(
-            "http://www.li-li.cn/llwx/event/detail",
+            that.config.urlArr[0]+"/event/detail",
             {"eventId": that.config.eventId},
             function (data) {
                 if (data.code == 0) {
@@ -223,10 +225,10 @@ var fuc = {
                         $('.ownerNickName .nickName').html(dataList.owner.nickName);
                         if (dataList.user) {
                             wx.wxShare(dataList.user + " 邀请您参加 「" + dataList.event.name + "」", Dom.tranDate(dataList.event.startTime),
-                                "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + dataList.event.eventId));
+                                that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + dataList.event.eventId));
                         } else {//用户没有关注历历
                             wx.wxShare(dataList.owner.nickName + " 邀请您参加 「" + dataList.event.name + "」", Dom.tranDate(dataList.event.startTime),
-                                "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + dataList.event.eventId));
+                                that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + dataList.event.eventId));
                         }
                     }
                 } else if (data.code == 112) {
@@ -243,9 +245,9 @@ var fuc = {
         $('.compile').click(function () {
             //console.log(that.config.eventType);
             if (that.config.eventType == 0) {//提醒事件
-                window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/remind.html?eventId=" + that.config.eventId);
+                window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/remind.html?eventId=" + that.config.eventId);
             } else if (that.config.eventType == 1) {//活动事件
-                window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/activity.html?eventId=" + that.config.eventId);
+                window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/activity.html?eventId=" + that.config.eventId);
             }
         });
         /*----------全文 收起----------*/
@@ -281,7 +283,7 @@ var fuc = {
         $('.shareImgClose').click(function () {
             event.preventDefault();
             $.get(
-                "http://www.li-li.cn/llwx/share/seePic",
+                that.config.urlArr[0]+"/share/seePic",
                 {
                     "picUrl": that.config.shareImg
                 },
@@ -296,12 +298,12 @@ var fuc = {
         /*-----------------点击接受邀请----------------*/
         $('.join').click(function () {
             $('#loadingToast').fadeIn();//显示loading
-            $.get("http://www.li-li.cn/llwx/wx/isSubscribe", function (data) {
+            $.get(that.config.urlArr[0]+"/wx/isSubscribe", function (data) {
                 if (data.code == 0) {
                     if (data.data) {//已经关注了我们
                         //数据提交
                         $.post(
-                            'http://www.li-li.cn/llwx/event/accept',
+                            that.config.urlArr[0]+'/event/accept',
                             {
                                 "eventId": that.config.eventId
                             },
@@ -329,7 +331,7 @@ var fuc = {
                         )
                     } else {//没有关注我们，弹出二维码
                         $.get(
-                            "http://www.li-li.cn/llwx/wx/qrcode/ticket",
+                            that.config.urlArr[0]+"/wx/qrcode/ticket",
                             {"sceneId": that.config.eventId},
                             function (data) {//获取带参数的二维码
                                 if (data.code == 0) {
@@ -349,10 +351,10 @@ var fuc = {
         /*----------点击我要发布--------------*/
         $('.postEvent').click(function(){
                 $('#loadingToast').fadeIn();//显示loading
-                $.get("http://www.li-li.cn/llwx/wx/isSubscribe", function (data) {
+                $.get(that.config.urlArr[0]+"/wx/isSubscribe", function (data) {
                     if(data.code ==0){
                         if(data.data){//已经关注我们，跳转至添加活动页面
-                            window.location.href ="http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/activity.html");
+                            window.location.href =that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/activity.html");
                         }else{//没有关注我们，弹出历历微信号二维码
                             $('#loadingToast').fadeOut();//隐藏loading
                             $('.liLi').css("display","block");
@@ -379,7 +381,7 @@ var fuc = {
             $('#dialog1').fadeOut();
             $('#loadingToast').fadeIn();//显示loading
             $.post(
-                "http://www.li-li.cn/llwx/event/exit",
+                that.config.urlArr[0]+"/event/exit",
                 {
                     "eventId": that.config.eventId
                 },
@@ -418,7 +420,7 @@ var fuc = {
         $('.peopleList').children(".joinerItem").remove();
         var peopleTemplate = $('#peopleListTemplate').html();
         $.get(
-            "http://www.li-li.cn/llwx/event/joiner/list",
+            that.config.urlArr[0]+"/event/joiner/list",
             {
                 "pageNo": that.config.pageNo,
                 "pageSize": 20,

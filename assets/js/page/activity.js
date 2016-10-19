@@ -27,7 +27,8 @@ var fuc = {
         themeName: "",
         themeColor: "",
         remarkText: "",
-        remarkImgs: ""
+        remarkImgs: "",
+        urlArr:""
     },
     mapConfig: {
         map: "",
@@ -68,6 +69,7 @@ var fuc = {
         };
         this.boxDom = "";
         this.config.bgColor = '#66cccc';
+        this.config.urlArr = Dom.configuration();
         this.renderPage();
         this.bindEvent();
         this.initMap();
@@ -207,7 +209,7 @@ var fuc = {
         console.log(templateId);
         if (templateId != "null") {
             $.get(
-                "http://www.li-li.cn/llwx/template/detail",
+                that.config.urlArr[0]+"/template/detail",
                 {
                     'tid': templateId
                 },
@@ -259,7 +261,7 @@ var fuc = {
         var template = $('#tagListTemplate').html();
         var html = "";
         $.get(
-            "http://www.li-li.cn/llwx/tag/list",
+            that.config.urlArr[0]+"/tag/list",
             {"type": 2, "all": true},
             function (data) {
 //                console.log(data);
@@ -331,7 +333,7 @@ var fuc = {
         $('.delete').css("display", "block");//用户可删除事件
         $(".topTips").css("display", "none");//隐藏头部的快捷标签
         $.get(
-            "http://www.li-li.cn/llwx/event/detail",
+            that.config.urlArr[0]+"/event/detail",
             {
                 "eventId": that.config.eventId
             },
@@ -437,7 +439,7 @@ var fuc = {
                     }
                     that.setInitTheme();
                     wx.wxShare(eventList.owner.nickName + " 邀请您参加 「" + eventList.event.name + "」", Dom.tranDate(eventList.event.startTime),
-                        "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + eventList.event.eventId));
+                        that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + eventList.event.eventId));
                 } else if(data.code == 112){
                     //若参加者参加的事件不存在
                     $('.eventNone').css("display", "block");
@@ -450,7 +452,7 @@ var fuc = {
     getShareImg: function () {
         var that = this;
         $.get(
-            "http://www.li-li.cn/llwx/share/genPic",
+            that.config.urlArr[0]+"/share/genPic",
             {
                 "eventId": that.config.eventId
             },
@@ -640,7 +642,7 @@ var fuc = {
         }
         //图片列表初始化
         $.get(
-            "http://www.li-li.cn/llwx/theme/list",
+            that.config.urlArr[0]+"/theme/list",
             {
                 "all": true
             },
@@ -782,7 +784,7 @@ var fuc = {
             $('#loadingToast').fadeIn();//显示loading
             event.preventDefault();
             $.get(
-                "http://www.li-li.cn/llwx/share/seePic",
+                that.config.urlArr[0]+"/share/seePic",
                 {
                     "picUrl": that.config.shareImg
                 },
@@ -856,7 +858,7 @@ var fuc = {
                         that.imgConfig.count ++;
                         $.ajax({
                            type: "post",
-                           url: "http://www.li-li.cn/llwx/file/upload",
+                           url: that.config.urlArr[0]+"/file/upload",
                            data: fileData,
                            dataType: "json",
                            cache: false,
@@ -978,7 +980,7 @@ var fuc = {
                     that.eventAdd2(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.locaName, that.mapConfig.locaAddress, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
                     that.getUserInformation();
                     wx.wxShare(that.config.nickName + " 邀请您参加 「" + name + "」", $('.startTime').html(),
-                        "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/showEvent.html?eventId=" + that.config.eventId));
+                        that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/showEvent.html?eventId=" + that.config.eventId));
                 }
             }
         });
@@ -1039,13 +1041,13 @@ var fuc = {
                     $('#dialog1').fadeOut();
                 },300);
                 $('#loadingToast').fadeIn();//显示loading
-                $.get("http://www.li-li.cn/llwx/event/del", {"eventId": that.config.eventId}, function (data) {
+                $.get(that.config.urlArr[0]+"/event/del", {"eventId": that.config.eventId}, function (data) {
                     if (data.code == 0) {//删除成功
                         $('#loadingToast').fadeOut();//隐藏loading
                         $('#toast').fadeIn();
                         setTimeout(function () {
                             $('#toast').fadeOut();
-                            window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newSchedule.html");
+                            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newSchedule.html");
                         }, 1500);
                     } else {//删除失败弹出提示框
                         $('#loadingToast').fadeOut();//隐藏loading
@@ -1254,7 +1256,7 @@ var fuc = {
         var that = this;
         $.ajax({
             type: "post",
-            url: "http://www.li-li.cn/llwx/event/add",
+            url: that.config.urlArr[0]+"/event/add",
             data: {
                 "name": name,
                 "eventType": eventType,
@@ -1280,7 +1282,7 @@ var fuc = {
                     if (data.code == 0) {//提交成功
                         that.config.eventId = data.data;
                         $('#loadingToast').fadeOut();
-                        window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId=" + that.config.eventId);
+                        window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + that.config.eventId);
                     } else {//提交失败提醒错误信息
                         $('#loadingToast').fadeOut();
                         var error = data.msg;
@@ -1301,7 +1303,7 @@ var fuc = {
         var that = this;
         $.ajax({
             type: "post",
-            url: "http://www.li-li.cn/llwx/event/add",
+            url: that.config.urlArr[0]+"/event/add",
             data: {
                 "name": name,
                 "eventType": eventType,
@@ -1352,7 +1354,7 @@ var fuc = {
         var that = this;
         $.ajax({
             type: "post",
-            url: "http://www.li-li.cn/llwx/event/modify",
+            url: that.config.urlArr[0]+"/event/modify",
             data: {
                 "eventId":eventId,
                 "name":name,
@@ -1376,7 +1378,7 @@ var fuc = {
                 try{
                     if (data.code == 0) {
                         $('#loadingToast').fadeOut();
-                        window.location.href = "http://www.li-li.cn/llwx/common/to?url2=" + encodeURIComponent("http://www.li-li.cn/wx/view/newShowEvent.html?eventId="+that.config.eventId);
+                        window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId="+that.config.eventId);
                     } else {//修改失败弹出提示框
                         $('#loadingToast').fadeOut();
                         var error = data.msg;
@@ -1397,7 +1399,7 @@ var fuc = {
         var that = this;
         $.ajax({
             type: "post",
-            url: "http://www.li-li.cn/llwx/event/modify",
+            url: that.config.urlArr[0]+"/event/modify",
             data: {
                 "eventId":eventId,
                 "name":name,
@@ -1444,7 +1446,7 @@ var fuc = {
         var that = this;
         $.ajax({
             type: "get",
-            url: "http://www.li-li.cn/llwx/user/detail",
+            url: that.config.urlArr[0]+"/user/detail",
             dataType: "json",
             async: false,
             success: function (data) {

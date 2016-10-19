@@ -235,6 +235,12 @@ var fuc = {
                 $("#btnDetail").removeClass("move_down").addClass("move_up");
             }
         });
+        $('.activity').on("tap",function(){
+            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/activity.html");
+        });
+        $('.remind').on("tap",function(){
+            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/remind.html");
+        });
 
         //添加活动详情跳转地址
         $("#container").on('tap', '.content', function (e) {
