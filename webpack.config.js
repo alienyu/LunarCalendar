@@ -51,7 +51,8 @@ module.exports = {
     },
     plugins: [
         new webpack.ProvidePlugin({ //加载jq
-            $: 'zepto'
+            $: 'zepto',
+            DOm: "./sdada.js"
         }),
         //new webpack.optimize.CommonsChunkPlugin({
         //    name: 'vendors', // 将公共模块提取，生成名为`vendors`的chunk
@@ -110,5 +111,6 @@ initConfig([
     "remind",
     "activity",
     "newSchedule",
-    "newShowEvent"
+    "newShowEvent",
+    "starDetail"
 ])

@@ -29,9 +29,9 @@ var wxConfig = {
             dataType: "json",
             async: false,
             success: function (data) {
-                console.log(configArr[0]);
+                //console.log(configArr[0]);
                 if (data.code == 0) {
-                    console.log(data);
+                    //console.log(data);
                     var data = data.data;
                     noncestr = data.noncestr;
                     signature = data.signature;

@@ -5,8 +5,9 @@ var Ajax = {
     },
     init: function() {
         this.config.urlArr = Dom.configuration();
+        var that = this;
         setInterval(function () {
-            $.get(this.config.urlArr[0]+"/common/heartbeat", function (data) {
+            $.get(that.config.urlArr[0]+"/common/heartbeat", function (data) {
                 //alert(data);
             });
         }, 20 * 60 * 1000);

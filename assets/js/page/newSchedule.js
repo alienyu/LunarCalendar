@@ -1,4 +1,5 @@
 require("../../css/page/newSchedule.less");
+var Ajax = require("../common/ajax.js");
 var wx = require("../vendor/weChat/wxInit.js");
 var Dom = require("../common/dom.js");
 var mask = require("../plugins/mask/mask.js");

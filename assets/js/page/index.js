@@ -3,6 +3,7 @@ var pageLoad = require("../common/pageLoad.js");
 var transCalendar = require("../vendor/LunarCalendar/transCalendar.js");
 var wx = require("../vendor/weChat/wxInit.js");
 var Dom = require("../common/dom.js");
+var Ajax = require("../common/ajax.js");
 var fuc = {
     config: {
         today:"",

@@ -1,7 +1,7 @@
 /*全局添加按钮 开始*/
-body .add_btn { box-shadow: 0px 3px 3px rgba(0,0,0,.4); overflow:hidden; text-indent:-9999px; position: fixed; right: 20px; bottom: 20px; width: 60px; height: 60px; line-height: 53px; border-radius: 100%; text-align: center; font-size: 40px; color: #fff; z-index: 999999988; transform: rotate(0deg); transition: 0.5s; display: block; background:#4cafaf url(../../imgs/common/icon_com_add.png) no-repeat center; background-size: 50%}
+body .add_btn { box-shadow: 0px 3px 3px rgba(0,0,0,.4); overflow:hidden; text-indent:-9999px; position: fixed; right: 20px; bottom: 20px; width: 60px; height: 60px; line-height: 53px; border-radius: 100%; text-align: center; font-size: 40px; color: #fff; z-index: 1012; transform: rotate(0deg); transition: 0.5s; display: block; background:#4cafaf url(../../imgs/common/icon_com_add.png) no-repeat center; background-size: 50%}
 body .add_btn.open { transform: rotate(135deg); transition: 0.5s; background-color: #8F8F8F; box-shadow: 0px 0px 5px rgba(0,0,0,.4); }
-body .btn_detail { position: fixed; right: 28px; z-index: 999999977; opacity: 0;}
+body .btn_detail { position: fixed; right: 28px; z-index: 1011; opacity: 0;}
 body .btn_detail.move_up { -webkit-animation-name: move_up 0.5s; animation: move_up 0.5s; opacity: 1; bottom: 80px; }
 body .btn_detail.move_down { -webkit-animation-name: move_down 0.5s; animation: move_down 0.5s; opacity: 0; bottom: 20px; }
 body .btn_detail div { margin-bottom: 10px; height: 50px; }
@@ -9,7 +9,7 @@ body .btn_detail div span { float: left; background-color: #fff; -webkit-border-
 body .btn_detail div a { float: left; width: 45px; height: 45px; background-color: #66cccc; border-radius: 50%; box-shadow: 0px 1px 10px rgba(0,0,0,.4); }
 body .btn_detail div a.activity { background: url(../../imgs/page/newSchedule/icon/ic_activity.png) no-repeat #66cccc center center; background-size: 50%; }
 body .btn_detail div a.remind { background: url(../../imgs/page/newSchedule/icon/ic_remind.png) no-repeat #66cccc center center; background-size: 50%; }
-body .select_mask { position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; background:rgba(255,255,255,0.5);z-index:999999966; display:none;}
+body .select_mask { position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; background:rgba(255,255,255,0.5);z-index:1010; display:none;}
 
 @-webkit-keyframes move_up { from {
     opacity: 0;
