@@ -417,7 +417,7 @@ var fuc = {
                             for(var i=0;i<imgArr.length;i++){
                                 imgHtml += "<img src="+imgArr[i]+" >";
                                 inputImg += '<div class="img_upload_box">'+
-                                            '<input type="file" class="img_upload_btn" name="photo" accept="image/*"><img src="'+imgArr[i]+'" class="img_upload_result">'+
+                                            '<input type="file" class="img_upload_btn hide" name="photo" disabled="disabled" accept="image/*"><img src="'+imgArr[i]+'" class="img_upload_result">'+
                                             $('.delUpImgSrc').html()+
                                             '</div>';
                             }
@@ -818,7 +818,7 @@ var fuc = {
                 var inputImg = "";
                 for(var i=0;i<$('.remarkImgs img').length;i++){
                      inputImg += '<div class="img_upload_box">'+
-                                '<input type="file" class="img_upload_btn" name="photo" accept="image/*"><img src="'+$('.remarkImgs img').eq(i).attr('src')+'" class="img_upload_result">'+
+                                '<input type="file" class="img_upload_btn hide" name="photo" disabled="disabled" accept="image/*"><img src="'+$('.remarkImgs img').eq(i).attr('src')+'" class="img_upload_result">'+
                                 $('.delUpImgSrc').html()+
                                 '</div>';
                 }
@@ -1079,7 +1079,8 @@ var fuc = {
                 var html = "<img src='" + imgSrc + "' class='img_upload_result' />";
                 html += $('.delUpImgSrc').html();
                 that.boxDom.append(html).removeClass("new_box").find("a").remove();
-                $(e.target).attr("disabled", "true"); 
+                $(e.target).attr("disabled", "disabled"); 
+                $(e.target).addClass('hide');
                 if (that.checkBoxNum() && $(".new_box").length < 1) {
                     var newUploadBox = '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" name="photo" accept="image/*"><a href="javascript:;">+</a></div>';
                     $(".img_upload_box").last().after(newUploadBox);
@@ -1088,12 +1089,13 @@ var fuc = {
             reader.readAsDataURL(file);
         });
 
-        $("#form").on("tap", ".delUpImg", function (e) {
-            $(e.target).parent().remove();
+        $("#form").on("touchend", ".delUpImg", function (e) {
+             $(e.target).parent().remove();
             if (that.checkBoxNum() && $(".new_box").length < 1) {
                 var newUploadBox = '<div class="img_upload_box new_box"><input type="file" class="img_upload_btn" accept="image/*" name="photo_' + (that.btnIndex + 1) + '"><a href="javascript:;">+</a></div>';
                 $(".img_upload_box").last().after(newUploadBox);
             }
+            event.preventDefault();
         });
 
         $("#form").on("tap", ".img_upload_result", function (e) {
