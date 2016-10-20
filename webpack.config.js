@@ -51,14 +51,14 @@ module.exports = {
     },
     plugins: [
         new webpack.ProvidePlugin({ //加载jq
-            $: 'zepto',
-            DOm: "./sdada.js"
+            $: 'zepto'
         }),
         //new webpack.optimize.CommonsChunkPlugin({
         //    name: 'vendors', // 将公共模块提取，生成名为`vendors`的chunk
         //    chunks: ['depart_index'] //提取哪些模块共有的部分
         //    //minChunks: 3 // 提取至少3个模块共有的部分
         //}),
+        new webpack.optimize.CommonsChunkPlugin("commons", "js/commons.js"),
         new ExtractTextPlugin('css/[name].css'), //单独使用link标签加载css并设置路径，相对于output配置中的publicePath
 
         new webpack.HotModuleReplacementPlugin() //热加载
@@ -95,7 +95,7 @@ function initConfig(pageList) {
             //js插入的位置，true/'head'/'body'/false
             inject: 'body',
             hash: true, //为静态资源生成hash值
-            chunks: [chunks],//需要引入的chunk，不配置就会引入所有页面的资源
+            chunks: ["commons", chunks],//需要引入的chunk，不配置就会引入所有页面的资源
             minify: {
                 removeComments: true,//移除HTML中的注释
                 collapseWhitespace: false //删除空白符与换行符
