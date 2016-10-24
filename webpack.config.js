@@ -113,5 +113,6 @@ initConfig([
     "newSchedule",
     "newShowEvent",
     "starDetail",
-    "starNewsList"
+    "starNewsList",
+    "starIndex"
 ])

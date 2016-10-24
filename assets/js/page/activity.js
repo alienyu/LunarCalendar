@@ -526,9 +526,13 @@ var fuc = {
             });//返回地点查询结果        
             placeSearch.search(this.value); //关键字查询
         });
-        $(".tipfinished").on("tap", function(){
+        $(".tipfinished").on("touchend", function(){
+            $('.tipinput').blur();
             if($('.tipinput').val() == ""){
                 that.mapinputhide();
+                setTimeout(function(){
+                    $('.tipinput').blur();
+                },500);
                 return;
             }
 
@@ -614,6 +618,7 @@ var fuc = {
             }
         });
         $('.mapShadow .shadowClose').on("touchend",function (event) {
+            $('.tipinput').blur();
             container.animate({"top": "100%"}, 200, function () {
                 $(this).parent().hide();
             });
