@@ -8,6 +8,9 @@ var Dom = require("../common/dom.js");
 var wx = require("../vendor/weChat/wxInit.js");
 var Ajax = require("../common/ajax.js");
 var fastClick = require("../vendor/ImproveMobile/fastClick.js");
+var likeimg = require('../../imgs/page/newShowEvent/icon_btn_praise_pre.png');
+var dislikeimg = require('../../imgs/page/newShowEvent/icon_btn_praise.png');
+var defaultHeadImg = require('../../imgs/page/newShowEvent/default_photo.png');
 
 var fuc = {
     config: {
@@ -24,6 +27,15 @@ var fuc = {
         latitude: "",//纬度
         longitude: ""//经度
     },
+    commentConfig: {
+        pageSize: 5,
+        commentsId: 0,
+        addMore: false,
+        type: 1,
+        openId: "",
+        nickName: "",
+        headImgUrl:""
+    },
 
     init: function () {
         pageLoad({backgroundColor: "#fff"});
@@ -34,6 +46,50 @@ var fuc = {
         this.rem();
         this.renderPage();
         this.bindEvent();
+        console.log($('.fansList').width());
+        var num = Math.floor($('.fansList').width()/35) - 2;
+        var str = "";
+        for(var i=0;i<num;i++){
+            str += '<img src="../../assets/imgs/page/showEvent/default_photo.png" alt="" class="fl">';
+        }
+        $('.fansItem').append(str);
+        
+        
+    },
+
+    loginTag: function(){
+        that = this;
+        if(that.commentConfig.openId == ""){
+            console.log('用户未登录');
+            return false;
+        }else{
+            return true;
+        }
+    },
+
+    jsDateDiff: function(publishTime){//publishTime为时间的秒数   
+        var d_minutes,d_hours,d_days;
+        var timeNow = parseInt(new Date().getTime()/1000);
+        var d;
+        publishTime = publishTime.replace(new RegExp("-","gm"),"/");
+        publishTime = (new Date(publishTime)).getTime()/1000;
+        d = timeNow - publishTime;
+        d_days = parseInt(d/86400);
+        d_hours = parseInt(d/3600);
+        d_minutes = parseInt(d/60);
+        if(d_days>0 && d_days<2){
+            return "昨天";
+        }else if(d_days>1 && d_days<4){
+            return d_days+"天前";
+        }else if(d_days<=0 && d_hours>0){
+            return d_hours+"小时前";
+        }else if(d_hours<=0 && d_minutes>0){       
+            return d_minutes+"分钟前";
+        }else{
+            var s = new Date(publishTime*1000);
+            // s.getFullYear()+"年";
+            return (s.getMonth()+1)+"月"+s.getDate()+"日";
+        }
     },
 
     rem: function () {
@@ -67,6 +123,251 @@ var fuc = {
             }
         )
     },
+    /* ————————————获取评论—————————————————— */
+    getComments: function() {
+        var that = this;
+        $.ajax({
+            type: "get",
+            url: that.config.urlArr[0]+"/comments/get",
+            data: {
+                "fkId": that.config.eventId,
+                "pageSize": that.commentConfig.pageSize,
+                "commentsId": that.commentConfig.commentsId
+            }, 
+            success: function (data) {
+               if (data.code == 0) {
+                    data = data.data;
+                    $(".commentCount span").html(data.pagination.totalCount);
+                    if(data.self != null){
+                        that.commentConfig.openId = data.self.openId;
+                        that.commentConfig.headImgUrl = data.self.headImgUrl;
+                        that.commentConfig.nickName = data.self.nickName;
+                    }
+                    if(data.hotList != null && data.hotList.length > 0){
+                        var str = "";
+                        for(var ii = 0; ii<data.hotList.length; ii++){
+                            str += '<div class="commentItem fl comment_'+ data.hotList[ii].comments.commentsId +'">'+
+                                        '<img src="'+ data.hotList[ii].user.headImgUrl +'" class="fl">'+
+                                        '<div class="commentNickName fl">'+
+                                            '<div class="nickName">'+ data.hotList[ii].user.nickName +'</div>'+
+                                            '<div class="commentLike like_'+ data.hotList[ii].comments.commentsId +'" data-id="'+ data.hotList[ii].comments.commentsId + '">'+
+                                                '<img class="commentLikePng fl" src="'+ (data.hotList[ii].isHasFavour==1?likeimg:dislikeimg) +'" alt="">'+
+                                               ' <span>'+ data.hotList[ii].favourCount +'</span>'+
+                                            '</div>'+
+                                            '<div class="commentContent fs12" data-name="'+ data.hotList[ii].user.nickName +'">'+
+                                                 (data.hotList[ii].comments.isSysDel==1?'该条评论已被删除':data.hotList[ii].comments.content) +
+                                            '</div>'+
+                                            '<div class="commentime fs12 fl">'+ that.jsDateDiff(data.hotList[ii].comments.addTime) +'</div>' +
+                                            '<div class="commentDel fs12 fr '+ (data.hotList[ii].user.openId==that.commentConfig.openId?'':'hide') +'" data-id="'+ data.hotList[ii].comments.commentsId + '">删除</div>' +
+                                       '</div>'+
+                                   '</div>';
+                        }
+                        $('.hotComments').prepend(str);
+                        $('.hotComments').show();
+                    }
+                    if(data.list.length > 0){
+                        var str = "";
+                        if(data.list.length>=that.commentConfig.pageSize){
+                            that.commentConfig.addMore = true;
+                            that.commentEnd();
+                        }else{
+                            that.commentNone();
+                        }
+                        for(var i = 0; i<data.list.length; i++){
+                            str += '<div class="commentItem fl comment_'+ data.list[i].comments.commentsId +'">'+
+                                        '<img src="'+ data.list[i].user.headImgUrl +'" class="fl">'+
+                                        '<div class="commentNickName fl">'+
+                                            '<div class="nickName">'+ data.list[i].user.nickName +'</div>'+
+                                            '<div class="commentLike like_'+ data.list[i].comments.commentsId +'" data-id="'+ data.list[i].comments.commentsId + '">'+
+                                                '<img class="commentLikePng fl" src="'+ (data.list[i].isHasFavour==1?likeimg:dislikeimg) +'" alt="">'+
+                                               ' <span>'+ data.list[i].favourCount +'</span>'+
+                                            '</div>'+
+                                            '<div class="commentContent fs12" data-name="'+ data.list[i].user.nickName +'">'+
+                                                 (data.list[i].comments.isSysDel==1?'该条评论已被删除':data.list[i].comments.content) +
+                                            '</div>'+
+                                            '<div class="commentime fs12 fl">'+ that.jsDateDiff(data.list[i].comments.addTime) +'</div>' +
+                                            '<div class="commentDel fs12 fr '+ (data.list[i].user.openId==that.commentConfig.openId?'':'hide') +'" data-id="'+ data.list[i].comments.commentsId + '">删除</div>' +
+                                       '</div>'+
+                                   '</div>';
+                            that.commentConfig.commentsId = data.list[i].comments.commentsId;
+                        }
+                        $('.newComments').append(str);
+                        $('.newComments').show();
+                    }else{
+                        $('.commentNone').show();
+                    }
+                }else{
+                    //接口有问题
+                }
+            },
+            error: function() {
+                //网络有问题
+            }
+        });
+    },
+
+    commentLoad:function(){
+        $('.commentMore').show();
+        $('.commentMore .txt').html('加载中...'); 
+        $('.commentMore img').show();
+    },
+
+    commentEnd:function(){
+        $('.commentMore').hide();
+    },
+
+    commentNone:function(){
+        $('.commentMore').show();
+        $('.commentMore img').hide();
+        $('.commentMore .txt').html('没有更多评论了。');        
+    },
+
+    addacomment: function(data){
+
+    },
+
+    tipshow: function(text){
+        $('#dialog2 .weui-dialog__bd').html(text);
+        $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+            $('#dialog2').fadeOut();
+        });
+    },
+
+    loadingshow: function(){
+        $('#loadingToast').fadeIn();//显示loading
+    },
+
+    loadinghide: function(){
+        $('#loadingToast').fadeOut();
+    },
+
+    sendComments: function() {
+        var that = this;
+        if(!that.loginTag()){
+            return;
+        }
+        that.loadingshow();
+        $.ajax({
+            type: "post",
+            url: that.config.urlArr[0]+"/comments/add",
+            data: {
+                "fkId": that.config.eventId,
+                "type": that.commentConfig.type,
+                "content": $('.commentText').val()
+            }, 
+            success: function (data) {
+               if (data.code == 0) {
+                    $('.addComment').fadeOut();
+                    var str = '<div class="commentItem fl comment_'+ data.data +'">'+
+                                        '<img src="'+ that.commentConfig.headImgUrl +'" class="fl">'+
+                                            '<div class="commentNickName fl">'+
+                                            '<div class="nickName">'+ that.commentConfig.nickName +'</div>'+
+                                            '<div class="commentLike like_'+ data.data +'" data-id="'+ data.data + '">'+
+                                                '<img class="commentLikePng fl" src="'+ dislikeimg +'" alt="">'+
+                                               ' <span>0</span>'+
+                                            '</div>'+
+                                            '<div class="commentContent fs12" data-name="'+ that.commentConfig.nickName +'">'+
+                                                 $('.commentText').val()+
+                                            '</div>'+
+                                            '<div class="commentime fs12 fl">刚刚</div>' +
+                                            '<div class="commentDel fs12 fr " data-id="'+ data.data + '">删除</div>' +
+                                       '</div>'+
+                                   '</div>';
+                  $('.newComments').prepend(str);
+                  $('.commentText').val('');
+                  if($('.commentItem').lenth == 0){
+                    $('.commentNone').show();
+                  }
+                }else{
+                    //接口有问题
+                    that.tipshow('评论失败，请稍后重试~');
+                }
+                that.loadinghide();
+            },
+            error: function() {
+                that.loadinghide();
+                that.tipshow('网络连接错误，请检查网络~');
+            }
+        });
+    },
+
+    delComments: function(val_id) {
+        var that = this;
+        if(!that.loginTag()){
+            return;
+        }
+        that.loadingshow();
+        $.ajax({
+            type: "get",
+            url: that.config.urlArr[0]+"/comments/del",
+            data: {
+                "commentsId": val_id
+            }, 
+            success: function (data) {
+               if (data.code == 0 || data.code == 117) {
+                    $('.comment_'+val_id).remove();
+                    if($('.commentItem').lenth == 0){
+                    $('.commentNone').hide();
+                  }
+                }else{
+                    //接口有问题
+                    that.tipshow('删除失败，请稍后重试~');
+                }
+                that.loadinghide();
+            },
+            error: function() {
+                //网络链接错误
+                that.loadinghide();
+                that.tipshow('网络连接错误，请检查网络~');
+            }
+        });
+    },
+
+    addLikes: function(val_id) {
+        var that = this;
+        $.ajax({
+            type: "get",
+            url: that.config.urlArr[0]+"/favour/add",
+            data: {
+                "commentsId": val_id
+            }, 
+            success: function (data) {
+               if (data.code == 0) {
+                    $('.like_'+val_id + 'img').attr('src',likeimg);
+                }else{
+                    //接口有问题
+                }
+                that.loadinghide();
+            },
+            error: function() {
+                //网络链接错误
+            }
+        });
+    },
+
+    delLikes: function(val_id) {
+        var that = this;
+        $.ajax({
+            type: "get",
+            url: that.config.urlArr[0]+"/favour/del",
+            data: {
+                "commentsId": val_id
+            }, 
+            success: function (data) {
+               if (data.code == 0) {
+                    $('.like_'+val_id + 'img').attr('src',dislikeimg);
+                }else{
+                    //接口有问题
+                }
+                that.loadinghide();
+            },
+            error: function() {
+                //网络链接错误
+            }
+        });
+    },
+
+
 
     /*-----------------获取事件参与者-------------------*/
     getJoiner: function () {
@@ -150,7 +451,8 @@ var fuc = {
                             $('.weather').css('display', 'none');
                         }
                         Ajax.getPersonalFortune(Dom.getDate(dataList.event.startTime));
-                    } else if (dataList.event.eventType == 1) {//活动事件
+                    } else if (dataList.event.eventType == 1 || dataList.event.eventType == 1 ) {//1为活动事件,2为明星事件
+                        that.commentConfig.type = dataList.event.eventType;
                         that.getShareImg();
                         $('.suitable').css("display", "none");
                         $('.weather').css("display", "none");
@@ -231,6 +533,8 @@ var fuc = {
                                 that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + dataList.event.eventId));
                         }
                     }
+                    $('.commentCon').show();
+                    that.getComments();
                 } else if (data.code == 112) {
                     //若参加者参加的事件不存在
                     $('.eventNone').css("display", "block");
@@ -241,6 +545,16 @@ var fuc = {
 
     bindEvent: function () {
         var that = this;
+        /*----------------------底部自动刷新-----------------------*/
+        $(window).on('scroll', function (e) {
+            if ($(document).height() - $(this).scrollTop() - $(this).height()<100){
+                if(that.commentConfig.addMore){//加载更多评论
+                    that.commentConfig.addMore = false;
+                    that.getComments();
+                    that.commentLoad();
+                }
+            }
+        });
         /*------------点击编辑按钮，跳转至事件添加页--------------*/
         $('.compile').click(function () {
             //console.log(that.config.eventType);
@@ -249,6 +563,10 @@ var fuc = {
             } else if (that.config.eventType == 1) {//活动事件
                 window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/activity.html?eventId=" + that.config.eventId);
             }
+        });
+        $('.starAvatar').click(function () {
+            //console.log(that.config.eventType);
+            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/remind.html?eventId=" + that.config.eventId);
         });
         /*----------全文 收起----------*/
         $('.remarkMore').on("tap",function () {
@@ -261,6 +579,61 @@ var fuc = {
            $('.remarkRetract').hide();
            $('.remarkText').addClass('textMore');
         });
+        /* ---------更多粉丝----------- */
+        $('.fansMore').on("tap",function () {
+           console.log('更多粉丝');
+        });
+
+        /*    -----------关于评论-----------    */
+        $('.commentBtn').on("tap",function () {
+            if(!that.loginTag()){
+                return;
+            }
+            $('.commentText').val('');
+            $('.addComment').fadeIn();
+            $('.commentText').trigger('focus');
+        });
+        $('.addComment .cancel').on("tap",function () {
+           $('.addComment').fadeOut();
+        });
+        $('.shadow').on("tap",function (e) {
+            if($(e.target).attr('class')=='addComment shadow')
+            $('.addComment').fadeOut();
+           // console.log(e.target);
+           // console.log($(e.target).attr('class'));
+        });
+        $('.addComment .finished').on("tap",function () {
+           $('.addComment').fadeOut();
+           that.sendComments();
+        });
+        $('.commentList').on("tap",'.commentDel',function () {
+            var dataid = $(this).attr('data-id');
+            // console.log('.comment_'+dataid);
+            // $('.comment_'+$(this).attr('data-id')).remove();
+            that.delComments(dataid);
+        });
+        $('.commentList').on("tap",'.commentContent',function () {
+            if(!that.loginTag()){
+                return;
+            }
+           $('.commentText').val('回复'+$(this).attr('data-name')+': ');
+           $('.addComment').fadeIn();
+           $('.commentText').trigger('focus');
+        });
+        $('.commentList').on("tap",'.commentLike',function () {
+            if(!that.loginTag()){
+                return;
+            }
+            var dataid = $(this).attr('data-id');
+            var str = $('.like_'+dataid+' img').attr('src');
+            if(str.indexOf(likeimg) == -1){//未点赞
+                that.addLikes(dataid);
+                $('.like_'+dataid+' img').attr('src', likeimg);
+                $('.like_'+dataid+' span').html(parseInt($('.like_'+dataid+' span').html())+1);
+            }else{
+                //that.delLikes(dataid);
+            }
+        })
         /*----------------点击更多---------------------*/
         $('.morePeople').click(function () {
             $('#loadingToast').fadeIn();
@@ -279,6 +652,37 @@ var fuc = {
                 e.preventDefault();
             });
         });
+        /*  --------------明星分享以及提醒--------------- */
+        $('.starFooter .postEventStar').click(function () {
+            event.preventDefault();
+            window.location.href = 'http://baidu.com';
+        });
+        $('.starFooter .joinStar').click(function () {
+            event.preventDefault();
+            $('.starFooter .joinStar').hide();
+            $('.starFooter .exitStar').show();
+            $('.starFooter .shareStar').show();
+        });
+        $('.starFooter .exitStar').click(function () {
+            event.preventDefault();
+            $('.starFooter .joinStar').show();
+            $('.starFooter .exitStar').hide();
+            $('.starFooter .shareStar').hide();
+        });
+        $('.starFooter .shareStar').click(function () {
+            var shareShadow = $('.shareShadow');
+            shareShadow.fadeIn();//显示分享提示层
+            shareShadow.click(function () {
+                $(this).fadeOut();
+                event.stopPropagation();
+            });
+            var share = document.getElementById('shareShadow');
+            share.addEventListener('touchmove', function (e) {
+                e.preventDefault();
+            });
+            
+        });
+
         /*---------------点击分享弹层中的按钮-----------------*/
         $('.shareImgClose').click(function () {
             event.preventDefault();

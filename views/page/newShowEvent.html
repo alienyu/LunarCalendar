@@ -21,6 +21,11 @@
                 <img src="../../assets/imgs/page/newShowEvent/ic_edit.png" alt="">
             </div>
         </div>
+        <div class="starAvatar">
+            <div>
+                <img src="../../assets/imgs/page/newShowEvent/default_photo.png" alt="">
+            </div>
+        </div>
     </div>
         <!--备注-->
         <div class="remark item">
@@ -90,6 +95,95 @@
             </div>
         </div>
     </div>
+
+    <div class="fansCon">
+        <!--追随列表-->
+        <div class="fans item">
+            <div class="icon">
+                <img src="../../assets/imgs/page/activity/ic_social.png" alt="">
+            </div>
+            <div class="itemCon">
+                <div class="fansCount"><span class="count"></span>人在追</div>
+                <div class="fansList">
+                    <div class="fansItem fl">
+                        <img src="../../assets/imgs/page/newShowEvent/icon_user_more.png" alt="" class="fansMore fl">
+                        <!-- <img src="../../assets/imgs/page/showEvent/default_photo.png" alt="" class="fl">
+                        <img src="../../assets/imgs/page/showEvent/default_photo.png" alt="" class="fl">
+                        <img src="../../assets/imgs/page/showEvent/default_photo.png" alt="" class="fl">
+                        <img src="../../assets/imgs/page/showEvent/default_photo.png" alt="" class="fl">
+                        <img src="../../assets/imgs/page/showEvent/default_photo.png" alt="" class="fl">
+                        <img src="../../assets/imgs/page/showEvent/default_photo.png" alt="" class="fl">
+                        <img src="../../assets/imgs/page/showEvent/default_photo.png" alt="" class="fl"> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="commentCon">
+        <!--评论列表-->
+        <div class="comment item">
+            <div class="icon">
+                <img src="../../assets/imgs/page/newShowEvent/icon_comments.png" alt="">
+            </div>
+            <div class="itemCon">
+                <div class="commentCount"><span>0</span>条评论</div>
+                <div class="commentBtn">
+                    <div class="commentIcon">
+                        <img src="../../assets/imgs/page/newShowEvent/icon_write.png" alt="">
+                    </div>
+                    我也要说...
+                </div>
+                <!-- <input id="commentinput" class="commentinput" placeholder="我也要说..."> -->
+                <div class="commentList">
+                    <div class="hotComments">
+                        <!-- <div class="commentItem fl comment_1223">
+                            <img src="../../assets/imgs/page/newShowEvent/default_photo.png" alt="" class="fl">
+                            <div class="commentNickName fl">
+                                <div class="nickName">闹闹</div>
+                                <div class="commentLike like_1223" data-id='1223'>
+                                    <img class="commentLikePng fl" src="../../assets/imgs/page/newShowEvent/icon_btn_praise.png" alt="">
+                                    1000
+                                </div>
+                                <div class="commentContent fs12" data-name="你猜猜">这是一条很长很长的评论这是一条很长很长的评论这是一条很长很长的评论</div>
+                                <div class="commentime fs12 fl">今天</div>
+                                <div class="commentDel fs12 fr" data-id='1223'>删除</div>
+                            </div>
+                        </div> -->
+                        <div class="commentHot fl">
+                            以上为热门评论
+                        </div>
+                    </div>
+                    <div class="newComments">
+
+                    </div>
+                    <div class="commentNone"><img src="../../assets/imgs/common/icon-NoContent-black.png"><br />暂时还没有人评论</div>
+                    
+                    <div class="commentMore fl">
+                        <div class="commentAdd">
+                            <img class="fl" src="../../assets/imgs/page/newShowEvent/icon_loading.gif" alt="">
+                            <div class="txt fl">加载中...</div>
+                            <!-- 没有更多评论了... -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 添加评论 -->
+    <div class="addComment shadow">
+        <div class="containerComment" style="">
+            <div class="title fs16">
+                <a href="javascript:;" class="cancel fl">取消</a>
+                <span>写评论</span>
+                <a href="javascript:;" class="finished fr">发送</a>
+            </div>
+            <div class="textCon">
+                <textarea class="commentText" rows="4" placeholder="说点什么..."></textarea>
+            </div>
+        </div>
+    </div>
+
     <div class="blank"></div>
     <!--事件创建人进入页面时底部显示样式-->
     <div class="bottom bottom1">
@@ -105,6 +199,13 @@
         <div class="postEvent fl c6c">我要发布</div>
         <div class="share cff fr">生成邀请卡</div>
         <div class="exit fr opa5 c6c">已接受</div>
+    </div>
+    <!--已加入事件者进入页面时-->
+    <div class="bottom starFooter">
+        <div class="postEventStar fl c6c">明星行程</div>
+        <div class="shareStar cff fr">分享给好友</div>
+        <div class="joinStar cff fr">提醒我</div>
+        <div class="exitStar fr opa5 c6c">已提醒</div>
     </div>
 </div>
 <!--事件已不存在，则弹出提示-->

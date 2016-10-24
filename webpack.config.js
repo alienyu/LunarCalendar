@@ -112,5 +112,5 @@ initConfig([
     "activity",
     "newSchedule",
     "newShowEvent",
-    "starDetail"
+    "starIndex"
 ])
