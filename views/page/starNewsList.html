@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>娱乐新闻</title>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="x5-orientation" content="portrait">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+</head>
+<body>
+<div class="back">
+    <span class="c99 fs16">明星行程</span>
+</div>
+<div class="news">
+    <div class="news_item">
+        <div class="news_img">
+            <img src="../../assets/imgs/page/newShowEvent/liLy.jpg" alt="">
+        </div>
+        <div class="news_text">
+            <h1 class="news_title c33 fs20">离婚案名誉侵权案开审 王宝强原被告切换</h1>
+            <div class="news_tips fs12">
+                <span class="news_source c99">广州日报</span>
+                <span class="name c99 fr">王宝强</span>
+            </div>
+        </div>
+    </div>
+</div>
+<!--新闻模板-->
+<script type="text/x-news" id="newsListTemplate">
+        <div class="news_item">
+                <div class="news_img">
+                    <img src="{{imgSrc}}" alt="">
+                </div>
+                <div class="news_text">
+                        <h1 class="news_title c33 fs20">{{newsTitle}}</h1>
+                        <div class="news_tips fs12">
+                                <span class="news_source c99">{{newsSource}}</span>
+                                <span class="name fr">{{starName}}</span>
+                        </div>
+                </div>
+        </div>
+    </script>
+</body>
+</html>

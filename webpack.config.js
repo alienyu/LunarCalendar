@@ -112,5 +112,6 @@ initConfig([
     "activity",
     "newSchedule",
     "newShowEvent",
-    "starDetail"
+    "starDetail",
+    "starNewsList"
 ])

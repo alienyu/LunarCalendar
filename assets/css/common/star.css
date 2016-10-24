@@ -1,0 +1,179 @@
+/*---------新闻列表样式--------*/
+.news{
+    width:100%;
+    height:auto;
+}
+.news_item{
+    width:100%;
+    height:100px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    border-bottom: 1px solid #e5e5e5;
+    display: -webkit-box;
+    display: box;
+}
+.news_item .news_img{
+    width:100px;
+    height:100%;
+    margin-right: 10px;
+    overflow: hidden;
+    text-align: center;
+}
+.news_item .news_img img{
+    height:100%;
+    width:auto;
+}
+.news_item .news_text{
+    box-flex:1;
+    -webkit-box-flex: 1;
+}
+.news_item .news_text .news_title{
+    height:50px;
+    line-height: 25px;
+    width:100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 9px;
+}
+.news_item .news_text .news_tips{
+    height:20px;
+    line-height: 20px;
+}
+.news_item .news_text .news_tips span{
+    /*display: block;*/
+    /*width:auto;*/
+}
+.news_item .news_text .news_tips span.name{
+    display: inline-block;
+    padding: 0 10px;
+    background: #e5e5e5;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+/*-----------行程列表样式------------*/
+.line{
+    width:1px;
+    /*height:300px;*/
+    background: #e5e5e5;
+    position: absolute;
+    top:10px;
+    left:32px;
+}
+.scheduleCon{
+    width:100%;
+    height:auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 0 10px;
+}
+.dayCon{
+    width:100%;
+    height:auto;
+    position: relative;
+    padding-left:46px;
+    padding-top: 36px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-top: -18px;
+}
+.dayCon:first-child{
+    margin-top: 0;
+}
+.dayCon .date{
+    position: absolute;
+    top:0;
+    left:0;
+    width:44px;
+    height:44px;
+    border: 1px solid #e5e5e5;
+    border-radius: 100%;
+    -webkit-border-radius: 100%;
+    background: #fff;
+    text-align: center;
+    color: #999;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding-top: 3px;
+}
+.dayCon .date.today{
+    background: #66CCCC;
+    border-color: #66CCCC;
+    color: #fff;
+}
+.dayCon .date div{
+    width:100%;
+}
+.dayCon .date div.day{
+    height:22px;
+    line-height: 22px;
+}
+.dayCon .day_item{
+    width:100%;
+    height:100px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    background: #66CCCC;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+.dayCon .day_item .item_detail{
+    width:100%;
+    height:70px;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 12px 10px 0;
+    background-color:gray;
+}
+.dayCon .day_item .item_detail .itemTitle{
+    width:50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    height:26px;
+    line-height:26px;
+}
+.dayCon .day_item .item_detail .itemTime,.datCib ,.day_item .item_detail .itemLocation{
+    height:16px;
+}
+.dayCon .day_item .item_tips{
+    width:100%;
+    height:30px;
+    background: #fff;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 0 10px;
+    line-height: 30px;
+    position: relative;
+}
+.item_tips .join,.item_tips .hasJoin{
+    height:30px;
+    position: absolute;
+    top:0;
+    right:10px;
+}
+.item_tips .join img,.item_tips .hasJoin img{
+    width: 15px;
+    height:15px;
+    vertical-align: middle;
+}
+
+
+.shadow{
+    position: fixed;
+    top:0;
+    left:0;
+    height:100%;
+    width:100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+}
