@@ -1,16 +1,22 @@
 @import "../common/common.less";
 @import "../common/weui1.0.0.less";
 @import "../common/swiper.min.css";
+@import "../common/star.css";
+
 *{
     margin: 0;
 }
+body{
+    background-color: #f5f5f5;
+}
 .starList{
+    background-color: #fff;
     float: left;
     border-bottom: 1px solid #eee;
     width: 100%;
     height: 115px;
     overflow: hidden;
-    margin: 5px 0;
+    padding: 5px 0;
     .starItem{
         width: 80px;
         height: 105px;
@@ -42,8 +48,9 @@
     }
 }
 .starNews{
+    background-color: #fff;
     width: 100%;
-    height: 45px;
+    height: 40px;
     overflow: hidden;
     border-bottom: 1px solid #eee;
     .starNewsLeft{
@@ -53,18 +60,19 @@
         border: 1px solid #6cc;
         border-radius: 5px;
         font-size: 12px;
-        padding: 5px 10px;
-        margin: 5px 10px;
+        padding: 0 5px;
+        margin: 5px;
+        line-height: 25px;
     }
     .starNewsRight{
         float: left;
-        height: 45px;
-        width: 70%;
-        width: calc(~"( 100% - 100px )");
+        height: 40px;
+        width: 96%;
         font-size: 15px;
         font-weight: bold;
         overflow: hidden;
         line-height: 40px;
+        margin: 0 2%;
         .news{
             float: left;
             text-overflow: ellipsis;
@@ -72,4 +80,90 @@
             white-space: nowrap;
         }
     }
+}
+
+.starNewsList{
+    position: relative;
+    .title{
+        position: absolute;
+        left: 70px;
+        top: 18px;
+        font-weight: bold;
+    }
+    .line{
+        height: 100%;
+    }
+    .container{
+        padding: 10px 0;
+        .month{
+            line-height: 12px;
+        }
+    }
+    .itemTitle{
+        font-weight: bold;
+    }
+    .day_item{
+        height: 120px;
+        position: relative;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        .itemLocation{
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 70%;
+            overflow: hidden;
+        }
+    }
+    .dayCon .day_item .item_detail{
+        height: 90px;
+        padding: 22px 10px 10px;
+        position: relative;
+    }
+    .starAvatar{
+        background-color: #fff;
+        border: 1px solid #fff;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        overflow: hidden;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        img{
+            width: 60px;
+            height: 60px;
+        }
+    }
+    .starName{
+        width: 75px;
+        text-align: center;
+        position: absolute;
+        top: 60px;
+        right: 10px;
+        .name{
+            background-color: #fff;
+            border-radius: 10px;
+            color: #000;
+            font-size: 12px;
+            padding: 1px 8px;
+            margin: 0 auto;
+            max-width: 58px;
+            display: inline-block;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+    }
+    .commentAdd{
+        display: none;
+        width: 120px;
+        margin:0 auto;
+        img{
+          width:20px;
+          padding: 7px 10px;
+        }
+        div{
+          line-height: 35px;
+        }
+      }
 }

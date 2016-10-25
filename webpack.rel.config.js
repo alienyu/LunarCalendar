@@ -16,9 +16,9 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
     output: {
         path: path.join(__dirname, 'wx'), //输出目录的配置，模板、样式、脚本、图片等资源的路径配置都相对于它
-        publicPath: '/wx/',               //模板、样式、脚本、图片等资源对应的server上的路径
-        //publicPath: 'http://wxcdn.li-li.cn/wx/',               //正式服路径
-        filename: 'js/[name].js',           //每个页面对应的主js的生成配置
+        //publicPath: '/wx/',               //模板、样式、脚本、图片等资源对应的server上的路径
+        publicPath: 'http://wxcdn.li-li.cn/wx/',               //正式服路径
+        filename: 'js/[name]_[chunkhash:8].js',           //每个页面对应的主js的生成配置
         chunkFilename: 'js/[id].chunk.js'   //chunk生成的配置
     },
     module: {
@@ -46,12 +46,13 @@ module.exports = {
 //图片加载器，雷同file-loader，更适合图片，可以将较小的图片转成base64，减少http请求
 //如下配置，将小于8192byte的图片转成base64码
                 test: /\.(png|jpg|gif)$/,
-                loader: 'url-loader?limit=80&name=./img/[hash].[ext]'
+                loader: 'url-loader?limit=80&name=./img/[name]_[hash].[ext]'
             }
         ]
     },
     plugins: [
-		new CleanPlugin(['wx'], {
+		//清空输出目录
+	    new CleanPlugin(['wx'], {
 	        "root": path.resolve(__dirname, './'),
 	        verbose: true,
 	        dry: false
@@ -59,17 +60,31 @@ module.exports = {
         new webpack.ProvidePlugin({ //加载jq
             $: 'zepto'
         }),
+		new webpack.optimize.UglifyJsPlugin({
+			compress: {
+				warnings: false
+			},
+			sourceMap: false,//这里的soucemap 不能少，可以在线上生成soucemap文件，便于调试
+			mangle: true
+		}),
+		/*new webpack.optimize.CommonsChunkPlugin({
+			name: "commons", 
+			filename: "js/commons_[hash].js",
+			chunks:['js1','js2','js3']
+		}),*/
+		
+		new webpack.optimize.CommonsChunkPlugin("commons", "js/commons_[chunkhash:8].js"),
+		
         //new webpack.optimize.CommonsChunkPlugin({
         //    name: 'vendors', // 将公共模块提取，生成名为`vendors`的chunk
         //    chunks: ['depart_index'] //提取哪些模块共有的部分
         //    //minChunks: 3 // 提取至少3个模块共有的部分
         //}),
-        new webpack.optimize.CommonsChunkPlugin("commons", "js/commons.js"),
-        new ExtractTextPlugin('css/[name].css'), //单独使用link标签加载css并设置路径，相对于output配置中的publicePath
+        new ExtractTextPlugin('css/[name]_[contenthash:8].css'), //单独使用link标签加载css并设置路径，相对于output配置中的publicePath
 
-        new webpack.HotModuleReplacementPlugin() //热加载
+        //new webpack.HotModuleReplacementPlugin() //热加载
     ],
-    devtool: "source-map",
+    //devtool: "cheap-module-source-map",
     //使用webpack-dev-server，提高开发效率
     devServer: {
         contentBase: './',
@@ -100,8 +115,8 @@ function initConfig(pageList) {
             template: './views/page/' + e + '.html',
             //js插入的位置，true/'head'/'body'/false
             inject: 'body',
-            hash: true, //为静态资源生成hash值
-            chunks: ["commons", chunks],//需要引入的chunk，不配置就会引入所有页面的资源
+            hash: false, //为静态资源生成hash值
+            chunks: ["commons",chunks],//需要引入的chunk，不配置就会引入所有页面的资源
             minify: {
                 removeComments: true,//移除HTML中的注释
                 collapseWhitespace: false //删除空白符与换行符
@@ -117,8 +132,5 @@ initConfig([
     "remind",
     "activity",
     "newSchedule",
-    "newShowEvent",
-    "starDetail",
-    "starNewsList",
-    "starIndex"
+    "newShowEvent"
 ])

@@ -161,7 +161,8 @@ var fuc = {
                     $(".record").first().prev().remove();
                 }
                 $("#container").find("div").first().before(html({data: data}));
-                window.location.href = "#current";
+                // window.location.href = "#current";
+                $("body").scrollTop($("#current").offset().top);
                 dom.removeAttr("id");
             }
         }
