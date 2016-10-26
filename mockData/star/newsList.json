@@ -1,0 +1,133 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data":{
+    "list":[
+      {
+        "newsId":"1",
+        "newsTitle":"爱不错的风格1",
+        "newsContent":"",
+        "newsPublishTime":"2016-10-25 14:22:10",
+        "newsSource":"历历",
+        "newsPoster":"",
+        "star":{
+          "starId":"",
+          "starName":"87987"
+        }
+      },
+      {
+        "newsId":"2",
+        "newsTitle":"回家看了么2",
+        "newsContent":"",
+        "newsPublishTime":"2016-10-26 14:22:10",
+        "newsSource":"历历",
+        "newsPoster":"",
+        "star": {
+          "starId": "",
+          "starName": "54658"
+        }
+      },
+      {
+        "newsId":"3",
+        "newsTitle":"呵呵3",
+        "newsContent":"",
+        "newsPublishTime":"2016-10-27 14:22:10",
+        "newsSource":"历历",
+        "newsPoster":"",
+        "star":{
+          "starId":"",
+          "starName":"1321"
+        }
+      },
+      {
+        "newsId":"4",
+        "newsTitle":"呵呵4",
+        "newsContent":"",
+        "newsPublishTime":"2016-10-27 14:22:10",
+        "newsSource":"历历",
+        "newsPoster":"",
+        "star":{
+          "starId":"",
+          "starName":"1321"
+        }
+      },
+      {
+        "newsId":"5",
+        "newsTitle":"呵呵5",
+        "newsContent":"",
+        "newsPublishTime":"2016-10-27 14:22:10",
+        "newsSource":"历历",
+        "newsPoster":"",
+        "star":{
+          "starId":"",
+          "starName":"1321"
+        }
+      },
+      {
+        "newsId":"6",
+        "newsTitle":"呵呵6",
+        "newsContent":"",
+        "newsPublishTime":"2016-10-27 14:22:10",
+        "newsSource":"历历",
+        "newsPoster":"",
+        "star":{
+          "starId":"",
+          "starName":"1321"
+        }
+      },
+      {
+        "newsId":"7",
+        "newsTitle":"呵呵7",
+        "newsContent":"",
+        "newsPublishTime":"2016-10-27 14:22:10",
+        "newsSource":"历历",
+        "newsPoster":"",
+        "star":{
+          "starId":"",
+          "starName":"1321"
+        }
+      },
+      {
+        "newsId":"8",
+        "newsTitle":"呵呵8",
+        "newsContent":"",
+        "newsPublishTime":"2016-10-27 14:22:10",
+        "newsSource":"历历",
+        "newsPoster":"",
+        "star":{
+          "starId":"",
+          "starName":"1321"
+        }
+      },
+      {
+        "newsId":"9",
+        "newsTitle":"呵呵9",
+        "newsContent":"",
+        "newsPublishTime":"2016-10-27 14:22:10",
+        "newsSource":"历历",
+        "newsPoster":"",
+        "star":{
+          "starId":"",
+          "starName":"1321"
+        }
+      },
+      {
+        "newsId":"10",
+        "newsTitle":"呵呵10",
+        "newsContent":"",
+        "newsPublishTime":"2016-10-27 14:22:10",
+        "newsSource":"历历",
+        "newsPoster":"",
+        "star":{
+          "starId":"",
+          "starName":"1321"
+        }
+      }
+    ],
+    "pagination":{
+      "pageNo":1,
+      "pageSize":10,
+      "totalCount":32
+    }
+  }
+}

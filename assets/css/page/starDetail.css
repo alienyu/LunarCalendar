@@ -17,19 +17,6 @@
     background-repeat: no-repeat;
     background-size: cover;
 }
-/*.starTop .otherStars{*/
-    /*display: block;*/
-    /*width:100px;*/
-    /*height:30px;*/
-    /*line-height:30px;*/
-    /*background: rgba(255,255,255,0.5);*/
-    /*text-align: center;*/
-    /*position: absolute;*/
-    /*right:10px;*/
-    /*top:10px;*/
-    /*border-radius: 20px;*/
-    /*-webkit-border-radius: 20px;*/
-/*}*/
 .starTop .starInfo{
     position: absolute;
     bottom:10px;
@@ -67,8 +54,73 @@
     padding: 10px 0 51px;
     position: relative;
 }
+.news_con{
+    width:100%;
+    height:auto;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    background: #fff;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+.news_con .news_list{
+    width: 100%;
+    height:40px;
+    line-height: 40px;
+    border-bottom: 1px solid #e5e5e5;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 0 10px;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.starNewsLeft{
+    float: left;
+    text-align: center;
+    color: #6cc;
+    border: 1px solid #6cc;
+    border-radius: 5px;
+    font-size: 10px;
+    padding: 0 5px;
+    margin: 7px 7px 0 0;
+    line-height: 24px;
+}
+.news_con .toMore{
+    border-bottom: 0;
+    position: relative;
+}
+.news_con .toMore:after,.news_con .toMore:before{
+    border: 8px solid transparent;
+    border-left: 8px solid #fff;
+    width:0;
+    height:0;
+    position: absolute;
+    top:12px;
+    right:2px;
+    content:"";
+}
+.news_con .toMore:before{
+    border-left-color: #CCCCCC;
+    right:0;
+}
 
-
+.commentMore {
+    margin: 5px auto;
+    width: 100%;
+}
+.commentAdd {
+    width: 120px;
+    margin: 0 auto;
+}
+.commentMore .commentAdd img{
+    width:20px;
+    padding: 7px 10px;
+}
+.commentMore .commentAdd div{
+    line-height: 35px;
+}
 /*-----------------底部---------------*/
 .bottom{
     position: fixed;
@@ -160,4 +212,46 @@
 }
 .active .selectImg{
     display: block;
+}
+
+/*----------事件二维码样式------------*/
+.wxQrcode{
+    position: fixed;
+    top:0px;
+    left:0px;
+    width:100%;
+    height:100%;
+    background-color: rgba(0,0,0,0.5);
+    display: none;
+}
+.wxQrcode .wxQrcodeClose{
+    display: block;
+    width:30px;
+    height:30px;
+    position: absolute;
+    top:30px;
+    right:20px;
+    background: url("../../imgs/page/showEvent/close.png") no-repeat center center;
+    background-size: contain;
+}
+.qrcodeImgCon{
+    height:auto;
+    width:80%;
+    margin: 0 auto;
+    background: #fff;
+    margin-top: 20%;
+}
+.qrcodeImg{
+    width:100%;
+    text-align: center;
+}
+.qrcodeImg img{
+    width:100%;
+}
+.qrcodeImgCon p{
+    width:100%;
+    color: #000;
+    font-size: 12px;
+    text-align: center;
+    padding-bottom: 10px;
 }

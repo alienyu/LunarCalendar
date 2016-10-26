@@ -72,12 +72,13 @@ var Dom = {
             time = dateArr[0].replace(/\-/g,"/");
         var theDate = new Date(time);
         var ca = new transCalendar(),
-            theDay = timeArr[2];
+            theDay = timeArr[2],
+            theMonth = timeArr[1];
         var theNlArr = ca.getls(theDate);
         var theWeek = that.transWeek(theDate);
         var nlDate = theNlArr[2]+"月"+theNlArr[3],
             month = timeArr[0]+"年"+timeArr[1]+"月";
-        return [theDay,theWeek,nlDate,month,dateArr[0]];//返回当天是几日、星期几、农历月日、年月、没有时分秒的日期
+        return [theDay,theWeek,nlDate,month,dateArr[0],theMonth];//返回当天是几日、星期几、农历月日、年月、没有时分秒的日期、月份
     },
     transWeek: function(day) {
         var week = day.getDay();

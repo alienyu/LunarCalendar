@@ -124,14 +124,14 @@
 .dayCon .day_item .item_detail{
     width:100%;
     height:70px;
-    background-position: center center;
-    background-size: cover;
-    background-repeat: no-repeat;
+    /*background-position: center center;*/
+    /*background-size: cover;*/
+    /*background-repeat: no-repeat;*/
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     padding: 12px 10px 0;
-    background-color:gray;
+    /*background-color:gray;*/
 }
 .dayCon .day_item .item_detail .itemTitle{
     width:50%;
@@ -166,7 +166,6 @@
     height:15px;
     vertical-align: middle;
 }
-
 
 .shadow{
     position: fixed;
