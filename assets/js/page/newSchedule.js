@@ -255,6 +255,16 @@ var fuc = {
             }
         });
 
+        /*------------点击进入明星详情-----------*/
+        $('.container').on('tap','.starLink',function(event){
+            console.log('这里是明星详情');
+            var str = $(this).attr('data-src');
+            if(str != ""){
+                window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId=" + str);
+            } 
+
+        });
+
     },
     renderOtherData: function (direct) {
         var that = this;

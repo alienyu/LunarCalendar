@@ -5,6 +5,9 @@ var pageLoad = require("../common/pageLoad.js");
 var fastClick = require("../vendor/ImproveMobile/fastClick.js");
 
 var moreStrImg = require("../../imgs/page/star/userBg_moreStar.png");
+var joinImg = require("../../imgs/page/newShowEvent/icon_btn_remind.png");
+var unjoinImg = require("../../imgs/page/newShowEvent/icon_btn_remind_pre.png");
+
 
 var fuc = {
     config: {
@@ -81,19 +84,122 @@ var fuc = {
                 window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId=" + str);
             }  
         });
+        /* -----------点击去明星八卦页面-------- */
+        $('.starNews').on('click', '.news',function(){
+            // console.log($(this).attr('data-src'));
+            //window.location.href = "http://baidu.com";
+            var str = $(this).attr('data-id');
+            if(str != ""){
+                window.location.href = that.config.urlArr[1]+"/wx/view/newsDetail.html?newsId=" + str;
+            }  
+        });
         /*----------点击提醒我，加入事件-----------*/
         $('.starNewsList').on('tap','.join',function(){
-            $(this).css("display","none");
-            $(this).parent().find('.hasJoin').css("display","block");
-            var eventId = $(this).parents('day_item').attr("data-eventid");
+            // $(this).css("display","none");
+            // $(this).parent().find('.hasJoin').css("display","block");
+            // var eventId = $(this).parents('day_item').attr("data-eventid");
+
+            $('#loadingToast').fadeIn();//显示loading
+            var eventId = $(this).parents('.day_item').attr("data-eventid");
+            console.log(eventId)
             //加入
+            $.ajax({
+                type:"get",
+                url:that.config.urlArr[0]+"/wx/isSubscribe",
+                async: true,
+                success:function(data){
+                    if(data.code == 0){
+                        if(data.data){//已经关注了我们
+                            //数据提交
+                            $.ajax({
+                                type:"post",
+                                url:that.config.urlArr[0]+"/event/accept",
+                                data:{
+                                    "eventId":eventId
+                                },
+                                async: true,
+                                success:function(data){
+                                    if(data.code == 0){
+                                        $('#loadingToast').fadeOut();//隐藏loading
+                                        $(this).css("display","none");
+                                        $(this).parent().find('.hasJoin').css("display","block");
+                                        var joinerCount = $(this).parent().find(".joinerCount").html();
+                                        $(this).parent().find(".joinerCount").html(parseInt(joinerCount)+1);
+                                    }else{
+                                        //报错
+                                        $('#loadingToast').fadeOut();//隐藏loading
+                                    }
+                                },
+                                error:function(){
+                                    //网络问题
+                                    $('#loadingToast').fadeOut();//隐藏loading
+                                }
+                            })
+                        }else{//没有关注我们，弹出二维码
+                            $.ajax({
+                                type:"get",
+                                url:that.config.urlArr[0]+"/wx/qrcode/ticket",
+                                data:{
+                                    "sceneId":eventId
+                                },
+                                async: true,
+                                success:function(data){
+                                    if (data.code == 0) {
+                                        $('#loadingToast').fadeOut();//隐藏loading
+                                        var ticket = data.data.ticket;
+                                        var html = "<img src='https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + ticket + "' />";
+                                        $('.qrcodeImg').html("");
+                                        $('.qrcodeImg').append(html);
+                                        $('.wxQrcode').css("display", "block");
+                                    }else if(data.code == 112){
+                                        //事件已经被删除
+                                    }
+                                },
+                                error:function(){
+                                    $('#loadingToast').fadeOut();//隐藏loading
+                                }
+                            });
+                        }
+                    }
+                },
+                error:function(){
+                    //网络问题
+                    $('#loadingToast').fadeOut();//隐藏loading
+                }
+            });
+            
         });
         /*------------点击已提醒，退出事件-----------*/
         $('.starNewsList').on('tap','.hasJoin',function(){
-            $(this).css("display","none");
-            $(this).parent().find('.join').css("display","block");
-            var eventId = $(this).parents('day_item').attr("data-eventid");
+            // $(this).css("display","none");
+            // $(this).parent().find('.join').css("display","block");
+            // var eventId = $(this).parents('day_item').attr("data-eventid");
+
+            $('#loadingToast').fadeIn();//显示loading
+            var eventId = $(this).parents('.day_item').attr("data-eventid");
             //退出
+            $.ajax({
+                type:"post",
+                url:that.config.urlArr[0]+"/event/exit",
+                data:{
+                    "eventId": eventId
+                },
+                async: true,
+                success:function(data){
+                    if(data.code == 0){
+                        $('#loadingToast').fadeOut();//隐藏loading
+                        $(this).css("display","none");
+                        $(this).parent().find('.join').css("display","block");
+                        var joinerCount = $(this).parent().find(".joinerCount").html();
+                        $(this).parent().find(".joinerCount").html(parseInt(joinerCount)-1);
+                    }else{
+                        $('#loadingToast').fadeOut();//隐藏loading
+                    }
+                },
+                error:function(){
+                    $('#loadingToast').fadeOut();//隐藏loading
+                }
+            })
         });
         /*------------点击进入事件详情-----------*/
         $('.starNewsList').on('tap','.item_detail',function(){
@@ -113,6 +219,10 @@ var fuc = {
 
         });
        
+       /*--------------------关闭二维码弹层----------------------*/
+        $('.wxQrcodeClose').on('tap',function () {
+            $('.wxQrcode').css("display", "none");
+        });
     },
 
     getStars: function() {
@@ -167,10 +277,10 @@ var fuc = {
         var that = this;
         $.ajax({
             type: "get",
-            // url: that.config.urlArr[0]+"/trace/list",
-            url: '../../mockData/traceList.json',
+            url: that.config.urlArr[0]+"/trace/list",
+            // url: '../../mockData/traceList.json',
             data: {
-                "starId": 0,
+                "starId": "",
                 "pageNo": 1,
                 "pageSize": 10,
                 "all": true
@@ -194,25 +304,27 @@ var fuc = {
                         var str = "";
                         for(var j=0;j<data.traceList[i].list.length;j++){
                             str +=  '<div class="day_item" data-eventId = "'+data.traceList[i].list[j].trace.eventId+'">'+
-                                        '<div class="item_detail cff">'+
+                                        '<div class="item_detail cff" style="'+
+                                            (data.traceList[i].list[j].trace.theme == null ? 'background-color: '+ data.traceList[i].list[j].trace.bgColor +';' : 'background-image: '+ data.traceList[i].list[j].trace.theme.themeUrl +';')
+                                        +'"><div class="starShadow">'+
                                             '<h1 class="itemTitle">'+ data.traceList[i].list[j].trace.name +'</h1>'+
                                             '<div class="itemTime fs12">周三 全天</div>'+
                                             '<div class="itemLocation fs12">'+data.traceList[i].list[j].trace.location+' '+data.traceList[i].list[j].trace.address+'</div>'+
                                         '</div>'+
-                                        '<div class="starLink" data-src="">'+
+                                        '<div class="starLink" data-src="'+data.traceList[i].list[j].star.starId+'">'+
                                             '<div class="starAvatar">'+
-                                                '<img src="../../assets/imgs/page/newShowEvent/default_photo.png" alt="">'+
+                                                '<img src="'+data.traceList[i].list[j].star.starHeadPic+'" alt="">'+
                                             '</div>'+
-                                            '<div class="starName"><div class="name">宋仲基</div></div>'+
-                                        '</div>'+
+                                            '<div class="starName"><div class="name">'+data.traceList[i].list[j].star.starName+'</div></div>'+
+                                        '</div></div>'+
                                         '<div class="item_tips fs12">'+
-                                            '<div class="c99">共<span class="joinerCount">'+data.traceList[i].list[j].trace.joinersCount+'</span>人在追</div>'+
+                                            '<div class="c99">共<span class="joinerCount">'+data.traceList[i].list[j].joinersCount+'</span>人在追</div>'+
                                             '<div class="join c6c" style="display: '+(data.traceList[i].list[j].hasJoin == true?'none':'')+'">'+
-                                                '<img src="../../assets/imgs/page/newShowEvent/icon_btn_remind.png" alt="">'+
+                                                '<img src="'+joinImg+'" alt="">'+
                                                 '<span>提醒我</span>'+
                                             '</div>'+
                                             '<div class="hasJoin c6c" style="display: '+(data.traceList[i].list[j].hasJoin == true?'':'none')+'">'+
-                                                '<img src="../../assets/imgs/page/newShowEvent/icon_btn_remind_pre.png" alt="">'+
+                                                '<img src="'+unjoinImg+'" alt="">'+
                                                 '<span class="opa5">已提醒</span>'+
                                             '</div>'+
                                         '</div>'+
