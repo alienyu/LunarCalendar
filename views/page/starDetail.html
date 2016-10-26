@@ -12,67 +12,19 @@
 </head>
 <body>
     <div class="starTop">
-        <div class="starInfo">
-            <div class="starImg fl">
-
-            </div>
-            <div class="starInfo_name fl">
-                <div class="starName cff fs24 name">TFBOYS</div>
-                <div class="cff fs12 fansNum"><span class="fansCount">48926</span>&nbsp;人在追</div>
+        <div class="topShadow">
+            <div class="starInfo">
+                <div class="starImg fl"></div>
+                <div class="starInfo_name fl">
+                    <div class="starName cff fs24 name"></div>
+                    <div class="cff fs12 fansNum"><span class="fansCount"></span>&nbsp;人在追</div>
+                </div>
             </div>
         </div>
     </div>
     <div class="container">
         <div class="line"></div>
-        <div class="scheduleCon">
-            <!--<div class="dayCon">-->
-                <!--<div class="date today">-->
-                    <!--<div class="day fs18">19</div>-->
-                    <!--<div class="month fs12">10月</div>-->
-                <!--</div>-->
-                <!--<div class="day_item" data-eventId = "">-->
-                    <!--<div class="item_detail cff">-->
-                        <!--<h1 class="itemTitle">《军舰岛》出演准备及拍摄</h1>-->
-                        <!--<div class="itemTime fs12">周三 全天</div>-->
-                        <!--<div class="itemLocation fs12">韩国 济州岛</div>-->
-                    <!--</div>-->
-                    <!--<div class="item_tips fs12">-->
-                        <!--<div class="c99">共<span class="joinerCount">56456</span>人在追</div>-->
-                        <!--<div class="join c6c" style="display: none">-->
-                            <!--<img src="../../assets/imgs/page/newShowEvent/icon_btn_remind.png" alt="">-->
-                            <!--<span>提醒我</span>-->
-                        <!--</div>-->
-                        <!--<div class="hasJoin c6c">-->
-                            <!--<img src="../../assets/imgs/page/newShowEvent/icon_btn_remind_pre.png" alt="">-->
-                            <!--<span class="opa5">已提醒</span>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<div class="day_item">-->
-                    <!--<div class="item_detail cff">-->
-                        <!--<h1 class="itemTitle">《军舰岛》出演准备及拍摄</h1>-->
-                        <!--<div class="itemTime fs12">周三 全天</div>-->
-                        <!--<div class="itemLocation fs12">韩国 济州岛</div>-->
-                    <!--</div>-->
-                    <!--<div class="item_tips fs12">-->
-                        <!--<div class="c99">共<span class="joinerCount">56456</span>人在追</div>-->
-                        <!--<div class="join c6c">-->
-                            <!--<img src="../../assets/imgs/page/newShowEvent/icon_btn_remind.png" alt="">-->
-                            <!--<span>提醒我</span>-->
-                        <!--</div>-->
-                        <!--<div class="hasJoin c6c" style="display: none">-->
-                            <!--<img src="../../assets/imgs/page/newShowEvent/icon_btn_remind_pre.png" alt="">-->
-                            <!--<span class="opa5">已提醒</span>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<div class="news_con c99 fs12">-->
-                    <!--<div class="news_list newsTitle">女装扮相美上天！这居然是TFboys你相信吗？</div>-->
-                    <!--<div class="news_list newsTitle">246543621365476541321</div>-->
-                    <!--<div class="news_list toMore">查看TFBOYS相关新闻</div>-->
-                <!--</div>-->
-            <!--</div>-->
-        </div>
+        <div class="scheduleCon"></div>
     </div>
     <div class="bottom">
         <span class="fl c99 bottomTxt">追TA，成为<span class="name">TFBOYS</span>的粉丝</span>
@@ -81,7 +33,7 @@
     </div>
     <div class="bottomSelect">
         <div class="bottom_top fs20">你希望获取<span class="name">TFBOYS</span>的？</div>
-        <div class="bottom_item active">
+        <div class="bottom_item">
             <span class="bottomItem_text">全部信息</span>
             <div class="selectImg"></div>
         </div>
@@ -117,6 +69,16 @@
             <div class="weui-dialog__ft">
                 <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
             </div>
+        </div>
+    </div>
+    <!--弹出历历公众号二维码-->
+    <div class="liLi">
+        <span class="liLi_close"></span>
+        <div class="liLi_qrcodeImgCon">
+            <div class="liLi_qrcodeImg">
+                <img src="../../assets/imgs/page/newShowEvent/liLy.jpg" alt="">
+            </div>
+            <p>长按识别二维码<br />关注历历LilyCalendar</p>
         </div>
     </div>
     <!--数据加载时的loading-->
@@ -163,9 +125,11 @@
     <script type="text/x-item" id="itemListTemplate">
         <div class="day_item" data-eventId = "{{eventId}}">
                     <div class="item_detail cff" style="{{background}}">
-                        <h1 class="itemTitle">{{name}}</h1>
-                        <div class="itemTime fs12">{{time}}</div>
-                        <div class="itemLocation fs12">{{location}}</div>
+                        <div class="starShadow">
+                            <h1 class="itemTitle">{{name}}</h1>
+                            <div class="itemTime fs12">{{time}}</div>
+                            <div class="itemLocation fs12">{{location}}</div>
+                        </div>
                     </div>
                     <div class="item_tips fs12">
                         <div class="c99">共<span class="joinerCount">{{joinerCount}}</span>人在追</div>

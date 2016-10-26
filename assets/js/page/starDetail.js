@@ -27,13 +27,12 @@ var fuc = {
     },
     renderPage:function(){
         var that = this;
-        //that.getStarDetail();
+        that.getStarDetail();
         var screenHeight = $(document.body).height(),
             topHeight = $('.starTop').height();
         var otherHeight = screenHeight - topHeight - 50+"px";
         $('.container').css("min-height",otherHeight);
         $('.line').css("min-height",otherHeight);
-        $('.starImg').css("background-image","url('http://pic2.58.com/zp_images/allimg/120619/1_120619163824_1.png')");
         that.getStarTrace();
     },
     //获取明星详情
@@ -44,7 +43,8 @@ var fuc = {
             type:"get",
             url: that.config.urlArr[0]+"/star/detail",
             data: {
-                "starId":that.config.starId
+                //"starId":that.config.starId
+                "starId":"88f4ee9118bc413da76e8a83b422e5b0"
             },
             async: true,
             success:function(data){
@@ -55,12 +55,16 @@ var fuc = {
                     that.config.starName = starDetail.star.starName;
                     $('.name').html(starDetail.star.starName);//名字
                     $('.fansCount').html(starDetail.fans.fansCount);//粉丝数
-                    that.config.fansType = starDetail.fans.fansType;//粉丝类型
-                    if(starDetail.fans.fansType){
-                        $('.bottom_item').eq(starDetail.fans.fansType).addClass('active');
+                    that.config.fansType = starDetail.fans.fansType;//粉丝类型=
+                    if(that.config.fansType){
+                        var bottomItem = $('.bottom_item');
+                        for(var i=0;i<bottomItem.size();i++){
+                            bottomItem.eq(i).removeClass('active');
+                        }
+                        bottomItem.eq(that.config.fansType).addClass('active');
                         $('.follow img').removeClass('hide');
                     }else{
-                        $('.bottom_item').eq(1).addClass('active');
+                        $('.bottom_item').eq(0).addClass('active');
                     }
                 }
 
@@ -114,13 +118,13 @@ var fuc = {
         var that = this;
         $.ajax({
             type:"get",
-            //url:that.config.urlArr[0]+"/trace/list",
-            url:"../../mockData/star/traceList.json",
-            //data:{
-            //    "starId":that.config.starId,
-            //    "pageNo":that.config.pageNo,
-            //    "pageSize":10
-            //},
+            url:that.config.urlArr[0]+"/trace/list",
+            //url:"../../mockData/star/traceList.json",
+            data:{
+                "starId":that.config.starId,
+                "pageNo":that.config.pageNo,
+                "pageSize":10
+            },
             async: true,
             success:function(data){
                 console.log(data);
@@ -131,12 +135,13 @@ var fuc = {
                         if(that.config.pageNo == 1){
                             if(data.data.newsList.length>0){
                                 for(var m=0;m<data.data.newsList.length;m++){//获取新闻内容
-                                    if(data.data.newsList[m].newsType){
-                                        newsStr +=  "<div class='news_list newsTitle' data-newsid='"+data.data.newsList[m].newsId+"'><div class='starNewsLeft'>"+data.data.newsList[m].newsType+"</div>"+data.data.newsList[m].newsTitle+"</div>";
-                                    }else{
-                                        newsStr +=  "<div class='news_list newsTitle' data-newsid='"+data.data.newsList[m].newsId+"'><div class='starNewsLeft'>独家猛料</div>"+data.data.newsList[m].newsTitle+"</div>";
+                                    if(m<5){//最多显示五条新闻
+                                        if(data.data.newsList[m].newsType){
+                                            newsStr +=  "<div class='news_list newsTitle' data-newsid='"+data.data.newsList[m].newsId+"'><div class='starNewsLeft'>"+data.data.newsList[m].newsType+"</div>"+data.data.newsList[m].newsTitle+"</div>";
+                                        }else{
+                                            newsStr +=  "<div class='news_list newsTitle' data-newsid='"+data.data.newsList[m].newsId+"'>"+data.data.newsList[m].newsTitle+"</div>";
+                                        }
                                     }
-
                                 }
                             }
                         }
@@ -152,20 +157,20 @@ var fuc = {
                                     if(traceDetail.theme){
                                         var url = "background:url('"+traceDetail.theme.themeUrl+"') center center no-repeat;background-size:cover;";
                                         dayList += that.config.template2.replace(/{{eventId}}/g,traceDetail.eventId).replace(/{{name}}/g,traceDetail.name).replace(/{{time}}/g,"").replace(/{{location}}/g,traceDetail.location+"&nbsp;"+traceDetail.address)
-                                            .replace(/{{joinerCount}}/g,traceDetail.joinersCount).replace(/{{join}}/g,"none").replace(/{{hasJoin}}/g,"block").replace(/{{background}}/g,url);
+                                            .replace(/{{joinerCount}}/g,traceList[i].list[j].joinersCount).replace(/{{join}}/g,"none").replace(/{{hasJoin}}/g,"block").replace(/{{background}}/g,url);
                                     }else{
                                         var backgroundColor = "background:"+traceDetail.bgColor;
                                         dayList += that.config.template2.replace(/{{eventId}}/g,traceDetail.eventId).replace(/{{name}}/g,traceDetail.name).replace(/{{time}}/g,"").replace(/{{location}}/g,traceDetail.location+"&nbsp;"+traceDetail.address)
-                                            .replace(/{{joinerCount}}/g,traceDetail.joinersCount).replace(/{{join}}/g,"none").replace(/{{hasJoin}}/g,"block").replace(/{{background}}/g,backgroundColor);
+                                            .replace(/{{joinerCount}}/g,traceList[i].list[j].joinersCount).replace(/{{join}}/g,"none").replace(/{{hasJoin}}/g,"block").replace(/{{background}}/g,backgroundColor);
                                     }
                                 }else{//未加入事件
                                     if(traceDetail.theme){
                                         var backgroundImg = "background:url('"+traceDetail.theme.themeUrl+"') center center no-repeat;background-size:cover;";
                                         dayList += that.config.template2.replace(/{{eventId}}/g,traceDetail.eventId).replace(/{{name}}/g,traceDetail.name).replace(/{{time}}/g,"").replace(/{{location}}/g,traceDetail.location+"&nbsp;"+traceDetail.address)
-                                            .replace(/{{joinerCount}}/g,traceDetail.joinersCount).replace(/{{join}}/g,"block").replace(/{{hasJoin}}/g,"none").replace(/{{background}}/g,backgroundImg);
+                                            .replace(/{{joinerCount}}/g,traceList[i].list[j].joinersCount).replace(/{{join}}/g,"block").replace(/{{hasJoin}}/g,"none").replace(/{{background}}/g,backgroundImg);
                                     }else{
                                         dayList += that.config.template2.replace(/{{eventId}}/g,traceDetail.eventId).replace(/{{name}}/g,traceDetail.name).replace(/{{time}}/g,"").replace(/{{location}}/g,traceDetail.location+"&nbsp;"+traceDetail.address)
-                                            .replace(/{{joinerCount}}/g,traceDetail.joinersCount).replace(/{{join}}/g,"block").replace(/{{hasJoin}}/g,"none").replace(/{{background}}/g,"background:"+traceDetail.bgColor);
+                                            .replace(/{{joinerCount}}/g,traceList[i].list[j].joinersCount).replace(/{{join}}/g,"block").replace(/{{hasJoin}}/g,"none").replace(/{{background}}/g,"background:"+traceDetail.bgColor);
                                     }
 
                                 }
@@ -229,7 +234,7 @@ var fuc = {
         /*----------点击提醒我，加入事件-----------*/
         $('.container').on('tap','.join',function(){
             $('#loadingToast').fadeIn();//显示loading
-            var eventId = $(this).parents('day_item').attr("data-eventid");
+            var eventId = $(this).parents('.day_item').attr("data-eventid");
             //加入
             $.ajax({
                 type:"get",
@@ -297,7 +302,7 @@ var fuc = {
         /*------------点击已提醒，退出事件-----------*/
         $('.container').on('tap','.hasJoin',function(){
             $('#loadingToast').fadeIn();//显示loading
-            var eventId = $(this).parents('day_item').attr("data-eventid");
+            var eventId = $(this).parents('.day_item').attr("data-eventid");
             //退出
             $.ajax({
                 type:"post",
@@ -325,16 +330,16 @@ var fuc = {
         /*---------点击明星行程，跳转至行程详情页----------*/
         $('.container').on('tap','.item_detail',function(){
             var eventId = $(this).attr("data-eventid");
-            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html"+eventId);
+            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId="+eventId);
         });
         /*-------------点击查看明星相关新闻---------------*/
         $('.news_con').on('tap','.toMore',function(){
-            window.location.href =  that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starNewsList.html"+that.config.starId);
+            window.location.href =  that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starNewsList.html?starId="+that.config.starId);
         });
         /*--------------点击新闻标题跳转着新闻详情页----------------*/
         $('.container').on('tap','.newsTitle',function(){
             var newsId = $(this).attr("data-newsid");
-            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newsDetail.html"+newsId);
+            window.location.href = that.config.urlArr[1]+"/wx/view/newsDetail.html?newsId="+newsId;
         });
         /*--------点击追TA，显示选择列表------*/
         $('.bottom_btn').on('tap',function(){
@@ -351,34 +356,53 @@ var fuc = {
         /*-----------点击粉丝选择列表逻辑处理------------*/
         $('.bottom_item').on('tap',function(){
             console.log($(this).index());
-            if($(this).hasClass("active")){//点击已选中选项，取消关注
-                $(this).removeClass('active');
-                $('.follow').removeClass('active');
-                $('.bottomTxt').removeClass('hide');
-                $('.selected').addClass('hide');
-                $('.follow img').addClass('hide');
-                $('.bottom_item').eq(0).addClass('active');
-                that.config.fansType = 0;//不追星
-            }else{
-                for(var i=0;i<$('.bottom_item').size();i++){
-                    $('.bottom_item').eq(i).removeClass('active');
+            $.ajax({
+                type: "get",
+                url: that.config.urlArr[0] + "/wx/isSubscribe",
+                async: true,
+                success: function (data) {
+                    if(data.data){//已经关注了我们
+                        if($(this).hasClass("active")){//点击已选中选项，取消关注
+                            $(this).removeClass('active');
+                            $('.follow').removeClass('active');
+                            $('.bottomTxt').removeClass('hide');
+                            $('.selected').addClass('hide');
+                            $('.follow img').addClass('hide');
+                            $('.bottom_item').eq(0).addClass('active');
+                            that.config.fansType = 0;//不追星
+                        }else{
+                            for(var i=0;i<$('.bottom_item').size();i++){
+                                $('.bottom_item').eq(i).removeClass('active');
+                            }
+                            $(this).addClass('active');
+                            $('.follow').addClass('active');
+                            $('.bottomTxt').addClass('hide');
+                            $('.selected').removeClass('hide');
+                            $('.follow img').removeClass('hide');
+                            that.config.fansType = $(this).index();//追星
+                        }
+                        //console.log(that.config.fansType);
+                        $('.bottomSelect').animate({"bottom":"-300px"},200,function(){
+                            $('.bottomSelect').css("display","none")
+                        });
+                        $('.shadow').css("display","none");
+                        that.changeFansType(that.config.fansType);
+                        if(!that.config.fansType){//若用户取消关注，则刷新粉丝人数
+                            that.getFansCount();
+                        }
+                    }else{
+                        $('.bottomSelect').animate({"bottom":"-300px"},200,function(){
+                            $('.bottomSelect').css("display","none")
+                        });
+                        $('.shadow').css("display","none");
+                        $('.liLi').css("display", "block");
+                    }
+                },
+                error:function(){
+
                 }
-                $(this).addClass('active');
-                $('.follow').addClass('active');
-                $('.bottomTxt').addClass('hide');
-                $('.selected').removeClass('hide');
-                $('.follow img').removeClass('hide');
-                that.config.fansType = $(this).index();//追星
-            }
-            //console.log(that.config.fansType);
-            $('.bottomSelect').animate({"bottom":"-300px"},200,function(){
-                $('.bottomSelect').css("display","none")
-            });
-            $('.shadow').css("display","none");
-            that.changeFansType(that.config.fansType);
-            if(!that.config.fansType){//若用户取消关注，则刷新粉丝人数
-                that.getFansCount();
-            }
+            })
+
         });
         $('.shadow').on('tap',function(){
             $('.bottomSelect').animate({"bottom":"-300px"},200,function(){
@@ -393,6 +417,9 @@ var fuc = {
         /*--------------------关闭二维码弹层----------------------*/
         $('.wxQrcodeClose').on('tap',function () {
             $('.wxQrcode').css("display", "none");
+        });
+        $('.liLi_close').click(function(){
+            $('.liLi').css("display","none");
         });
     }
 }

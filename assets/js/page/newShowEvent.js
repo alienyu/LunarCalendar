@@ -862,7 +862,7 @@ var fuc = {
         });
         $('.liLi_close').click(function(){
             $('.liLi').css("display","none");
-        })
+        });
         /*------------------点击退出（已加入）-----------------*/
         $('.exit').click(function () {
             $('#dialog1').fadeIn();
