@@ -101,7 +101,7 @@ var fuc = {
         wx.wxConfig(1);
         $('.eventContainer').css("visibility","visible");
         setTimeout(function(){
-            that.getJoiner();
+            // that.getJoiner();
             that.getData();
         },300);
     },
@@ -298,7 +298,7 @@ var fuc = {
         }
         that.loadingshow();
         $.ajax({
-            type: "get",
+            type: "post",
             url: that.config.urlArr[0]+"/comments/del",
             data: {
                 "commentsId": val_id
@@ -326,7 +326,7 @@ var fuc = {
     addLikes: function(val_id) {
         var that = this;
         $.ajax({
-            type: "get",
+            type: "post",
             url: that.config.urlArr[0]+"/favour/add",
             data: {
                 "commentsId": val_id
@@ -348,7 +348,7 @@ var fuc = {
     delLikes: function(val_id) {
         var that = this;
         $.ajax({
-            type: "get",
+            type: "post",
             url: that.config.urlArr[0]+"/favour/del",
             data: {
                 "commentsId": val_id
@@ -388,7 +388,12 @@ var fuc = {
                     that.config.pageNo ++;
                     var list = data.data, html = "";
                     var peopleCount = list.pagination.totalCount + 1;
-                    $('.count').html(peopleCount);
+                    if(that.config.eventType == 1){
+                        $('.count').html(peopleCount);
+                    }else if(that.config.eventType == 2){
+                        $('.count').html(peopleCount-1);
+                    }
+                    
                     if (list.list.length == 0) {
                         $('.morePeople').css("display", "none");
                     } else {
@@ -451,8 +456,15 @@ var fuc = {
                             $('.weather').css('display', 'none');
                         }
                         Ajax.getPersonalFortune(Dom.getDate(dataList.event.startTime));
-                    } else if (dataList.event.eventType == 1 || dataList.event.eventType == 1 ) {//1为活动事件,2为明星事件
-                        that.commentConfig.type = dataList.event.eventType;
+                    } else if (dataList.event.eventType == 1 || dataList.event.eventType == 2 ) {//1为活动事件,2为明星事件
+                        that.config.eventType = dataList.event.eventType;
+                        // that.config.eventType = 2;
+                        that.getJoiner();//获取参与人数
+                        if(that.config.eventType == 2){
+                            $('.avtivityCon').css("display", "none");
+                            $('.starAvatar').show();
+                            that.refreshJoiner();
+                        }
                         that.getShareImg();
                         $('.suitable').css("display", "none");
                         $('.weather').css("display", "none");
@@ -508,20 +520,25 @@ var fuc = {
                             $('.remarkRetract').hide();
                             $('.remarkText').addClass('textMore');
                         }//是否显示全文按钮
-                        if (dataList.isOwner) {//如果是发起者
-                            $('.bottom1').css("display", "block").animate({"bottom": "0"}, 200);
-                        } else {
-                            $('.compile').css("display", "none");
-                            if (dataList.isJoiner) {//如果用户已参与该事件
-                                $('.bottom1').css("display", "none").animate({"bottom": "-50px"}, 200, function () {
-                                    $('.bottom3').css("display", "block").animate({"bottom": "0"}, 200);
-                                });
-                            } else {//用户未参与该事件
-                                $('.bottom1').css("display", "none").animate({"bottom": "-50px"}, 200, function () {
-                                    $('.bottom2').css("display", "block").animate({"bottom": "0"}, 200);
-                                });
+                        if(that.config.eventType == 1){
+                            if (dataList.isOwner) {//如果是发起者
+                                $('.bottom1').css("display", "block").animate({"bottom": "0"}, 200);
+                            } else {
+                                $('.compile').css("display", "none");
+                                if (dataList.isJoiner) {//如果用户已参与该事件
+                                    $('.bottom1').css("display", "none").animate({"bottom": "-50px"}, 200, function () {
+                                        $('.bottom3').css("display", "block").animate({"bottom": "0"}, 200);
+                                    });
+                                } else {//用户未参与该事件
+                                    $('.bottom1').css("display", "none").animate({"bottom": "-50px"}, 200, function () {
+                                        $('.bottom2').css("display", "block").animate({"bottom": "0"}, 200);
+                                    });
+                                }
                             }
+                        }else if(that.config.eventType == 2){
+                            $('.starFooter').css("display", "block").animate({"bottom": "0"}, 200);
                         }
+                        
                         //事件创建者头像及昵称显示
                         $('.eventOwner').attr("src", dataList.owner.headImgUrl);
                         $('.ownerNickName .nickName').html(dataList.owner.nickName);
@@ -532,9 +549,10 @@ var fuc = {
                             wx.wxShare(dataList.owner.nickName + " 邀请您参加 「" + dataList.event.name + "」", Dom.tranDate(dataList.event.startTime),
                                 that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + dataList.event.eventId));
                         }
+                        $('.commentCon').show();
+                         that.getComments();
                     }
-                    $('.commentCon').show();
-                    that.getComments();
+                    
                 } else if (data.code == 112) {
                     //若参加者参加的事件不存在
                     $('.eventNone').css("display", "block");
@@ -566,7 +584,10 @@ var fuc = {
         });
         $('.starAvatar').click(function () {
             //console.log(that.config.eventType);
-            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/remind.html?eventId=" + that.config.eventId);
+            var str = $(this).attr('data-src');
+            if(str != ""){
+                window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId=" + str);
+            }
         });
         /*----------全文 收起----------*/
         $('.remarkMore').on("tap",function () {
@@ -581,17 +602,21 @@ var fuc = {
         });
         /* ---------更多粉丝----------- */
         $('.fansMore').on("tap",function () {
-           console.log('更多粉丝');
+           // console.log('更多粉丝');
         });
 
         /*    -----------关于评论-----------    */
-        $('.commentBtn').on("tap",function () {
+        $('.commentBtn').on("click",function () {
             if(!that.loginTag()){
                 return;
             }
             $('.commentText').val('');
             $('.addComment').fadeIn();
             $('.commentText').trigger('focus');
+            // $('.commentText').attr("autofocus");
+            // $(".commentText")[0].focus();
+            event.preventDefault();
+            event.stopPropagation();
         });
         $('.addComment .cancel').on("tap",function () {
            $('.addComment').fadeOut();
@@ -603,6 +628,9 @@ var fuc = {
            // console.log($(e.target).attr('class'));
         });
         $('.addComment .finished').on("tap",function () {
+            if($('.commentText').val().trim() == ""){
+                return;
+            }
            $('.addComment').fadeOut();
            that.sendComments();
         });
@@ -612,13 +640,18 @@ var fuc = {
             // $('.comment_'+$(this).attr('data-id')).remove();
             that.delComments(dataid);
         });
-        $('.commentList').on("tap",'.commentContent',function () {
+        $('.commentList').on("click",'.commentContent',function () {
             if(!that.loginTag()){
                 return;
             }
-           $('.commentText').val('回复'+$(this).attr('data-name')+': ');
+           // $('.commentText').val('回复'+$(this).attr('data-name')+': ');
            $('.addComment').fadeIn();
-           $('.commentText').trigger('focus');
+           // $('.commentText').trigger('focus');
+           $('.commentText').val("").focus().val('回复'+$(this).attr('data-name')+': '); 
+           // $('.commentText').attr("autofocus");
+           // $(".commentText")[0].focus();
+            event.preventDefault();
+            event.stopPropagation();
         });
         $('.commentList').on("tap",'.commentLike',function () {
             if(!that.loginTag()){
@@ -641,46 +674,102 @@ var fuc = {
         });
         /*---------------点击邀请好友-----------------*/
         $('.share').click(function () {
-            var shareShadow = $('.shareShadow');
-            shareShadow.fadeIn();//显示分享提示层
-            shareShadow.click(function () {
-                $(this).fadeOut();
-                event.stopPropagation();
-            });
-            var share = document.getElementById('shareShadow');
-            share.addEventListener('touchmove', function (e) {
-                e.preventDefault();
-            });
+            that.shareTo();
         });
         /*  --------------明星分享以及提醒--------------- */
         $('.starFooter .postEventStar').click(function () {
             event.preventDefault();
-            window.location.href = 'http://baidu.com';
+            var str = $(this).attr('data-src');
+            if(str != ""){
+                window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId=" + str);
+            }
         });
+
+        $('.starFooter .shareStar').click(function () {
+            that.shareTo();
+        });
+
         $('.starFooter .joinStar').click(function () {
             event.preventDefault();
-            $('.starFooter .joinStar').hide();
-            $('.starFooter .exitStar').show();
-            $('.starFooter .shareStar').show();
+            // $('.starFooter .joinStar').hide();
+            // $('.starFooter .exitStar').show();
+            // $('.starFooter .shareStar').show();
+
+            $('#loadingToast').fadeIn();//显示loading
+            $.get(that.config.urlArr[0]+"/wx/isSubscribe", function (data) {
+                if (data.code == 0) {
+                    if (data.data) {//已经关注了我们
+                        //数据提交
+                        $.post(
+                            that.config.urlArr[0]+'/event/accept',
+                            {
+                                "eventId": that.config.eventId
+                            },
+                            function (data) {
+                                $('#loadingToast').fadeOut();//隐藏loading
+                                if (data.code == 0) {//加入成功后弹出
+                                    $('.starFooter .joinStar').hide();
+                                    $('.starFooter .exitStar').show();
+                                    $('.starFooter .shareStar').show();
+                                    // todo 修改该方法
+                                    that.refreshJoiner();//刷新参与人数量
+                                } else {//加入失败收弹出
+                                    var error = data.msg;
+                                    $('#dialog2 .weui-dialog__bd').html(error);
+                                    $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+                                        $('#dialog2').off('click').fadeOut();
+                                    });
+                                }
+                            }
+                        )
+                    } else {//没有关注我们，弹出二维码
+                        $.get(
+                            that.config.urlArr[0]+"/wx/qrcode/ticket",
+                            {"sceneId": that.config.eventId},
+                            function (data) {//获取带参数的二维码
+                                if (data.code == 0) {
+                                    $('#loadingToast').fadeOut();//隐藏loading
+                                    var ticket = data.data.ticket;
+                                    var html = "<img src='https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + ticket + "' />";
+                                    $('.qrcodeImg').html("");
+                                    $('.qrcodeImg').append(html);
+                                    $('.wxQrcode').css("display", "block");
+                                }
+                            }
+                        );
+                    }
+                }
+            });
         });
+
         $('.starFooter .exitStar').click(function () {
             event.preventDefault();
-            $('.starFooter .joinStar').show();
-            $('.starFooter .exitStar').hide();
-            $('.starFooter .shareStar').hide();
-        });
-        $('.starFooter .shareStar').click(function () {
-            var shareShadow = $('.shareShadow');
-            shareShadow.fadeIn();//显示分享提示层
-            shareShadow.click(function () {
-                $(this).fadeOut();
-                event.stopPropagation();
-            });
-            var share = document.getElementById('shareShadow');
-            share.addEventListener('touchmove', function (e) {
-                e.preventDefault();
-            });
-            
+            // $('.starFooter .joinStar').show();
+            // $('.starFooter .exitStar').hide();
+            // $('.starFooter .shareStar').hide();
+
+            $('#loadingToast').fadeIn();//显示loading
+            $.post(
+                that.config.urlArr[0]+"/event/exit",
+                {
+                    "eventId": that.config.eventId
+                },
+                function (data) {
+                    $('#loadingToast').fadeOut();//隐藏loading
+                    if (data.code == 0) {
+                        $('.starFooter .joinStar').show();
+                        $('.starFooter .exitStar').hide();
+                        $('.starFooter .shareStar').hide();
+                        that.refreshJoiner();
+                    } else {
+                        var error = data.msg;
+                        $('#dialog2 .weui-dialog__bd').html(error);
+                        $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+                            $('#dialog2').off('click').fadeOut();
+                        });
+                    }
+                }
+            )
         });
 
         /*---------------点击分享弹层中的按钮-----------------*/
@@ -816,6 +905,20 @@ var fuc = {
         that.mapShadow($('.site'), $('.mapShadow'), $('.mapShadow .container'));
     },
 
+    //分享给好友
+    shareTo: function(){
+        var shareShadow = $('.shareShadow');
+        shareShadow.fadeIn();//显示分享提示层
+        shareShadow.click(function () {
+            $(this).fadeOut();
+            event.stopPropagation();
+        });
+        var share = document.getElementById('shareShadow');
+        share.addEventListener('touchmove', function (e) {
+            e.preventDefault();
+        });
+    },
+
     /*-----------------------局部刷新参与人---------------------*/
     refreshJoiner: function () {
         var that = this;
@@ -833,29 +936,47 @@ var fuc = {
             },
             function (data) {
                 if (data.code == 0) {
-                    //console.log(that.config.pageNo);
-                    that.config.pageNo ++;
-                    var list = data.data, html = "";
-                    var peopleCount = list.pagination.totalCount + 1;
-                    $('.count').html(peopleCount);
-                    if (list.list.length == 0) {
-                        $('.morePeople').css("display", "none");
-                    } else {
-                        for (var i = 0; i < list.list.length; i++) {
-                            html += peopleTemplate.replace(/{{imgUrl}}/g, list.list[i].headImgUrl).replace(/{{nickName}}/g, list.list[i].nickName);
+                    if(that.config.eventType == 1){//个人活动
+                        //console.log(that.config.pageNo);
+                        that.config.pageNo ++;
+                        var list = data.data, html = "";
+                        var peopleCount = list.pagination.totalCount + 1;
+                        $('.count').html(peopleCount);
+                        if (list.list.length == 0) {
+                            $('.morePeople').css("display", "none");
+                        } else {
+                            for (var i = 0; i < list.list.length; i++) {
+                                html += peopleTemplate.replace(/{{imgUrl}}/g, list.list[i].headImgUrl).replace(/{{nickName}}/g, list.list[i].nickName);
+                            }
+                            that.config.lastId = list.list[list.list.length-1].openId;
+                            //console.log(html);
+                            $('.morePeople').before(html);
+                            var joiner = $('.joinerItem');
+                            if (list.list.length < 10) {
+                                $('.morePeople').css("display", "none");
+                            }else if (joiner.size() == list.pagination.totalCount) {
+                                $('.morePeople').css("display", "none");
+                            }else{
+                                $('.morePeople').css("display", "block");
+                            }
                         }
-                        that.config.lastId = list.list[list.list.length-1].openId;
-                        //console.log(html);
-                        $('.morePeople').before(html);
-                        var joiner = $('.joinerItem');
-                        if (list.list.length < 10) {
-                            $('.morePeople').css("display", "none");
-                        }else if (joiner.size() == list.pagination.totalCount) {
-                            $('.morePeople').css("display", "none");
-                        }else{
-                            $('.morePeople').css("display", "block");
+                    }else if(that.config.eventType == 2){ //明星活动
+                        var list = data.data;
+                        if(list.list.length>0){
+                            $('.fansCon').show();
+                            console.log('----'+$('.fansList').width());
+                            var num = Math.floor($('.fansList').width()/35) - 2;
+                            if(num > list.list.length){
+                                num = list.list.length;
+                            }
+                            var str = "";
+                            for(var i=0;i<num;i++){
+                                str += '<img src="'+list.list[i].headImgUrl+'" alt="" class="fl">';
+                            }
+                            $('.fansItem').append(str);
                         }
                     }
+                    
                 }
             }
         )

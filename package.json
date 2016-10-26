@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "webpack"
+    "dev": "echo 打包测试服&webpack",
+    "build": "echo 打包正式服&webpack --config webpack.rel.config.js"
   },
   "dependencies": {
     "css-loader": "^0.23.1",
@@ -25,5 +26,8 @@
     "zepto": "1.1.7"
   },
   "author": "AlienYu",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "clean-webpack-plugin": "^0.1.13"
+  }
 }
