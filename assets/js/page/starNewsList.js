@@ -22,7 +22,7 @@ var fuc = {
     renderPage:function(){
         var that = this;
         if(!that.config.starId){//若url中没有starId, 则查询所有明星的新闻
-            that.config.starId = 0;
+            that.config.starId ="";
         }
         that.getData(that.config.starId);
 
@@ -31,8 +31,8 @@ var fuc = {
         var that = this;
         $.ajax({
             type:"get",
-            //url:that.config.urlArr[0]+"/news/list",
-            url:"../../mockData/star/newsList.json",
+            url:that.config.urlArr[0]+"/news/list",
+            //url:"../../mockData/star/newsList.json",
             data:{
                 "starId":starId,
                 "pageNo":that.config.pageNo,
@@ -44,8 +44,8 @@ var fuc = {
                     if(newsList.length>0){
                         var html = "";
                         for(var i=0;i<newsList.length;i++){
-                            html += that.config.template.replace(/{{newsId}}/g,newsList[i].newsId).replace(/{{newsTitle}}/g,newsList[i].newsTitle).replace(/{{imgSrc}}/g,newsList[i].newsPoster)
-                                .replace(/{{newsSource}}/g,newsList[i].newsSource).replace(/{{starName}}/g,newsList[i].star.starName);
+                                html += that.config.template.replace(/{{newsId}}/g,newsList[i].newsId).replace(/{{newsTitle}}/g,newsList[i].newsTitle).replace(/{{imgSrc}}/g,newsList[i].newsPoster)
+                                    .replace(/{{newsSource}}/g,newsList[i].newsSource == null ? "":newsList[i].newsSource).replace(/{{starName}}/g,newsList[i].star.starName == null ?"":newsList[i].star.starName);
                         }
                         $('.news').append(html);
                         that.commentEnd();
@@ -99,7 +99,7 @@ var fuc = {
         $('.news').on('tap','.news_item',function(){
             var newsId = $(this).attr("data-newsid");
             console.log(newsId);
-            //window.location.href =  that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newsDetail.html"+newsId);
+            window.location.href =  that.config.urlArr[1]+"/wx/view/newsDetail.html?newsId="+newsId;
         });
     }
 }

@@ -17,6 +17,7 @@ var fuc = {
     },
     renderPage:function(){
         var that = this;
+
     },
     getNewsDetail:function(){
         var that = this;
@@ -70,7 +71,7 @@ var fuc = {
             window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starNewsList.html");
         });
         $('.toStars').on('tap',function(){
-            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html"+that.config.starId);
+            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId="+that.config.starId);
         });
     }
 }

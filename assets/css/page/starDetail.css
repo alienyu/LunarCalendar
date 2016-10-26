@@ -2,17 +2,21 @@
 @import "../common/star.css";
 
 .starTop{
-    position: relative;
     width:100%;
     height:180px;
     background: #66CCCC;
+}
+.starTop .topShadow{
+    width:100%;
+    height:100%;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     padding: 10px;
+    position: relative;
+    background: rgba(0,0,0,0.2);
 }
 .starTop,.starImg{
-    /*background-image: url("http://pic2.58.com/zp_images/allimg/120619/1_120619163824_1.png");*/
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -33,6 +37,9 @@
     border-radius: 100%;
     -webkit-border-radius: 100%;
     margin-right: 10px;
+}
+.starInfo_name{
+    text-shadow:0 2px 1px #333;
 }
 .starName{
     height:40px;
@@ -160,7 +167,7 @@
 .bottomSelect{
     width:100%;
     height:300px;
-    position: absolute;
+    position: fixed;
     left:0;
     bottom:-300px;
     background: #fff;
@@ -215,7 +222,7 @@
 }
 
 /*----------事件二维码样式------------*/
-.wxQrcode{
+.shareShadow,.wxQrcode,.liLi{
     position: fixed;
     top:0px;
     left:0px;
@@ -224,7 +231,7 @@
     background-color: rgba(0,0,0,0.5);
     display: none;
 }
-.wxQrcode .wxQrcodeClose{
+.wxQrcode .wxQrcodeClose,.liLi_close{
     display: block;
     width:30px;
     height:30px;
@@ -234,21 +241,21 @@
     background: url("../../imgs/page/showEvent/close.png") no-repeat center center;
     background-size: contain;
 }
-.qrcodeImgCon{
+.qrcodeImgCon,.liLi_qrcodeImgCon{
     height:auto;
     width:80%;
     margin: 0 auto;
     background: #fff;
     margin-top: 20%;
 }
-.qrcodeImg{
+.qrcodeImg,.liLi_qrcodeImg{
     width:100%;
     text-align: center;
 }
-.qrcodeImg img{
+.qrcodeImg img,.liLi_qrcodeImg img{
     width:100%;
 }
-.qrcodeImgCon p{
+.qrcodeImgCon p,.liLi_qrcodeImgCon p{
     width:100%;
     color: #000;
     font-size: 12px;
