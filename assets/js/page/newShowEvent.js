@@ -450,6 +450,7 @@ var fuc = {
                         $('.remark').css("display", "none");
                         $('.site').css("display", "none");
                         $('.bottom').css("display", "none");
+                        $('.compile').css("display", "block");
                         if (!Dom.smallerDate(Dom.getDate(dataList.event.startTime))) {
                             Ajax.getWeather(Dom.getDate(dataList.event.startTime),Dom.getHourMinute(dataList.event.startTime));
                         } else {
