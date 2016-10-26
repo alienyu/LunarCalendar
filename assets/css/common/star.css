@@ -38,6 +38,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: 9px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 .news_item .news_text .news_tips{
     height:20px;

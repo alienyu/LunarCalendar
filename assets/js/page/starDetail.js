@@ -5,6 +5,7 @@ require("../../css/page/starDetail.css");
 var Ajax = require("../common/ajax.js");
 var Dom = require("../common/dom.js");
 var wx = require("../vendor/weChat/wxInit.js");
+var pageLoad = require("../common/pageLoad.js");
 
 var fuc = {
     config:{
@@ -18,6 +19,7 @@ var fuc = {
         template2:$('#itemListTemplate').html()
     },
     init:function(){
+        pageLoad({backgroundColor: "#fff"});
         this.config.starId = Dom.getRequest("starId");
         this.config.urlArr = Dom.configuration();
         this.config.fansType = 0;//表示不追
@@ -43,8 +45,8 @@ var fuc = {
             type:"get",
             url: that.config.urlArr[0]+"/star/detail",
             data: {
-                //"starId":that.config.starId
-                "starId":"88f4ee9118bc413da76e8a83b422e5b0"
+                "starId":that.config.starId
+                //"starId":"88f4ee9118bc413da76e8a83b422e5b0"
             },
             async: true,
             success:function(data){
@@ -234,7 +236,8 @@ var fuc = {
         /*----------点击提醒我，加入事件-----------*/
         $('.container').on('tap','.join',function(){
             $('#loadingToast').fadeIn();//显示loading
-            var eventId = $(this).parents('.day_item').attr("data-eventid");
+            var domId = this;
+            var eventId = $(domId).parents('.day_item').attr("data-eventid");
             //加入
             $.ajax({
                 type:"get",
@@ -254,10 +257,10 @@ var fuc = {
                                 success:function(data){
                                     if(data.code == 0){
                                         $('#loadingToast').fadeOut();//隐藏loading
-                                        $(this).css("display","none");
-                                        $(this).parent().find('.hasJoin').css("display","block");
-                                        var joinerCount = $(this).parent().find(".joinerCount").html();
-                                        $(this).parent().find(".joinerCount").html(parseInt(joinerCount)+1);
+                                        $(domId).css("display","none");
+                                        $(domId).parent().find('.hasJoin').css("display","block");
+                                        var joinerCount = $(domId).parent().find(".joinerCount").html();
+                                        $(domId).parent().find(".joinerCount").html(parseInt(joinerCount)+1);
                                     }else{
                                         //报错
                                         $('#loadingToast').fadeOut();//隐藏loading
@@ -302,7 +305,8 @@ var fuc = {
         /*------------点击已提醒，退出事件-----------*/
         $('.container').on('tap','.hasJoin',function(){
             $('#loadingToast').fadeIn();//显示loading
-            var eventId = $(this).parents('.day_item').attr("data-eventid");
+            var domId = this;
+            var eventId = $(domId).parents('.day_item').attr("data-eventid");
             //退出
             $.ajax({
                 type:"post",
@@ -314,10 +318,10 @@ var fuc = {
                 success:function(data){
                     if(data.code == 0){
                         $('#loadingToast').fadeOut();//隐藏loading
-                        $(this).css("display","none");
-                        $(this).parent().find('.join').css("display","block");
-                        var joinerCount = $(this).parent().find(".joinerCount").html();
-                        $(this).parent().find(".joinerCount").html(parseInt(joinerCount)-1);
+                        $(domId).css("display","none");
+                        $(domId).parent().find('.join').css("display","block");
+                        var joinerCount = $(domId).parent().find(".joinerCount").html();
+                        $(domId).parent().find(".joinerCount").html(parseInt(joinerCount)-1);
                     }else{
                         $('#loadingToast').fadeOut();//隐藏loading
                     }
@@ -328,12 +332,12 @@ var fuc = {
             })
         });
         /*---------点击明星行程，跳转至行程详情页----------*/
-        $('.container').on('tap','.item_detail',function(){
+        $('.container').on('tap','.day_item',function(){
             var eventId = $(this).attr("data-eventid");
             window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId="+eventId);
         });
         /*-------------点击查看明星相关新闻---------------*/
-        $('.news_con').on('tap','.toMore',function(){
+        $('.container').on('tap','.toMore',function(){
             window.location.href =  that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starNewsList.html?starId="+that.config.starId);
         });
         /*--------------点击新闻标题跳转着新闻详情页----------------*/

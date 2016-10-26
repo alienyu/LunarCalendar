@@ -4,6 +4,7 @@
 require("../../css/page/newsDetail.less");
 var Ajax = require("../common/ajax.js");
 var Dom = require("../common/dom.js");
+var pageLoad = require("../common/pageLoad.js");
 
 var fuc = {
     config:{
@@ -12,12 +13,14 @@ var fuc = {
         urlArr:Dom.configuration()
     },
     init:function(){
+        pageLoad({backgroundColor: "#fff"});
         this.renderPage();
         this.bindEvent();
     },
     renderPage:function(){
         var that = this;
-
+        that.getNewsDetail();
+        console.log(that.config.newsId);
     },
     getNewsDetail:function(){
         var that = this;
@@ -26,13 +29,24 @@ var fuc = {
             url:that.config.urlArr[0]+"/news/detail",
             data:{
                 "newsId":that.config.newsId
+                //"newsId":10
             },
             success:function(data){
                 if(data.code == 0){
+                    console.log(data);
                     var newsDetail = data.data;
-                    var timeArr = newsDetail.newsPubishTime.split(" ")[0].split("-");
-                    that.config.starId = newsDetail.star.starId;
-                    $('.name').html(newsDetail.star.starName);
+                    var timeArr = newsDetail.newsPublishTime.split(" ")[0].split("-");
+                    if(newsDetail.star.starId){//如果有明星信息
+                        that.config.starId = newsDetail.star.starId;
+                        $('.name').html(newsDetail.star.starName);
+                        $('.toStars').attr("data-starid",that.config.starId).css("display","inline-block");
+                        $(".recentSchedule").css("display","block");
+                        that.getRecentSchedule(that.config.starId);
+                    }else{//没有明星信息
+                        that.config.starId = "";
+                        $('.toStars').css("display","none");
+                        $(".recentSchedule").css("display","none");
+                    }
                     $('.newsTitle').html(newsDetail.newsTitle);
                     $('.newsPublishTime').html(newsDetail.newsSource+"&nbsp;·&nbsp;"+timeArr[1]+"月"+timeArr[2]+"日");
                     $('.newsContent').html(newsDetail.newsContent);
@@ -44,6 +58,7 @@ var fuc = {
         })
     },
     getRecentSchedule:function(starId){
+        var that = this;
         $.ajax({
             type:"get",
             url:that.config.urlArr[0]+"/trace/list",
@@ -54,7 +69,18 @@ var fuc = {
             },
             success:function(data){
                 if(data.code == 0){
-
+                    var traceDetail = data.data.traceList[0].list[0];
+                    console.log(traceDetail);
+                    $('.day_item').attr("data-eventid",traceDetail.trace.eventId);
+                    $('.itemTitle').html(traceDetail.trace.name);
+                    $('.itemTime').html();
+                    $('.itemLocation').html(traceDetail.trace.location+"&nbsp;"+traceDetail.trace.address);
+                    $('.joinerCount').html(traceDetail.joinersCount);
+                    if(traceDetail.trace.theme){
+                        $('.item_detail').css("background","url('"+traceDetail.trace.theme.themeUrl+"') no-repeat center center;background-size:cover;")
+                    }else{
+                        $('.item_detail').css("background",traceDetail.trace.bgColor);
+                    }
                 }
             },
             error:function(data){
@@ -64,6 +90,11 @@ var fuc = {
     },
     bindEvent:function(){
         var that = this;
+        $('.day_item').on('tap',function(){
+            var eventId = $(this).attr('data-eventid');
+            console.log(eventId);
+            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId="+eventId);
+        });
         $('.toSchedule').on('tap',function(){
             window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starIndex.html");
         });

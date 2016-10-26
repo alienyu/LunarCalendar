@@ -4,6 +4,7 @@
 require("../../css/page/starNewsList.css");
 var Ajax = require("../common/ajax.js");
 var Dom = require("../common/dom.js");
+var pageLoad = require("../common/pageLoad.js");
 
 var fuc = {
     config:{
@@ -14,6 +15,7 @@ var fuc = {
         template:$('#newsListTemplate').html()
     },
     init:function(){
+        pageLoad({backgroundColor: "#fff"});
         this.config.starId = Dom.getRequest("starId");
         this.config.urlArr = Dom.configuration();
         this.renderPage();
@@ -23,6 +25,14 @@ var fuc = {
         var that = this;
         if(!that.config.starId){//若url中没有starId, 则查询所有明星的新闻
             that.config.starId ="";
+        }
+        //从新闻详情页进入娱乐新闻页面，显示上方div，返回首页，否则不显示
+        if(document.referrer== that.config.urlArr[0]+"/wx/view/newsDetail.html"){
+            $('.back').css("display","block");
+            //WeixinJSBridge.call("closeWindow");
+        }else{
+            //window.location.href = document.referrer;//返回上一个页面
+            $('.back').css("display","none");
         }
         that.getData(that.config.starId);
 
@@ -51,6 +61,7 @@ var fuc = {
                         that.commentEnd();
                         if(newsList.length>=10){
                             that.config.addMore = true;
+                            that.config.pageNo++;
                         }else{
                             that.config.addMore = false;
                         }
@@ -89,11 +100,7 @@ var fuc = {
             }
         });
         $('.back').on('tap',function(){
-            if(document.referrer==""){
-                WeixinJSBridge.call("closeWindow");
-            }else{
-                window.location.href = document.referrer;//返回上一个页面
-            }
+            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starIndex.html");
         });
         //点击新闻跳转至新闻详情页
         $('.news').on('tap','.news_item',function(){
