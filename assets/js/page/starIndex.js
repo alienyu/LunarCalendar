@@ -294,7 +294,7 @@ var fuc = {
                     var starArr = [];
                     for(var i=0;i<data.newsList.length;i++){
                         var str =   '<div class="news swiper-slide" data-id="'+data.newsList[i].newsId+'">'+
-                                        (data.newsList[i].newsType == ""?'':('<div class="starNewsLeft">'+data.newsList[i].newsType+'</div>'))+
+                                        (data.newsList[i].newsTag == "" || data.newsList[i].newsTag == undefined ?'':('<div class="starNewsLeft">'+data.newsList[i].newsTag+'</div>'))+
                                     data.newsList[i].newsTitle+'</div>';
                         starArr.push(str);
                     }
@@ -310,8 +310,8 @@ var fuc = {
                                             (data.traceList[i].list[j].trace.theme == null ? 'background-color: '+ data.traceList[i].list[j].trace.bgColor +';' : 'background-image: '+ data.traceList[i].list[j].trace.theme.themeUrl +';')
                                         +'"><div class="starShadow">'+
                                             '<h1 class="itemTitle">'+ data.traceList[i].list[j].trace.name +'</h1>'+
-                                            '<div class="itemTime fs12">'+Dom.getStarDate(data.traceList[i].date,data.traceList[i].list[j].trace.startTime)+'</div>'+
-                                            '<div class="itemLocation fs12">'+data.traceList[i].list[j].trace.location+' '+data.traceList[i].list[j].trace.address+'</div>'+
+                                            '<div class="itemTime fs12">'+Dom.getStarDate(data.traceList[i].date, data.traceList[i].list[j].trace.startTime, data.traceList[i].list[j].trace.endTime, data.traceList[i].list[j].trace.repeatType)+'</div>'+
+                                            '<div class="itemLocation fs12">'+data.traceList[i].list[j].trace.location+' '+ (data.traceList[i].list[j].trace.address == null?'':data.traceList[i].list[j].trace.address)+'</div>'+
                                         '</div>'+
                                         '<div class="starLink" data-src="'+data.traceList[i].list[j].star.starId+'">'+
                                             '<div class="starAvatar">'+
