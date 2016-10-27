@@ -102,6 +102,7 @@ var fuc = {
             $('#loadingToast').fadeIn();//显示loading
             var eventId = $(this).parents('.day_item').attr("data-eventid");
             console.log(eventId)
+            var domId = this;
             //加入
             $.ajax({
                 type:"get",
@@ -121,10 +122,10 @@ var fuc = {
                                 success:function(data){
                                     if(data.code == 0){
                                         $('#loadingToast').fadeOut();//隐藏loading
-                                        $(this).css("display","none");
-                                        $(this).parent().find('.hasJoin').css("display","block");
-                                        var joinerCount = $(this).parent().find(".joinerCount").html();
-                                        $(this).parent().find(".joinerCount").html(parseInt(joinerCount)+1);
+                                        $(domId).css("display","none");
+                                        $(domId).parent().find('.hasJoin').css("display","block");
+                                        var joinerCount = $(domId).parent().find(".joinerCount").html();
+                                        $(domId).parent().find(".joinerCount").html(parseInt(joinerCount)+1);
                                     }else{
                                         //报错
                                         $('#loadingToast').fadeOut();//隐藏loading
@@ -177,6 +178,7 @@ var fuc = {
 
             $('#loadingToast').fadeIn();//显示loading
             var eventId = $(this).parents('.day_item').attr("data-eventid");
+            var domId = this;
             //退出
             $.ajax({
                 type:"post",
@@ -188,10 +190,10 @@ var fuc = {
                 success:function(data){
                     if(data.code == 0){
                         $('#loadingToast').fadeOut();//隐藏loading
-                        $(this).css("display","none");
-                        $(this).parent().find('.join').css("display","block");
-                        var joinerCount = $(this).parent().find(".joinerCount").html();
-                        $(this).parent().find(".joinerCount").html(parseInt(joinerCount)-1);
+                        $(domId).css("display","none");
+                        $(domId).parent().find('.join').css("display","block");
+                        var joinerCount = $(domId).parent().find(".joinerCount").html();
+                        $(domId).parent().find(".joinerCount").html(parseInt(joinerCount)-1);
                     }else{
                         $('#loadingToast').fadeOut();//隐藏loading
                     }
@@ -204,7 +206,7 @@ var fuc = {
         /*------------点击进入事件详情-----------*/
         $('.starNewsList').on('tap','.item_detail',function(){
             console.log('这里是事件详情');
-            var str = $(this).attr('data-eventid');
+            var str = $(this).parents('.item_detail').attr("data-eventid");
             if(str != ""){
                 window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + str);
             }
@@ -308,7 +310,7 @@ var fuc = {
                                             (data.traceList[i].list[j].trace.theme == null ? 'background-color: '+ data.traceList[i].list[j].trace.bgColor +';' : 'background-image: '+ data.traceList[i].list[j].trace.theme.themeUrl +';')
                                         +'"><div class="starShadow">'+
                                             '<h1 class="itemTitle">'+ data.traceList[i].list[j].trace.name +'</h1>'+
-                                            '<div class="itemTime fs12">周三 全天</div>'+
+                                            '<div class="itemTime fs12">'+Dom.getStarDate(data.traceList[i].date,data.traceList[i].list[j].trace.startTime)+'</div>'+
                                             '<div class="itemLocation fs12">'+data.traceList[i].list[j].trace.location+' '+data.traceList[i].list[j].trace.address+'</div>'+
                                         '</div>'+
                                         '<div class="starLink" data-src="'+data.traceList[i].list[j].star.starId+'">'+

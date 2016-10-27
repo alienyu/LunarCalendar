@@ -51,6 +51,7 @@ var fuc = {
             $.ajax({
                 type: "get",
                 url: that.config.urlArr[0]+"/event/getSchedule",
+                // url: '../../mockData/schedule.json',
                 data: param,
                 async: true,
                 success: function (data) {
@@ -220,9 +221,10 @@ var fuc = {
 
         //go today
         $(".back_today").on("tap", function (e) {
-            var dom = $("#today").prev().hasClass("record") ? $("#today").prev() : $("#today")
-            var todayPos = dom.position().top - 30;
-            $(document.body).scrollTo({toTo: todayPos});
+            // var dom = $("#today").prev().hasClass("record") ? $("#today").prev() : $("#today")
+            // var todayPos = dom.position().top - 30;
+            // $(document.body).scrollTo({toTo: todayPos});
+            $("body").scrollTop($(".today_has_date").offset().top-60);
         });
 
         //添加活动按钮

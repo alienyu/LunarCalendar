@@ -162,7 +162,7 @@ body section .record .content .text .title, body section .record .content .text 
     height: 20px;
     width: 100%
 }
-body section .record .content .text .title, body section .record .content .text .time, body section .record .content .text .address  {
+body section .record .content .contain_star .title, body section .record .content .contain_star .time, body section .record .content .contain_star .address  {
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 70%;
@@ -170,11 +170,11 @@ body section .record .content .text .title, body section .record .content .text 
     overflow: hidden;
 }
 
-body section .record .content .text.contain_img, body section .record .content .text.contain_map {
+body section .record .content .text.contain_img, body section .record .content .text.contain_map, body section .record .content .text.contain_star {
     margin-top: 25px;
 }
 
-body section .record .content .text.contain_map {
+body section .record .content .text.contain_map, body section .record .content .text.contain_map {
     position: relative;
     top: 0;
     z-index: 102;
@@ -184,7 +184,7 @@ img.bmap {
     position: absolute !important
 }
 
-body section .record .content .text.contain_map.no_address {
+body section .record .content .text.contain_map.no_address, body section .record .content .text.contain_map.no_address {
     bottom: -15px;
 }
 

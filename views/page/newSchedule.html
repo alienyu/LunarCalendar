@@ -105,23 +105,24 @@
 									<div class="content">
 									<img id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>" />
 									<div class="map_mask"></div>
+                                <% } else if (timeDetail.eventType == 2){ %>
+                                   <div class="content contain_img_box" style="min-height:90px;background-color: <%= timeDetail.bgColor %>">    
 								<% } else { %>								
                                         <div class="content" style="background-color: <%= timeDetail.bgColor %>">										
                                 <% } %>
-                                    <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
+                                    <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %><%= timeDetail.eventType == 2 ? ' contain_map' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
                                         <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= (timeDetail.endTime && timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") != timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":")) ? '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : ''%></div>
                                         <% if(timeDetail.location) { %>
                                         <div class="address"><%= timeDetail.location %></div>
                                         <% } %>
                                     </div>
-
                                     <% if(timeDetail.eventType == 2){ %>
-                                        <div class="starLink" data-src="<% timeData[j].star.starId  %>">
+                                        <div class="starLink" data-src="<%= timeData[j].star.starId  %>">
                                             <div class="starAvatar">
-                                                <img src="<% timeData[j].star.starHeadPicstarName %>" alt="">
+                                                <img src="<%= timeData[j].star.starHeadPic %>" alt="">
                                             </div>
-                                            <div class="starName"><div class="name"><% timeData[j].star.starName %></div></div>
+                                            <div class="starName"><div class="name"><%= timeData[j].star.starName %></div></div>
                                         </div>
                                     <% } %>
 
@@ -160,16 +161,27 @@
 									<div class="content">
 									<img id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>">
 									<div class="map_mask"></div>
-								<% } else { %>								
-                                        <div class="content" style="background-color: <%= timeDetail.bgColor %>">										
+								<% } else if (timeDetail.eventType == 2){ %>
+                                   <div class="content contain_img_box" style="min-height:90px;background-color: <%= timeDetail.bgColor %>">    
+                                <% } else { %>                              
+                                        <div class="content" style="background-color: <%= timeDetail.bgColor %>">                                       
                                 <% } %>
-                                    <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
+                                    <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %><%= timeDetail.eventType == 2 ? ' contain_map' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
                                         <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= (timeDetail.endTime && timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") != timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":")) ?  '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
                                         <% if(timeDetail.location) { %>
                                         <div class="address"><%= timeDetail.location %></div>
                                         <% } %>
                                     </div>
+                                    <% if(timeDetail.eventType == 2){ %>
+                                        <div class="starLink" data-src="<%= timeData[j].star.starId  %>">
+                                            <div class="starAvatar">
+                                                <img src="<%= timeData[j].star.starHeadPic %>" alt="">
+                                            </div>
+                                            <div class="starName"><div class="name"><%= timeData[j].star.starName %></div></div>
+                                        </div>
+                                    <% } %>
+
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
@@ -206,16 +218,27 @@
 									<div class="content">
 									<img id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>" />
 									<div class="map_mask"></div>
-								<% } else { %>								
-                                        <div class="content" style="background-color: <%= timeDetail.bgColor %>">										
+								<% } else if (timeDetail.eventType == 2){ %>
+                                   <div class="content contain_img_box" style="min-height:90px;background-color: <%= timeDetail.bgColor %>">    
+                                <% } else { %>                              
+                                        <div class="content" style="background-color: <%= timeDetail.bgColor %>">                                       
                                 <% } %>
-                            <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %>">
+                                    <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %><%= timeDetail.eventType == 2 ? ' contain_map' : '' %>">
                                 <div class="title"><%= timeDetail.name %></div>
                                 <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= (timeDetail.endTime && timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") != timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":")) ?  '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
                                 <% if(timeDetail.location) { %>
                                 <div class="address"><%= timeDetail.location %></div>
                                 <% } %>
                             </div>
+                            <% if(timeDetail.eventType == 2){ %>
+                                <div class="starLink" data-src="<%= timeData[j].star.starId  %>">
+                                    <div class="starAvatar">
+                                        <img src="<%= timeData[j].star.starHeadPic %>" alt="">
+                                    </div>
+                                    <div class="starName"><div class="name"><%= timeData[j].star.starName %></div></div>
+                                </div>
+                            <% } %>
+                            
                         </div>
                          <div class="clearfix"></div>
                     </div>

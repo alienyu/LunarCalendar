@@ -24,10 +24,23 @@ var Dom = {
             return ["http://www.li-li.cn/llwx","http://www.li-li.cn"];
         }
     },
+    /*------------------明星日程时间显示-----------------------*/
+    getStarDate: function(val_time1,val_time2,val_time3,val_type){//当前时间，开始时间，结束时间，重复类型
+        var that = this;
+        return that.getweek(val_time1) + ' ' + that.getHourMinute(val_time2);
+    },
     /*---------------获取时间中的年月日部分--------------------*/
     getDate: function(date) {
         var dateArr = date.split(" ");
         return dateArr[0];
+    },
+    /* ------获取星期 2015-06-12---- */
+    getweek: function(date){
+        var week = ['周日','周一','周二','周三','周四','周五','周六']
+        var arr1= new Array();
+        arr1=date.split(' ')[0].split('-');     //日期为输入日期，格式为 2013-3-10
+        var today=new Date(arr1[0],parseInt(arr1[1]-1),arr1[2]);
+        return week[today.getDay()];
     },
     /*--------------------------得到事件时间中去掉年月日和秒的时间------------------------------*/
     getHourMinute: function(date) {
