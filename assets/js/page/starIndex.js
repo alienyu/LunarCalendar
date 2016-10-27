@@ -17,12 +17,19 @@ var fuc = {
         shareImg: "",
         pageNo:"",
         lastId:"",
-        urlArr:"",
-        addMore:false
+        urlArr:""
     },
 
     starConfig:{
         addMore: false,
+        pageSize: 10,
+        all: true,
+        pageNo: 1
+    },
+
+    traceConfig:{
+        addMore: false,
+        starId:"",
         pageSize: 10,
         all: true,
         pageNo: 1
@@ -68,8 +75,8 @@ var fuc = {
         /*----------------------底部自动刷新-----------------------*/
         $(window).on('scroll', function (e) {
             if ($(document).height() - $(this).scrollTop() - $(this).height()<100){
-                if(that.config.addMore){//加载更多评论
-                    that.config.addMore = false;
+                if(that.traceConfig.addMore){//加载更多评论
+                    that.traceConfig.addMore = false;
                     that.getStarNews();
                     that.getStarNewsLoad();
                 }
@@ -233,9 +240,9 @@ var fuc = {
             type: "get",
             url: that.config.urlArr[0]+"/star/list",
             data: {
-                "pageNo": 1,
-                "pageSize": 10,
-                "all": true
+                "pageNo": that.starConfig.pageNo,
+                "pageSize": that.starConfig.pageSize,
+                "all": that.starConfig.all
             }, 
             success: function (data) {
                if (data.code == 0) {
@@ -282,10 +289,10 @@ var fuc = {
             url: that.config.urlArr[0]+"/trace/list",
             // url: '../../mockData/traceList.json',
             data: {
-                "starId": "",
-                "pageNo": 1,
-                "pageSize": 10,
-                "all": true
+                "starId": that.traceConfig.starId,
+                "pageNo": that.traceConfig.pageNo,
+                "pageSize": that.traceConfig.pageSize,
+                "all": that.traceConfig.all
             }, 
             success: function (data) {              
                if (data.code == 0) {
@@ -294,7 +301,7 @@ var fuc = {
                     var starArr = [];
                     for(var i=0;i<data.newsList.length;i++){
                         var str =   '<div class="news swiper-slide" data-id="'+data.newsList[i].newsId+'">'+
-                                        (data.newsList[i].newsType == ""?'':('<div class="starNewsLeft">'+data.newsList[i].newsType+'</div>'))+
+                                        (data.newsList[i].newsTag == "" || data.newsList[i].newsTag == undefined ?'':('<div class="starNewsLeft">'+data.newsList[i].newsTag+'</div>'))+
                                     data.newsList[i].newsTitle+'</div>';
                         starArr.push(str);
                     }
@@ -310,8 +317,8 @@ var fuc = {
                                             (data.traceList[i].list[j].trace.theme == null ? 'background-color: '+ data.traceList[i].list[j].trace.bgColor +';' : 'background-image: '+ data.traceList[i].list[j].trace.theme.themeUrl +';')
                                         +'"><div class="starShadow">'+
                                             '<h1 class="itemTitle">'+ data.traceList[i].list[j].trace.name +'</h1>'+
-                                            '<div class="itemTime fs12">'+Dom.getStarDate(data.traceList[i].date,data.traceList[i].list[j].trace.startTime)+'</div>'+
-                                            '<div class="itemLocation fs12">'+data.traceList[i].list[j].trace.location+' '+data.traceList[i].list[j].trace.address+'</div>'+
+                                            '<div class="itemTime fs12">'+Dom.getStarDate(data.traceList[i].date, data.traceList[i].list[j].trace.startTime, data.traceList[i].list[j].trace.endTime, data.traceList[i].list[j].trace.repeatType)+'</div>'+
+                                            '<div class="itemLocation fs12">'+data.traceList[i].list[j].trace.location+' '+ (data.traceList[i].list[j].trace.address == null?'':data.traceList[i].list[j].trace.address)+'</div>'+
                                         '</div>'+
                                         '<div class="starLink" data-src="'+data.traceList[i].list[j].star.starId+'">'+
                                             '<div class="starAvatar">'+
@@ -341,7 +348,12 @@ var fuc = {
                                     '</div>';
                     }
                     $('.scheduleCon').append(strtemp);
-                    that.config.addMore = true;
+                    if(data.traceList >= that.traceConfig.pageNo){
+                        that.traceConfig.addMore = true;
+                    }else{
+                        that.traceConfig.addMore = false;
+                    }
+                    //console.log(that.traceConfig.addMore);
                 }else{
                     //接口有问题
                     // that.tipshow('明星列表拉取失败，请稍后重试~');
