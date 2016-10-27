@@ -20,7 +20,7 @@ var fuc = {
     renderPage:function(){
         var that = this;
         that.getNewsDetail();
-        console.log(that.config.newsId);
+        //console.log(that.config.newsId);
     },
     getNewsDetail:function(){
         var that = this;
@@ -33,7 +33,7 @@ var fuc = {
             },
             success:function(data){
                 if(data.code == 0){
-                    console.log(data);
+                    //console.log(data);
                     var newsDetail = data.data;
                     var timeArr = newsDetail.newsPublishTime.split(" ")[0].split("-");
                     if(newsDetail.star.starId){//如果有明星信息
@@ -48,7 +48,11 @@ var fuc = {
                         $(".recentSchedule").css("display","none");
                     }
                     $('.newsTitle').html(newsDetail.newsTitle);
-                    $('.newsPublishTime').html(newsDetail.newsSource+"&nbsp;·&nbsp;"+timeArr[1]+"月"+timeArr[2]+"日");
+                    if(newsDetail.newsSource&&newsDetail.newsSource != ""){
+                        $('.newsPublishTime').html(newsDetail.newsSource+"&nbsp;·&nbsp;"+timeArr[1]+"月"+timeArr[2]+"日");
+                    }else{
+                        $('.newsPublishTime').html(timeArr[1]+"月"+timeArr[2]+"日");
+                    }
                     $('.newsContent').html(newsDetail.newsContent);
                 }
             },
@@ -70,11 +74,11 @@ var fuc = {
             success:function(data){
                 if(data.code == 0){
                     var traceDetail = data.data.traceList[0].list[0];
-                    console.log(traceDetail);
+                    //console.log(traceDetail);
                     $('.day_item').attr("data-eventid",traceDetail.trace.eventId);
                     $('.itemTitle').html(traceDetail.trace.name);
-                    $('.itemTime').html();
-                    $('.itemLocation').html(traceDetail.trace.location+"&nbsp;"+traceDetail.trace.address);
+                    $('.itemTime').html(Dom.getStarDate(data.data.traceList[0].date,traceDetail.trace.startTime));
+                    $('.itemLocation').html(traceDetail.trace.location+"&nbsp;"+(traceDetail.trace.address==null?"":traceDetail.trace.address));
                     $('.joinerCount').html(traceDetail.joinersCount);
                     if(traceDetail.trace.theme){
                         $('.item_detail').css("background","url('"+traceDetail.trace.theme.themeUrl+"') no-repeat center center;background-size:cover;")

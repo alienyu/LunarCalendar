@@ -52,7 +52,9 @@ var fuc = {
             success:function(data){
                 if(data.code == 0){
                     var starDetail = data.data;
-                    $('.starTop').css("background-image","url("+starDetail.star.starPoster+")");//海报
+                    if(starDetail.star.starPoster){
+                        $('.starTop').css("background-image","url("+starDetail.star.starPoster+")");//海报
+                    }
                     $('.starImg').css("background-image","url("+starDetail.star.starHeadPic+")");//头像
                     that.config.starName = starDetail.star.starName;
                     $('.name').html(starDetail.star.starName);//名字
@@ -61,9 +63,10 @@ var fuc = {
                     if(that.config.fansType){
                         var bottomItem = $('.bottom_item');
                         for(var i=0;i<bottomItem.size();i++){
+                            //console.log(i);
                             bottomItem.eq(i).removeClass('active');
                         }
-                        bottomItem.eq(that.config.fansType).addClass('active');
+                        bottomItem.eq(that.config.fansType-1).addClass('active');
                         $('.follow img').removeClass('hide');
                     }else{
                         $('.bottom_item').eq(0).addClass('active');
@@ -81,7 +84,7 @@ var fuc = {
         var that = this;
         $.ajax({
             type:"get",
-            url:that.config.urlArr[0]+"/fans/chaseStar",
+            url:that.config.urlArr[0]+"/star/detail",
             data:{
                 "starId":that.config.starId
             },
@@ -104,7 +107,7 @@ var fuc = {
             url:that.config.urlArr[0]+"/fans/chaseStar",
             data: {
                 "starId":that.config.starId,
-                "fansType":fansType
+                "fansType":that.config.fansType
             },
             async: true,
             success:function(data){
@@ -138,8 +141,8 @@ var fuc = {
                             if(data.data.newsList.length>0){
                                 for(var m=0;m<data.data.newsList.length;m++){//获取新闻内容
                                     if(m<5){//最多显示五条新闻
-                                        if(data.data.newsList[m].newsType){
-                                            newsStr +=  "<div class='news_list newsTitle' data-newsid='"+data.data.newsList[m].newsId+"'><div class='starNewsLeft'>"+data.data.newsList[m].newsType+"</div>"+data.data.newsList[m].newsTitle+"</div>";
+                                        if(data.data.newsList[m].newsTag){
+                                            newsStr +=  "<div class='news_list newsTitle' data-newsid='"+data.data.newsList[m].newsId+"'><div class='starNewsLeft'>"+data.data.newsList[m].newsTag+"</div>"+data.data.newsList[m].newsTitle+"</div>";
                                         }else{
                                             newsStr +=  "<div class='news_list newsTitle' data-newsid='"+data.data.newsList[m].newsId+"'>"+data.data.newsList[m].newsTitle+"</div>";
                                         }
@@ -155,23 +158,25 @@ var fuc = {
                             $('.scheduleCon').append(html);
                             for(var j=0;j<traceList[i].list.length;j++){
                                 var traceDetail = traceList[i].list[j].trace;
+                                var times = Dom.getStarDate(traceList[i].date,traceDetail.startTime);
+                                console.log(times);
                                 if(traceList[i].list[j].hasJoin){//已加入事件
                                     if(traceDetail.theme){
                                         var url = "background:url('"+traceDetail.theme.themeUrl+"') center center no-repeat;background-size:cover;";
-                                        dayList += that.config.template2.replace(/{{eventId}}/g,traceDetail.eventId).replace(/{{name}}/g,traceDetail.name).replace(/{{time}}/g,"").replace(/{{location}}/g,traceDetail.location+"&nbsp;"+traceDetail.address)
+                                        dayList += that.config.template2.replace(/{{eventId}}/g,traceDetail.eventId).replace(/{{name}}/g,traceDetail.name).replace(/{{time}}/g,times).replace(/{{location}}/g,traceDetail.location+"&nbsp;"+(traceDetail.address==null?"":traceDetail.address))
                                             .replace(/{{joinerCount}}/g,traceList[i].list[j].joinersCount).replace(/{{join}}/g,"none").replace(/{{hasJoin}}/g,"block").replace(/{{background}}/g,url);
                                     }else{
                                         var backgroundColor = "background:"+traceDetail.bgColor;
-                                        dayList += that.config.template2.replace(/{{eventId}}/g,traceDetail.eventId).replace(/{{name}}/g,traceDetail.name).replace(/{{time}}/g,"").replace(/{{location}}/g,traceDetail.location+"&nbsp;"+traceDetail.address)
+                                        dayList += that.config.template2.replace(/{{eventId}}/g,traceDetail.eventId).replace(/{{name}}/g,traceDetail.name).replace(/{{time}}/g,times).replace(/{{location}}/g,traceDetail.location+"&nbsp;"+(traceDetail.address==null?"":traceDetail.address))
                                             .replace(/{{joinerCount}}/g,traceList[i].list[j].joinersCount).replace(/{{join}}/g,"none").replace(/{{hasJoin}}/g,"block").replace(/{{background}}/g,backgroundColor);
                                     }
                                 }else{//未加入事件
                                     if(traceDetail.theme){
                                         var backgroundImg = "background:url('"+traceDetail.theme.themeUrl+"') center center no-repeat;background-size:cover;";
-                                        dayList += that.config.template2.replace(/{{eventId}}/g,traceDetail.eventId).replace(/{{name}}/g,traceDetail.name).replace(/{{time}}/g,"").replace(/{{location}}/g,traceDetail.location+"&nbsp;"+traceDetail.address)
+                                        dayList += that.config.template2.replace(/{{eventId}}/g,traceDetail.eventId).replace(/{{name}}/g,traceDetail.name).replace(/{{time}}/g,times).replace(/{{location}}/g,traceDetail.location+"&nbsp;"+(traceDetail.address==null?"":traceDetail.address))
                                             .replace(/{{joinerCount}}/g,traceList[i].list[j].joinersCount).replace(/{{join}}/g,"block").replace(/{{hasJoin}}/g,"none").replace(/{{background}}/g,backgroundImg);
                                     }else{
-                                        dayList += that.config.template2.replace(/{{eventId}}/g,traceDetail.eventId).replace(/{{name}}/g,traceDetail.name).replace(/{{time}}/g,"").replace(/{{location}}/g,traceDetail.location+"&nbsp;"+traceDetail.address)
+                                        dayList += that.config.template2.replace(/{{eventId}}/g,traceDetail.eventId).replace(/{{name}}/g,traceDetail.name).replace(/{{time}}/g,times).replace(/{{location}}/g,traceDetail.location+"&nbsp;"+(traceDetail.address==null?"":traceDetail.address))
                                             .replace(/{{joinerCount}}/g,traceList[i].list[j].joinersCount).replace(/{{join}}/g,"block").replace(/{{hasJoin}}/g,"none").replace(/{{background}}/g,"background:"+traceDetail.bgColor);
                                     }
 
@@ -332,8 +337,8 @@ var fuc = {
             })
         });
         /*---------点击明星行程，跳转至行程详情页----------*/
-        $('.container').on('tap','.day_item',function(){
-            var eventId = $(this).attr("data-eventid");
+        $('.container').on('tap','.item_detail',function(){
+            var eventId = $(this).parents(".day_item").attr("data-eventid");
             window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId="+eventId);
         });
         /*-------------点击查看明星相关新闻---------------*/
@@ -345,7 +350,7 @@ var fuc = {
             var newsId = $(this).attr("data-newsid");
             window.location.href = that.config.urlArr[1]+"/wx/view/newsDetail.html?newsId="+newsId;
         });
-        /*--------点击追TA，显示选择列表------*/
+        /*--------点击追TA的选择列表中的确定按钮------*/
         $('.bottom_btn').on('tap',function(){
             that.config.fansType = $('.bottom_item.active').index();
             that.changeFansType(that.config.fansType);
@@ -356,34 +361,48 @@ var fuc = {
             $('.follow img').removeClass('hide');
             $('.bottomTxt').addClass('hide');
             $('.selected').removeClass('hide');
+            var fansNum = parseInt($('.fansCount').html());
+            console.log(that.config.fansType);
+            $('.fansCount').html(fansNum+1);
         });
         /*-----------点击粉丝选择列表逻辑处理------------*/
         $('.bottom_item').on('tap',function(){
-            console.log($(this).index());
+            //console.log($(this).index());
+            var domId = this;
             $.ajax({
                 type: "get",
                 url: that.config.urlArr[0] + "/wx/isSubscribe",
                 async: true,
                 success: function (data) {
                     if(data.data){//已经关注了我们
-                        if($(this).hasClass("active")){//点击已选中选项，取消关注
-                            $(this).removeClass('active');
+                        if($(domId).hasClass("active")){//点击已选中选项，取消关注
+                            $(domId).removeClass('active');
                             $('.follow').removeClass('active');
                             $('.bottomTxt').removeClass('hide');
                             $('.selected').addClass('hide');
                             $('.follow img').addClass('hide');
                             $('.bottom_item').eq(0).addClass('active');
+                            if(that.config.fansType !=0){
+                                var fansNum = parseInt($('.fansCount').html());
+                                console.log(that.config.fansType);
+                                $('.fansCount').html(fansNum-1);
+                            }
                             that.config.fansType = 0;//不追星
                         }else{
                             for(var i=0;i<$('.bottom_item').size();i++){
                                 $('.bottom_item').eq(i).removeClass('active');
                             }
-                            $(this).addClass('active');
+                            $(domId).addClass('active');
                             $('.follow').addClass('active');
                             $('.bottomTxt').addClass('hide');
                             $('.selected').removeClass('hide');
                             $('.follow img').removeClass('hide');
-                            that.config.fansType = $(this).index();//追星
+                            if(that.config.fansType == 0){
+                                var fansNum = parseInt($('.fansCount').html());
+                                console.log(that.config.fansType);
+                                $('.fansCount').html(fansNum+1);
+                            }
+                            that.config.fansType = $(domId).index();//追星
                         }
                         //console.log(that.config.fansType);
                         $('.bottomSelect').animate({"bottom":"-300px"},200,function(){
@@ -391,9 +410,7 @@ var fuc = {
                         });
                         $('.shadow').css("display","none");
                         that.changeFansType(that.config.fansType);
-                        if(!that.config.fansType){//若用户取消关注，则刷新粉丝人数
-                            that.getFansCount();
-                        }
+                        //that.getFansCount();
                     }else{
                         $('.bottomSelect').animate({"bottom":"-300px"},200,function(){
                             $('.bottomSelect').css("display","none")

@@ -27,11 +27,9 @@ var fuc = {
             that.config.starId ="";
         }
         //从新闻详情页进入娱乐新闻页面，显示上方div，返回首页，否则不显示
-        if(document.referrer== that.config.urlArr[0]+"/wx/view/newsDetail.html"){
+        if(document.referrer.split("?")[0] == that.config.urlArr[1]+"/wx/view/newsDetail.html"){
             $('.back').css("display","block");
-            //WeixinJSBridge.call("closeWindow");
         }else{
-            //window.location.href = document.referrer;//返回上一个页面
             $('.back').css("display","none");
         }
         that.getData(that.config.starId);

@@ -83,6 +83,9 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.news_con .news_list:active{
+    background: rgba(0,0,0,0.1);
+}
 .starNewsLeft{
     float: left;
     text-align: center;
