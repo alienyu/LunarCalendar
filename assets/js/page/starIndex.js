@@ -17,12 +17,19 @@ var fuc = {
         shareImg: "",
         pageNo:"",
         lastId:"",
-        urlArr:"",
-        addMore:false
+        urlArr:""
     },
 
     starConfig:{
         addMore: false,
+        pageSize: 10,
+        all: true,
+        pageNo: 1
+    },
+
+    traceConfig:{
+        addMore: false,
+        starId:"",
         pageSize: 10,
         all: true,
         pageNo: 1
@@ -68,8 +75,8 @@ var fuc = {
         /*----------------------底部自动刷新-----------------------*/
         $(window).on('scroll', function (e) {
             if ($(document).height() - $(this).scrollTop() - $(this).height()<100){
-                if(that.config.addMore){//加载更多评论
-                    that.config.addMore = false;
+                if(that.traceConfig.addMore){//加载更多评论
+                    that.traceConfig.addMore = false;
                     that.getStarNews();
                     that.getStarNewsLoad();
                 }
@@ -233,9 +240,9 @@ var fuc = {
             type: "get",
             url: that.config.urlArr[0]+"/star/list",
             data: {
-                "pageNo": 1,
-                "pageSize": 10,
-                "all": true
+                "pageNo": that.starConfig.pageNo,
+                "pageSize": that.starConfig.pageSize,
+                "all": that.starConfig.all
             }, 
             success: function (data) {
                if (data.code == 0) {
@@ -282,10 +289,10 @@ var fuc = {
             url: that.config.urlArr[0]+"/trace/list",
             // url: '../../mockData/traceList.json',
             data: {
-                "starId": "",
-                "pageNo": 1,
-                "pageSize": 10,
-                "all": true
+                "starId": that.traceConfig.starId,
+                "pageNo": that.traceConfig.pageNo,
+                "pageSize": that.traceConfig.pageSize,
+                "all": that.traceConfig.all
             }, 
             success: function (data) {              
                if (data.code == 0) {
@@ -341,7 +348,12 @@ var fuc = {
                                     '</div>';
                     }
                     $('.scheduleCon').append(strtemp);
-                    that.config.addMore = true;
+                    if(data.traceList >= that.traceConfig.pageNo){
+                        that.traceConfig.addMore = true;
+                    }else{
+                        that.traceConfig.addMore = false;
+                    }
+                    //console.log(that.traceConfig.addMore);
                 }else{
                     //接口有问题
                     // that.tipshow('明星列表拉取失败，请稍后重试~');
