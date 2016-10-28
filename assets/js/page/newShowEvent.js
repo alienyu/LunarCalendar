@@ -11,6 +11,7 @@ var fastClick = require("../vendor/ImproveMobile/fastClick.js");
 var likeimg = require('../../imgs/page/newShowEvent/icon_btn_praise_pre.png');
 var dislikeimg = require('../../imgs/page/newShowEvent/icon_btn_praise.png');
 var defaultHeadImg = require('../../imgs/page/newShowEvent/default_photo.png');
+var userMoreImg = require('../../imgs/page/newShowEvent/icon_user_more.png');
 
 var fuc = {
     config: {
@@ -85,6 +86,8 @@ var fuc = {
             return d_hours+"小时前";
         }else if(d_hours<=0 && d_minutes>0){       
             return d_minutes+"分钟前";
+        }else if(d_minutes<0){       
+            return "刚刚";
         }else{
             var s = new Date(publishTime*1000);
             // s.getFullYear()+"年";
@@ -194,7 +197,13 @@ var fuc = {
                         $('.newComments').append(str);
                         $('.newComments').show();
                     }else{
-                        $('.commentNone').show();
+                        if(that.commentConfig.id == 0){
+                            $('.commentNone').show();
+                            that.commentEnd();
+                        }else{
+                            $('.commentNone').hide();
+                            that.commentNone();
+                        }  
                     }
                 }else{
                     //接口有问题
@@ -277,6 +286,9 @@ var fuc = {
                   $('.commentText').val('');
                   if($('.commentItem').lenth == 0){
                     $('.commentNone').show();
+                  }else{
+                    $('.commentNone').hide();
+                    $('.newComments').show();
                   }
                 }else{
                     //接口有问题
@@ -306,9 +318,12 @@ var fuc = {
             success: function (data) {
                if (data.code == 0 || data.code == 117) {
                     $('.comment_'+val_id).remove();
-                    if($('.commentItem').lenth == 0){
-                    $('.commentNone').hide();
-                  }
+                      if($('.commentItem').lenth == 0){
+                        $('.commentNone').show();
+                      }else{
+                        $('.commentNone').hide();
+                        $('.newComments').show();
+                      }
                 }else{
                     //接口有问题
                     that.tipshow('删除失败，请稍后重试~');
@@ -464,6 +479,8 @@ var fuc = {
                         that.getJoiner();//获取参与人数
                         if(that.config.eventType == 2){
                             $('.avtivityCon').css("display", "none");
+                            $('.starAvatar img').attr('src',dataList.star.starHeadPic);
+                            $('.starAvatar').attr('data-src',dataList.star.starId);
                             $('.starAvatar').show();
                             that.refreshJoiner();
                         }
@@ -539,6 +556,16 @@ var fuc = {
                             }
                         }else if(that.config.eventType == 2){
                             $('.starFooter').css("display", "block").animate({"bottom": "0"}, 200);
+                            if(dataList.isJoiner){
+                                $('.starFooter .joinStar').hide();
+                                $('.starFooter .exitStar').show();
+                                $('.starFooter .shareStar').show();
+                            }else{
+                                $('.starFooter .joinStar').show();
+                                $('.starFooter .exitStar').hide();
+                                $('.starFooter .shareStar').hide();
+                            }
+                            
                         }
                         
                         //事件创建者头像及昵称显示
@@ -546,14 +573,23 @@ var fuc = {
                             $('.eventOwner').attr("src", dataList.owner.headImgUrl);
                             $('.ownerNickName .nickName').html(dataList.owner.nickName);
                         }
-                        
-                        if (dataList.user) {
-                            wx.wxShare(dataList.user + " 邀请您参加 「" + dataList.event.name + "」", Dom.tranDate(dataList.event.startTime),
-                                that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + dataList.event.eventId));
-                        } else {//用户没有关注历历
-                            wx.wxShare(dataList.owner.nickName + " 邀请您参加 「" + dataList.event.name + "」", Dom.tranDate(dataList.event.startTime),
-                                that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + dataList.event.eventId));
+                        if(that.config.eventType == 1){
+                            wx.wxShare("【 历历LilyCalendar】让回忆与温故成为一件轻松的事情", "这是一个简单操作的日历系统，但却能发挥各式各样和生活有关的活用。");
+                        }else if(that.config.eventType == 1 || that.config.eventType == 2){
+                            var str = "历历LilyCalendar";
+                            var header = null;
+                            var adress = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + dataList.event.eventId);
+                            if(dataList.user){
+                                str = dataList.user.nickName;
+                                header = dataList.user.headImgUrl;
+                            }else if(dataList.owner){
+                                dataList.owner.nickName;
+                                header = dataList.owner.headImgUrl;
+                            }
+                            wx.wxShare(dataList.event.name, "来自 #"+str+" 的诚邀\r\n" + Dom.tranDate(dataList.event.startTime) + '\r\n' + dataList.event.latitude + (dataList.event.longitude==null?"":dataList.event.longitude),
+                                    adress, header);
                         }
+                        
                         $('.commentCon').show();
                          that.getComments();
                     }
@@ -639,6 +675,14 @@ var fuc = {
            $('.addComment').fadeOut();
            that.sendComments();
         });
+        $(".commentText").on("input", function(){
+            if($('.commentText').val().trim() == ""){
+                $(".addComment .finished").css('color','#999');
+            }else{
+                $(".addComment .finished").css('color','#333');
+            }
+            console.log('----');
+        });
         $('.commentList').on("tap",'.commentDel',function () {
             var dataid = $(this).attr('data-id');
             // console.log('.comment_'+dataid);
@@ -671,7 +715,8 @@ var fuc = {
             }else{
                 //that.delLikes(dataid);
             }
-        })
+        });
+
         /*----------------点击更多---------------------*/
         $('.morePeople').click(function () {
             $('#loadingToast').fadeIn();
@@ -692,6 +737,13 @@ var fuc = {
 
         $('.starFooter .shareStar').click(function () {
             that.shareTo();
+        });
+
+        $('.starAvatar').click(function () {
+            var str = $(this).attr('data-src');
+            if(str != ""){
+                window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId=" + str);
+            } 
         });
 
         $('.starFooter .joinStar').click(function () {
@@ -967,6 +1019,8 @@ var fuc = {
                         }
                     }else if(that.config.eventType == 2){ //明星活动
                         var list = data.data;
+                        var peopleCount = list.pagination.totalCount;
+                        $('.count').html(peopleCount);
                         if(list.list.length>0){
                             $('.fansCon').show();
                             console.log('----'+$('.fansList').width());
@@ -974,10 +1028,14 @@ var fuc = {
                             if(num > list.list.length){
                                 num = list.list.length;
                             }
-                            var str = "";
+                            var str = '';
+                            if(peopleCount > num){
+                               str += '<img src="'+userMoreImg+'" alt="" class="fansMore fl">';
+                            }
                             for(var i=0;i<num;i++){
                                 str += '<img src="'+list.list[i].headImgUrl+'" alt="" class="fl">';
                             }
+                            $('.fansItem').empty();
                             $('.fansItem').append(str);
                         }
                     }

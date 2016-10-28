@@ -3,7 +3,7 @@ require("../common/swiper.min.js");
 var Dom = require("../common/dom.js");
 var pageLoad = require("../common/pageLoad.js");
 var fastClick = require("../vendor/ImproveMobile/fastClick.js");
-
+var wx = require("../vendor/weChat/wxInit.js");
 var moreStrImg = require("../../imgs/page/star/userBg_moreStar.png");
 var joinImg = require("../../imgs/page/newShowEvent/icon_btn_remind.png");
 var unjoinImg = require("../../imgs/page/newShowEvent/icon_btn_remind_pre.png");
@@ -23,7 +23,7 @@ var fuc = {
     starConfig:{
         addMore: false,
         pageSize: 4,
-        all: false,
+        all: true,
         pageNo: 1
     },
 
@@ -31,7 +31,7 @@ var fuc = {
         addMore: false,
         starId:"",
         pageSize: 10,
-        all: true,
+        all: false,
         pageNo: 1
     },
 
@@ -39,7 +39,9 @@ var fuc = {
     swiper2: null,
 
     init: function() {
+        var that = this;
         pageLoad({backgroundColor: "#fff"});
+        wx.wxConfig(1);
         this.config.urlArr = Dom.configuration();
         this.bindEvent();
         this.rem();
@@ -49,7 +51,15 @@ var fuc = {
             slidesPerView: 'auto',
             // centeredSlides: true,
             spaceBetween: 10,
-            grabCursor: true
+            grabCursor: true,
+            onReachEnd: function(swiper){
+              console.log('到了最后一个slide');
+              if(that.starConfig.addMore){
+                $('.starListLoading').show();
+                that.getStars();
+              }
+              
+            }
         });
 
         this.swiper2 = new Swiper('.starNewsRight', {
@@ -63,7 +73,34 @@ var fuc = {
         this.getStars();
         this.getStarNews();
         this.getStarNewsLoad();
+        this.share();
+    },
 
+    share: function(){
+        var that = this;
+        $.ajax({
+            type:"get",
+            url: that.config.urlArr[0]+"/user/detail",
+            data:{
+                
+            },
+            async: true,
+            success:function(data){
+                var str = "历历LilyCalendar";
+                var header = null;
+                var adress = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starIndex.html"); 
+                if(data.code == 0){
+                    data = data.data;
+                    str = data.nickName;
+                    header = data.headImgUrl;
+                }
+                wx.wxShare("【历历LilyCalendar】为粉丝提供明星行程，让追星更简单", "来自 #"+str+" 的分享\r\n微信公众号:历历LilyCalendar",
+                            adress, header);
+            },
+            error:function(){
+                
+            }
+        })
     },
 
     rem: function () {
@@ -75,7 +112,7 @@ var fuc = {
         /*----------------------底部自动刷新-----------------------*/
         $(window).on('scroll', function (e) {
             if ($(document).height() - $(this).scrollTop() - $(this).height()<100){
-                if(that.traceConfig.addMore){//加载更多评论
+                if(that.traceConfig.addMore){//加载更多
                     that.traceConfig.addMore = false;
                     that.getStarNews();
                     that.getStarNewsLoad();
@@ -213,7 +250,7 @@ var fuc = {
         /*------------点击进入事件详情-----------*/
         $('.starNewsList').on('tap','.item_detail',function(){
             console.log('这里是事件详情');
-            var str = $(this).parents('.item_detail').attr("data-eventid");
+            var str = $(this).parents('.day_item').attr("data-eventid");
             if(str != ""){
                 window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + str);
             }
@@ -257,7 +294,9 @@ var fuc = {
                     }
                     if(data.list.length>=that.starConfig.pageSize){
                         that.starConfig.addMore = true;
-                    }else{
+                    }
+
+                    if(that.starConfig.all == true || data.list.length<that.starConfig.pageSize){
                         that.starConfig.addMore = false;
                             var str =   '<div class="starItem swiper-slide" data-src="">'+
                                         '<img src="'+moreStrImg+'" alt="">'+
@@ -267,14 +306,15 @@ var fuc = {
                     }
                     
                     that.swiper.appendSlide(starArr);
+                    that.starConfig.pageNo ++;
                 }else{
                     //接口有问题
                     // that.tipshow('明星列表拉取失败，请稍后重试~');
                 }
-                // that.loadinghide();
+                $('.starListLoading').hide();
             },
             error: function() {
-                // that.loadinghide();
+                $('.starListLoading').hide();
                 // that.tipshow('网络连接错误，请检查网络~');
             }
         });
@@ -304,15 +344,18 @@ var fuc = {
                if (data.code == 0) {
                     data = data.data;
                     //添加明星八卦
-                    var starArr = [];
-                    for(var i=0;i<data.newsList.length;i++){
-                        var str =   '<div class="news swiper-slide" data-id="'+data.newsList[i].newsId+'">'+
-                                        (data.newsList[i].newsTag == "" || data.newsList[i].newsTag == undefined ?'':('<div class="starNewsLeft">'+data.newsList[i].newsTag+'</div>'))+
-                                    data.newsList[i].newsTitle+'</div>';
-                        starArr.push(str);
+                    if(data.newsList!= null){
+                        var starArr = [];
+                        for(var i=0;i<data.newsList.length;i++){
+                            var str =   '<div class="news swiper-slide" data-id="'+data.newsList[i].newsId+'">'+
+                                            (data.newsList[i].newsTag == "" || data.newsList[i].newsTag == undefined ?'':('<div class="starNewsLeft">'+data.newsList[i].newsTag+'</div>'))+
+                                        data.newsList[i].newsTitle+'</div>';
+                            starArr.push(str);
+                        }
+                        // console.log(data.newsList.length+'===='+starArr)
+                        that.swiper2.appendSlide(starArr);
                     }
-                    // console.log(data.newsList.length+'===='+starArr)
-                    that.swiper2.appendSlide(starArr);
+                    
                     //添加明星行程
                     var strtemp = "";
                     for(var i = 0;i<data.traceList.length;i++){
@@ -355,7 +398,8 @@ var fuc = {
                     }
                     $('.scheduleCon').append(strtemp);
                     that.traceConfig.pageNo ++;
-                    if(data.traceList >= that.traceConfig.pageSize){
+                    // if(data.traceList >= that.traceConfig.pageSize){
+                    if(Math.ceil(data.pagination.totalCount/data.pagination.pageSize) >= data.pagination.pageNo){
                         that.traceConfig.addMore = true;
                     }else{
                         that.traceConfig.addMore = false;

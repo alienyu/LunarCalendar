@@ -140,6 +140,9 @@ var Dom = {
     },
     /*--------------------比较开始时间和结束时间，并输出显示格式------------------*/
     compareTimes:function(startTime,endTime){
+        if(endTime == "" || endTime == undefined || endTime == null){
+            endTime = startTime;
+        }
         var that = this,
             endArr = endTime.split(" ");
         var startYear = parseInt(startTime.split(" ")[0].split("-")[0], 10),
