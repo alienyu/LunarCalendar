@@ -34,7 +34,6 @@ var fuc = {
             topHeight = $('.starTop').height();
         var otherHeight = screenHeight - topHeight - 50+"px";
         $('.container').css("min-height",otherHeight);
-        $('.line').css("min-height",otherHeight);
         that.getStarTrace();
     },
     //获取明星详情
@@ -79,26 +78,6 @@ var fuc = {
             }
         })
     },
-    //获取明星粉丝数量
-    getFansCount:function(){
-        var that = this;
-        $.ajax({
-            type:"get",
-            url:that.config.urlArr[0]+"/star/detail",
-            data:{
-                "starId":that.config.starId
-            },
-            async:true,
-            success:function(data){
-                if(data.code == 0){
-                    $('.fansCount').html(data.data.fans.fansCount);
-                }
-            },
-            error:function(){
-
-            }
-        })
-    },
     //修改追星类型
     changeFansType:function(fansType){
         var that = this;
@@ -111,7 +90,7 @@ var fuc = {
             },
             async: true,
             success:function(data){
-
+                $('#loadingToast').fadeOut();//显示loading
             },
             error:function(){
 
@@ -132,7 +111,7 @@ var fuc = {
             },
             async: true,
             success:function(data){
-                console.log(data);
+                //console.log(data);
                 if(data.code == 0){
                     //$('#loadingToast').fadeOut();//隐藏Loading
                     if(data.data.traceList.length>0){
@@ -159,7 +138,7 @@ var fuc = {
                             for(var j=0;j<traceList[i].list.length;j++){
                                 var traceDetail = traceList[i].list[j].trace;
                                 var times = Dom.getStarDate(traceList[i].date,traceDetail.startTime);
-                                console.log(times);
+                                //console.log(times);
                                 if(traceList[i].list[j].hasJoin){//已加入事件
                                     if(traceDetail.theme){
                                         var url = "background:url('"+traceDetail.theme.themeUrl+"') center center no-repeat;background-size:cover;";
@@ -352,8 +331,7 @@ var fuc = {
         });
         /*--------点击追TA的选择列表中的确定按钮------*/
         $('.bottom_btn').on('tap',function(){
-            that.config.fansType = $('.bottom_item.active').index();
-            that.changeFansType(that.config.fansType);
+            $('#loadingToast').fadeIn();//显示loading
             $('.bottomSelect').animate({"bottom":"-300px"},200,function(){
                 $('.bottomSelect').css("display","none");
             });
@@ -361,12 +339,16 @@ var fuc = {
             $('.follow img').removeClass('hide');
             $('.bottomTxt').addClass('hide');
             $('.selected').removeClass('hide');
-            var fansNum = parseInt($('.fansCount').html());
-            console.log(that.config.fansType);
-            $('.fansCount').html(fansNum+1);
+            if(that.config.fansType == 0){
+                var fansNum = parseInt($('.fansCount').html());
+                $('.fansCount').html(fansNum+1);
+            }
+            that.config.fansType = $('.bottom_item.active').index();
+            that.changeFansType(that.config.fansType);
         });
         /*-----------点击粉丝选择列表逻辑处理------------*/
         $('.bottom_item').on('tap',function(){
+            $('#loadingToast').fadeIn();//显示loading
             //console.log($(this).index());
             var domId = this;
             $.ajax({
@@ -384,7 +366,7 @@ var fuc = {
                             $('.bottom_item').eq(0).addClass('active');
                             if(that.config.fansType !=0){
                                 var fansNum = parseInt($('.fansCount').html());
-                                console.log(that.config.fansType);
+                                //console.log(that.config.fansType);
                                 $('.fansCount').html(fansNum-1);
                             }
                             that.config.fansType = 0;//不追星
@@ -399,7 +381,7 @@ var fuc = {
                             $('.follow img').removeClass('hide');
                             if(that.config.fansType == 0){
                                 var fansNum = parseInt($('.fansCount').html());
-                                console.log(that.config.fansType);
+                                //console.log(that.config.fansType);
                                 $('.fansCount').html(fansNum+1);
                             }
                             that.config.fansType = $(domId).index();//追星
@@ -433,7 +415,9 @@ var fuc = {
         });
         $('.follow').on('tap',function(){
             $('.shadow').css("display","block");
-            $('.bottomSelect').animate({"bottom":"0","display":"block"},200);
+            $('.bottomSelect').animate({"display":"block"},5,function(){
+                $('.bottomSelect').animate({"bottom":"0"},200);
+            });
         });
         /*--------------------关闭二维码弹层----------------------*/
         $('.wxQrcodeClose').on('tap',function () {

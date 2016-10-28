@@ -29,12 +29,30 @@
     box-sizing: border-box;
     padding: 0 16px;
     margin-bottom: 20px;
+    font-weight: 600;
+  }
+  .newsPublishTime{
+    margin-bottom: 20px;
   }
   .newsContent{
-    margin:20px 0 10px 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding-bottom: 10px;
     overflow: hidden;
+    min-height: calc(~"100vh - 330px");
     div{
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      padding: 0 10px;
       width:100%;
+    }
+    p{
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      padding: 0 10px;
     }
     img{
       width:100%;
@@ -51,12 +69,26 @@
   box-sizing: border-box;
   padding: 0 20px;
   display: none;
-  .cut-off{
-    width:100%;
-    height:30px;
-    line-height: 30px;
-    margin-bottom: 5px;
-    text-align: center;
+  position: relative;
+  .outCon{
+    width:80%;
+    height:14px;
+    border-bottom: 1px solid #CCCCCC;
+    position: relative;
+    margin: 0 auto 20px;
+    .cut-off{
+      width:100%;
+      height:30px;
+      line-height: 30px;
+      text-align: center;
+      position: absolute;
+      top:0;
+      left:0;
+      .text{
+        background: #fff;
+        padding: 0 10px;
+      }
+    }
   }
   .dayCon{
     padding: 0;
