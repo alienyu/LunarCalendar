@@ -33,7 +33,7 @@
 .starImg{
     width:56px;
     height:56px;
-    border: 2px solid #eee;
+    border: 2px solid rgba(255,255,255,0.5);
     border-radius: 100%;
     -webkit-border-radius: 100%;
     margin-right: 10px;
@@ -61,11 +61,14 @@
     padding: 10px 0 51px;
     position: relative;
 }
+.line{
+    height:100%;
+}
 .news_con{
     width:100%;
     height:auto;
-    border-radius: 10px;
-    -webkit-border-radius: 10px;
+    border-radius: 6px;
+    -webkit-border-radius: 6px;
     background: #fff;
     margin-bottom: 10px;
     overflow: hidden;
