@@ -430,7 +430,8 @@ var fuc = {
                     console.log(data);
                     var dataList = data.data;
                     that.config.eventType = dataList.event.eventType;
-                    that.config.nickName = dataList.owner.nickName;
+                    if(dataList.owner)
+                        that.config.nickName = dataList.owner.nickName;
                     $('.eventName').html(dataList.event.name);
                     if (dataList.event.bgColor) {//若用户设置了背景颜色
                         $('.topCon').css({"height": "120px", "padding-top":"60px","background": dataList.event.bgColor});
@@ -541,8 +542,11 @@ var fuc = {
                         }
                         
                         //事件创建者头像及昵称显示
-                        $('.eventOwner').attr("src", dataList.owner.headImgUrl);
-                        $('.ownerNickName .nickName').html(dataList.owner.nickName);
+                        if(dataList.owner){
+                            $('.eventOwner').attr("src", dataList.owner.headImgUrl);
+                            $('.ownerNickName .nickName').html(dataList.owner.nickName);
+                        }
+                        
                         if (dataList.user) {
                             wx.wxShare(dataList.user + " 邀请您参加 「" + dataList.event.name + "」", Dom.tranDate(dataList.event.startTime),
                                 that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + dataList.event.eventId));

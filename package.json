@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server",
-    "dev": "echo 打包测试服&webpack",
+    "dev": "echo 打包测试服&webpack --config webpack.dev.config.js",
     "build": "echo 打包正式服&webpack --config webpack.rel.config.js"
   },
   "dependencies": {

@@ -22,8 +22,8 @@ var fuc = {
 
     starConfig:{
         addMore: false,
-        pageSize: 10,
-        all: true,
+        pageSize: 4,
+        all: false,
         pageNo: 1
     },
 
@@ -255,11 +255,17 @@ var fuc = {
                                 '</div>';
                         starArr.push(str);
                     }
-                    var str =   '<div class="starItem swiper-slide" data-src="">'+
-                                    '<img src="'+moreStrImg+'" alt="">'+
-                                    '<br><span style="font-size: 8px;">其他明星，陆续开启...</span>'+
-                                '</div>';
-                    starArr.push(str);
+                    if(data.list.length>=that.starConfig.pageSize){
+                        that.starConfig.addMore = true;
+                    }else{
+                        that.starConfig.addMore = false;
+                            var str =   '<div class="starItem swiper-slide" data-src="">'+
+                                        '<img src="'+moreStrImg+'" alt="">'+
+                                        '<br><span style="font-size: 8px;">其他明星，陆续开启...</span>'+
+                                    '</div>';
+                        starArr.push(str);
+                    }
+                    
                     that.swiper.appendSlide(starArr);
                 }else{
                     //接口有问题
@@ -321,8 +327,8 @@ var fuc = {
                                             '<div class="itemLocation fs12">'+data.traceList[i].list[j].trace.location+' '+ (data.traceList[i].list[j].trace.address == null?'':data.traceList[i].list[j].trace.address)+'</div>'+
                                         '</div>'+
                                         '<div class="starLink" data-src="'+data.traceList[i].list[j].star.starId+'">'+
-                                            '<div class="starAvatar">'+
-                                                '<img src="'+data.traceList[i].list[j].star.starHeadPic+'" alt="">'+
+                                            '<div class="starAvatar"  style="background-image:url('+data.traceList[i].list[j].star.starHeadPic+')">'+
+                                                //'<img src="'+data.traceList[i].list[j].star.starHeadPic+'" alt="">'+
                                             '</div>'+
                                             '<div class="starName"><div class="name">'+data.traceList[i].list[j].star.starName+'</div></div>'+
                                         '</div></div>'+
@@ -348,7 +354,8 @@ var fuc = {
                                     '</div>';
                     }
                     $('.scheduleCon').append(strtemp);
-                    if(data.traceList >= that.traceConfig.pageNo){
+                    that.traceConfig.pageNo ++;
+                    if(data.traceList >= that.traceConfig.pageSize){
                         that.traceConfig.addMore = true;
                     }else{
                         that.traceConfig.addMore = false;

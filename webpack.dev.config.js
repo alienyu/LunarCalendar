@@ -51,7 +51,11 @@ module.exports = {
         ]
     },
     plugins: [
-		
+		new CleanPlugin(['wx'], {
+	        "root": path.resolve(__dirname, './'),
+	        verbose: true,
+	        dry: false
+	    }),
         new webpack.ProvidePlugin({ //加载jq
             $: 'zepto'
         }),
