@@ -47,7 +47,7 @@ var wxConfig = {
                         jsApiList: [
                             'onMenuShareTimeline',
                             'onMenuShareAppMessage',
-                            'hideAllNonBaseMenuItem',
+                            'hideMenuItems',
                             'showMenuItems',
                             'getLocation'
                         ]
@@ -55,32 +55,54 @@ var wxConfig = {
 
                     wx.ready(function () {
                         //隐藏其他选项
-                        wx.hideAllNonBaseMenuItem();
+                        wx.hideMenuItems({
+                            menuList: [
+                                "menuItem:share:qq",
+                                "menuItem:share:weiboApp",
+                                "menuItem:favorite",
+                                "menuItem:share:facebook",
+                                "menuItem:share:QZone",
+                                "menuItem:editTag",
+                                "menuItem:delete",
+                                "menuItem:copyUrl",
+                                "menuItem:originPage",
+                                "menuItem:readMode",
+                                "menuItem:openWithQQBrowser",
+                                "menuItem:openWithSafari",
+                                "menuItem:share:email",
+                                "menuItem:share:brand"
+                            ] // 要显示的菜单项，所有menu项见附录3
+                        });
                     })
                 }
             }
         });
 
     },
-    wxShare: function (title, desc, link) {
-        wx.showMenuItems({
-            menuList: ["menuItem:share:appMessage", "menuItem:share:timeline"] // 要显示的菜单项，所有menu项见附录3
-        });
+
+    wxShare: function (title, desc, link,img) {
+        if(!img){
+            img = imageUrl;
+        }
+        if(!link){
+            link = "http://mp.weixin.qq.com/s?__biz=MzI5NzQwODk4OA==&mid=2247484668&idx=1&sn=3f9820b761c761d3af7566f7e08260bd&chksm=ecb4c44fdbc34d59896e171ffda9e783192c4f83f2c1411827a747339454fc7060cbce56f7f4#rd";
+        }
         //获取"分享给朋友"按钮点击状态及自定义分享内容接口
         wx.onMenuShareAppMessage({
             title: title,
             desc: desc,
             link: link,
-            imgUrl: imageUrl,
-            type: "link",//分享类型，music、video或link，不填默认为link
+            imgUrl: img,
+            type: "link"//分享类型，music、video或link，不填默认为link
         });
         //获取"分享到朋友圈"按钮点击状态及自定义分享内容接口
         wx.onMenuShareTimeline({
             title: title,
             link: link,
-            imgUrl: imageUrl
+            imgUrl: img
         });
     },
+
     getWx: function () {
         return wx;
     },

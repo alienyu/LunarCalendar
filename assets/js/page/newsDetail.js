@@ -4,6 +4,7 @@
 require("../../css/page/newsDetail.less");
 var Ajax = require("../common/ajax.js");
 var Dom = require("../common/dom.js");
+var wx = require("../vendor/weChat/wxInit.js");
 var pageLoad = require("../common/pageLoad.js");
 
 var fuc = {
@@ -19,6 +20,7 @@ var fuc = {
     },
     renderPage:function(){
         var that = this;
+        wx.wxConfig(1);
         that.getNewsDetail();
         //console.log(that.config.newsId);
     },
@@ -35,8 +37,9 @@ var fuc = {
                 if(data.code == 0){
                     //console.log(data);
                     var newsDetail = data.data;
-                    var timeArr = newsDetail.newsPublishTime.split(" ")[0].split("-");
+                    var dateArr = newsDetail.newsPublishTime.split(" ")[0].split("-");
                     if(newsDetail.star.starId){//如果有明星信息
+                        $('.toStars').css("display","block");
                         that.config.starId = newsDetail.star.starId;
                         $('.name').html(newsDetail.star.starName);
                         $('.toStars').attr("data-starid",that.config.starId).css("display","inline-block");
@@ -49,11 +52,15 @@ var fuc = {
                     }
                     $('.newsTitle').html(newsDetail.newsTitle);
                     if(newsDetail.newsSource&&newsDetail.newsSource != ""){
-                        $('.newsPublishTime').html(newsDetail.newsSource+"&nbsp;·&nbsp;"+timeArr[1]+"月"+timeArr[2]+"日");
+                        $('.newsPublishTime').html(newsDetail.newsSource+"&nbsp;·&nbsp;"+dateArr[1]+"月"+dateArr[2]+"日");
                     }else{
-                        $('.newsPublishTime').html(timeArr[1]+"月"+timeArr[2]+"日");
+                        $('.newsPublishTime').html(dateArr[1]+"月"+dateArr[2]+"日");
                     }
                     $('.newsContent').html(newsDetail.newsContent);
+                    var shareTime = dateArr[1]+"月"+dateArr[2]+"日&nbsp;"+Dom.getweek(newsDetail.newsPublishTime.split(" ")[0])+"&nbsp;"+Dom.getHourMinute(newsDetail.newsPublishTime),
+                        newsImg = newsDetail.newsPoster;
+                    wx.wxShare(newsDetail.newsTitle,newsDetail.newsSource+"<br>"+shareTime,
+                        that.config.urlArr[0]+"/common/to?url2="+encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId="+that.config.starId),newsImg)
                 }
             },
             error:function(){
@@ -73,17 +80,22 @@ var fuc = {
             },
             success:function(data){
                 if(data.code == 0){
-                    var traceDetail = data.data.traceList[0].list[0];
-                    //console.log(traceDetail);
-                    $('.day_item').attr("data-eventid",traceDetail.trace.eventId);
-                    $('.itemTitle').html(traceDetail.trace.name);
-                    $('.itemTime').html(Dom.getStarDate(data.data.traceList[0].date,traceDetail.trace.startTime));
-                    $('.itemLocation').html(traceDetail.trace.location+"&nbsp;"+(traceDetail.trace.address==null?"":traceDetail.trace.address));
-                    $('.joinerCount').html(traceDetail.joinersCount);
-                    if(traceDetail.trace.theme){
-                        $('.item_detail').css("background","url('"+traceDetail.trace.theme.themeUrl+"') no-repeat center center;background-size:cover;")
+                    if(data.data.traceList.length>0){
+                        $('.recentSchedule').css("display","block");
+                        var traceDetail = data.data.traceList[0].list[0];
+                        //console.log(traceDetail);
+                        $('.day_item').attr("data-eventid",traceDetail.trace.eventId);
+                        $('.itemTitle').html(traceDetail.trace.name);
+                        $('.itemTime').html(Dom.getStarDate(data.data.traceList[0].date,traceDetail.trace.startTime));
+                        $('.itemLocation').html(traceDetail.trace.location+"&nbsp;"+(traceDetail.trace.address==null?"":traceDetail.trace.address));
+                        $('.joinerCount').html(traceDetail.joinersCount);
+                        if(traceDetail.trace.theme){
+                            $('.item_detail').css("background","url('"+traceDetail.trace.theme.themeUrl+"') no-repeat center center;background-size:cover;")
+                        }else{
+                            $('.item_detail').css("background",traceDetail.trace.bgColor);
+                        }
                     }else{
-                        $('.item_detail').css("background",traceDetail.trace.bgColor);
+                        $('.recentSchedule').css("display","none");
                     }
                 }
             },

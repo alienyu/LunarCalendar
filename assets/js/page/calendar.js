@@ -26,6 +26,9 @@ var fuc = {
             titleHeight = $('.schedule h1').height();
         this.otherHeight = screenHeight-toolbarHeight-wrapperHeight-titleHeight;
         wx.wxConfig(1);
+        setTimeout(function(){
+            wx.wxShare("【 历历LilyCalendar】让回忆与温故成为一件轻松的事情", "这是一个简单操作的日历系统，但却能发挥各式各样和生活有关的活用。");
+        },1500);
         this.getUserInformation();//获取用户信息，若用户设置了生日，则可获取生日
         Ajax.getEventOfMonth();//判断当前页面的时间中有没有事件，有事件的在下方加点
         /*----------------------------------进入页面时，显示当天的事件列表和运势-------------------------------------------*/

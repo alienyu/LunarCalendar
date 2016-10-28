@@ -27,11 +27,18 @@ var fuc = {
         this.config.urlArr = Dom.configuration();
         $('#main_box').css("visibility","visible");
         this.initHeadDate();
+        this.share();
         this.getData("init");
         this.bindEvent();
     },
     initHeadDate: function () {
         $(".current_month").text(new Date().getFullYear() + "年" + (new Date().getMonth() + 1) + "月");
+    },
+    share:function(){
+        wx.wxConfig(1);
+        setTimeout(function(){
+            wx.wxShare("【 历历LilyCalendar】让回忆与温故成为一件轻松的事情", "这是一个简单操作的日历系统，但却能发挥各式各样和生活有关的活用。");
+        },1500);
     },
     getData: function (type) {
         var that = this;

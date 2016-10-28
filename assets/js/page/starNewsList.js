@@ -5,6 +5,7 @@ require("../../css/page/starNewsList.css");
 var Ajax = require("../common/ajax.js");
 var Dom = require("../common/dom.js");
 var pageLoad = require("../common/pageLoad.js");
+var wx = require("../vendor/weChat/wxInit.js");
 
 var fuc = {
     config:{
@@ -23,6 +24,7 @@ var fuc = {
     },
     renderPage:function(){
         var that = this;
+        wx.wxConfig(1);
         if(!that.config.starId){//若url中没有starId, 则查询所有明星的新闻
             that.config.starId ="";
         }
@@ -33,7 +35,23 @@ var fuc = {
             $('.back').css("display","none");
         }
         that.getData(that.config.starId);
-
+        $.ajax({
+            type:"get",
+            url:that.config.urlArr[0]+"/user/detail",
+            success:function(data){
+                if(data.code == 0){
+                    var name = data.data.nickName,
+                        headImg = data.data.headImgUrl;
+                    if(!that.config.starId){
+                        wx.wxShare("【 历历LilyCalendar】为粉丝提供明星行程，让追星更简单", "来自 #"+name+" 的分享\r\n微信公众号：历历LilyCalendar",
+                            that.config.urlArr[0]+"/common/to?url2="+encodeURIComponent(that.config.urlArr[1]+"/wx/view/starNewsList.html"),headImg);
+                    }else{
+                        wx.wxShare("【 历历LilyCalendar】为粉丝提供明星行程，让追星更简单", "来自 #"+name+" 的分享\r\n微信公众号：历历LilyCalendar",
+                            that.config.urlArr[0]+"/common/to?url2="+encodeURIComponent(that.config.urlArr[1]+"/wx/view/starNewsList.html?starId="+that.config.starId),headImg);
+                    }
+                }
+            }
+        });
     },
     getData:function(starId){
         var that = this;

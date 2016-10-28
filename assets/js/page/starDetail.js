@@ -29,6 +29,7 @@ var fuc = {
     },
     renderPage:function(){
         var that = this;
+        wx.wxConfig(1);
         that.getStarDetail();
         var screenHeight = $(document.body).height(),
             topHeight = $('.starTop').height();
@@ -56,6 +57,7 @@ var fuc = {
                     }
                     $('.starImg').css("background-image","url("+starDetail.star.starHeadPic+")");//头像
                     that.config.starName = starDetail.star.starName;
+                    that.share(that.config.starName);//设置分享样式
                     $('.name').html(starDetail.star.starName);//名字
                     $('.fansCount').html(starDetail.fans.fansCount);//粉丝数
                     that.config.fansType = starDetail.fans.fansType;//粉丝类型=
@@ -67,9 +69,13 @@ var fuc = {
                         }
                         bottomItem.eq(that.config.fansType-1).addClass('active');
                         $('.follow img').removeClass('hide');
+                        $('.bottomTxt').addClass('hide');
+                        $('.selected').removeClass('hide');
                     }else{
                         $('.bottom_item').eq(0).addClass('active');
                     }
+                }else{
+
                 }
 
             },
@@ -77,6 +83,21 @@ var fuc = {
 
             }
         })
+    },
+    share:function(starName){
+        var that = this;
+        $.ajax({
+            type:"get",
+            url:that.config.urlArr[0]+"/user/detail",
+            success:function(data){
+                if(data.code == 0){
+                    var name = data.data.nickName,
+                        headImg = data.data.headImgUrl;
+                    wx.wxShare("【 "+starName+"】最新消息动态…", "来自 #"+name+" 的分享",
+                        that.config.urlArr[0]+"/common/to?url2="+encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId="+that.config.starId),headImg);
+                }
+            }
+        });
     },
     //修改追星类型
     changeFansType:function(fansType){

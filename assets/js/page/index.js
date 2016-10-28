@@ -16,8 +16,8 @@ var fuc = {
         this.bindEvent();
     },
     renderPage: function() {
-        wx.wxConfig(1);
         var that = this;
+        wx.wxConfig(1);
         document.addEventListener('touchmove', function (e) {//禁止浏览器上下滑动页面
             e.preventDefault();
         });
@@ -183,7 +183,10 @@ var fuc = {
             }else{
 
             }
-        })
+        });
+        setTimeout(function(){
+            wx.wxShare("【 历历LilyCalendar】让回忆与温故成为一件轻松的事情", "这是一个简单操作的日历系统，但却能发挥各式各样和生活有关的活用。");
+        },500);
     },
     //过滤事件
     filterEvent:function (eventList) {
