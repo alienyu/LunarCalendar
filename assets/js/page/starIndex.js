@@ -55,7 +55,7 @@ var fuc = {
             spaceBetween: 10,
             grabCursor: true,
             onReachEnd: function(swiper){
-              console.log('到了最后一个slide');
+              // console.log('到了最后一个slide');
               if(that.starConfig.addMore){
                 $('.starListLoading').show();
                 that.getStars();
@@ -147,7 +147,7 @@ var fuc = {
 
             $('#loadingToast').fadeIn();//显示loading
             var eventId = $(this).parents('.day_item').attr("data-eventid");
-            console.log(eventId)
+            // console.log(eventId)
             var domId = this;
             //加入
             $.ajax({
@@ -251,7 +251,7 @@ var fuc = {
         });
         /*------------点击进入事件详情-----------*/
         $('.starNewsList').on('tap','.item_detail',function(){
-            console.log('这里是事件详情');
+            // console.log('这里是事件详情');
             var str = $(this).parents('.day_item').attr("data-eventid");
             if(str != ""){
                 window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + str);
@@ -259,7 +259,7 @@ var fuc = {
         });
        /*------------点击进入事件详情-----------*/
         $('.starNewsList').on('tap','.starLink',function(event){
-            console.log('这里是明星详情');
+            // console.log('这里是明星详情');
             var str = $(this).attr('data-src');
             if(str != ""){
                 window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId=" + str);
@@ -354,7 +354,7 @@ var fuc = {
                                         data.newsList[i].newsTitle+'</div>';
                             starArr.push(str);
                         }
-                        console.log(data.newsList.length+'===='+starArr)
+                        // console.log(data.newsList.length+'===='+starArr);
                         that.swiper2.appendSlide(starArr);
                         that.swiper2.slideTo(1, 1000, false);
                     }
