@@ -132,5 +132,9 @@ initConfig([
     "remind",
     "activity",
     "newSchedule",
-    "newShowEvent"
+    "newShowEvent",
+    "starDetail",
+    "starNewsList",
+    "starIndex",
+    "newsDetail"
 ])

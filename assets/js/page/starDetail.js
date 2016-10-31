@@ -16,7 +16,8 @@ var fuc = {
         pageNo:"",
         addMore:false,
         template:$('#dayListTemplate').html(),
-        template2:$('#itemListTemplate').html()
+        template2:$('#itemListTemplate').html(),
+        nowYear:new Date().getFullYear()
     },
     init:function(){
         pageLoad({backgroundColor: "#fff"});
@@ -148,7 +149,7 @@ var fuc = {
                 //console.log(data);
                 if(data.code == 0){
                     //$('#loadingToast').fadeOut();//隐藏Loading
-                    var html = "",newsStr = "",traceList = data.data.traceList;
+                    var html = "",newsStr = "",traceList = data.data.traceList,dateLineStr = "";
                     if(that.config.pageNo == 1){
                         if(data.data.newsList.length>0){
                             for(var m=0;m<data.data.newsList.length;m++){//获取新闻内容
@@ -167,7 +168,11 @@ var fuc = {
                             var dayList="";
                             if(traceList[i].list.length>0){
                                 var timeArr = traceList[i].date.split("-");
-                                html = that.config.template.replace(/{{date}}/g,traceList[i].date).replace(/{{day}}/g,timeArr[2]).replace(/{{month}}/g,timeArr[1]+"月");
+                                if(timeArr[0] != that.config.nowYear){
+                                    that.config.nowYear = timeArr[0];
+                                    dateLineStr = '<span class="yearLine">'+that.config.nowYear+'年明星行程</span>';
+                                }
+                                html = that.config.template.replace(/{{dateLine}}/g,dateLineStr).replace(/{{date}}/g,traceList[i].date).replace(/{{day}}/g,timeArr[2]).replace(/{{month}}/g,timeArr[1]+"月");
                                 $('.scheduleCon').append(html);
                             }
                             for(var j=0;j<traceList[i].list.length;j++){
@@ -180,9 +185,13 @@ var fuc = {
                                         dayList += that.config.template2.replace(/{{eventId}}/g,traceDetail.eventId).replace(/{{name}}/g,traceDetail.name).replace(/{{time}}/g,times).replace(/{{location}}/g,traceDetail.location+"&nbsp;"+(traceDetail.address==null?"":traceDetail.address))
                                             .replace(/{{joinerCount}}/g,traceList[i].list[j].joinersCount).replace(/{{join}}/g,"none").replace(/{{hasJoin}}/g,"block").replace(/{{background}}/g,url);
                                     }else{
-                                        var backgroundColor = "background:"+traceDetail.bgColor;
+                                        if(traceDetail.bgColor.indexOf("#")>=0){
+                                            var background = "background:"+traceDetail.bgColor;
+                                        }else if(traceDetail.bgColor.indexOf("http")>=0){
+                                            var background = "background:url('"+traceDetail.bgColor+"') center center no-repeat;background-size:cover;";
+                                        }
                                         dayList += that.config.template2.replace(/{{eventId}}/g,traceDetail.eventId).replace(/{{name}}/g,traceDetail.name).replace(/{{time}}/g,times).replace(/{{location}}/g,traceDetail.location+"&nbsp;"+(traceDetail.address==null?"":traceDetail.address))
-                                            .replace(/{{joinerCount}}/g,traceList[i].list[j].joinersCount).replace(/{{join}}/g,"none").replace(/{{hasJoin}}/g,"block").replace(/{{background}}/g,backgroundColor);
+                                            .replace(/{{joinerCount}}/g,traceList[i].list[j].joinersCount).replace(/{{join}}/g,"none").replace(/{{hasJoin}}/g,"block").replace(/{{background}}/g,background);
                                     }
                                 }else{//未加入事件
                                     if(traceDetail.theme){
@@ -190,8 +199,13 @@ var fuc = {
                                         dayList += that.config.template2.replace(/{{eventId}}/g,traceDetail.eventId).replace(/{{name}}/g,traceDetail.name).replace(/{{time}}/g,times).replace(/{{location}}/g,traceDetail.location+"&nbsp;"+(traceDetail.address==null?"":traceDetail.address))
                                             .replace(/{{joinerCount}}/g,traceList[i].list[j].joinersCount).replace(/{{join}}/g,"block").replace(/{{hasJoin}}/g,"none").replace(/{{background}}/g,backgroundImg);
                                     }else{
+                                        if(traceDetail.bgColor.indexOf("#")>=0){
+                                            var backgrounds = "background:"+traceDetail.bgColor;
+                                        }else if(traceDetail.bgColor.indexOf("http")>=0){
+                                            var backgrounds = "background:url('"+traceDetail.bgColor+"') center center no-repeat;background-size:cover;";
+                                        }
                                         dayList += that.config.template2.replace(/{{eventId}}/g,traceDetail.eventId).replace(/{{name}}/g,traceDetail.name).replace(/{{time}}/g,times).replace(/{{location}}/g,traceDetail.location+"&nbsp;"+(traceDetail.address==null?"":traceDetail.address))
-                                            .replace(/{{joinerCount}}/g,traceList[i].list[j].joinersCount).replace(/{{join}}/g,"block").replace(/{{hasJoin}}/g,"none").replace(/{{background}}/g,"background:"+traceDetail.bgColor);
+                                            .replace(/{{joinerCount}}/g,traceList[i].list[j].joinersCount).replace(/{{join}}/g,"block").replace(/{{hasJoin}}/g,"none").replace(/{{background}}/g,backgrounds);
                                     }
 
                                 }
@@ -214,11 +228,12 @@ var fuc = {
                                 $('.scheduleCon').prepend(todayCon);
                             }
                         }
-                        that.commentEnd();
-                        if(traceList.length>=10){
+                        if(traceList.length != 0){
                             that.config.addMore = true;
+                            that.commentEnd();
                         }else{
                             that.config.addMore = false;
+                            that.getStarNewsOver();
                         }
                         that.config.pageNo++;
                     }else{
@@ -229,13 +244,13 @@ var fuc = {
                             $('.scheduleCon').prepend(todayCon);
                         }
                         that.config.addMore = false;
-                        that.commentEnd();
+                        that.getStarNewsOver();
                     }
                 }else{
                     //报错
                     var error = data.msg;
                     that.tipShow(error);
-                    that.commentEnd();
+                    that.getStarNewsOver();
                 }
             },
             error:function(){
@@ -247,7 +262,10 @@ var fuc = {
     commentLoad:function(){
         $('.commentMore').show();
     },
-
+    getStarNewsOver: function(){
+        $('.commentAdd').html('没有了').css('color','#ccc');
+        $('.commentAdd').show();
+    },
     commentEnd:function(){
         $('.commentMore').hide();
     },
