@@ -144,9 +144,10 @@
     box-sizing: border-box;
     padding: 22px 10px 0;
     background: rgba(0,0,0,0.1);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
 .dayCon .day_item .item_detail .itemTitle{
-    width:70%;
+    width:100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -156,7 +157,7 @@
 }
 .dayCon .day_item .item_detail .itemTime,.datCib ,.day_item .item_detail .itemLocation{
     height:16px;
-    width:70%;
+    width:100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -197,7 +198,7 @@
 }
 
 .yearLine{
-    margin: -24px 0 0 10px;
+    margin: -29px 0 0 10px;
     line-height: 40px;
     float: left;
     color: #333;

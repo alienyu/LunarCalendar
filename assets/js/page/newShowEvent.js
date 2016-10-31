@@ -226,7 +226,7 @@ var fuc = {
 
     commentLoad:function(){
         $('.commentMore').show();
-        $('.commentMore .txt').html('加载中...'); 
+        $('.commentMore .txt').html('加载中...').css("color","#333");
         $('.commentMore img').show();
     },
 
@@ -237,7 +237,7 @@ var fuc = {
     commentNoMore:function(){
         $('.commentMore').show();
         $('.commentMore img').hide();
-        $('.commentMore .txt').html('没有更多留言了。');        
+        $('.commentMore .txt').html('没有了').css("color","#ccc").removeClass('fl');
     },
 
     commentNoneShow:function(){
@@ -508,17 +508,20 @@ var fuc = {
                     if(dataList.owner)
                         that.config.nickName = dataList.owner.nickName;
                     $('.eventName').html(dataList.event.name);
-                    if (dataList.event.bgColor.indexOf('#')>-1) {//若用户设置了背景颜色
-                        $('.topCon').css({"height": "120px", "padding-top":"60px","background-color": dataList.event.bgColor});
-                        $('.compile').css("background-color",dataList.event.bgColor);
-                    } else if (dataList.event.bgColor.indexOf('#') == -1) {//若用户设置了背景颜色
-                        $('.topCon').css({
-                            "height": "200px",
-                            "padding-top": "100px",
-                            "background-image": "url(" + dataList.event.bgColor + ")"
-                        });
-                        $('.compile').css("background", "#6cc");
-                    } else if (dataList.event.theme) {//若用户没有设置背景颜色，则从主题中选择
+                    if (dataList.event.bgColor) {//若用户设置了背景颜色
+                        if (dataList.event.bgColor.indexOf('#')>-1) {//若用户设置了背景颜色
+                            $('.topCon').css({"height": "120px", "padding-top":"60px","background-color": dataList.event.bgColor});
+                            $('.compile').css("background-color",dataList.event.bgColor);
+                        }else if (dataList.event.bgColor.indexOf('#') == -1) {//若用户设置了背景颜色
+                            $('.topCon').css({
+                                "height": "200px",
+                                "padding-top": "100px",
+                                "background-image": "url(" + dataList.event.bgColor + ")"
+                            });
+                            $('.compile').css("background", "#6cc");
+                        }
+                    }else if (dataList.event.theme) {//若用户没有设置背景颜色，则从主题中选择
+                        console.log('==========' +dataList.event.theme.themeUrl)
                         $('.topCon').css({
                             "height": "200px",
                             "padding-top": "100px",
@@ -1119,7 +1122,7 @@ var fuc = {
                         var list = data.data;
                         var peopleCount = list.pagination.totalCount;
                         $('.count').html(peopleCount);
-                        if(list.list.length>=0){
+                        if(list.list.length>0){
                             $('.fansCon').show();
                             console.log('----'+$('.fansList').width());
                             var num = Math.floor($('.fansList').width()/35) - 2;

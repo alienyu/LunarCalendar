@@ -236,8 +236,8 @@ body section .current_time_line {
     margin-left: 15%;
     margin-right: 3%;
     border: 1px solid #66cccc;
-    margin-top: -5px;
-    margin-bottom: 5px;
+    /*margin-top: -5px;*/
+    margin-bottom: 10px;
 }
 
 body section .current_time_line:before {
@@ -298,6 +298,16 @@ body section .month_divide .text {
     -webkit-animation: rotate 0.75s linear infinite;
     animation: rotate 0.75s linear infinite;
 }
+
+.star{
+    .itemLocation, .itemTitle, .itemTime{
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 70%;
+        width: calc(~"100vw - 165px");
+        overflow: hidden;
+    }
+} 
 
 .starAvatar{
         background-color: #fff;

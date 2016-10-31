@@ -110,12 +110,12 @@
                                         <div class="content contain_img_box" style="min-height:90px;background-color: <%= timeDetail.bgColor %>">
                                     <% } else { %>
                                         <div class="content contain_img_box" style="min-height:90px;background-image:url( <%= timeDetail.bgColor %> )">
-                                        <div class="map_mask"></div>
+                                        
                                     <% } %>   
 								<% } else { %>								
                                         <div class="content" style="background-color: <%= timeDetail.bgColor %>">										
                                 <% } %>
-                                    <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %><%= timeDetail.eventType == 2 ? ' contain_map' : '' %>">
+                                    <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %><%= timeDetail.eventType == 2 ? ' contain_map star' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
                                         <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= (timeDetail.endTime && timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") != timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":")) ? '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : ''%></div>
                                         <% if(timeDetail.location) { %>
@@ -171,13 +171,13 @@
                                         <div class="content contain_img_box" style="min-height:90px;background-color: <%= timeDetail.bgColor %>">
                                     <% } else { %>
                                         <div class="content contain_img_box" style="min-height:90px;background-image:url( <%= timeDetail.bgColor %> )">
-                                        <div class="map_mask"></div>
+                                        
                                     <% } %>  
 
                                 <% } else { %>                              
                                         <div class="content" style="background-color: <%= timeDetail.bgColor %>">                                       
                                 <% } %>
-                                    <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %><%= timeDetail.eventType == 2 ? ' contain_map' : '' %>">
+                                    <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %><%= timeDetail.eventType == 2 ? ' contain_map star' : '' %>">
                                         <div class="title"><%= timeDetail.name %></div>
                                         <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= (timeDetail.endTime && timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") != timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":")) ?  '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
                                         <% if(timeDetail.location) { %>
@@ -234,12 +234,12 @@
                                         <div class="content contain_img_box" style="min-height:90px;background-color: <%= timeDetail.bgColor %>">
                                     <% } else { %>
                                         <div class="content contain_img_box" style="min-height:90px;background-image:url( <%= timeDetail.bgColor %> )">
-                                        <div class="map_mask"></div>
+                                        
                                     <% } %>  
                                 <% } else { %>                              
                                         <div class="content" style="background-color: <%= timeDetail.bgColor %>">                                       
                                 <% } %>
-                                    <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %><%= timeDetail.eventType == 2 ? ' contain_map' : '' %>">
+                                    <div class="text<%= timeDetail.longitude ? ' contain_map' : timeDetail.theme ? ' contain_img' : '' %><%= timeDetail.eventType == 2 ? ' contain_map star' : '' %>">
                                 <div class="title"><%= timeDetail.name %></div>
                                 <div class="time"><%= timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") %><%= (timeDetail.endTime && timeDetail.startTime.split(' ')[1].split(":").splice(0,2).join(":") != timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":")) ?  '-' + timeDetail.endTime.split(' ')[1].split(":").splice(0,2).join(":") : '' %></div>
                                 <% if(timeDetail.location) { %>
