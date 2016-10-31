@@ -660,7 +660,7 @@ var fuc = {
                                 header = dataList.owner.headImgUrl;
                             }
                             if(that.config.eventType == 2){
-                                title += '【明星行程】' +　title;
+                                title = '【明星行程】' +　title;
                                 header = dataList.star.starHeadPic;
                             }
                             wx.wxShare(title, "来自 #"+str+" 的诚邀\r\n" + Dom.tranDate(dataList.event.startTime) + '\r\n' + dataList.event.location + (dataList.event.address==null ?"":dataList.event.address),

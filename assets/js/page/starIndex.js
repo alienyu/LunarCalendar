@@ -330,6 +330,11 @@ var fuc = {
         $('.commentAdd').hide();
     },
 
+    getStarNewsOver: function(){
+        $('.commentAdd').html('没有了').css('color','#ccc');
+        $('.commentAdd').show();
+    },
+
     getStarNews: function() {
         var that = this;
         $.ajax({
@@ -344,6 +349,7 @@ var fuc = {
             }, 
             success: function (data) {              
                if (data.code == 0) {
+                    that.getStarNewsLoaded();
                     data = data.data;
                     //添加明星八卦
                     if(data.newsList!= null){
@@ -417,6 +423,7 @@ var fuc = {
                         // }
                     if(data.traceList.length <= 0){
                         that.traceConfig.addMore = false;
+                        that.getStarNewsOver();
                     }else{
                         that.traceConfig.addMore = true;
                     }
@@ -425,7 +432,7 @@ var fuc = {
                     //接口有问题
                     // that.tipshow('明星列表拉取失败，请稍后重试~');
                 }
-                that.getStarNewsLoaded();
+                
             },
             error: function() {
                 that.getStarNewsLoaded();
