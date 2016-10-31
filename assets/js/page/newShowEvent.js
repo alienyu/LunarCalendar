@@ -33,6 +33,7 @@ var fuc = {
         commentsId: 0,
         addMore: false,
         type: 1,
+        scroll: 0,
         openId: "",
         nickName: "",
         headImgUrl:""
@@ -86,8 +87,8 @@ var fuc = {
             return d_hours+"小时前";
         }else if(d_hours<=0 && d_minutes>0){       
             return d_minutes+"分钟前";
-        }else if(d_minutes<0){       
-            return "刚刚";
+        }else if(d<60){       
+            return d+"秒前";
         }else{
             var s = new Date(publishTime*1000);
             // s.getFullYear()+"年";
@@ -126,7 +127,7 @@ var fuc = {
             }
         )
     },
-    /* ————————————获取评论—————————————————— */
+    /* ————————————获取留言—————————————————— */
     getComments: function() {
         var that = this;
         $.ajax({
@@ -149,24 +150,28 @@ var fuc = {
                     if(data.hotList != null && data.hotList.length > 0){
                         var str = "";
                         for(var ii = 0; ii<data.hotList.length; ii++){
-                            str += '<div class="commentItem fl comment_'+ data.hotList[ii].comments.commentsId +'">'+
-                                        '<img src="'+ data.hotList[ii].user.headImgUrl +'" class="fl">'+
-                                        '<div class="commentNickName fl">'+
-                                            '<div class="nickName">'+ data.hotList[ii].user.nickName +'</div>'+
-                                            '<div class="commentLike like_'+ data.hotList[ii].comments.commentsId +'" data-id="'+ data.hotList[ii].comments.commentsId + '">'+
-                                                '<img class="commentLikePng fl" src="'+ (data.hotList[ii].isHasFavour==1?likeimg:dislikeimg) +'" alt="">'+
-                                               ' <span>'+ data.hotList[ii].favourCount +'</span>'+
-                                            '</div>'+
-                                            '<div class="commentContent fs12" data-name="'+ data.hotList[ii].user.nickName +'">'+
-                                                 (data.hotList[ii].comments.isSysDel==1?'该条评论已被删除':data.hotList[ii].comments.content) +
-                                            '</div>'+
-                                            '<div class="commentime fs12 fl">'+ that.jsDateDiff(data.hotList[ii].comments.addTime) +'</div>' +
-                                            '<div class="commentDel fs12 fr '+ (data.hotList[ii].user.openId==that.commentConfig.openId?'':'hide') +'" data-id="'+ data.hotList[ii].comments.commentsId + '">删除</div>' +
-                                       '</div>'+
-                                   '</div>';
+                            str += that.addacomment(data.hotList[ii]);
+                            // str += '<div class="commentItem fl comment_'+ data.hotList[ii].comments.commentsId +'">'+
+                            //             '<img src="'+ data.hotList[ii].user.headImgUrl +'" class="fl">'+
+                            //             '<div class="commentNickName fl">'+
+                            //                 '<div class="nickName">'+ data.hotList[ii].user.nickName +'</div>'+
+                            //                 '<div class="commentLike like_'+ data.hotList[ii].comments.commentsId +'" data-id="'+ data.hotList[ii].comments.commentsId + '">'+
+                            //                     '<img class="commentLikePng fl" src="'+ (data.hotList[ii].isHasFavour==1?likeimg:dislikeimg) +'" alt="">'+
+                            //                    ' <span>'+ data.hotList[ii].favourCount +'</span>'+
+                            //                 '</div>'+
+                            //                 '<div class="commentContent fs12" data-name="'+ data.hotList[ii].user.nickName +'">'+
+                            //                      (data.hotList[ii].comments.isSysDel==1?'该条留言已被删除':data.hotList[ii].comments.content) +
+                            //                 '</div>'+
+                            //                 '<div class="commentime fs12 fl">'+ that.jsDateDiff(data.hotList[ii].comments.addTime) +'</div>' +
+                            //                 '<div class="commentDel fs12 fr '+ (data.hotList[ii].user.openId==that.commentConfig.openId?'':'hide') +'" data-id="'+ data.hotList[ii].comments.commentsId + '">删除</div>' +
+                            //            '</div>'+
+                            //        '</div>';
                         }
                         $('.hotComments').prepend(str);
                         $('.hotComments').show();
+                        for(var ii = 0; ii<data.hotList.length; ii++){
+                            $('.comment_'+ data.hotList[ii].comments.commentsId).css('height',$('.comment_'+ data.hotList[ii].comments.commentsId).height()+'px');
+                        }
                     }
                     if(data.list.length > 0){
                         var str = "";
@@ -174,35 +179,39 @@ var fuc = {
                             that.commentConfig.addMore = true;
                             that.commentEnd();
                         }else{
-                            that.commentNone();
+                            that.commentNoMore();
                         }
                         for(var i = 0; i<data.list.length; i++){
-                            str += '<div class="commentItem fl comment_'+ data.list[i].comments.commentsId +'">'+
-                                        '<img src="'+ data.list[i].user.headImgUrl +'" class="fl">'+
-                                        '<div class="commentNickName fl">'+
-                                            '<div class="nickName">'+ data.list[i].user.nickName +'</div>'+
-                                            '<div class="commentLike like_'+ data.list[i].comments.commentsId +'" data-id="'+ data.list[i].comments.commentsId + '">'+
-                                                '<img class="commentLikePng fl" src="'+ (data.list[i].isHasFavour==1?likeimg:dislikeimg) +'" alt="">'+
-                                               ' <span>'+ data.list[i].favourCount +'</span>'+
-                                            '</div>'+
-                                            '<div class="commentContent fs12" data-name="'+ data.list[i].user.nickName +'">'+
-                                                 (data.list[i].comments.isSysDel==1?'该条评论已被删除':data.list[i].comments.content) +
-                                            '</div>'+
-                                            '<div class="commentime fs12 fl">'+ that.jsDateDiff(data.list[i].comments.addTime) +'</div>' +
-                                            '<div class="commentDel fs12 fr '+ (data.list[i].user.openId==that.commentConfig.openId?'':'hide') +'" data-id="'+ data.list[i].comments.commentsId + '">删除</div>' +
-                                       '</div>'+
-                                   '</div>';
+                            str += that.addacomment(data.list[i]);
+                            // str += '<div class="commentItem fl comment_'+ data.list[i].comments.commentsId +'">'+
+                            //             '<img src="'+ data.list[i].user.headImgUrl +'" class="fl">'+
+                            //             '<div class="commentNickName fl">'+
+                            //                 '<div class="nickName">'+ data.list[i].user.nickName +'</div>'+
+                            //                 '<div class="commentLike like_'+ data.list[i].comments.commentsId +'" data-id="'+ data.list[i].comments.commentsId + '">'+
+                            //                     '<img class="commentLikePng fl" src="'+ (data.list[i].isHasFavour==1?likeimg:dislikeimg) +'" alt="">'+
+                            //                    ' <span>'+ data.list[i].favourCount +'</span>'+
+                            //                 '</div>'+
+                            //                 '<div class="commentContent fs12" data-name="'+ data.list[i].user.nickName +'">'+
+                            //                      (data.list[i].comments.isSysDel==1?'该条留言已被删除':data.list[i].comments.content) +
+                            //                 '</div>'+
+                            //                 '<div class="commentime fs12 fl">'+ that.jsDateDiff(data.list[i].comments.addTime) +'</div>' +
+                            //                 '<div class="commentDel fs12 fr '+ (data.list[i].user.openId==that.commentConfig.openId?'':'hide') +'" data-id="'+ data.list[i].comments.commentsId + '">删除</div>' +
+                            //            '</div>'+
+                            //        '</div>';
                             that.commentConfig.commentsId = data.list[i].comments.commentsId;
                         }
                         $('.newComments').append(str);
                         $('.newComments').show();
+                        for(var ii = 0; ii<data.list.length; ii++){
+                            $('.comment_'+ data.list[ii].comments.commentsId).css('height',$('.comment_'+ data.list[ii].comments.commentsId).height()+'px');
+                        }
                     }else{
-                        if(that.commentConfig.id == 0){
-                            $('.commentNone').show();
+                        if(that.commentConfig.commentsId == 0){
+                            that.commentNoneShow();
                             that.commentEnd();
                         }else{
-                            $('.commentNone').hide();
-                            that.commentNone();
+                            that.commentNoneHide();
+                            that.commentNoMore();
                         }  
                     }
                 }else{
@@ -225,14 +234,39 @@ var fuc = {
         $('.commentMore').hide();
     },
 
-    commentNone:function(){
+    commentNoMore:function(){
         $('.commentMore').show();
         $('.commentMore img').hide();
-        $('.commentMore .txt').html('没有更多评论了。');        
+        $('.commentMore .txt').html('没有更多留言了。');        
+    },
+
+    commentNoneShow:function(){
+        $('.commentNone').fadeIn();
+        $('.commentMore').hide();       
+    },
+
+    commentNoneHide:function(){
+        $('.commentNone').hide(); 
     },
 
     addacomment: function(data){
-
+        var that = this;
+        var str =   '<div class="commentItem fl comment_'+ data.comments.commentsId +'">'+
+                        '<img src="'+ data.user.headImgUrl +'" class="fl">'+
+                        '<div class="commentNickName fl">'+
+                            '<div class="nickName">'+ data.user.nickName +'</div>'+
+                            '<div class="commentLike like_'+ data.comments.commentsId +'" data-id="'+ data.comments.commentsId + '">'+
+                                '<img class="commentLikePng fl" src="'+ (data.isHasFavour==1?likeimg:dislikeimg) +'" alt="">'+
+                               ' <span>'+ data.favourCount +'</span>'+
+                            '</div>'+
+                            '<div class="commentContent fs12" data-name="'+ data.user.nickName +'">'+
+                                 (data.comments.isSysDel==1?'该条留言已被删除':data.comments.content) +
+                            '</div>'+
+                            '<div class="commentime fs12 fl">'+ that.jsDateDiff(data.comments.addTime) +'</div>' +
+                            '<div class="commentDel fs12 fr '+ (data.user.openId==that.commentConfig.openId?'':'hide') +'" data-id="'+ data.comments.commentsId + '">删除</div>' +
+                       '</div>'+
+                   '</div>';
+        return str;
     },
 
     tipshow: function(text){
@@ -267,6 +301,7 @@ var fuc = {
             success: function (data) {
                if (data.code == 0) {
                     $('.addComment').fadeOut();
+                    $('.eventContainer').removeClass('noScroll');
                     var str = '<div class="commentItem fl comment_'+ data.data +'">'+
                                         '<img src="'+ that.commentConfig.headImgUrl +'" class="fl">'+
                                             '<div class="commentNickName fl">'+
@@ -283,22 +318,29 @@ var fuc = {
                                        '</div>'+
                                    '</div>';
                   $('.newComments').prepend(str);
+                  $(".commentCount span").html(parseInt($(".commentCount span").html())+1);
                   $('.commentText').val('');
-                  if($('.commentItem').lenth == 0){
-                    $('.commentNone').show();
+                    setTimeout(function(){
+                        $('.comment_'+ data.data).css('height',$('.comment_'+ data.data).height()+'px');
+                    },300);
+                  
+                  if($('.commentItem').length == 0){
+                    that.commentNoneShow();
                   }else{
-                    $('.commentNone').hide();
+                    that.commentNoneHide();
                     $('.newComments').show();
                   }
                 }else{
                     //接口有问题
-                    that.tipshow('评论失败，请稍后重试~');
+                    that.tipshow('留言失败，请稍后重试~');
                 }
                 that.loadinghide();
+                $("body").scrollTop($('.commentCon').offset().top);
             },
             error: function() {
                 that.loadinghide();
                 that.tipshow('网络连接错误，请检查网络~');
+                $("body").scrollTop(that.commentConfig.scroll);
             }
         });
     },
@@ -317,13 +359,31 @@ var fuc = {
             }, 
             success: function (data) {
                if (data.code == 0 || data.code == 117) {
-                    $('.comment_'+val_id).remove();
-                      if($('.commentItem').lenth == 0){
-                        $('.commentNone').show();
-                      }else{
-                        $('.commentNone').hide();
-                        $('.newComments').show();
-                      }
+                    // $('.comment_'+val_id).remove();
+                    $('.comment_'+val_id).addClass('flipOutX');
+                    $('.comment_'+val_id).animate({height:"0px"},1000,padingOut);
+                    function padingOut(){
+                        $('.comment_'+val_id).animate({padding:"0px"},300,commentHide);
+                    }
+                    function commentHide(){
+                        $('.comment_'+val_id).remove();
+                        $(".commentCount span").html(parseInt($(".commentCount span").html())-1);
+                        // setTimeout(function () {
+                            // console.log('==================='+$('.commentItem').length);
+                            if($('.commentItem').length == 0){
+                                that.commentNoneShow();
+                            }else{
+                                that.commentNoneHide();
+                            }
+                        // }, 300);
+                        
+                    }
+                    // $('.comment_'+val_id).css('height','0');
+                    // $('.comment_'+val_id).css('padding','0');
+                    // setTimeout(function () {
+                    //     $('.comment_'+val_id).remove();
+                    // }, 2000);
+                    
                 }else{
                     //接口有问题
                     that.tipshow('删除失败，请稍后重试~');
@@ -448,9 +508,16 @@ var fuc = {
                     if(dataList.owner)
                         that.config.nickName = dataList.owner.nickName;
                     $('.eventName').html(dataList.event.name);
-                    if (dataList.event.bgColor) {//若用户设置了背景颜色
-                        $('.topCon').css({"height": "120px", "padding-top":"60px","background": dataList.event.bgColor});
-                        $('.compile').css("background",dataList.event.bgColor);
+                    if (dataList.event.bgColor.indexOf('#')>-1) {//若用户设置了背景颜色
+                        $('.topCon').css({"height": "120px", "padding-top":"60px","background-color": dataList.event.bgColor});
+                        $('.compile').css("background-color",dataList.event.bgColor);
+                    } else if (dataList.event.bgColor.indexOf('#') == -1) {//若用户设置了背景颜色
+                        $('.topCon').css({
+                            "height": "200px",
+                            "padding-top": "100px",
+                            "background-image": "url(" + dataList.event.bgColor + ")"
+                        });
+                        $('.compile').css("background", "#6cc");
                     } else if (dataList.event.theme) {//若用户没有设置背景颜色，则从主题中选择
                         $('.topCon').css({
                             "height": "200px",
@@ -460,7 +527,6 @@ var fuc = {
                         $('.compile').css("background", dataList.event.theme.themeColor);
                     }
                     if (dataList.event.eventType == 0) {//提醒事件
-                        wx.wxConfig(1);
                         $('.time .itemCon').html(Dom.transStartTime(dataList.event.startTime));
                         $('.avtivityCon').css("display", "none");
                         $('.remark').css("display", "none");
@@ -483,6 +549,8 @@ var fuc = {
                             $('.starAvatar').attr('data-src',dataList.star.starId);
                             $('.starAvatar').show();
                             that.refreshJoiner();
+                        }else if(that.config.eventType == 1){
+                            $('.compile').show();
                         }
                         that.getShareImg();
                         $('.suitable').css("display", "none");
@@ -559,6 +627,7 @@ var fuc = {
                             if(dataList.isJoiner){
                                 $('.starFooter .joinStar').hide();
                                 $('.starFooter .exitStar').show();
+                                $('.starFooter .exitStar').css('opacity',.5);
                                 $('.starFooter .shareStar').show();
                             }else{
                                 $('.starFooter .joinStar').show();
@@ -573,10 +642,11 @@ var fuc = {
                             $('.eventOwner').attr("src", dataList.owner.headImgUrl);
                             $('.ownerNickName .nickName').html(dataList.owner.nickName);
                         }
-                        if(that.config.eventType == 1){
+                        if(that.config.eventType == 0){
                             wx.wxShare("【 历历LilyCalendar】让回忆与温故成为一件轻松的事情", "这是一个简单操作的日历系统，但却能发挥各式各样和生活有关的活用。");
                         }else if(that.config.eventType == 1 || that.config.eventType == 2){
                             var str = "历历LilyCalendar";
+                            var title = dataList.event.name;
                             var header = null;
                             var adress = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + dataList.event.eventId);
                             if(dataList.user){
@@ -586,7 +656,11 @@ var fuc = {
                                 dataList.owner.nickName;
                                 header = dataList.owner.headImgUrl;
                             }
-                            wx.wxShare(dataList.event.name, "来自 #"+str+" 的诚邀\r\n" + Dom.tranDate(dataList.event.startTime) + '\r\n' + dataList.event.latitude + (dataList.event.longitude==null?"":dataList.event.longitude),
+                            if(that.config.eventType == 2){
+                                title += '【明星行程】' +　title;
+                                header = dataList.star.starHeadPic;
+                            }
+                            wx.wxShare(title, "来自 #"+str+" 的诚邀\r\n" + Dom.tranDate(dataList.event.startTime) + '\r\n' + dataList.event.location + (dataList.event.address==null ?"":dataList.event.address),
                                     adress, header);
                         }
                         
@@ -607,7 +681,7 @@ var fuc = {
         /*----------------------底部自动刷新-----------------------*/
         $(window).on('scroll', function (e) {
             if ($(document).height() - $(this).scrollTop() - $(this).height()<100){
-                if(that.commentConfig.addMore){//加载更多评论
+                if(that.commentConfig.addMore){//加载更多留言
                     that.commentConfig.addMore = false;
                     that.getComments();
                     that.commentLoad();
@@ -646,12 +720,15 @@ var fuc = {
            // console.log('更多粉丝');
         });
 
-        /*    -----------关于评论-----------    */
+        /*    -----------关于留言-----------    */
         $('.commentBtn').on("click",function () {
             if(!that.loginTag()){
                 return;
             }
+            that.commentConfig.scroll = $("body").scrollTop();
+            console.log(that.commentConfig.scroll);
             $('.commentText').val('');
+            $('.eventContainer').addClass('noScroll');
             $('.addComment').fadeIn();
             $('.commentText').trigger('focus');
             // $('.commentText').attr("autofocus");
@@ -661,10 +738,15 @@ var fuc = {
         });
         $('.addComment .cancel').on("tap",function () {
            $('.addComment').fadeOut();
+           $('.eventContainer').removeClass('noScroll');
+           $("body").scrollTop(that.commentConfig.scroll);
         });
         $('.shadow').on("tap",function (e) {
-            if($(e.target).attr('class')=='addComment shadow')
-            $('.addComment').fadeOut();
+            if($(e.target).attr('class')=='addComment shadow'){
+                $('.addComment').fadeOut();
+                $('.eventContainer').removeClass('noScroll');
+            }
+            
            // console.log(e.target);
            // console.log($(e.target).attr('class'));
         });
@@ -672,7 +754,8 @@ var fuc = {
             if($('.commentText').val().trim() == ""){
                 return;
             }
-           $('.addComment').fadeOut();
+           // $('.addComment').fadeOut();
+           // $('.eventContainer').removeClass('noScroll');
            that.sendComments();
         });
         $(".commentText").on("input", function(){
@@ -687,14 +770,19 @@ var fuc = {
             var dataid = $(this).attr('data-id');
             // console.log('.comment_'+dataid);
             // $('.comment_'+$(this).attr('data-id')).remove();
+
             that.delComments(dataid);
         });
         $('.commentList').on("click",'.commentContent',function () {
             if(!that.loginTag()){
                 return;
             }
+            that.commentConfig.scroll = $("body").scrollTop();
+            console.log(that.commentConfig.scroll);
            // $('.commentText').val('回复'+$(this).attr('data-name')+': ');
+           $('.eventContainer').addClass('noScroll');
            $('.addComment').fadeIn();
+
            // $('.commentText').trigger('focus');
            $('.commentText').val("").focus().val('回复'+$(this).attr('data-name')+': '); 
            // $('.commentText').attr("autofocus");
@@ -729,10 +817,10 @@ var fuc = {
         /*  --------------明星分享以及提醒--------------- */
         $('.starFooter .postEventStar').click(function () {
             event.preventDefault();
-            var str = $(this).attr('data-src');
-            if(str != ""){
-                window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId=" + str);
-            }
+            // var str = $(this).attr('data-src');
+            // if(str != ""){
+                window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starIndex.html");
+            // }
         });
 
         $('.starFooter .shareStar').click(function () {
@@ -767,6 +855,7 @@ var fuc = {
                                 if (data.code == 0) {//加入成功后弹出
                                     $('.starFooter .joinStar').hide();
                                     $('.starFooter .exitStar').show();
+                                    $('.starFooter .exitStar').css('opacity',.5);
                                     $('.starFooter .shareStar').show();
                                     // todo 修改该方法
                                     that.refreshJoiner();//刷新参与人数量
@@ -801,10 +890,19 @@ var fuc = {
 
         $('.starFooter .exitStar').click(function () {
             event.preventDefault();
+
+            $('#dialog3').fadeIn();
+            $('#dialog3 #cancel').click(function () {
+                $('#dialog3').fadeOut();
+            });
+        });
+
+        $('#dialog3 #confirm').click(function () {
+            event.preventDefault();
             // $('.starFooter .joinStar').show();
             // $('.starFooter .exitStar').hide();
             // $('.starFooter .shareStar').hide();
-
+            $('#dialog3').fadeOut();
             $('#loadingToast').fadeIn();//显示loading
             $.post(
                 that.config.urlArr[0]+"/event/exit",
@@ -1021,7 +1119,7 @@ var fuc = {
                         var list = data.data;
                         var peopleCount = list.pagination.totalCount;
                         $('.count').html(peopleCount);
-                        if(list.list.length>0){
+                        if(list.list.length>=0){
                             $('.fansCon').show();
                             console.log('----'+$('.fansList').width());
                             var num = Math.floor($('.fansList').width()/35) - 2;
@@ -1032,7 +1130,7 @@ var fuc = {
                             if(peopleCount > num){
                                str += '<img src="'+userMoreImg+'" alt="" class="fansMore fl">';
                             }
-                            for(var i=0;i<num;i++){
+                            for(var i=(num-1);i>=0;i--){
                                 str += '<img src="'+list.list[i].headImgUrl+'" alt="" class="fl">';
                             }
                             $('.fansItem').empty();

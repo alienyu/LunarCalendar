@@ -195,3 +195,10 @@
     background: rgba(0,0,0,0.5);
     display: none;
 }
+
+.yearLine{
+    margin: -24px 0 0 10px;
+    line-height: 40px;
+    float: left;
+    color: #333;
+}

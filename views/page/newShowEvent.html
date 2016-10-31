@@ -121,13 +121,13 @@
     </div>
 
     <div class="commentCon">
-        <!--评论列表-->
+        <!--留言列表-->
         <div class="comment item">
             <div class="icon">
                 <img src="../../assets/imgs/page/newShowEvent/icon_comments.png" alt="">
             </div>
             <div class="itemCon">
-                <div class="commentCount"><span>0</span>条评论</div>
+                <div class="commentCount"><span>0</span>条留言</div>
                 <div class="commentBtn">
                     <div class="commentIcon">
                         <img src="../../assets/imgs/page/newShowEvent/icon_write.png" alt="">
@@ -145,37 +145,37 @@
                                     <img class="commentLikePng fl" src="../../assets/imgs/page/newShowEvent/icon_btn_praise.png" alt="">
                                     1000
                                 </div>
-                                <div class="commentContent fs12" data-name="你猜猜">这是一条很长很长的评论这是一条很长很长的评论这是一条很长很长的评论</div>
+                                <div class="commentContent fs12" data-name="你猜猜">这是一条很长很长的留言这是一条很长很长的留言这是一条很长很长的留言</div>
                                 <div class="commentime fs12 fl">今天</div>
                                 <div class="commentDel fs12 fr" data-id='1223'>删除</div>
                             </div>
                         </div> -->
                         <div class="commentHot fl">
-                            以上为热门评论
+                            以上为热门留言
                         </div>
                     </div>
                     <div class="newComments">
 
                     </div>
-                    <div class="commentNone"><img src="../../assets/imgs/common/icon-NoContent-black.png"><br />暂时还没有人评论</div>
+                    <div class="commentNone"><img src="../../assets/imgs/common/icon-NoContent-black.png"><br />暂时还没有人留言</div>
                     
                     <div class="commentMore fl">
                         <div class="commentAdd">
                             <img class="fl" src="../../assets/imgs/page/newShowEvent/icon_loading.gif" alt="">
                             <div class="txt fl">加载中...</div>
-                            <!-- 没有更多评论了... -->
+                            <!-- 没有更多留言了... -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- 添加评论 -->
+    <!-- 添加留言 -->
     <div class="addComment shadow">
         <div class="containerComment" style="">
             <div class="title fs16">
                 <a href="javascript:;" class="cancel fl">取消</a>
-                <span>写评论</span>
+                <span>写留言</span>
                 <a href="javascript:;" class="finished fr">发送</a>
             </div>
             <div class="textCon">
@@ -252,6 +252,20 @@
             <strong class="weui-dialog__title">温馨提示</strong>
         </div>
         <div class="weui-dialog_bd">您确定要退出该事件吗？</div>
+        <div class="weui-dialog__ft">
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" id="cancel">取消</a>
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" id="confirm">确定</a>
+        </div>
+    </div>
+</div>
+<!--用户取消提醒时的弹框提醒-->
+<div id="dialog3" style="opacity: 0;display: none">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__hd">
+            <strong class="weui-dialog__title">温馨提示</strong>
+        </div>
+        <div class="weui-dialog_bd">您确定要取消提醒吗？</div>
         <div class="weui-dialog__ft">
             <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" id="cancel">取消</a>
             <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" id="confirm">确定</a>

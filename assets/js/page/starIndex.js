@@ -28,6 +28,8 @@ var fuc = {
     },
 
     traceConfig:{
+        nowYearBefore: new Date().getFullYear(),
+        nowYearAfter: new Date().getFullYear(),
         addMore: false,
         starId:"",
         pageSize: 10,
@@ -300,7 +302,7 @@ var fuc = {
                         that.starConfig.addMore = false;
                             var str =   '<div class="starItem swiper-slide" data-src="">'+
                                         '<img src="'+moreStrImg+'" alt="">'+
-                                        '<br><span style="font-size: 8px;">其他明星，陆续开启...</span>'+
+                                        '<br><span>陆续添加中</span>'+
                                     '</div>';
                         starArr.push(str);
                     }
@@ -352,18 +354,21 @@ var fuc = {
                                         data.newsList[i].newsTitle+'</div>';
                             starArr.push(str);
                         }
-                        // console.log(data.newsList.length+'===='+starArr)
+                        console.log(data.newsList.length+'===='+starArr)
                         that.swiper2.appendSlide(starArr);
+                        that.swiper2.slideTo(1, 1000, false);
                     }
                     
                     //添加明星行程
                     var strtemp = "";
                     for(var i = 0;i<data.traceList.length;i++){
+                        if(data.traceList[i].list.length == 0)
+                            continue;
                         var str = "";
                         for(var j=0;j<data.traceList[i].list.length;j++){
                             str +=  '<div class="day_item" data-eventId = "'+data.traceList[i].list[j].trace.eventId+'">'+
                                         '<div class="item_detail cff" style="'+
-                                            (data.traceList[i].list[j].trace.theme == null ? 'background-color: '+ data.traceList[i].list[j].trace.bgColor +';' : 'background-image: '+ data.traceList[i].list[j].trace.theme.themeUrl +';')
+                                            (data.traceList[i].list[j].trace.theme == null ? (data.traceList[i].list[j].trace.bgColor.indexOf('#')>-1 ? 'background-color: '+ data.traceList[i].list[j].trace.bgColor : 'background-image: url('+ data.traceList[i].list[j].trace.bgColor +')' +';' ): 'background-image: url('+ data.traceList[i].list[j].trace.theme.themeUrl +');')
                                         +'"><div class="starShadow">'+
                                             '<h1 class="itemTitle">'+ data.traceList[i].list[j].trace.name +'</h1>'+
                                             '<div class="itemTime fs12">'+Dom.getStarDate(data.traceList[i].date, data.traceList[i].list[j].trace.startTime, data.traceList[i].list[j].trace.endTime, data.traceList[i].list[j].trace.repeatType)+'</div>'+
@@ -388,7 +393,13 @@ var fuc = {
                                         '</div>'+
                                     '</div>';
                         }
+                        var dateline = "";
+                        if(data.traceList[i].date.split('-')[0] != that.traceConfig.nowYearAfter){
+                            that.traceConfig.nowYearAfter = data.traceList[i].date.split('-')[0];
+                            dateline = '<span class="yearLine">'+that.traceConfig.nowYearAfter+'年明星行程</span>';
+                        }
                         strtemp +=  '<div class="dayCon">'+
+                                        dateline+
                                         '<div class="date '+(Dom.compareDate(data.traceList[i].date)?'today':'')+'">'+
                                            '<div class="day fs18">'+data.traceList[i].date.split('-')[2]+'</div>'+
                                             '<div class="month fs12">'+data.traceList[i].date.split('-')[1]+'月</div>'+
@@ -399,10 +410,15 @@ var fuc = {
                     $('.scheduleCon').append(strtemp);
                     that.traceConfig.pageNo ++;
                     // if(data.traceList >= that.traceConfig.pageSize){
-                    if(Math.ceil(data.pagination.totalCount/data.pagination.pageSize) >= data.pagination.pageNo){
-                        that.traceConfig.addMore = true;
-                    }else{
+                        // if(Math.ceil(data.pagination.totalCount/data.pagination.pageSize) >= data.pagination.pageNo){
+                            // that.traceConfig.addMore = true;
+                        // }else{
+                        //     that.traceConfig.addMore = false;
+                        // }
+                    if(data.traceList.length <= 0){
                         that.traceConfig.addMore = false;
+                    }else{
+                        that.traceConfig.addMore = true;
                     }
                     //console.log(that.traceConfig.addMore);
                 }else{

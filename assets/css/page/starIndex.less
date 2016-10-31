@@ -1,5 +1,5 @@
-@import "../common/common.less";
 @import "../common/weui1.0.0.less";
+@import "../common/common.less";
 @import "../common/swiper.min.css";
 @import "../common/star.css";
 
@@ -104,9 +104,9 @@ body{
     }
     .container{
         padding: 10px 0;
-        .month{
-            line-height: 12px;
-        }
+        // .month{
+        //     line-height: 12px;
+        // }
     }
     .itemTitle{
         font-weight: bold;
@@ -135,11 +135,13 @@ body{
         height: 90px;
 /*        padding: 22px 10px 10px;*/
         position: relative;
+        background-size: cover;
+        background-position: right center;
     }
     .starAvatar{
         background-color: #fff;
         background-size: cover;
-        border: 2px solid rgba(255,255,255,.5);
+        border: 2px solid rgba(255,255,255,.9);
         border-radius: 50%;
         width: 60px;
         height: 60px;
@@ -161,7 +163,7 @@ body{
         .name{
             background-color: #fff;
             border-radius: 10px;
-            color: #333;
+            color: #999;
             font-size: 12px;
             padding: 1px 8px;
             margin: 0 auto;
@@ -170,6 +172,7 @@ body{
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
+            line-height: 18px;
         }
     }
     .commentAdd{
