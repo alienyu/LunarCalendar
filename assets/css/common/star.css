@@ -120,6 +120,9 @@
     height:22px;
     line-height: 22px;
 }
+.dayCon .date div.month{
+    line-height: 12px;
+}
 .dayCon .day_item{
     width:100%;
     height:120px;
@@ -149,6 +152,7 @@
     white-space: nowrap;
     height:26px;
     line-height:26px;
+    font-weight: bold;
 }
 .dayCon .day_item .item_detail .itemTime,.datCib ,.day_item .item_detail .itemLocation{
     height:16px;
@@ -156,6 +160,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    line-height: 16px;
 }
 .dayCon .day_item .item_tips{
     width:100%;

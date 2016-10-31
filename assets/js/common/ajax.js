@@ -98,7 +98,7 @@ var Ajax = {
                             } else {
                                 mark = "#";
                                 joinerNum = parseInt(eventList[i].joiners.length)+1;
-                                html += template.replace(/{{eventId}}/g, eventList[i].event.eventId).replace(/{{name}}/g, eventList[i].event.name).replace(/{{time}}/g, transHour(eventList[i].event.startTime)).replace(/{{count}}/g, joinerNum + "人").replace(/{{user}}/g, mark+eventList[i].owner.nickName);
+                                html += template.replace(/{{eventId}}/g, eventList[i].event.eventId).replace(/{{name}}/g, eventList[i].event.name).replace(/{{time}}/g, transHour(eventList[i].event.startTime)).replace(/{{count}}/g, (eventList[i].owner?joinerNum:joinerNum-1) + "人").replace(/{{user}}/g, mark+(eventList[i].owner?eventList[i].owner.nickName:""));
                             }
 
                         }

@@ -57,14 +57,17 @@ var fuc = {
                         $('.newsPublishTime').html(dateArr[1]+"月"+dateArr[2]+"日");
                     }
                     $('.newsContent').html(newsDetail.newsContent);
-                    var shareTime = dateArr[1]+"月"+dateArr[2]+"日&nbsp;"+Dom.getweek(newsDetail.newsPublishTime.split(" ")[0])+"&nbsp;"+Dom.getHourMinute(newsDetail.newsPublishTime),
-                        newsImg = newsDetail.newsPoster;
-                    wx.wxShare(newsDetail.newsTitle,newsDetail.newsSource+"<br>"+shareTime,
-                        that.config.urlArr[0]+"/common/to?url2="+encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId="+that.config.starId),newsImg)
+                    var shareTime = dateArr[1]+"月"+dateArr[2]+"日 "+Dom.getweek(newsDetail.newsPublishTime.split(" ")[0])+" "+Dom.getHourMinute(newsDetail.newsPublishTime),
+                        newsImg = newsDetail.newsPoster,
+                        address = that.config.urlArr[0]+"/common/to?url2="+encodeURIComponent(that.config.urlArr[1]+"/wx/view/newsDetail.html?newsId="+that.config.newsId);
+                    wx.wxShare(newsDetail.newsTitle,newsDetail.newsSource+"\r\n"+shareTime,address,newsImg);
+                }else{
+                    var error = data.msg;
+                    that.tipShow(error);
                 }
             },
             error:function(){
-
+                that.tipShow('网络连接错误，请检查网络~');
             }
         })
     },
@@ -83,10 +86,11 @@ var fuc = {
                     if(data.data.traceList.length>0){
                         $('.recentSchedule').css("display","block");
                         var traceDetail = data.data.traceList[0].list[0];
+                        var startTimeArr = traceDetail.trace.startTime.split(" ")[0].split("-");
                         //console.log(traceDetail);
                         $('.day_item').attr("data-eventid",traceDetail.trace.eventId);
                         $('.itemTitle').html(traceDetail.trace.name);
-                        $('.itemTime').html(Dom.getStarDate(data.data.traceList[0].date,traceDetail.trace.startTime));
+                        $('.itemTime').html(startTimeArr[1]+"月"+startTimeArr[2]+"日 "+Dom.getStarDate(data.data.traceList[0].date,traceDetail.trace.startTime));
                         $('.itemLocation').html(traceDetail.trace.location+"&nbsp;"+(traceDetail.trace.address==null?"":traceDetail.trace.address));
                         $('.joinerCount').html(traceDetail.joinersCount);
                         if(traceDetail.trace.theme){
@@ -97,12 +101,21 @@ var fuc = {
                     }else{
                         $('.recentSchedule').css("display","none");
                     }
+                }else{
+                    var error = data.msg;
+                    that.tipShow(error);
                 }
             },
-            error:function(data){
-
+            error:function(){
+                that.tipShow('网络连接错误，请检查网络~');
             }
         })
+    },
+    tipShow: function(text){
+        $('#dialog2 .weui-dialog__bd').html(text);
+        $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+            $('#dialog2').fadeOut();
+        });
     },
     bindEvent:function(){
         var that = this;

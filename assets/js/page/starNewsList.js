@@ -49,7 +49,13 @@ var fuc = {
                         wx.wxShare("【 历历LilyCalendar】为粉丝提供明星行程，让追星更简单", "来自 #"+name+" 的分享\r\n微信公众号：历历LilyCalendar",
                             that.config.urlArr[0]+"/common/to?url2="+encodeURIComponent(that.config.urlArr[1]+"/wx/view/starNewsList.html?starId="+that.config.starId),headImg);
                     }
+                }else{
+                    var error = data.msg;
+                    that.tipShow(error);
                 }
+            },
+            error:function(){
+                that.tipShow('网络连接错误，请检查网络~');
             }
         });
     },
@@ -89,10 +95,13 @@ var fuc = {
                 }else{
                     //报错
                     that.commentEnd();
+                    var error = data.msg;
+                    that.tipShow(error);
                 }
             },
             error:function(){
                 //报错
+                that.tipShow('网络连接错误，请检查网络~');
             }
         })
     },
@@ -102,6 +111,12 @@ var fuc = {
 
     commentEnd:function(){
         $('.commentMore').hide();
+    },
+    tipShow: function(text){
+        $('#dialog2 .weui-dialog__bd').html(text);
+        $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+            $('#dialog2').fadeOut();
+        });
     },
     bindEvent:function(){
         var that = this;

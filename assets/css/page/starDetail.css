@@ -1,5 +1,5 @@
-@import "../common/common.less";
 @import "../common/weui1.0.0.less";
+@import "../common/common.less";
 @import "../common/star.css";
 
 .starTop{
@@ -18,7 +18,7 @@
     background: rgba(0,0,0,0.2);
 }
 .starTop,.starImg{
-    background-position: center center;
+    background-position: center top;
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -32,12 +32,14 @@
     box-sizing: border-box;
 }
 .starImg{
-    width:56px;
-    height:56px;
-    border: 2px solid rgba(255,255,255,0.5);
+    width:60px;
+    height:60px;
+    border: 2px solid rgba(255,255,255,0.9);
     border-radius: 100%;
     -webkit-border-radius: 100%;
     margin-right: 10px;
+    box-sizing: border-box;
+    -webkit-box-sizing:border-box;
 }
 .starInfo_name{
     text-shadow:0 2px 1px #333;
@@ -78,7 +80,7 @@
     width: 100%;
     height:40px;
     line-height: 40px;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #f5f5f5;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -160,10 +162,11 @@
     line-height:30px;
     padding: 0 20px;
     background: #66CCCC;
-    border-radius: 2px;
-    -webkit-border-radius: 2px;
     text-align: center;
     margin: 0 auto;
+}
+.bottom .follow:active{
+    background: rgba(102,204,204,0.9);
 }
 .bottom .follow img{
     height:20px;
@@ -187,11 +190,14 @@
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    border-bottom: 1px solid #CCCCCC;
+    border-bottom: 1px solid #f5f5f5;
     line-height: 50px;
     padding: 0 10px;
     color: #999;
     position: relative;
+}
+.bottom_item:active{
+    background: rgba(0,0,0,0.1);
 }
 .bottom_item.active{
     color: #66CCCC;
@@ -212,6 +218,9 @@
     height:30px;
     background: #66CCCC;
     color: #fff;
+}
+.bottom_btn a:active{
+    background: rgba(102,204,204,0.9);
 }
 .selectImg{
     width:26px;

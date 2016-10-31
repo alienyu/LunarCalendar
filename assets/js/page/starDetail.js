@@ -57,8 +57,9 @@ var fuc = {
                     }
                     $('.starImg').css("background-image","url("+starDetail.star.starHeadPic+")");//头像
                     that.config.starName = starDetail.star.starName;
-                    that.share(that.config.starName);//设置分享样式
+                    that.share(that.config.starName,starDetail.star.starHeadPic);//设置分享样式
                     $('.name').html(starDetail.star.starName);//名字
+                    document.title = that.config.starName;
                     $('.fansCount').html(starDetail.fans.fansCount);//粉丝数
                     that.config.fansType = starDetail.fans.fansType;//粉丝类型=
                     if(that.config.fansType){
@@ -75,27 +76,33 @@ var fuc = {
                         $('.bottom_item').eq(0).addClass('active');
                     }
                 }else{
-
+                    var error = data.msg;
+                    that.tipShow(error);
                 }
-
             },
             error:function(){
-
+                that.tipShow('网络连接错误，请检查网络~');
             }
         })
     },
-    share:function(starName){
+    share:function(starName,starImg){
         var that = this;
         $.ajax({
             type:"get",
             url:that.config.urlArr[0]+"/user/detail",
             success:function(data){
                 if(data.code == 0){
-                    var name = data.data.nickName,
-                        headImg = data.data.headImgUrl;
-                    wx.wxShare("【 "+starName+"】最新消息动态…", "来自 #"+name+" 的分享",
-                        that.config.urlArr[0]+"/common/to?url2="+encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId="+that.config.starId),headImg);
+                    var name = data.data.nickName;
+                    wx.wxShare("【 "+starName+"】最新消息动态…", "来自 #"+name+" 的分享\r\n微信公众号：历历LilyCalendar",
+                        that.config.urlArr[0]+"/common/to?url2="+encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId="+that.config.starId),starImg);
+                }else{
+                    //todo
+                    var error = data.msg;
+                    that.tipShow(error);
                 }
+            },
+            error:function(){
+                that.tipShow('网络连接错误，请检查网络~');
             }
         });
     },
@@ -111,10 +118,16 @@ var fuc = {
             },
             async: true,
             success:function(data){
-                $('#loadingToast').fadeOut();//显示loading
+                if(data.code == 0){
+                    $('#loadingToast').fadeOut();//显示loading
+                }else{
+                    var error = data.msg;
+                    that.tipShow(error);
+                }
             },
             error:function(){
-
+                $('#loadingToast').fadeOut();//显示loading
+                that.tipShow('网络连接错误，请检查网络~');
             }
         })
     },
@@ -135,27 +148,28 @@ var fuc = {
                 //console.log(data);
                 if(data.code == 0){
                     //$('#loadingToast').fadeOut();//隐藏Loading
-                    if(data.data.traceList.length>0){
-                        var html = "",newsStr = "",traceList = data.data.traceList;
-                        if(that.config.pageNo == 1){
-                            if(data.data.newsList.length>0){
-                                for(var m=0;m<data.data.newsList.length;m++){//获取新闻内容
-                                    if(m<5){//最多显示五条新闻
-                                        if(data.data.newsList[m].newsTag){
-                                            newsStr +=  "<div class='news_list newsTitle' data-newsid='"+data.data.newsList[m].newsId+"'><div class='starNewsLeft'>"+data.data.newsList[m].newsTag+"</div>"+data.data.newsList[m].newsTitle+"</div>";
-                                        }else{
-                                            newsStr +=  "<div class='news_list newsTitle' data-newsid='"+data.data.newsList[m].newsId+"'>"+data.data.newsList[m].newsTitle+"</div>";
-                                        }
+                    var html = "",newsStr = "",traceList = data.data.traceList;
+                    if(that.config.pageNo == 1){
+                        if(data.data.newsList.length>0){
+                            for(var m=0;m<data.data.newsList.length;m++){//获取新闻内容
+                                if(m<5){//最多显示五条新闻
+                                    if(data.data.newsList[m].newsTag){
+                                        newsStr +=  "<div class='news_list newsTitle' data-newsid='"+data.data.newsList[m].newsId+"'><div class='starNewsLeft'>"+data.data.newsList[m].newsTag+"</div>"+data.data.newsList[m].newsTitle+"</div>";
+                                    }else{
+                                        newsStr +=  "<div class='news_list newsTitle' data-newsid='"+data.data.newsList[m].newsId+"'>"+data.data.newsList[m].newsTitle+"</div>";
                                     }
                                 }
                             }
                         }
+                    }
+                    if(data.data.traceList.length>0){
                         for(var i=0;i<traceList.length;i++){//遍历父层，显示每天
                             var dayList="";
-                            //时间显示尚未处理
-                            var timeArr = traceList[i].date.split("-");
-                            html = that.config.template.replace(/{{date}}/g,traceList[i].date).replace(/{{day}}/g,timeArr[2]).replace(/{{month}}/g,timeArr[1]+"月");
-                            $('.scheduleCon').append(html);
+                            if(traceList[i].list.length>0){
+                                var timeArr = traceList[i].date.split("-");
+                                html = that.config.template.replace(/{{date}}/g,traceList[i].date).replace(/{{day}}/g,timeArr[2]).replace(/{{month}}/g,timeArr[1]+"月");
+                                $('.scheduleCon').append(html);
+                            }
                             for(var j=0;j<traceList[i].list.length;j++){
                                 var traceDetail = traceList[i].list[j].trace;
                                 var times = Dom.getStarDate(traceList[i].date,traceDetail.startTime);
@@ -185,8 +199,10 @@ var fuc = {
                             var ii = that.config.pageNo>1?(that.config.pageNo-1).toString()+i:i;
                             $('.dayCon').eq(ii).append(dayList);
                         }
+                        console.log(that.config.pageNo);
                         if(that.config.pageNo == 1){
                             var firstDate = $('.dayCon').eq(0).attr("data-date");
+                            console.log(firstDate);
                             if(Dom.compareDate(firstDate)){//第一条数据的日期为当天
                                 $('.date').eq(0).addClass("today");
                                 var newsCon = "<div class='news_con c99 fs12'>"+newsStr+"<div class='news_list toMore'>查看"+that.config.starName+"相关新闻</div></div></div>";
@@ -194,7 +210,7 @@ var fuc = {
                             }else{//第一条数据的日期不是当天，则添加一个当天的dayCon
                                 var today = new Date();
                                 var day = today.getDate(),month = today.getMonth()+1,year = today.getFullYear();
-                                var todayCon = "<div class='dayCon' data-date='"+(year+"-"+month+"-"+day)+"'><div class='date today'><div class='day fs18'>"+day+"</div><div class='month fs12'>"+month+"月"+"</div></div><div class='news_con c99 fs12'>"+newsStr+"<div class='news_list toMore'>查看"+that.config.starName+"相关新闻</div></div></div></div>";
+                                var todayCon = "<div class='dayCon' data-date='"+(year+"-"+month+"-"+day)+"'><div class='date today'><div class='day fs18'>"+day+"</div><div class='month fs12'>"+month+"月"+"</div></div><div class='news_con c33 fs12'>"+newsStr+"<div class='news_list toMore'>查看"+that.config.starName+"相关新闻</div></div></div></div>";
                                 $('.scheduleCon').prepend(todayCon);
                             }
                         }
@@ -206,16 +222,25 @@ var fuc = {
                         }
                         that.config.pageNo++;
                     }else{
+                        if(that.config.pageNo == 1){
+                            var today = new Date();
+                            var day = today.getDate(),month = today.getMonth()+1,year = today.getFullYear();
+                            var todayCon = "<div class='dayCon' data-date='"+(year+"-"+month+"-"+day)+"'><div class='date today'><div class='day fs18'>"+day+"</div><div class='month fs12'>"+month+"月"+"</div></div><div class='news_con c33 fs12'>"+newsStr+"<div class='news_list toMore'>查看"+that.config.starName+"相关新闻</div></div></div></div>";
+                            $('.scheduleCon').prepend(todayCon);
+                        }
                         that.config.addMore = false;
+                        that.commentEnd();
                     }
                 }else{
                     //报错
+                    var error = data.msg;
+                    that.tipShow(error);
                     that.commentEnd();
                 }
             },
             error:function(){
                 //报错
-
+                that.tipShow('网络连接错误，请检查网络~');
             }
         })
     },
@@ -225,6 +250,12 @@ var fuc = {
 
     commentEnd:function(){
         $('.commentMore').hide();
+    },
+    tipShow: function(text){
+        $('#dialog2 .weui-dialog__bd').html(text);
+        $('#dialog2').fadeIn().on('click', '.weui-dialog__btn', function () {
+            $('#dialog2').fadeOut();
+        });
     },
     bindEvent:function(){
         var that = this;
@@ -269,11 +300,14 @@ var fuc = {
                                     }else{
                                         //报错
                                         $('#loadingToast').fadeOut();//隐藏loading
+                                        var error = data.msg;
+                                        that.tipShow(error);
                                     }
                                 },
                                 error:function(){
                                     //网络问题
                                     $('#loadingToast').fadeOut();//隐藏loading
+                                    that.tipShow('网络连接错误，请检查网络~');
                                 }
                             })
                         }else{//没有关注我们，弹出二维码
@@ -292,10 +326,15 @@ var fuc = {
                                         $('.qrcodeImg').html("");
                                         $('.qrcodeImg').append(html);
                                         $('.wxQrcode').css("display", "block");
+                                    }else{
+                                        $('#loadingToast').fadeOut();//隐藏loading
+                                        var error = data.msg;
+                                        that.tipShow(error);
                                     }
                                 },
                                 error:function(){
                                     $('#loadingToast').fadeOut();//隐藏loading
+                                    that.tipShow('网络连接错误，请检查网络~');
                                 }
                             });
                         }
@@ -304,6 +343,7 @@ var fuc = {
                 error:function(){
                     //网络问题
                     $('#loadingToast').fadeOut();//隐藏loading
+                    that.tipShow('网络连接错误，请检查网络~');
                 }
             });
         });
@@ -329,10 +369,13 @@ var fuc = {
                         $(domId).parent().find(".joinerCount").html(parseInt(joinerCount)-1);
                     }else{
                         $('#loadingToast').fadeOut();//隐藏loading
+                        var error = data.msg;
+                        that.tipShow(error);
                     }
                 },
                 error:function(){
                     $('#loadingToast').fadeOut();//隐藏loading
+                    that.tipShow('网络连接错误，请检查网络~');
                 }
             })
         });
@@ -353,19 +396,45 @@ var fuc = {
         /*--------点击追TA的选择列表中的确定按钮------*/
         $('.bottom_btn').on('tap',function(){
             $('#loadingToast').fadeIn();//显示loading
-            $('.bottomSelect').animate({"bottom":"-300px"},200,function(){
-                $('.bottomSelect').css("display","none");
-            });
-            $('.shadow').css("display","none");
-            $('.follow img').removeClass('hide');
-            $('.bottomTxt').addClass('hide');
-            $('.selected').removeClass('hide');
-            if(that.config.fansType == 0){
-                var fansNum = parseInt($('.fansCount').html());
-                $('.fansCount').html(fansNum+1);
-            }
-            that.config.fansType = $('.bottom_item.active').index();
-            that.changeFansType(that.config.fansType);
+            $.ajax({
+                type:"get",
+                url:that.config.urlArr[0]+"/wx/isSubscribe",
+                async:true,
+                success:function(data){
+                    if(data.code == 0){
+                        if(data.data){
+                            $('.bottomSelect').animate({"bottom":"-300px"},200,function(){
+                                $('.bottomSelect').css("display","none");
+                            });
+                            $('.shadow').css("display","none");
+                            $('.follow img').removeClass('hide');
+                            $('.bottomTxt').addClass('hide');
+                            $('.selected').removeClass('hide');
+                            if(that.config.fansType == 0){
+                                var fansNum = parseInt($('.fansCount').html());
+                                $('.fansCount').html(fansNum+1);
+                            }
+                            that.config.fansType = $('.bottom_item.active').index();
+                            that.changeFansType(that.config.fansType);
+                        }else{
+                            $('#loadingToast').fadeOut();
+                            $('.bottomSelect').animate({"bottom":"-300px"},200,function(){
+                                $('.bottomSelect').css("display","none")
+                            });
+                            $('.shadow').css("display","none");
+                            $('.liLi').css("display", "block");
+                        }
+                    }else{
+                        $('#loadingToast').fadeOut();//隐藏loading
+                        var error = data.msg;
+                        that.tipShow(error);
+                    }
+                },
+                error:function(){
+                    $('#loadingToast').fadeOut();//隐藏loading
+                    that.tipShow('网络连接错误，请检查网络~');
+                }
+            })
         });
         /*-----------点击粉丝选择列表逻辑处理------------*/
         $('.bottom_item').on('tap',function(){
@@ -377,53 +446,61 @@ var fuc = {
                 url: that.config.urlArr[0] + "/wx/isSubscribe",
                 async: true,
                 success: function (data) {
-                    if(data.data){//已经关注了我们
-                        if($(domId).hasClass("active")){//点击已选中选项，取消关注
-                            $(domId).removeClass('active');
-                            $('.follow').removeClass('active');
-                            $('.bottomTxt').removeClass('hide');
-                            $('.selected').addClass('hide');
-                            $('.follow img').addClass('hide');
-                            $('.bottom_item').eq(0).addClass('active');
-                            if(that.config.fansType !=0){
-                                var fansNum = parseInt($('.fansCount').html());
-                                //console.log(that.config.fansType);
-                                $('.fansCount').html(fansNum-1);
+                    if(data.code == 0){
+                        if(data.data){//已经关注了我们
+                            if($(domId).hasClass("active")){//点击已选中选项，取消关注
+                                $(domId).removeClass('active');
+                                $('.follow').removeClass('active');
+                                $('.bottomTxt').removeClass('hide');
+                                $('.selected').addClass('hide');
+                                $('.follow img').addClass('hide');
+                                $('.bottom_item').eq(0).addClass('active');
+                                if(that.config.fansType !=0){
+                                    var fansNum = parseInt($('.fansCount').html());
+                                    //console.log(that.config.fansType);
+                                    $('.fansCount').html(fansNum-1);
+                                }
+                                that.config.fansType = 0;//不追星
+                            }else{
+                                for(var i=0;i<$('.bottom_item').size();i++){
+                                    $('.bottom_item').eq(i).removeClass('active');
+                                }
+                                $(domId).addClass('active');
+                                $('.follow').addClass('active');
+                                $('.bottomTxt').addClass('hide');
+                                $('.selected').removeClass('hide');
+                                $('.follow img').removeClass('hide');
+                                if(that.config.fansType == 0){
+                                    var fansNum = parseInt($('.fansCount').html());
+                                    //console.log(that.config.fansType);
+                                    $('.fansCount').html(fansNum+1);
+                                }
+                                that.config.fansType = $(domId).index();//追星
                             }
-                            that.config.fansType = 0;//不追星
+                            //console.log(that.config.fansType);
+                            $('.bottomSelect').animate({"bottom":"-300px"},200,function(){
+                                $('.bottomSelect').css("display","none")
+                            });
+                            $('.shadow').css("display","none");
+                            that.changeFansType(that.config.fansType);
+                            //that.getFansCount();
                         }else{
-                            for(var i=0;i<$('.bottom_item').size();i++){
-                                $('.bottom_item').eq(i).removeClass('active');
-                            }
-                            $(domId).addClass('active');
-                            $('.follow').addClass('active');
-                            $('.bottomTxt').addClass('hide');
-                            $('.selected').removeClass('hide');
-                            $('.follow img').removeClass('hide');
-                            if(that.config.fansType == 0){
-                                var fansNum = parseInt($('.fansCount').html());
-                                //console.log(that.config.fansType);
-                                $('.fansCount').html(fansNum+1);
-                            }
-                            that.config.fansType = $(domId).index();//追星
+                            $('#loadingToast').fadeOut();
+                            $('.bottomSelect').animate({"bottom":"-300px"},200,function(){
+                                $('.bottomSelect').css("display","none")
+                            });
+                            $('.shadow').css("display","none");
+                            $('.liLi').css("display", "block");
                         }
-                        //console.log(that.config.fansType);
-                        $('.bottomSelect').animate({"bottom":"-300px"},200,function(){
-                            $('.bottomSelect').css("display","none")
-                        });
-                        $('.shadow').css("display","none");
-                        that.changeFansType(that.config.fansType);
-                        //that.getFansCount();
                     }else{
-                        $('.bottomSelect').animate({"bottom":"-300px"},200,function(){
-                            $('.bottomSelect').css("display","none")
-                        });
-                        $('.shadow').css("display","none");
-                        $('.liLi').css("display", "block");
+                        $('#loadingToast').fadeOut();
+                        var error = data.msg;
+                        that.tipShow(error);
                     }
                 },
                 error:function(){
-
+                    $('#loadingToast').fadeOut();
+                    that.tipShow('网络连接错误，请检查网络~');
                 }
             })
 
