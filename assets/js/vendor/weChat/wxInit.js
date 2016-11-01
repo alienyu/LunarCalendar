@@ -14,7 +14,8 @@ function urlConfiguration(){
     }
 }
 var wxConfig = {
-    wxConfig: function (type) {
+    wxConfig: function (type,obj) {
+        var that = this;
         var url = window.location.href;
         var urlArr = url.split("#");
         var noncestr = "";
@@ -73,6 +74,10 @@ var wxConfig = {
                                 "menuItem:share:brand"
                             ] // 要显示的菜单项，所有menu项见附录3
                         });
+
+                        if(type == 2){
+                            that.wxShare(obj.title, obj.desc, obj.link, obj.img);
+                        }
                     })
                 }
             }

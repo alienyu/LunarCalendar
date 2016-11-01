@@ -43,7 +43,7 @@ var fuc = {
     init: function() {
         var that = this;
         pageLoad({backgroundColor: "#fff"});
-        wx.wxConfig(1);
+        // wx.wxConfig(1);
         this.config.urlArr = Dom.configuration();
         this.bindEvent();
         this.rem();
@@ -96,8 +96,12 @@ var fuc = {
                     str = data.nickName;
                     header = data.headImgUrl;
                 }
-                wx.wxShare("【历历LilyCalendar】为粉丝提供明星行程，让追星更简单", "来自 #"+str+" 的分享\r\n微信公众号:历历LilyCalendar",
-                            adress, header);
+                var obj = new Object();
+                obj.title = "【历历LilyCalendar】为粉丝提供明星行程，让追星更简单" ;
+                obj.desc  = "来自 #"+str+" 的分享\r\n微信公众号:历历LilyCalendar";
+                obj.link = adress;
+                obj.img = header;
+                wx.wxConfig(2,obj);
             },
             error:function(){
                 
@@ -125,20 +129,21 @@ var fuc = {
         $('.starList').on('click', '.starItem',function(){
             // console.log($(this).attr('data-src'));
             //window.location.href = "http://baidu.com";
-            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starNewsList.html");
-            // var str = $(this).attr('data-src');
-            // if(str != ""){
-            //     window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId=" + str);
-            // }  
+            
+            var str = $(this).attr('data-src');
+            if(str != ""){
+                window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId=" + str);
+            }  
         });
         /* -----------点击去明星八卦页面-------- */
         $('.starNews').on('click', '.news',function(){
             // console.log($(this).attr('data-src'));
             //window.location.href = "http://baidu.com";
-            var str = $(this).attr('data-id');
-            if(str != ""){
-                window.location.href = that.config.urlArr[1]+"/wx/view/newsDetail.html?newsId=" + str;
-            }  
+            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starNewsList.html");
+            // var str = $(this).attr('data-id');
+            // if(str != ""){
+            //     window.location.href = that.config.urlArr[1]+"/wx/view/newsDetail.html?newsId=" + str;
+            // }  
         });
         /*----------点击提醒我，加入事件-----------*/
         $('.starNewsList').on('tap','.join',function(){
@@ -332,7 +337,7 @@ var fuc = {
     },
 
     getStarNewsOver: function(){
-        $('.commentAdd').html('没有了').css('color','#ccc');
+        $('.commentAdd').html('木有啦，请耐心等待吧').addClass('ccc fs12');
         $('.commentAdd').show();
     },
 

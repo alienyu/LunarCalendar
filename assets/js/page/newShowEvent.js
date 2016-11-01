@@ -102,7 +102,7 @@ var fuc = {
 
     renderPage: function () {
         var that = this;
-        wx.wxConfig(1);
+       // wx.wxConfig(1);
         $('.eventContainer').css("visibility","visible");
         setTimeout(function(){
             // that.getJoiner();
@@ -237,7 +237,7 @@ var fuc = {
     commentNoMore:function(){
         $('.commentMore').show();
         $('.commentMore img').hide();
-        $('.commentMore .txt').html('没有了').css("color","#ccc").removeClass('fl');
+        $('.commentMore .txt').html('木有更多内容啦').addClass('ccc fs12').removeClass('fl');
     },
 
     commentNoneShow:function(){
@@ -645,8 +645,15 @@ var fuc = {
                             $('.eventOwner').attr("src", dataList.owner.headImgUrl);
                             $('.ownerNickName .nickName').html(dataList.owner.nickName);
                         }
+
+                        var obj = new Object();
+                        obj.title = "【 历历LilyCalendar】让回忆与温故成为一件轻松的事情" ;
+                        obj.desc  = "这是一个简单操作的日历系统，但却能发挥各式各样和生活有关的活用。";
+                        obj.link = null;
+                        obj.img = null;
+
                         if(that.config.eventType == 0){
-                            wx.wxShare("【 历历LilyCalendar】让回忆与温故成为一件轻松的事情", "这是一个简单操作的日历系统，但却能发挥各式各样和生活有关的活用。");
+                            wx.wxConfig(2,obj);
                         }else if(that.config.eventType == 1 || that.config.eventType == 2){
                             var str = "历历LilyCalendar";
                             var title = dataList.event.name;
@@ -663,8 +670,11 @@ var fuc = {
                                 title = '【明星行程】' +　title;
                                 header = dataList.star.starHeadPic;
                             }
-                            wx.wxShare(title, "来自 #"+str+" 的诚邀\r\n" + Dom.tranDate(dataList.event.startTime) + '\r\n' + dataList.event.location + (dataList.event.address==null ?"":dataList.event.address),
-                                    adress, header);
+                            obj.title =title ;
+                            obj.desc  = "来自 #"+str+" 的诚邀\r\n" + Dom.tranDate(dataList.event.startTime) + '\r\n' + dataList.event.location + (dataList.event.address==null ?"":dataList.event.address);
+                            obj.link = adress;
+                            obj.img = header;
+                            wx.wxConfig(2,obj);
                         }
                         
                         $('.commentCon').show();
