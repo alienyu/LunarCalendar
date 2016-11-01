@@ -80,16 +80,17 @@ var fuc = {
                                     .replace(/{{newsSource}}/g,newsList[i].newsSource == null ? "":newsList[i].newsSource).replace(/{{starName}}/g,newsList[i].star.starName == null ?"":newsList[i].star.starName);
                         }
                         $('.news').append(html);
-                        that.commentEnd();
                         if(newsList.length>=10){
+                            that.commentEnd();
                             that.config.addMore = true;
                             that.config.pageNo++;
                         }else{
+                            that.getStarNewsOver();
                             that.config.addMore = false;
                         }
                     }else{
                         //没有数据
-                        that.commentEnd();
+                        that.getStarNewsOver();
                         that.config.addMore = false;
                     }
                 }else{
@@ -108,7 +109,10 @@ var fuc = {
     commentLoad:function(){
         $('.commentMore').show();
     },
-
+    getStarNewsOver: function(){
+        $('.commentAdd').html('没有了').css('color','#ccc');
+        $('.commentAdd').show();
+    },
     commentEnd:function(){
         $('.commentMore').hide();
     },

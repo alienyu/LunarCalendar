@@ -4,7 +4,7 @@
 
 .starTop{
     width:100%;
-    height:180px;
+    height:200px;
     background: #66CCCC;
 }
 .starTop .topShadow{
@@ -63,9 +63,14 @@
     box-sizing: border-box;
     padding: 10px 0 51px;
     position: relative;
+    overflow: hidden;
 }
 .line{
     height:100%;
+    z-index: 1;
+}
+.dayCon .date{
+    z-index: 10;
 }
 .news_con{
     width:100%;
@@ -123,8 +128,10 @@
 }
 
 .commentMore {
-    margin: 5px auto;
+    margin: 0 auto;
     width: 100%;
+    padding: 5px 0 20px;
+    background: #f5f5f5;
 }
 .commentAdd {
     width: 120px;
@@ -151,6 +158,7 @@
     box-sizing: border-box;
     padding: 10px;
     background: rgba(255,255,255,0.9);
+    z-index: 10;
 }
 .bottom span{
     /*display: block;*/

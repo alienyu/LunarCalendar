@@ -14,6 +14,7 @@ var fuc = {
         starName:"",
         urlArr:"",
         pageNo:"",
+        num:0,
         addMore:false,
         template:$('#dayListTemplate').html(),
         template2:$('#itemListTemplate').html(),
@@ -32,9 +33,9 @@ var fuc = {
         var that = this;
         wx.wxConfig(1);
         that.getStarDetail();
-        var screenHeight = $(document.body).height(),
-            topHeight = $('.starTop').height();
-        var otherHeight = screenHeight - topHeight - 50+"px";
+        var screenHeight = parseInt($(document.body).height()),
+            topHeight = parseInt($('.starTop').height());
+        var otherHeight = screenHeight - topHeight - 50 +"px";
         $('.container').css("min-height",otherHeight);
         that.getStarTrace();
     },
@@ -163,20 +164,23 @@ var fuc = {
                             }
                         }
                     }
-                    if(data.data.traceList.length>0){
+                    if(traceList.length>0){
                         for(var i=0;i<traceList.length;i++){//遍历父层，显示每天
                             var dayList="";
                             if(traceList[i].list.length>0){
                                 var timeArr = traceList[i].date.split("-");
-                                if(timeArr[0] != that.config.nowYear){
-                                    that.config.nowYear = timeArr[0];
+                                if(parseInt(timeArr[0]) != that.config.nowYear){
+                                    that.config.nowYear = parseInt(timeArr[0]);
                                     dateLineStr = '<span class="yearLine">'+that.config.nowYear+'年明星行程</span>';
+                                }else{
+                                    dateLineStr = "";
                                 }
                                 html = that.config.template.replace(/{{dateLine}}/g,dateLineStr).replace(/{{date}}/g,traceList[i].date).replace(/{{day}}/g,timeArr[2]).replace(/{{month}}/g,timeArr[1]+"月");
                                 $('.scheduleCon').append(html);
                             }
                             for(var j=0;j<traceList[i].list.length;j++){
                                 var traceDetail = traceList[i].list[j].trace;
+
                                 var times = Dom.getStarDate(traceList[i].date,traceDetail.startTime);
                                 //console.log(times);
                                 if(traceList[i].list[j].hasJoin){//已加入事件
@@ -210,13 +214,11 @@ var fuc = {
 
                                 }
                             }
-                            var ii = that.config.pageNo>1?(that.config.pageNo-1).toString()+i:i;
-                            $('.dayCon').eq(ii).append(dayList);
+                            $('.dayCon').eq(that.config.num).append(dayList);
+                            that.config.num++;
                         }
-                        console.log(that.config.pageNo);
                         if(that.config.pageNo == 1){
                             var firstDate = $('.dayCon').eq(0).attr("data-date");
-                            console.log(firstDate);
                             if(Dom.compareDate(firstDate)){//第一条数据的日期为当天
                                 $('.date').eq(0).addClass("today");
                                 var newsCon = "<div class='news_con c99 fs12'>"+newsStr+"<div class='news_list toMore'>查看"+that.config.starName+"相关新闻</div></div></div>";

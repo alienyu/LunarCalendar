@@ -293,7 +293,7 @@ var fuc = {
         Dom.autoTextarea(document.getElementById("eventTitle"));
         setTimeout(function(){
             wx.wxShare("【 历历LilyCalendar】让回忆与温故成为一件轻松的事情", "这是一个简单操作的日历系统，但却能发挥各式各样和生活有关的活用。");
-        },1000);
+        },1500);
         /*---------------------------------开始时间、结束时间、指定提醒时间三个地方的日期选择功能---------------------------------*/
         this.selectTimes('#startTime', '.startCon').setVal(new Date(that.setInitTime($('.startCon'))));
         this.selectTimes('#endTime', '.endCon').setVal(new Date(that.setInitTime($('.endCon'))));
@@ -387,7 +387,7 @@ var fuc = {
                         }
                     }
                     if (tipType == 3) {
-                        $('.remindTime').html(Dom.tranDate(eventList.event.tipTime));
+                        $('.remindTime').html(Dom.tranDate(eventList.event.tipTime)).attr("id",eventList.event.tipTime);
                         $('.remindTime').animate({"height": "30px"}, 200);
                         $('#remindTime').css("display", "block");
                     }else{
