@@ -198,8 +198,8 @@
 }
 
 .yearLine{
-    margin: -29px 0 0 10px;
-    line-height: 40px;
-    float: left;
+    margin: 60px 0 -110px 60px;
     color: #333;
+    height: 100px;
+    display: block;
 }

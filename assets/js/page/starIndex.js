@@ -125,10 +125,11 @@ var fuc = {
         $('.starList').on('click', '.starItem',function(){
             // console.log($(this).attr('data-src'));
             //window.location.href = "http://baidu.com";
-            var str = $(this).attr('data-src');
-            if(str != ""){
-                window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId=" + str);
-            }  
+            window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starNewsList.html");
+            // var str = $(this).attr('data-src');
+            // if(str != ""){
+            //     window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId=" + str);
+            // }  
         });
         /* -----------点击去明星八卦页面-------- */
         $('.starNews').on('click', '.news',function(){
@@ -330,6 +331,11 @@ var fuc = {
         $('.commentAdd').hide();
     },
 
+    getStarNewsOver: function(){
+        $('.commentAdd').html('没有了').css('color','#ccc');
+        $('.commentAdd').show();
+    },
+
     getStarNews: function() {
         var that = this;
         $.ajax({
@@ -344,11 +350,15 @@ var fuc = {
             }, 
             success: function (data) {              
                if (data.code == 0) {
+                    that.getStarNewsLoaded();
                     data = data.data;
                     //添加明星八卦
                     if(data.newsList!= null){
                         var starArr = [];
-                        for(var i=0;i<data.newsList.length;i++){
+                        var num = data.newsList.length;
+                        if(num > 3)
+                            num = 3;
+                        for(var i=0;i<num;i++){
                             var str =   '<div class="news swiper-slide" data-id="'+data.newsList[i].newsId+'">'+
                                             (data.newsList[i].newsTag == "" || data.newsList[i].newsTag == undefined ?'':('<div class="starNewsLeft">'+data.newsList[i].newsTag+'</div>'))+
                                         data.newsList[i].newsTitle+'</div>';
@@ -388,7 +398,7 @@ var fuc = {
                                             '</div>'+
                                             '<div class="hasJoin c6c" style="display: '+(data.traceList[i].list[j].hasJoin == true?'':'none')+'">'+
                                                 '<img src="'+unjoinImg+'" alt="">'+
-                                                '<span class="opa5">已提醒</span>'+
+                                                '<span class="opa5">已加入</span>'+
                                             '</div>'+
                                         '</div>'+
                                     '</div>';
@@ -398,8 +408,8 @@ var fuc = {
                             that.traceConfig.nowYearAfter = data.traceList[i].date.split('-')[0];
                             dateline = '<span class="yearLine">'+that.traceConfig.nowYearAfter+'年明星行程</span>';
                         }
-                        strtemp +=  '<div class="dayCon">'+
-                                        dateline+
+                        strtemp +=  dateline+
+                                    '<div class="dayCon">'+
                                         '<div class="date '+(Dom.compareDate(data.traceList[i].date)?'today':'')+'">'+
                                            '<div class="day fs18">'+data.traceList[i].date.split('-')[2]+'</div>'+
                                             '<div class="month fs12">'+data.traceList[i].date.split('-')[1]+'月</div>'+
@@ -417,6 +427,7 @@ var fuc = {
                         // }
                     if(data.traceList.length <= 0){
                         that.traceConfig.addMore = false;
+                        that.getStarNewsOver();
                     }else{
                         that.traceConfig.addMore = true;
                     }
@@ -425,7 +436,7 @@ var fuc = {
                     //接口有问题
                     // that.tipshow('明星列表拉取失败，请稍后重试~');
                 }
-                that.getStarNewsLoaded();
+                
             },
             error: function() {
                 that.getStarNewsLoaded();
