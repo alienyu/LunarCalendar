@@ -519,23 +519,44 @@ var fuc = {
             that.mapinputshow();
         });
         $(".tipinput").on("input", function(){
-            // console.log(this.value);
-            var placeSearch = new AMap.PlaceSearch({
-                //map: map
-            });  //构造地点查询类
-            AMap.event.addListener(placeSearch, "complete", function(data){
-               // console.log(data);
-                var poiArr = data.poiList.pois;
-                if(poiArr.length!=0){
-                    var lngX = poiArr[0].location.getLng();
-                    var latY = poiArr[0].location.getLat();
-                    that.mapConfig.map.setCenter(new AMap.LngLat(lngX, latY));
-                }else{
-                    $('.listCon').empty();
+
+            var autoOptions = {
+                city: "020" //城市，默认全国
+            };
+            autocomplete= new AMap.Autocomplete(autoOptions);
+            autocomplete.search($(".tipinput").val(), function(status, result){
+                //TODO:开发者使用result自己进行下拉列表的显示与交互功能
+                console.log(result);
+                if(result.tips){
+                    that.mapConfig.pois = result.tips;
+                    $('.listCon').html("");
+                    var html = "", addressList = "";
+                    for (var i = 0; i < that.mapConfig.pois.length; i++) {
+                        html += that.mapConfig.template.replace(/{{name}}/g, that.mapConfig.pois[i].name).replace(/{{address}}/g, that.mapConfig.pois[i].address).replace(/{{jw}}/g, that.mapConfig.pois[i].location);
+                    }
+                    $('.listCon').append(html);
                 }
-            });//返回地点查询结果        
-            placeSearch.search(this.value); //关键字查询
+
+                // 附近点显示方式
+                // if(result.tips){
+                //     var poiArr = result.tips;
+                //     if(poiArr.length!=0){
+                //         for(var i = 0 ; i< poiArr.length;i++){
+                //             if(poiArr[0].location != ""){
+                //                 var lngX = poiArr[0].location.getLng();
+                //                 var latY = poiArr[0].location.getLat();
+                //                 that.mapConfig.map.setCenter(new AMap.LngLat(lngX, latY));
+                //                 break;
+                //             }
+                //         }
+                //     }else{
+                //         $('.listCon').empty();
+                //     }
+                // }
+                
+            })
         });
+
         $(".tipfinished").on("touchend", function(){
             $('.tipinput').blur();
             if($('.tipinput').val() == ""){
@@ -796,6 +817,34 @@ var fuc = {
             $('.weather').css("display","-webkit-box");
             var startDate = $('.startCon').attr("id");
             Ajax.getWeather(Dom.getDate(startDate),Dom.getHourMinute(startDate));
+        });
+
+        $('.listCon').on('tap', '.addressItem', function (event) {
+            var jw = $(this).attr('data-jw');
+            that.mapConfig.latitude = jw.split(",")[1];
+            that.mapConfig.longitude = jw.split(",")[0];
+            that.mapConfig.locaName = $(this).find(".name").html();
+            that.mapConfig.locaAddress = $(this).find(".address").html();
+            that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
+            $(".siteName").removeClass("ccc").html(that.mapConfig.locaName);
+            $('.siteAddress').html(that.mapConfig.locaAddress);
+            $('.deleteAddress').css("display","block");//显示删除地址按钮
+            //todo 显示选择地点的天气
+            var startTime = $('.startCon').attr("id");
+            if(!Dom.smallerDate(startTime)){
+                $('.weather').css("display","-webkit-box");
+                Ajax.getLocalWeather(Dom.getDate(startTime),Dom.getHourMinute(startTime),that.mapConfig.latitude,that.mapConfig.longitude);
+            }else{
+                $('.weather').css("display","none");
+            }
+            event.preventDefault();
+            event.stopPropagation();
+            setTimeout(function(){
+                $(".mapShadow .container").animate({"top": "100%"}, 200, function () {
+                    $(this).parent().hide();
+                });
+                $('.shadowBg').fadeOut();
+            },500);
         });
 
         /*---------------点击分享弹层中的按钮-----------------*/
@@ -1136,7 +1185,7 @@ var fuc = {
             dragEnable: true,
             keyboardEnable: false,
             doubleClickZoom: true,
-            zoom: 16
+            zoom: 15
         });
         that.mapConfig.moveendPoint = that.mapConfig.map.getCenter();
 
@@ -1187,6 +1236,8 @@ var fuc = {
             data: {
                 key: "731b7210e04aaa581c04576a4fc3ae5a",
                 location: that.mapConfig.moveendPoint.getLng() + "," + that.mapConfig.moveendPoint.getLat(),
+                // types: "地铁|大学|高中|商场|景点|电影院",
+                radius: 800,
                 page: that.mapConfig.page
             },
             dataType: "json",
@@ -1205,33 +1256,7 @@ var fuc = {
                     html += that.mapConfig.template.replace(/{{name}}/g, that.mapConfig.pois[i].name).replace(/{{address}}/g, that.mapConfig.pois[i].address).replace(/{{jw}}/g, that.mapConfig.pois[i].location);
                 }
                 $('.listCon').append(html);
-                $('.addressItem').on('tap', function (event) {
-                    var jw = $(this).attr('data-jw');
-                    that.mapConfig.latitude = jw.split(",")[1];
-                    that.mapConfig.longitude = jw.split(",")[0];
-                    that.mapConfig.locaName = $(this).find(".name").html();
-                    that.mapConfig.locaAddress = $(this).find(".address").html();
-                    that.mapConfig.moveendPoint = new AMap.LngLat(that.mapConfig.longitude, that.mapConfig.latitude);
-                    $(".siteName").removeClass("ccc").html(that.mapConfig.locaName);
-                    $('.siteAddress').html(that.mapConfig.locaAddress);
-                    $('.deleteAddress').css("display","block");//显示删除地址按钮
-                    //todo 显示选择地点的天气
-                    var startTime = $('.startCon').attr("id");
-                    if(!Dom.smallerDate(startTime)){
-                        $('.weather').css("display","-webkit-box");
-                        Ajax.getLocalWeather(Dom.getDate(startTime),Dom.getHourMinute(startTime),that.mapConfig.latitude,that.mapConfig.longitude);
-                    }else{
-                        $('.weather').css("display","none");
-                    }
-                    event.preventDefault();
-                    event.stopPropagation();
-                    setTimeout(function(){
-                        $(".mapShadow .container").animate({"top": "100%"}, 200, function () {
-                            $(this).parent().hide();
-                        });
-                        $('.shadowBg').fadeOut();
-                    },500);
-                });
+                
                 if (me) {
                     console.log("me");
                     me.resetload();
