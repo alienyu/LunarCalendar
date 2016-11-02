@@ -132,7 +132,7 @@ var fuc = {
                 if(that.config.addMore){//加载更多评论
                     that.config.addMore = false;
                     //请求数据
-                    that.commentLoad(); 
+                    that.commentLoad();
                     that.getData();
                 }
             }
