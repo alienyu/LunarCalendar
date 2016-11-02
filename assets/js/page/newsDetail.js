@@ -59,8 +59,14 @@ var fuc = {
                     $('.newsContent').html(newsDetail.newsContent);
                     var shareTime = dateArr[1]+"月"+dateArr[2]+"日 "+Dom.getweek(newsDetail.newsPublishTime.split(" ")[0])+" "+Dom.getHourMinute(newsDetail.newsPublishTime),
                         newsImg = newsDetail.newsPoster,
-                        address = that.config.urlArr[0]+"/common/to?url2="+encodeURIComponent(that.config.urlArr[1]+"/wx/view/newsDetail.html?newsId="+that.config.newsId);
-                    wx.wxShare(newsDetail.newsTitle,newsDetail.newsSource+"\r\n"+shareTime,address,newsImg);
+                        address = that.config.urlArr[1]+"/wx/view/newsDetail.html?newsId="+that.config.newsId;
+                    var obj = new Object();
+                    obj.title = newsDetail.newsTitle;
+                    obj.desc = newsDetail.newsSource+"\r\n"+shareTime;
+                    obj.link = address;
+                    obj.img = newsImg;
+                    wx.wxConfig(2,obj);
+                    //wx.wxShare(newsDetail.newsTitle,newsDetail.newsSource+"\r\n"+shareTime,address,newsImg);
                 }else{
                     var error = data.msg;
                     that.tipShow(error);

@@ -16,6 +16,7 @@ var fuc = {
     config: {
         eventId: "",
         nickName: "",
+        headImg:"",
         tagId: "",//用户选择的快捷标签Id
         time: "",
         timeArr: "",
@@ -285,15 +286,12 @@ var fuc = {
     },
 
     renderPage: function () {
-        wx.wxConfig(1);
-        $('.eventCon').css("visibility","visible");
         var that = this;
-        this.getTags();
-        this.colorInit();
+        $('.eventCon').css("visibility","visible");
+        that.getTags();
+        that.colorInit();
+        that.getUserInformation();
         Dom.autoTextarea(document.getElementById("eventTitle"));
-        setTimeout(function(){
-            wx.wxShare("【 历历LilyCalendar】让回忆与温故成为一件轻松的事情", "这是一个简单操作的日历系统，但却能发挥各式各样和生活有关的活用。");
-        },1500);
         /*---------------------------------开始时间、结束时间、指定提醒时间三个地方的日期选择功能---------------------------------*/
         this.selectTimes('#startTime', '.startCon').setVal(new Date(that.setInitTime($('.startCon'))));
         this.selectTimes('#endTime', '.endCon').setVal(new Date(that.setInitTime($('.endCon'))));
@@ -303,6 +301,12 @@ var fuc = {
             that.getData();
             that.setInitTheme();
         } else {
+            var obj = new Object();
+            obj.title = "【 历历LilyCalendar】让回忆与温故成为一件轻松的事情";
+            obj.desc = "这是一个简单操作的日历系统，但却能发挥各式各样和生活有关的活用。";
+            obj.link = null;
+            obj.img = null;
+            wx.wxConfig(2,obj);
             /*--------------设置颜色初始值------------------*/
             $('.colorShow').css("background", that.config.bgColor);
             $('.colorText').html(that.config.map[that.config.bgColor]);
@@ -440,8 +444,12 @@ var fuc = {
                         $('.colorText').html(that.config.themeName);
                     }
                     that.setInitTheme();
-                    wx.wxShare(eventList.owner.nickName + " 邀请您参加 「" + eventList.event.name + "」", Dom.tranDate(eventList.event.startTime),
-                        that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + eventList.event.eventId));
+                    var obj = new Object();
+                    obj.title = eventList.owner.nickName + " 邀请您参加 「" + eventList.event.name + "」";
+                    obj.desc = Dom.tranDate(eventList.event.startTime);
+                    obj.link = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + eventList.event.eventId);
+                    obj.img = that.config.headImg;
+                    wx.wxConfig(2,obj);
                 } else if(data.code == 112){
                     //若参加者参加的事件不存在
                     $('.eventNone').css("display", "block");
@@ -737,7 +745,11 @@ var fuc = {
             },200);
         });
     },
-
+    share:function(name,date,address,eventId){
+        var that = this;
+        wx.wxShare(that.config.nickName + " 邀请您参加 「" + name + "」", "来自 #"+that.config.nickName+"的诚邀\r\n"+date+"\r\n"+address,
+            that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/newShowEvent.html?eventId=" + that.config.eventId),that.config.headImg);
+    },
     bindEvent: function () {
         var that = this;
         $('.eventName').focus(function () {
@@ -985,11 +997,9 @@ var fuc = {
                     }, 1000);
                 }else {
                     that.eventAdd2(name, 1, that.config.tagId, startTime, endTime, tipType, tipTime, repeatType, that.mapConfig.locaName, that.mapConfig.locaAddress, that.mapConfig.longitude, that.mapConfig.latitude, that.config.remarkText, that.config.remarkImgs, that.config.bgColor, that.config.themeId);
-                    that.getUserInformation();
-                    wx.wxShare(that.config.nickName + " 邀请您参加 「" + name + "」", $('.startTime').html(),
-                        that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/showEvent.html?eventId=" + that.config.eventId));
                 }
             }
+
         });
 
         /*------------点击保存--------------*/
@@ -1337,6 +1347,7 @@ var fuc = {
                     //console.log(data);
                     if (data.code == 0) {//提交成功
                         that.config.eventId = data.data;
+                        that.share(name,Dom.tranDate(startTime),address,that.config.eventId);
                         that.getShareImg();
                         $('#loadingToast').fadeOut();
                         //todo 弹出蒙层
@@ -1434,6 +1445,7 @@ var fuc = {
                         $('#loadingToast').fadeOut();
                         that.shareShadow(); //显示分享提示弹出层，点击后隐藏
                         that.getShareImg();
+                        that.share(name,Dom.tranDate(startTime),address,that.config.eventId);
                     } else {//修改失败弹出提示框
                         $('#loadingToast').fadeOut();
                         var error = data.msg;
@@ -1461,6 +1473,7 @@ var fuc = {
             success: function (data) {
                 if (data.code == 0) {
                     that.config.nickName = data.data.nickName;
+                    that.config.headImg = data.data.headImgUrl;
                 }
             }
         });

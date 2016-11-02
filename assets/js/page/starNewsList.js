@@ -24,7 +24,6 @@ var fuc = {
     },
     renderPage:function(){
         var that = this;
-        wx.wxConfig(1);
         if(!that.config.starId){//若url中没有starId, 则查询所有明星的新闻
             that.config.starId ="";
         }
@@ -41,14 +40,17 @@ var fuc = {
             success:function(data){
                 if(data.code == 0){
                     var name = data.data.nickName,
-                        headImg = data.data.headImgUrl;
+                        headImg = data.data.headImgUrl,
+                        obj = new Object();
+                    obj.title = "【 历历LilyCalendar】为粉丝提供明星行程，让追星更简单";
+                    obj.desc = "来自 #"+name+" 的分享\r\n微信公众号：历历LilyCalendar";
+                    obj.img = headImg;
                     if(!that.config.starId){
-                        wx.wxShare("【 历历LilyCalendar】为粉丝提供明星行程，让追星更简单", "来自 #"+name+" 的分享\r\n微信公众号：历历LilyCalendar",
-                            that.config.urlArr[0]+"/common/to?url2="+encodeURIComponent(that.config.urlArr[1]+"/wx/view/starNewsList.html"),headImg);
+                        obj.link = that.config.urlArr[0]+"/common/to?url2="+encodeURIComponent(that.config.urlArr[1]+"/wx/view/starNewsList.html");
                     }else{
-                        wx.wxShare("【 历历LilyCalendar】为粉丝提供明星行程，让追星更简单", "来自 #"+name+" 的分享\r\n微信公众号：历历LilyCalendar",
-                            that.config.urlArr[0]+"/common/to?url2="+encodeURIComponent(that.config.urlArr[1]+"/wx/view/starNewsList.html?starId="+that.config.starId),headImg);
+                        obj.link = that.config.urlArr[0]+"/common/to?url2="+encodeURIComponent(that.config.urlArr[1]+"/wx/view/starNewsList.html?starId="+that.config.starId);
                     }
+                    wx.wxConfig(2,obj);
                 }else{
                     var error = data.msg;
                     that.tipShow(error);
@@ -79,7 +81,7 @@ var fuc = {
                                 html += that.config.template.replace(/{{newsId}}/g,newsList[i].newsId).replace(/{{newsTitle}}/g,newsList[i].newsTitle).replace(/{{imgSrc}}/g,newsList[i].newsPoster)
                                     .replace(/{{newsSource}}/g,newsList[i].newsSource == null ? "":newsList[i].newsSource).replace(/{{starName}}/g,newsList[i].star.starName == null ?"":newsList[i].star.starName);
                         }
-                        $('.news').append(html);
+                        $('.newsContainer').append(html);
                         if(newsList.length>=10){
                             that.commentEnd();
                             that.config.addMore = true;
@@ -110,7 +112,8 @@ var fuc = {
         $('.commentMore').show();
     },
     getStarNewsOver: function(){
-        $('.commentAdd').html('没有了').css('color','#ccc');
+        $('.news').css("padding-bottom","0px");
+        $('.commentAdd').html('木有更多内容啦').addClass("ccc fs12").css({"height":"auto","line-height":"1.5"});
         $('.commentAdd').show();
     },
     commentEnd:function(){
@@ -125,12 +128,12 @@ var fuc = {
     bindEvent:function(){
         var that = this;
         $(window).on('scroll', function (e) {
-            if ($(document).height() - $(this).scrollTop() - $(this).height()<100){
+            if ($(document).height() - $(this).scrollTop() - $(this).height()<300){
                 if(that.config.addMore){//加载更多评论
                     that.config.addMore = false;
                     //请求数据
+                    that.commentLoad(); 
                     that.getData();
-                    that.commentLoad();
                 }
             }
         });

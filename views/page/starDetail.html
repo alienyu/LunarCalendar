@@ -27,8 +27,8 @@
         <div class="scheduleCon"></div>
         <div class="commentMore">
             <div class="commentAdd">
-                <img class="fl" src="../../assets/imgs/page/newShowEvent/icon_loading.gif" alt="">
-                <div class="txt fl">加载中...</div>
+                <img src="../../assets/imgs/page/newShowEvent/icon_loading.gif" alt="">
+                <span class="txt">加载中...</span>
                 <!-- 没有更多评论了... -->
             </div>
         </div>
@@ -114,8 +114,8 @@
     </div>
 <!--行程列表每天的样式-->
     <script type="text/x-dayList" id="dayListTemplate">
+        {{dateLine}}
         <div class="dayCon" data-date="{{date}}">
-                {{dateLine}}
                 <div class="date">
                     <div class="day fs18">{{day}}</div>
                     <div class="month fs12">{{month}}</div>
@@ -146,7 +146,7 @@
                         </div>
                         <div class="hasJoin c6c" style="display:{{hasJoin}}">
                             <img src="../../assets/imgs/page/newShowEvent/icon_btn_remind_pre.png" alt="">
-                            <span class="opa5">已提醒</span>
+                            <span class="opa5">已加入</span>
                         </div>
                     </div>
                 </div>

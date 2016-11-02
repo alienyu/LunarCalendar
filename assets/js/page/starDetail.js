@@ -95,8 +95,12 @@ var fuc = {
             success:function(data){
                 if(data.code == 0){
                     var name = data.data.nickName;
-                    wx.wxShare("【 "+starName+"】最新消息动态…", "来自 #"+name+" 的分享\r\n微信公众号：历历LilyCalendar",
-                        that.config.urlArr[0]+"/common/to?url2="+encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId="+that.config.starId),starImg);
+                    var obj = new Object();
+                    obj.title = "【 "+starName+"】最新消息动态…";
+                    obj.desc = "来自 #"+name+" 的分享\r\n微信公众号：历历LilyCalendar";
+                    obj.link = that.config.urlArr[0]+"/common/to?url2="+encodeURIComponent(that.config.urlArr[1]+"/wx/view/starDetail.html?starId="+that.config.starId);
+                    obj.img = starImg;
+                    wx.wxConfig(2,obj);
                 }else{
                     //todo
                     var error = data.msg;
@@ -265,7 +269,7 @@ var fuc = {
         $('.commentMore').show();
     },
     getStarNewsOver: function(){
-        $('.commentAdd').html('没有了').css('color','#ccc');
+        $('.commentAdd').html('木有啦，请耐心等待吧').addClass("ccc fs12").css({"height":"auto","line-height":"1.5"});
         $('.commentAdd').show();
     },
     commentEnd:function(){
@@ -284,8 +288,8 @@ var fuc = {
                 if(that.config.addMore){//加载更多评论
                     that.config.addMore = false;
                     //请求数据
-                    that.getStarTrace();
                     that.commentLoad();
+                    that.getStarTrace();
                 }
             }
         });
