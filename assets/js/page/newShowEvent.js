@@ -48,7 +48,7 @@ var fuc = {
         this.rem();
         this.renderPage();
         this.bindEvent();
-        console.log($('.fansList').width());
+        console.log('fanlist--'+$('.fansList').width());
         var num = Math.floor($('.fansList').width()/35) - 2;
         var str = "";
         for(var i=0;i<num;i++){
@@ -236,8 +236,7 @@ var fuc = {
 
     commentNoMore:function(){
         $('.commentMore').show();
-        $('.commentMore img').hide();
-        $('.commentMore .txt').html('木有更多内容啦').addClass('ccc fs12').removeClass('fl');
+        $('.commentMore').html('木有更多内容啦').addClass('ccc fs12').css({"height":"auto","line-height":"1.5"});
     },
 
     commentNoneShow:function(){
@@ -545,14 +544,15 @@ var fuc = {
                     } else if (dataList.event.eventType == 1 || dataList.event.eventType == 2 ) {//1为活动事件,2为明星事件
                         that.config.eventType = dataList.event.eventType;
                         // that.config.eventType = 2;
-                        that.getJoiner();//获取参与人数
+                        
                         if(that.config.eventType == 2){
+                            that.refreshJoiner();
                             $('.avtivityCon').css("display", "none");
                             $('.starAvatar img').attr('src',dataList.star.starHeadPic);
                             $('.starAvatar').attr('data-src',dataList.star.starId);
                             $('.starAvatar').show();
-                            that.refreshJoiner();
                         }else if(that.config.eventType == 1){
+                            that.getJoiner();//获取参与人数
                             $('.compile').show();
                         }
                         that.getShareImg();
@@ -693,7 +693,7 @@ var fuc = {
         var that = this;
         /*----------------------底部自动刷新-----------------------*/
         $(window).on('scroll', function (e) {
-            if ($(document).height() - $(this).scrollTop() - $(this).height()<100){
+            if ($(document).height() - $(this).scrollTop() - $(this).height()<300){
                 if(that.commentConfig.addMore){//加载更多留言
                     that.commentConfig.addMore = false;
                     that.getComments();
@@ -739,7 +739,7 @@ var fuc = {
                 return;
             }
             that.commentConfig.scroll = $("body").scrollTop();
-            console.log(that.commentConfig.scroll);
+            console.log('scroll---' + that.commentConfig.scroll);
             $('.commentText').val('');
             $('.eventContainer').addClass('noScroll');
             $('.addComment').fadeIn();

@@ -117,7 +117,7 @@ var fuc = {
         var that = this;
         /*----------------------底部自动刷新-----------------------*/
         $(window).on('scroll', function (e) {
-            if ($(document).height() - $(this).scrollTop() - $(this).height()<100){
+            if ($(document).height() - $(this).scrollTop() - $(this).height()<300){
                 if(that.traceConfig.addMore){//加载更多
                     that.traceConfig.addMore = false;
                     that.getStarNews();
@@ -337,7 +337,7 @@ var fuc = {
     },
 
     getStarNewsOver: function(){
-        $('.commentAdd').html('木有啦，请耐心等待吧').addClass('ccc fs12');
+        $('.commentAdd').html('木有啦，请耐心等待吧').addClass('ccc fs12').css({"height":"auto","line-height":"1.5"});;
         $('.commentAdd').show();
     },
 
