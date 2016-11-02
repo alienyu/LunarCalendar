@@ -2,7 +2,6 @@
  * Created by admin on 2016/10/25.
  */
 require("../../css/page/newsDetail.less");
-var Ajax = require("../common/ajax.js");
 var Dom = require("../common/dom.js");
 var wx = require("../vendor/weChat/wxInit.js");
 var pageLoad = require("../common/pageLoad.js");

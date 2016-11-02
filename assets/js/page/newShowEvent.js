@@ -21,7 +21,8 @@ var fuc = {
         shareImg: "",
         pageNo:"",
         lastId:"",
-        urlArr:""
+        urlArr:"",
+        hasOrNot:true
     },
     mapConfig: {
         map: "",
@@ -120,9 +121,12 @@ var fuc = {
             },
             function (data) {
                 if (data.code == 0) {
+                    that.config.hasOrNot = false;
+                    $('#loadingToast').fadeOut();
                     var imgUrl = data.data;
                     that.config.shareImg = data.data;
                     $('.shadowImg img').attr("src", imgUrl);
+                    $('.shareShadow').fadeIn();//显示分享提示层
                 }
             }
         )
@@ -555,7 +559,6 @@ var fuc = {
                             that.getJoiner();//获取参与人数
                             $('.compile').show();
                         }
-                        that.getShareImg();
                         $('.suitable').css("display", "none");
                         $('.weather').css("display", "none");
                         var times = Dom.compareTimes(dataList.event.startTime, dataList.event.endTime);
@@ -1075,9 +1078,15 @@ var fuc = {
 
     //分享给好友
     shareTo: function(){
-        var shareShadow = $('.shareShadow');
-        shareShadow.fadeIn();//显示分享提示层
-        shareShadow.click(function () {
+        $('#loadingToast').fadeIn();
+        var that = this;
+        if(that.config.hasOrNot){
+            that.getShareImg();
+        }else{
+            $('#loadingToast').fadeOut();
+            $('.shareShadow').fadeIn();
+        }
+        $('.shareShadow').click(function () {
             $(this).fadeOut();
             event.stopPropagation();
         });
