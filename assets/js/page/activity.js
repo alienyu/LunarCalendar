@@ -32,6 +32,7 @@ var fuc = {
         urlArr:""
     },
     mapConfig: {
+        cityName:"上海",
         map: "",
         moveendPoint: "",
         page: "",
@@ -519,10 +520,12 @@ var fuc = {
             that.mapinputshow();
         });
         $(".tipinput").on("input", function(){
+            // that.mapConfig.map
 
             var autoOptions = {
-                city: "020" //城市，默认全国
+                city: that.mapConfig.cityName
             };
+            // console.log(that.mapConfig.cityName)
             autocomplete= new AMap.Autocomplete(autoOptions);
             autocomplete.search($(".tipinput").val(), function(status, result){
                 //TODO:开发者使用result自己进行下拉列表的显示与交互功能
@@ -1242,10 +1245,17 @@ var fuc = {
             },
             dataType: "json",
             success: function (data) {
+                // console.log(data)
                 if (data.pois.length == 0 && me) {
                     me.lock();
                     me.noData();
                 }
+
+                if(data.pois.length>0){
+                    that.mapConfig.cityName = data.pois[0].cityname;
+                    // console.log(that.mapConfig.cityName)
+                }
+
                 if (that.mapConfig.page == 1) {
                     that.mapConfig.pois.length = 0;
                 }
@@ -1489,19 +1499,19 @@ var fuc = {
     },
     //首页获取用户信息
     getUserInformation: function () {
-        var that = this;
-        $.ajax({
-            type: "get",
-            url: that.config.urlArr[0]+"/user/detail",
-            dataType: "json",
-            async: false,
-            success: function (data) {
-                if (data.code == 0) {
-                    that.config.nickName = data.data.nickName;
-                    that.config.headImg = data.data.headImgUrl;
-                }
-            }
-        });
+        // var that = this;
+        // $.ajax({
+        //     type: "get",
+        //     url: that.config.urlArr[0]+"/user/detail",
+        //     dataType: "json",
+        //     async: false,
+        //     success: function (data) {
+        //         if (data.code == 0) {
+        //             that.config.nickName = data.data.nickName;
+        //             that.config.headImg = data.data.headImgUrl;
+        //         }
+        //     }
+        // });
     }
 }
 

@@ -5,6 +5,7 @@ var Dom = require("../common/dom.js");
 var mask = require("../plugins/mask/mask.js");
 require("../vendor/ImproveMobile/zeptoSlider.js");
 var _ = require("../vendor/underscore.js");
+
 var fuc = {
     config: {
         pageIndex: 0,
@@ -211,6 +212,7 @@ var fuc = {
             }
         });
     },
+
     bindEvent: function () {
         var that = this;
 
@@ -228,10 +230,18 @@ var fuc = {
 
         //go today
         $(".back_today").on("tap", function (e) {
-            // var dom = $("#today").prev().hasClass("record") ? $("#today").prev() : $("#today")
-            // var todayPos = dom.position().top - 30;
+            var dom = $("#today").prev().hasClass("record") ? $("#today").prev() : $("#today")
+            var todayPos = dom.position().top - 30;
             // $(document.body).scrollTo({toTo: todayPos});
-            $("body").scrollTop($(".today_has_date").offset().top-60);
+            // $("body").scrollTop(todayPos);
+            
+            var defaults = {
+                toT : todayPos,    //滚动目标位置
+                durTime : 500,  //过渡动画时间
+                delay : 30,     //定时器时间
+                callback:null   //回调函数
+            }
+            $("body").scrollToPos(defaults);
         });
 
         //添加活动按钮
@@ -346,3 +356,38 @@ var fuc = {
 }
 
 fuc.init();
+
+
+$.fn.scrollToPos =function(options){
+    var defaults = {
+        toT : 0,    //滚动目标位置
+        durTime : 500,  //过渡动画时间
+        delay : 30,     //定时器时间
+        callback:null   //回调函数
+    };
+    var opts = $.extend(defaults,options),
+        timer = null,
+        _this = this,
+        curTop = _this.scrollTop(),//滚动条当前的位置
+        subTop = opts.toT - curTop,    //滚动条目标位置和当前位置的差值
+        index = 0,
+        dur = Math.round(opts.durTime / opts.delay),
+        smoothScroll = function(t){
+            index++;
+            var per = Math.round(subTop/dur);
+            if(index >= dur){
+                _this.scrollTop(t);
+                window.clearInterval(timer);
+                if(opts.callback && typeof opts.callback == 'function'){
+                    opts.callback();
+                }
+                return;
+            }else{
+                _this.scrollTop(curTop + index*per);
+            }
+        };
+    timer = window.setInterval(function(){
+        smoothScroll(opts.toT);
+    }, opts.delay);
+    return _this;
+};
