@@ -11,6 +11,7 @@ var fuc = {
     config:{
         starId:"",
         fansType:"",//是否追TA
+        fansTypeBefore:"",//追星类型更改之前的type
         starName:"",
         urlArr:"",
         pageNo:"",
@@ -127,6 +128,20 @@ var fuc = {
             success:function(data){
                 if(data.code == 0){
                     $('#loadingToast').fadeOut();//显示loading
+                    var typebefore = that.config.fansTypeBefore;
+                    var typeafter = that.config.fansType;
+                    if(typebefore == 0){
+                        typebefore = 4;
+                    }
+                    if(typeafter == 0){
+                        typeafter = 4;
+                    }
+                    console.log(typebefore + '========' + typeafter);
+                    if(typeafter < 3 && typebefore > 2 ){
+                        that.allAdd(1);
+                    }else if(typeafter > 2 && typebefore < 3 ){
+                        that.allAdd(-1);
+                    }
                 }else{
                     var error = data.msg;
                     that.tipShow(error);
@@ -137,6 +152,21 @@ var fuc = {
                 that.tipShow('网络连接错误，请检查网络~');
             }
         })
+    },
+    //关注或者取消后刷新页面
+    allAdd: function(val){
+        // console.log('1233----333'+$('.joinerCount').length);
+        for(var i=0;i<$('.joinerCount').length;i++){
+            if (val ==1) {
+                $('.joinerCount').eq(i).html(parseInt($('.joinerCount').eq(i).html())+1);
+                $('.hasJoin').eq(i).show();
+                $('.join').eq(i).hide();
+            }else{
+                $('.joinerCount').eq(i).html(parseInt($('.joinerCount').eq(i).html())-1);
+                $('.hasJoin').eq(i).hide();
+                $('.join').eq(i).show();
+            }
+        }
     },
     //获取明星行程列表
     getStarTrace:function(){
@@ -441,6 +471,7 @@ var fuc = {
                                 var fansNum = parseInt($('.fansCount').html());
                                 $('.fansCount').html(fansNum+1);
                             }
+                            that.config.fansTypeBefore = that.config.fansType;
                             that.config.fansType = $('.bottom_item.active').index();
                             that.changeFansType(that.config.fansType);
                         }else{
@@ -538,6 +569,7 @@ var fuc = {
                                 $('.unfollow').removeClass('active');
                             }
                             if(that.config.fansType != nownum){
+                                that.config.fansTypeBefore = that.config.fansType;
                                 that.config.fansType = nownum;
                                 that.changeFansType(that.config.fansType);
                             }else{

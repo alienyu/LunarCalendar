@@ -95,8 +95,17 @@
     white-space: nowrap;
 }
 .news_con .news_list:active{
-    background: rgba(0,0,0,0.1);
+    background: #eee;
 }
+.news_con .news_list:active:after{
+    border-left: 8px solid #eee;
+}
+
+.news_con .news_list:active:before{
+    border-left: 8px solid #ccc;
+}
+
+
 .starNewsLeft{
     float: left;
     text-align: center;
@@ -175,6 +184,7 @@
 .bottom .follow:active{
     background: rgba(102,204,204,0.9);
 }
+
 .bottom .follow img{
     height:20px;
     width:20px;

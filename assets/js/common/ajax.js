@@ -90,16 +90,33 @@ var Ajax = {
                             if (eventList[i].isOwner) {
                                 mark = "@";
                                 if (eventList[i].joiners != null && eventList[i].joiners[0]) {
-                                    joinerNum = parseInt(eventList[i].joiners.length)+1;
-                                    html += template.replace(/{{eventId}}/g, eventList[i].event.eventId).replace(/{{name}}/g, eventList[i].event.name).replace(/{{time}}/g, transHour(eventList[i].event.startTime)).replace(/{{count}}/g, joinerNum + "人").replace(/{{user}}/g, mark + eventList[i].joiners[0].nickName);
+                                    // joinerNum = parseInt(eventList[i].joiners.length)+1;
+                                    joinerNum =eventList[i].joinersCount+1;
+                                    var numStr = "";
+                                    if(joinerNum>99){
+                                        numStr = "99+人";
+                                    }else{
+                                        numStr = joinerNum + '人';
+                                    }
+                                    html += template.replace(/{{eventId}}/g, eventList[i].event.eventId).replace(/{{name}}/g, eventList[i].event.name).replace(/{{time}}/g, transHour(eventList[i].event.startTime)).replace(/{{count}}/g, numStr).replace(/{{user}}/g, mark + eventList[i].joiners[0].nickName);
                                 }else{
                                     html += template.replace(/{{eventId}}/g, eventList[i].event.eventId).replace(/{{name}}/g, eventList[i].event.name).replace(/{{time}}/g, transHour(eventList[i].event.startTime)).replace(/{{count}}/g, "").replace(/{{user}}/g, "");
                                 }
                             } else {
                                 mark = "#";
-                                joinerNum = parseInt(eventList[i].joiners.length)+1;
+                                // joinerNum = parseInt(eventList[i].joiners.length)+1;
+                                joinerNum =eventList[i].joinersCount;
+                                if(eventList[i].owner)
+                                    joinerNum += 1;
+
+                                var numStr = "";
+                                if(joinerNum>99){
+                                    numStr = "99+人";
+                                }else{
+                                    numStr = joinerNum + '人';
+                                }
                                 //if(eventList[i].event.eventType == 2){
-                                    html += template.replace(/{{eventId}}/g, eventList[i].event.eventId).replace(/{{name}}/g, eventList[i].event.name).replace(/{{time}}/g, transHour(eventList[i].event.startTime)).replace(/{{count}}/g, (eventList[i].owner?joinerNum:joinerNum-1) + "人").replace(/{{user}}/g, mark+eventList[i].owner);
+                                    html += template.replace(/{{eventId}}/g, eventList[i].event.eventId).replace(/{{name}}/g, eventList[i].event.name).replace(/{{time}}/g, transHour(eventList[i].event.startTime)).replace(/{{count}}/g, numStr).replace(/{{user}}/g, mark+eventList[i].owner);
                                 //}else{
                                 //    html += template.replace(/{{eventId}}/g, eventList[i].event.eventId).replace(/{{name}}/g, eventList[i].event.name).replace(/{{time}}/g, transHour(eventList[i].event.startTime)).replace(/{{count}}/g, (eventList[i].owner?joinerNum:joinerNum-1) + "人").replace(/{{user}}/g, mark+eventList[i].owner);
                                 //}
