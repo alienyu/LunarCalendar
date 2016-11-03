@@ -106,7 +106,9 @@
 									<img id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>" />
 									<div class="map_mask"></div>
                                 <% } else if (timeDetail.eventType == 2){ %>
-                                   <% if(timeDetail.bgColor.indexOf("#")>-1) { %>
+                                    <% if(!timeDetail.bgColor) { %>
+                                        <div class="content contain_img_box" style="min-height:90px;background-color: #6cc">
+                                    <% } else if(timeDetail.bgColor.indexOf("#")>-1) { %>
                                         <div class="content contain_img_box" style="min-height:90px;background-color: <%= timeDetail.bgColor %>">
                                     <% } else { %>
                                         <div class="content contain_img_box" style="min-height:90px;background-image:url( <%= timeDetail.bgColor %> )">
@@ -167,7 +169,9 @@
 									<img id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>">
 									<div class="map_mask"></div>
 								<% } else if (timeDetail.eventType == 2){ %>
-                                    <% if(timeDetail.bgColor.indexOf("#")>-1) { %>
+                                    <% if(!timeDetail.bgColor) { %>
+                                        <div class="content contain_img_box" style="min-height:90px;background-color: #6cc">
+                                    <% } else if(timeDetail.bgColor.indexOf("#")>-1) { %>
                                         <div class="content contain_img_box" style="min-height:90px;background-color: <%= timeDetail.bgColor %>">
                                     <% } else { %>
                                         <div class="content contain_img_box" style="min-height:90px;background-image:url( <%= timeDetail.bgColor %> )">
@@ -230,12 +234,14 @@
 									<img id="bmap_<%= timeDetail.randomId %>" class="bmap" data-longitude="<%= timeDetail.longitude %>"  data-latitude="<%= timeDetail.latitude%>" />
 									<div class="map_mask"></div>
 								<% } else if (timeDetail.eventType == 2){ %>
-                                   <% if(timeDetail.bgColor.indexOf("#")>-1) { %>
+                                    <% if(!timeDetail.bgColor) { %>
+                                        <div class="content contain_img_box" style="min-height:90px;background-color: #6cc">
+                                    <% } else if(timeDetail.bgColor.indexOf("#")>-1) { %>
                                         <div class="content contain_img_box" style="min-height:90px;background-color: <%= timeDetail.bgColor %>">
                                     <% } else { %>
                                         <div class="content contain_img_box" style="min-height:90px;background-image:url( <%= timeDetail.bgColor %> )">
                                         
-                                    <% } %>  
+                                    <% } %>   
                                 <% } else { %>                              
                                         <div class="content" style="background-color: <%= timeDetail.bgColor %>">                                       
                                 <% } %>

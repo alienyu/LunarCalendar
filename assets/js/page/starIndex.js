@@ -369,6 +369,10 @@ var fuc = {
                                         data.newsList[i].newsTitle+'</div>';
                             starArr.push(str);
                         }
+                        if(num == 0){
+                            var str =   '<div class="news swiper-slide" data-id="">获取更多娱乐新闻</div>';
+                            starArr.push(str);
+                        }
                         // console.log(data.newsList.length+'===='+starArr);
                         that.swiper2.appendSlide(starArr);
                         that.swiper2.slideTo(1, 1000, false);

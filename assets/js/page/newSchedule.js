@@ -166,9 +166,9 @@ var fuc = {
                         dom.addClass("first_day").addClass(dateClass);
                     }
                 }
-                if ($(".record").first().hasClass("no_record") && $(".record").first().data("date").split("-")[2] != 1) {
-                    $(".record").first().prev().remove();
-                }
+                // if ($(".record").first().hasClass("no_record") && $(".record").first().data("date").split("-")[2] != 1) {
+                //     $(".record").first().prev().remove();
+                // }
                 $("#container").find("div").first().before(html({data: data}));
                 // window.location.href = "#current";
                 $("body").scrollTop($("#current").offset().top);
@@ -361,7 +361,7 @@ fuc.init();
 $.fn.scrollToPos =function(options){
     var defaults = {
         toT : 0,    //滚动目标位置
-        durTime : 500,  //过渡动画时间
+        durTime : 200,  //过渡动画时间
         delay : 30,     //定时器时间
         callback:null   //回调函数
     };

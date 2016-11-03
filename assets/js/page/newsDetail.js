@@ -66,6 +66,11 @@ var fuc = {
                     obj.img = newsImg;
                     wx.wxConfig(2,obj);
                     //wx.wxShare(newsDetail.newsTitle,newsDetail.newsSource+"\r\n"+shareTime,address,newsImg);
+                }else if(data.code == 122){
+                    $('.newsPublishTime').html('此条新闻不存在，正在为您跳转~');
+                    setTimeout(function(){
+                        window.location.href = that.config.urlArr[0]+"/common/to?url2=" + encodeURIComponent(that.config.urlArr[1]+"/wx/view/starNewsList.html");
+                    },1000);
                 }else{
                     var error = data.msg;
                     that.tipShow(error);
