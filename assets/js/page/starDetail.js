@@ -472,7 +472,22 @@ var fuc = {
                 success: function (data) {
                     if(data.code == 0){
                         if(data.data){//已经关注了我们
-                            if($(domId).hasClass("active")){//点击已选中选项，取消关注
+                            $('.unfollow').removeClass('hide');
+                            for(var i=0;i<$('.bottom_item').size();i++){
+                                $('.bottom_item').eq(i).removeClass('active');
+                            }
+                            $(domId).addClass('active');
+                            $('.follow').addClass('active');
+                            $('.bottomTxt').addClass('hide');
+                            $('.selected').removeClass('hide');
+                            $('.follow img').removeClass('hide');
+                            if(that.config.fansType == 0){
+                                var fansNum = parseInt($('.fansCount').html());
+                                //console.log(that.config.fansType);
+                                $('.fansCount').html(fansNum+1);
+                            }
+
+                            /*if($(domId).hasClass("active")){//点击已选中选项，取消关注
                                 $(domId).removeClass('active');
                                 $('.follow').removeClass('active');
                                 $('.bottomTxt').removeClass('hide');
@@ -500,15 +515,32 @@ var fuc = {
                                     $('.fansCount').html(fansNum+1);
                                 }
                                 that.config.fansType = $(domId).index();//追星
-                            }
+                            }*/
                             //console.log(that.config.fansType);
                             $('.bottomSelect').animate({"bottom":"-300px"},200,function(){
                                 $('.bottomSelect').css("display","none")
                             });
                             $('.shadow').css("display","none");
-                            that.changeFansType(that.config.fansType);
+
+                            var nownum = $(domId).index();
+                            if($(domId).index() == 5){
+                                nownum = 0;
+                                $('.follow').removeClass('active');
+                                $('.bottomTxt').removeClass('hide');
+                                $('.selected').addClass('hide');
+                                $('.follow img').addClass('hide');
+                                $('.bottom_item').eq(0).addClass('active');
+                            }
+                            if(that.config.fansType != nownum){
+                                that.config.fansType = nownum;
+                                that.changeFansType(that.config.fansType);
+                            }else{
+                                $('#loadingToast').fadeOut();
+                            }
+                            
                             //that.getFansCount();
                         }else{
+                            $('.unfollow').addClass('hide');
                             $('#loadingToast').fadeOut();
                             $('.bottomSelect').animate({"bottom":"-300px"},200,function(){
                                 $('.bottomSelect').css("display","none")
@@ -536,6 +568,11 @@ var fuc = {
             $('.shadow').css("display","none");
         });
         $('.follow').on('tap',function(){
+            if(that.config.fansType == 0){
+                $('.unfollow').addClass('hide');
+            }else{
+                $('.unfollow').removeClass('hide');
+            }
             $('.shadow').css("display","block");
             $('.bottomSelect').animate({"display":"block"},5,function(){
                 $('.bottomSelect').animate({"bottom":"0"},200);

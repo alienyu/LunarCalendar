@@ -173,9 +173,9 @@ var fuc = {
                         }
                         $('.hotComments').prepend(str);
                         $('.hotComments').show();
-                        for(var ii = 0; ii<data.hotList.length; ii++){
-                            $('.comment_'+ data.hotList[ii].comments.commentsId).css('height',$('.comment_'+ data.hotList[ii].comments.commentsId).height()+'px');
-                        }
+                        // for(var ii = 0; ii<data.hotList.length; ii++){
+                        //     $('.comment_'+ data.hotList[ii].comments.commentsId).css('height',$('.comment_'+ data.hotList[ii].comments.commentsId).height()+'px');
+                        // }
                     }
                     if(data.list.length > 0){
                         var str = "";
@@ -206,9 +206,9 @@ var fuc = {
                         }
                         $('.newComments').append(str);
                         $('.newComments').show();
-                        for(var ii = 0; ii<data.list.length; ii++){
-                            $('.comment_'+ data.list[ii].comments.commentsId).css('height',$('.comment_'+ data.list[ii].comments.commentsId).height()+'px');
-                        }
+                        // for(var ii = 0; ii<data.list.length; ii++){
+                        //     $('.comment_'+ data.list[ii].comments.commentsId).css('height',$('.comment_'+ data.list[ii].comments.commentsId).height()+'px');
+                        // }
                     }else{
                         if(that.commentConfig.commentsId == 0){
                             that.commentNoneShow();
@@ -255,15 +255,17 @@ var fuc = {
     addacomment: function(data){
         var that = this;
         var str =   '<div class="commentItem fl comment_'+ data.comments.commentsId +'">'+
-                        '<img src="'+ data.user.headImgUrl +'" class="fl">'+
+                        '<img src="'+ data.user.headImgUrl +'" class="fl ' + (data.comments.isSysDel==1?'gray':'') + '">'+
                         '<div class="commentNickName fl">'+
                             '<div class="nickName">'+ data.user.nickName +'</div>'+
-                            '<div class="commentLike like_'+ data.comments.commentsId +'" data-id="'+ data.comments.commentsId + '">'+
+                            '<div class="commentLike like_'+ data.comments.commentsId + ' ' + (data.comments.isSysDel==1?'hide':'') + '" data-id="'+ data.comments.commentsId + '">'+
                                 '<img class="commentLikePng fl" src="'+ (data.isHasFavour==1?likeimg:dislikeimg) +'" alt="">'+
                                ' <span>'+ data.favourCount +'</span>'+
                             '</div>'+
-                            '<div class="commentContent fs12" data-name="'+ data.user.nickName +'">'+
-                                 (data.comments.isSysDel==1?'该条留言已被删除':data.comments.content) +
+                            '<div class="commentContent fs12" data-name="'+ data.user.nickName +'" style="'+
+                            (data.comments.isSysDel==1?'color:#999;background-color: #eee;text-align: center;':'') +
+                            '">'+
+                                 (data.comments.isSysDel==1?'该条留言已被系统屏蔽':data.comments.content) +
                             '</div>'+
                             '<div class="commentime fs12 fl">'+ that.jsDateDiff(data.comments.addTime) +'</div>' +
                             '<div class="commentDel fs12 fr '+ (data.user.openId==that.commentConfig.openId?'':'hide') +'" data-id="'+ data.comments.commentsId + '">删除</div>' +
@@ -323,9 +325,9 @@ var fuc = {
                   $('.newComments').prepend(str);
                   $(".commentCount span").html(parseInt($(".commentCount span").html())+1);
                   $('.commentText').val('');
-                    setTimeout(function(){
-                        $('.comment_'+ data.data).css('height',$('.comment_'+ data.data).height()+'px');
-                    },300);
+                    // setTimeout(function(){
+                    //     $('.comment_'+ data.data).css('height',$('.comment_'+ data.data).height()+'px');
+                    // },300);
                   
                   if($('.commentItem').length == 0){
                     that.commentNoneShow();
@@ -364,10 +366,13 @@ var fuc = {
                if (data.code == 0 || data.code == 117) {
                     // $('.comment_'+val_id).remove();
                     $('.comment_'+val_id).addClass('flipOutX');
-                    $('.comment_'+val_id).animate({height:"0px"},1000,padingOut);
-                    function padingOut(){
-                        $('.comment_'+val_id).animate({padding:"0px"},300,commentHide);
-                    }
+                    setTimeout(function () {
+                        commentHide();
+                    }, 500);
+                    // $('.comment_'+val_id).animate({height:"0px"},1000,padingOut);
+                    // function padingOut(){
+                    //     $('.comment_'+val_id).animate({padding:"0px"},300,commentHide);
+                    // }
                     function commentHide(){
                         $('.comment_'+val_id).remove();
                         $(".commentCount span").html(parseInt($(".commentCount span").html())-1);
@@ -793,6 +798,9 @@ var fuc = {
             if(!that.loginTag()){
                 return;
             }
+            if($(this).html()=="该条留言已被系统屏蔽"){
+                return;
+            }
             that.commentConfig.scroll = $("body").scrollTop();
             console.log(that.commentConfig.scroll);
            // $('.commentText').val('回复'+$(this).attr('data-name')+': ');
@@ -1153,7 +1161,8 @@ var fuc = {
                                str += '<img src="'+userMoreImg+'" alt="" class="fansMore fl">';
                             }
                             for(var i=(num-1);i>=0;i--){
-                                str += '<img src="'+list.list[i].headImgUrl+'" alt="" class="fl">';
+                                if(list.list[i].headImgUrl!="")
+                                    str += '<img src="'+list.list[i].headImgUrl+'" alt="" class="fl">';
                             }
                             $('.fansItem').empty();
                             $('.fansItem').append(str);

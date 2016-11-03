@@ -67,7 +67,8 @@ var fuc = {
             '#d50000': '番茄红',
             '#f4511e': '橘红',
             '#795548': '可可棕',
-            '#616161': '石墨黑'
+            '#616161': '石墨黑',
+            '#a79b8e': '桦木灰'
         };
         this.boxDom = "";
         this.config.bgColor = '#66cccc';
@@ -697,8 +698,8 @@ var fuc = {
                     that.selectColor();
                     var imgName = $('.imgItem .imgName');
                     console.log(imgName);
-                    for (var p = 0; p < imgName.size(); p++) {
-                        imgName.eq(p).css({
+                    for (var p = 0; p < imgName.size()-1; p++) {
+                        imgName.eq(p+1).css({
                             "background-image": "url(" + imgList[p].themeUrl + ")",
                             "background-color": imgList[p].themeColor
                         });

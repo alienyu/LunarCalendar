@@ -246,7 +246,9 @@
 .active .selectImg{
     display: block;
 }
-
+.weui-dialog, .weui-mask{
+    z-index: 99;
+}
 /*----------事件二维码样式------------*/
 .shareShadow,.wxQrcode,.liLi{
     position: fixed;
@@ -256,16 +258,20 @@
     height:100%;
     background-color: rgba(0,0,0,0.5);
     display: none;
+    z-index: 99;
 }
 .wxQrcode .wxQrcodeClose,.liLi_close{
     display: block;
-    width:30px;
-    height:30px;
+    width: 30px;
+    height: 30px;
     position: absolute;
-    top:30px;
-    right:20px;
-    background: url("../../imgs/page/showEvent/close.png") no-repeat center center;
-    background-size: contain;
+    top: 55px;
+    right: 20px;
+    background: url(/wx/./img/95904e71f9cfd4c42c628e611f5ab4cc.png) no-repeat center center;
+    background-size: 80%;
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 50%;
 }
 .qrcodeImgCon,.liLi_qrcodeImgCon{
     height:auto;

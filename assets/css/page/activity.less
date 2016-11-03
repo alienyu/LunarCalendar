@@ -192,7 +192,7 @@
   position: absolute;
   top:0;
   right:0;
-  background: url("../../imgs/page/activity/ic_close_black.png") no-repeat top right;
+  background: url("../../imgs/page/activity/ic_close_fff.png") no-repeat top right;
   background-size: contain;
   -webkit-background-size: contain;
 }
@@ -357,12 +357,12 @@
   display: none;
 }
 .imgName{
-  width:80%;
+  width:100%;
   height:100%;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  padding-left: 40px;
+  padding-left: 20px;
   text-indent: 1em;
 }
 .active .selectImg{
@@ -376,7 +376,9 @@
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  padding-left: 10px;
+  padding:0 10px;
+  float:left;
+  width: 50%;
 }
 .imgItem .imgName{
   background-repeat: no-repeat;
@@ -385,7 +387,14 @@
   -webkit-background-size: contain;
 }
 .imgItem .selectImg{
-  top:12px;
+    top: 15px;
+    left: 17px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: solid 2px #6cc;
+    /* box-sizing: inherit; */
+    width: 16px;
+    height: 16px;
 }
 /*------------备注弹层---------------*/
 .remarkShadow .title{
