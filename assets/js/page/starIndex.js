@@ -120,8 +120,8 @@ var fuc = {
             if ($(document).height() - $(this).scrollTop() - $(this).height()<300){
                 if(that.traceConfig.addMore){//加载更多
                     that.traceConfig.addMore = false;
-                    that.getStarNews();
                     that.getStarNewsLoad();
+                    that.getStarNews();
                 }
             }
         });
@@ -337,6 +337,7 @@ var fuc = {
     },
 
     getStarNewsOver: function(){
+        $('.starNewsList').css('padding-bottom','10px');
         $('.commentAdd').html('木有啦，请耐心等待吧').addClass('ccc fs12').css({"height":"auto","line-height":"1.5"});;
         $('.commentAdd').show();
     },

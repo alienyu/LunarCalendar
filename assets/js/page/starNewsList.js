@@ -70,7 +70,7 @@ var fuc = {
             data:{
                 "starId":starId,
                 "pageNo":that.config.pageNo,
-                "pageSize":10
+                "pageSize":20
             },
             success:function(data){
                 if(data.code == 0){
@@ -87,12 +87,22 @@ var fuc = {
                             that.config.addMore = true;
                             that.config.pageNo++;
                         }else{
-                            that.getStarNewsOver();
+                           if(that.config.pageNo == 1){
+                                that.commentEnd();
+                            }else{
+                                //没有数据
+                                that.getStarNewsOver();
+                            }
                             that.config.addMore = false;
                         }
                     }else{
-                        //没有数据
-                        that.getStarNewsOver();
+                        if(that.config.pageNo < 3){
+                            that.commentEnd();
+                        }else{
+                            //没有数据
+                            that.getStarNewsOver();
+                        }
+                        
                         that.config.addMore = false;
                     }
                 }else{

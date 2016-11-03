@@ -72,6 +72,7 @@ var fuc = {
                         }
                         bottomItem.eq(that.config.fansType-1).addClass('active');
                         $('.follow img').removeClass('hide');
+                        $('.follow span').html('已追');
                         $('.bottomTxt').addClass('hide');
                         $('.selected').removeClass('hide');
                     }else{
@@ -175,7 +176,7 @@ var fuc = {
                                 var timeArr = traceList[i].date.split("-");
                                 if(parseInt(timeArr[0]) != that.config.nowYear){
                                     that.config.nowYear = parseInt(timeArr[0]);
-                                    dateLineStr = '<span class="yearLine">'+that.config.nowYear+'年明星行程</span>';
+                                    dateLineStr = '<span class="yearLine">'+that.config.nowYear+'年行程</span>';
                                 }else{
                                     dateLineStr = "";
                                 }
@@ -271,6 +272,7 @@ var fuc = {
     getStarNewsOver: function(){
         $('.commentAdd').html('木有啦，请耐心等待吧').addClass("ccc fs12").css({"height":"auto","line-height":"1.5"});
         $('.commentAdd').show();
+        $('.container').css('padding-bottom','51px');
     },
     commentEnd:function(){
         $('.commentMore').hide();
@@ -432,6 +434,7 @@ var fuc = {
                             });
                             $('.shadow').css("display","none");
                             $('.follow img').removeClass('hide');
+                            $('.follow span').html('已追');
                             $('.bottomTxt').addClass('hide');
                             $('.selected').removeClass('hide');
                             if(that.config.fansType == 0){
@@ -481,6 +484,7 @@ var fuc = {
                             $('.bottomTxt').addClass('hide');
                             $('.selected').removeClass('hide');
                             $('.follow img').removeClass('hide');
+                            $('.follow span').html('已追');
                             if(that.config.fansType == 0){
                                 var fansNum = parseInt($('.fansCount').html());
                                 //console.log(that.config.fansType);
@@ -526,10 +530,12 @@ var fuc = {
                             if($(domId).index() == 5){
                                 nownum = 0;
                                 $('.follow').removeClass('active');
+                                $('.follow span').html('追TA');
                                 $('.bottomTxt').removeClass('hide');
                                 $('.selected').addClass('hide');
                                 $('.follow img').addClass('hide');
                                 $('.bottom_item').eq(0).addClass('active');
+                                $('.unfollow').removeClass('active');
                             }
                             if(that.config.fansType != nownum){
                                 that.config.fansType = nownum;

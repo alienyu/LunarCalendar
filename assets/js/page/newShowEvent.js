@@ -30,7 +30,7 @@ var fuc = {
         longitude: ""//经度
     },
     commentConfig: {
-        pageSize: 5,
+        pageSize: 20,
         commentsId: 0,
         addMore: false,
         type: 1,
@@ -239,6 +239,7 @@ var fuc = {
     },
 
     commentNoMore:function(){
+        $('.comment').css('padding-bottom','0');
         $('.commentMore').show();
         $('.commentMore').html('木有更多内容啦').addClass('ccc fs12').css({"height":"auto","line-height":"1.5"});
     },
@@ -704,8 +705,8 @@ var fuc = {
             if ($(document).height() - $(this).scrollTop() - $(this).height()<300){
                 if(that.commentConfig.addMore){//加载更多留言
                     that.commentConfig.addMore = false;
-                    that.getComments();
                     that.commentLoad();
+                    that.getComments();
                 }
             }
         });
