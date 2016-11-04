@@ -49,15 +49,14 @@ var fuc = {
         this.rem();
         this.renderPage();
         this.bindEvent();
-        console.log('fanlist--'+$('.fansList').width());
-        var num = Math.floor($('.fansList').width()/35) - 2;
-        var str = "";
-        for(var i=0;i<num;i++){
-            str += '<img src="../../assets/imgs/page/showEvent/default_photo.png" alt="" class="fl">';
-        }
-        $('.fansItem').append(str);
-        
-        
+        // console.log('fanlist--'+$('.fansList').width());
+        // var num = Math.floor($('.fansList').width()/28) - 2;
+        // console.log(num)
+        // var str = "";
+        // for(var i=0;i<10;i++){
+        //     str += '<img src="../../assets/imgs/page/showEvent/default_photo.png" alt="" class="fl">';
+        // }
+        // $('.fansItem').append(str);   
     },
 
     loginTag: function(){
@@ -1152,8 +1151,8 @@ var fuc = {
                         $('.count').html(peopleCount);
                         if(list.list.length>0){
                             $('.fansCon').show();
-                            console.log('----'+$('.fansList').width());
-                            var num = Math.floor($('.fansList').width()/35) - 2;
+                            var num = Math.floor($('.fansList').width()/28);
+                            console.log(num + '----'+$('.fansList').width());
                             if(num > list.list.length){
                                 num = list.list.length;
                             }

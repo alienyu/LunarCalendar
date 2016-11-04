@@ -19,7 +19,7 @@ var fuc = {
     },
     renderPage:function(){
         var that = this;
-        wx.wxConfig(1);
+        // wx.wxConfig(1);
         that.getNewsDetail();
         //console.log(that.config.newsId);
     },
@@ -56,11 +56,16 @@ var fuc = {
                         $('.newsPublishTime').html(dateArr[1]+"月"+dateArr[2]+"日");
                     }
                     $('.newsContent').html(newsDetail.newsContent);
-                    var shareTime = dateArr[1]+"月"+dateArr[2]+"日 "+Dom.getweek(newsDetail.newsPublishTime.split(" ")[0])+" "+Dom.getHourMinute(newsDetail.newsPublishTime),
+                    var shareTime = dateArr[1]+"月"+dateArr[2]+"日 "+Dom.getweek(newsDetail.newsPublishTime.split(" ")[0]),
                         newsImg = newsDetail.newsPoster,
                         address = that.config.urlArr[1]+"/wx/view/newsDetail.html?newsId="+that.config.newsId;
                     var obj = new Object();
-                    obj.title = newsDetail.newsTitle;
+                    if(newsDetail.star.starName){
+                        obj.title = '【'+newsDetail.star.starName+'】'+newsDetail.newsTitle;
+                    }else{
+                        obj.title = newsDetail.newsTitle;
+                    }
+                    
                     obj.desc = newsDetail.newsSource+"\r\n"+shareTime;
                     obj.link = address;
                     obj.img = newsImg;
